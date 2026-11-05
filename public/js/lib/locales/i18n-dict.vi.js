@@ -1779,6 +1779,7 @@ window.__I18N_DICT_VI = {
 
   // CAR-137 — specific error texts (see tests/car137-err-keys.test.mjs)
   'err.evaluate.failed': "Đánh giá thất bại — hãy kiểm tra khóa nhà cung cấp trong #/config, hoặc chạy lại.",
+  'err.evaluate.noTerminal': "Luồng đánh giá kết thúc mà không có kết quả — máy chủ có thể đã khởi động lại giữa chừng.",
   'err.auto.noTerminal': "Luồng phễu kết thúc mà không có kết quả — máy chủ có thể đã khởi động lại giữa chừng. Hãy chạy lại URL.",
   'err.scan.pipelineAdd': "Không thể thêm tin này vào phễu — hãy thử lại sau một lúc.",
   'err.scan.repostsLoad': "Không thể tải các cụm đăng lại — hãy mở lại bảng này để thử lại.",

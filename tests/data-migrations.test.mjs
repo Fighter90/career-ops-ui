@@ -151,3 +151,38 @@ test('cellText edge: a bold-link company cell folds to its label (CAR-128 detect
   assert.equal(isRoleInCompany('[Senior Developer - Platform](https://x)'), true);
   assert.equal(isRoleInCompany('**Acme Corp**'), false);
 });
+
+test('review v1.268.1 — a report company containing `|` never adds a phantom column', () => {
+  const pipeResolver = (cell) => (/007-netwrk/.test(String(cell)) ? 'ACME | Data Corp' : (/009-circleci/.test(String(cell)) ? 'Multi\nLine\tCorp' : null));
+  const issues = scanTrackerCompanyIssues(TRACKER, pipeResolver);
+  const fixable = issues.find((i) => i.line === 5 && i.fixed === 'ACME | Data Corp');
+  assert.ok(fixable, 'row 1 resolves to the pipe company');
+  const before = TRACKER.split('\n')[4].split('|').length;
+  const { text, changed } = applyTrackerCompanyFix(TRACKER, issues);
+  assert.equal(changed, 2, 'both rows fix (pipe company + newline/tab company)');
+  const row = text.split('\n')[4];
+  assert.equal(row.split('|').length, before, `the fixed row keeps its column count: ${row}`);
+  assert.match(row, /ACME\s+Data Corp/, 'the pipe is flattened to spaces — no phantom column');
+  const row2 = text.split('\n')[5];
+  assert.match(row2, /Multi\s+Line\s+Corp/, 'newlines and tabs flatten too — never a phantom row/column');
+  // A null/empty resolution inside the fix list is skipped without touching the row.
+  const { text: t3, changed: c3 } = applyTrackerCompanyFix(TRACKER, [{ line: 5, fixed: null }, { line: 5, fixed: '  ' }, { line: 5, fixed: 'Clean Co' }]);
+  assert.equal(c3, 1, 'null/blank employers are skipped, the real one still lands');
+  assert.match(t3, /Clean Co/);
+});
+
+test('scan: no resolver → every row is reported with fixed:null; malformed rows are skipped', () => {
+  // The ternary's false side: scan called WITHOUT a resolver.
+  const issues = scanTrackerCompanyIssues(TRACKER);
+  assert.equal(issues.length, 3, 'hh (source-name) + two role-in-company rows');
+  assert.ok(issues.every((i) => i.fixed === null && i.reportCompany === null), 'no resolver → nothing is fixable');
+  // Non-table prose, a short row and a non-numeric # are all skipped silently.
+  const messy = [
+    '# Applications Tracker',
+    'Some prose line',
+    '| a | b |',                              // 3 cells < 8
+    '| x | 2026-01-01 | hh | Role | 1 | 2 | 3 | no-link | notes |',  // non-numeric #
+    TRACKER.split('\n')[4],
+  ].join('\n');
+  assert.deepEqual(scanTrackerCompanyIssues(messy, () => 'X').map((i) => i.line), [5], 'only the real data row is scanned');
+});

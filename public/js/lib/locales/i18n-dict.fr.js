@@ -1804,6 +1804,7 @@ window.__I18N_DICT_FR = {
 
   // CAR-137 — specific error texts (see tests/car137-err-keys.test.mjs)
   'err.evaluate.failed': "L'évaluation a échoué — vérifiez une clé de fournisseur dans #/config, ou réessayez.",
+  'err.evaluate.noTerminal': "Le flux d’évaluation s’est terminé sans résultat — le serveur a peut-être redémarré en cours d’exécution.",
   'err.auto.noTerminal': "Le flux du tunnel s'est terminé sans résultat — le serveur a peut-être redémarré en cours d'exécution. Relancez l'URL.",
   'err.scan.pipelineAdd': "Impossible d'ajouter cette offre au tunnel — réessayez dans un instant.",
   'err.scan.repostsLoad': "Impossible de charger les groupes de reposts — rouvrez ce panneau pour réessayer.",

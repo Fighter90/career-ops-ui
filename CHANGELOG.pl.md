@@ -26,7 +26,7 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 - Migracje danych produkcyjnych (daty raportów, firmy w trackerze, backfill ocen) to CZYNNOŚCI WŁAŚCICIELA: odpalić dry-run nowych runnerów, przejrzeć, potem apply — narzędzia przyjeżdżają tutaj, zmiany danych nie wykonują się same.
 - Tag v1.267.0 dalej wskazuje czerwony commit merge — nie przepinany; v1.267.1/1.267.2/1.268.0 są pojazdami wdrożenia.
 
-- Testy 7395 → **7490**; pokrycie 98.49 linii / 90.31 gałęzi.
+- Testy 7395 → **7510**; pokrycie 98.49 linii / 90.31 gałęzi.
 
 ## [1.267.2] — 2026-11-04
 

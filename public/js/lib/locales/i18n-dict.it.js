@@ -1804,6 +1804,7 @@ window.__I18N_DICT_IT = {
 
   // CAR-137 — specific error texts (see tests/car137-err-keys.test.mjs)
   'err.evaluate.failed': "Valutazione non riuscita — controlla una chiave del fornitore in #/config, oppure riprova.",
+  'err.evaluate.noTerminal': "Lo stream di valutazione è terminato senza risultato — il server potrebbe essersi riavviato durante l’esecuzione.",
   'err.auto.noTerminal': "Lo stream dell'imbuto è terminato senza risultato — il server potrebbe essersi riavviato durante l'esecuzione. Esegui di nuovo l'URL.",
   'err.scan.pipelineAdd': "Impossibile aggiungere questa offerta all'imbuto — riprova tra poco.",
   'err.scan.repostsLoad': "Impossibile caricare i gruppi di ripubblicazioni — riapri questo pannello per riprovare.",

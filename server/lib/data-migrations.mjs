@@ -139,10 +139,16 @@ export function applyTrackerCompanyFix(trackerText, issues) {
   if (!fixByLine.size) return { text: trackerText, changed: 0 };
   const lines = String(trackerText ?? '').split('\n');
   let changed = 0;
-  for (const [lineNo, employer] of fixByLine) {
+  for (const [lineNo, employerRaw] of fixByLine) {
     const idx = lineNo - 1;
     const cells = splitRow(lines[idx]);
     if (!cells || cells.length < 8) continue;
+    // Review v1.268.1 — the employer comes from a report H1 (free text). A
+    // `|` (or a line break) inside it would add a phantom column to the
+    // `|`-delimited row; flatten to spaces before the rebuild. A null/blank
+    // resolution (missing report, empty H1) must NOT blank the cell — skip.
+    const employer = String(employerRaw ?? '').replace(/[|\r\n\t]+/g, ' ').trim();
+    if (!employer) continue;
     const before = lines[idx];
     const rebuilt = `| ${cells.map((c, i2) => (i2 === 2 ? employer : c)).join(' | ')} |`;
     if (rebuilt !== before) {

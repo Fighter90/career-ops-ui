@@ -24,7 +24,7 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 - As migrações de dados de produção (datas dos relatórios, empresas do tracker, backfill de pontuações) são AÇÕES DO PROPRIETÁRIO: rodar o dry-run dos novos runners, revisar e então aplicar — a ferramenta chega aqui, as mudanças de dados não rodam automaticamente.
 - A tag v1.267.0 continua apontando para o commit de merge vermelho — não é re-apontada; v1.267.1/1.267.2/1.268.0 são os veículos de deploy.
 
-- Testes 7395 → **7490**; cobertura 98.49 linha / 90.31 ramo.
+- Testes 7395 → **7510**; cobertura 98.49 linha / 90.31 ramo.
 
 ## [1.267.2] — 2026-11-04
 

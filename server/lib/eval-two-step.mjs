@@ -58,7 +58,10 @@ export async function runTwoStepEvaluation(jd, lang, opts = {}) {
     if (!usage) usage = { in: 0, out: 0, ...(u.cached !== undefined ? { cached: 0 } : {}) };
     usage.in += u.input_tokens ?? u.prompt_tokens ?? u.in ?? 0;
     usage.out += u.output_tokens ?? u.completion_tokens ?? u.out ?? 0;
-    if (u.cached_tokens !== undefined) usage.cached = (usage.cached || 0) + u.cached_tokens;
+    // Review v1.268.1 — a provider that reports the cache sum AS `cached`
+    // (instead of cached_tokens / cache_read_input_tokens) must not be lost.
+    if (u.cached !== undefined) usage.cached = (usage.cached || 0) + Number(u.cached);
+    else if (u.cached_tokens !== undefined) usage.cached = (usage.cached || 0) + u.cached_tokens;
     else if (u.cache_read_input_tokens !== undefined) usage.cached = (usage.cached || 0) + u.cache_read_input_tokens;
     if (u.cost !== undefined) usage.cost = (usage.cost || 0) + u.cost;
     if (Number.isFinite(u.durationMs)) usage.durationMs = (usage.durationMs || 0) + u.durationMs;
@@ -117,7 +120,10 @@ export async function runTwoStepEvaluation(jd, lang, opts = {}) {
       ? '\nYour previous answer was missing some of the seven sections. Output ALL SEVEN `## A)` … `## G)` sections, nothing else.\n'
       : '';
     const r = await runActiveProvider(renderPrompt + extra, {
-      maxTokens: 16384,
+      // CAR-174 — the render budget is locale-aware (ta/hi/it/pl/ja ran past
+      // 16384 and came back cut). Callers pass evalMaxTokens(lang); the
+      // default keeps the EN ceiling for direct calls.
+      maxTokens: opts.maxTokens || 16384,
       timeoutMs: RENDER_TIMEOUT_MS,
       temperature: RENDER_TEMPERATURE,
       signal: opts.signal,
@@ -148,7 +154,14 @@ export async function runTwoStepEvaluation(jd, lang, opts = {}) {
     scoring,
     body,
     today,
-    url: opts.url,
+    // Review v1.268.1 — the URL rides model-adjacent input; a manual-route
+    // caller may pass text with embedded newlines (forging `**X:**` header
+    // LINES) or bold-label markers (forging them INLINE). Flatten whitespace,
+    // strip bold markers, cap. The auto-pipeline caller is gate-validated;
+    // this is the belt for the manual path.
+    url: typeof opts.url === 'string'
+      ? opts.url.replace(/[\r\n\t]+/g, ' ').replace(/\*\*/g, '').trim().slice(0, 400)
+      : opts.url,
     pdf: opts.saved ? '✅' : undefined,
     salary: opts.salary,
     location: opts.location,

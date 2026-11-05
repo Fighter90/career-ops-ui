@@ -139,7 +139,11 @@ window.Router = (function () {
     };
   }
   function runRouteChangeHooks() {
-    for (const fn of routeChangeHooks) {
+    // v1.268.1 review — a hook may add or remove registry entries mid-sweep
+    // (e.g. a per-view slot disarming itself); iterating the LIVE array let
+    // a splice shift the array under the iterator and SKIP the next hook.
+    // Snapshot: this sweep sees the set as it was when the sweep started.
+    for (const fn of [...routeChangeHooks]) {
       try { fn(); } catch (err) { console.error(err); }
     }
   }

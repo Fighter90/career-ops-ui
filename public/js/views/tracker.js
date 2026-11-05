@@ -630,6 +630,17 @@ Router.register('tracker', async () => {
 //     (clamped to the viewport, RTL-mirrored), so a board re-render can
 //     never clip it; disabled items keep the U-10 (v1.58.30) empty-tracker
 //     tooltip semantics.
+//
+//     v1.268.1 review — the menu is appended to document.body, so a
+//     navigation while it is open left it hanging over the NEW page. The
+//     router's cleanup registry closes it via ONE module-level registration
+//     with a single slot: buildHeaderMenu (and the toolbar) is re-created on
+//     every #/tracker visit, so a per-render hook would leak one registry
+//     entry per visit. Armed when the menu opens, nulled inside closeMenu
+//     (its `if (!menu)` guard makes that idempotent).
+let activeMenuClose = null;
+Router.onRouteChange(() => activeMenuClose && activeMenuClose());
+
 function buildHeaderMenu(rows, c, t) {
   const empty = rows.length === 0;
   const emptyTitle = t('track.fixEmpty', 'Add a row to the tracker first — this rewrites data/applications.md and there is nothing to rewrite yet.');
@@ -657,6 +668,7 @@ function buildHeaderMenu(rows, c, t) {
 
   function closeMenu(refocus) {
     if (!menu) return;
+    activeMenuClose = null; // v1.268.1 — disarm the route-change slot (idempotent)
     document.removeEventListener('click', onDocClick, true);
     document.removeEventListener('keydown', onKey, true);
     window.removeEventListener('resize', onWinClose);
@@ -756,6 +768,9 @@ function buildHeaderMenu(rows, c, t) {
     document.body.appendChild(menu);
     position();
     trigger.setAttribute('aria-expanded', 'true');
+    // v1.268.1 — a navigation while the menu is open must close it: arm the
+    // module-level route-change slot (single registration, see file top).
+    activeMenuClose = () => closeMenu(false);
     const first = menu.querySelector('button:not(:disabled)');
     if (first) { try { first.focus(); } catch { /* detached */ } }
     // defer listener attach so the opening click doesn't immediately close it

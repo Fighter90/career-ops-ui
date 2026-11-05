@@ -1804,6 +1804,7 @@ window.__I18N_DICT_PL = {
 
   // CAR-137 — specific error texts (see tests/car137-err-keys.test.mjs)
   'err.evaluate.failed': "Ocena nie powiodła się — sprawdź klucz dostawcy w #/config lub spróbuj ponownie.",
+  'err.evaluate.noTerminal': "Strumień oceny zakończył się bez wyniku — serwer mógł uruchomić się ponownie w trakcie działania.",
   'err.auto.noTerminal': "Strumień lejka zakończył się bez wyniku — serwer mógł uruchomić się ponownie w trakcie działania. Uruchom adres URL jeszcze raz.",
   'err.scan.pipelineAdd': "Nie udało się dodać tej oferty do lejka — spróbuj ponownie za chwilę.",
   'err.scan.repostsLoad': "Nie udało się wczytać grup ponowień — otwórz ten panel ponownie, aby spróbować jeszcze raz.",

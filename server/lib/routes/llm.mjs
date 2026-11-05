@@ -34,7 +34,7 @@ import { validateEvaluationReport, stripScoreSummary, fixReportDate } from '../e
 import { runTwoStepEvaluation } from '../eval-two-step.mjs';
 // v1.248.8 (CAR-76) — the wrong-language report is surfaced as a warning on
 // /api/evaluate too (the auto-pipeline has had it since v1.248.7).
-import { languageOk } from '../../../scripts/remote-qa/lang-check.mjs';
+
 
 // An A–G report plus the SCORE_SUMMARY block runs past 8192 output tokens in
 // CJK locales (ko / zh-TW / ja, 10–13k characters): the summary at the end was
@@ -285,6 +285,7 @@ export function registerLlmRoutes(app) {
       try {
         const two = await runTwoStepEvaluation(jd, lang, {
           url: typeof req.body?.url === 'string' ? req.body.url : undefined,
+          maxTokens: evalMaxTokens(lang),
           saved,
           signal: controller.signal,
           onStage: (name, detail) => send('stage', { name, detail }),
@@ -303,8 +304,7 @@ export function registerLlmRoutes(app) {
           ...(warnings.length ? { warnings } : {}),
         });
       } catch (e) {
-        const status = e.step === 'scoring' ? 502 : 502;
-        return failNow(status, e.message || 'evaluation failed', { step: e.step });
+        return failNow(502, e.message || 'evaluation failed', { step: e.step });
       }
       return res.end();
     }

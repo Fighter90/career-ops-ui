@@ -128,3 +128,35 @@ test("'track.moreActions' exists ×19; the four item labels stay keyed ×19", ()
     }
   }
 });
+
+// v1.268.1 SPA review — the menu is appended to document.body, so a
+// navigation that happens while it is open leaves it hanging over the next
+// page. The router's cleanup registry closes it, but the registration must
+// be a MODULE-LEVEL single slot: the toolbar (and buildHeaderMenu) is
+// re-created on every #/tracker visit, so a per-render hook would leak one
+// registry entry per visit. One registration, one slot, armed on open,
+// nulled inside closeMenu (its `if (!menu)` guard makes that idempotent).
+
+test('the route-change close hook is registered exactly ONCE, at module level (no per-render hooks)', () => {
+  const calls = TRK.match(/Router\.onRouteChange\(/g) || [];
+  assert.equal(calls.length, 1, `exactly one registration (found ${calls.length})`);
+  const hookIdx = TRK.indexOf('Router.onRouteChange');
+  const menuIdx = TRK.indexOf('function buildHeaderMenu');
+  assert.ok(hookIdx >= 0 && hookIdx < menuIdx,
+    'the hook must be registered at module level, not inside buildHeaderMenu (per-render)');
+});
+
+test('the menu close is a single slot: armed on open, nulled inside closeMenu', () => {
+  assert.match(TRK, /let activeMenuClose = null;/, 'one module-level slot');
+  assert.match(TRK, /activeMenuClose && activeMenuClose\(\)/, 'the hook fires the armed slot');
+  // armed when the menu opens
+  const MENU = menuSlice();
+  assert.match(MENU, /activeMenuClose = \(\) => closeMenu\(false\);/, 'opening the menu arms the slot');
+  // nulled inside closeMenu — slice the closeMenu body so the assertion
+  // cannot be satisfied by some other assignment elsewhere in the file.
+  const closeIdx = TRK.indexOf('function closeMenu');
+  assert.ok(closeIdx >= 0, 'closeMenu found');
+  const bodyEnd = TRK.indexOf('\n  function position()', closeIdx);
+  const closeBody = TRK.slice(closeIdx, bodyEnd > closeIdx ? bodyEnd : TRK.length);
+  assert.match(closeBody, /activeMenuClose = null;/, 'closeMenu disarms the slot (idempotent via its !menu guard)');
+});

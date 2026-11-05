@@ -40,7 +40,7 @@ import { buildEvaluationPrompt, resolveLocale } from '../prompts.mjs';
 import { resolveProvider } from '../llm-dispatch.mjs';
 import { runTwoStepEvaluation } from '../eval-two-step.mjs';
 import { recordUsage, parseSubprocessUsage } from '../llm-usage.mjs';
-import { evalTimeoutMs, geminiEvalArgs } from './llm.mjs';
+import { evalTimeoutMs, evalMaxTokens, geminiEvalArgs } from './llm.mjs';
 import { providerOrder } from '../env-config.mjs';
 import { stripDangerousMarkdown } from '../security.mjs';
 import { stripScoreSummary, validateEvaluationReport, cutRepeatedBlockHeadings, extractSummaryScore, extractBodyScore, fixReportDate } from '../eval-validate.mjs';
@@ -730,6 +730,7 @@ export function registerAutoPipelineRoutes(app) {
         // yaml, so the extractors below keep ONE code path.
         const two = await runTwoStepEvaluation(jdText, lang, {
           url,
+          maxTokens: evalMaxTokens(lang),
           signal: ctrl.signal,
           onStage: (name, detail) => step(2, 'running', `${name}${detail ? ` — ${detail}` : ''}`),
         });

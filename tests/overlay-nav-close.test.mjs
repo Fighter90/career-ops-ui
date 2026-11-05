@@ -239,6 +239,16 @@ test('route-change hooks run BEFORE the router writes the new view into #content
     'runRouteChangeHooks() must run before the first DOM write in render()');
 });
 
+// v1.268.1 SPA review — runRouteChangeHooks used to iterate the LIVE array.
+// A hook that unsubscribes another hook mid-sweep (splice before the cursor)
+// shifted the array under the for..of iterator and SKIPPED the next hook —
+// e.g. the tracker menu slot disarming itself would skip the overlay closer
+// registered after it. The sweep must iterate a snapshot.
+test('runRouteChangeHooks iterates a snapshot, not the live array', () => {
+  assert.match(ROUTER_SRC, /for \(const fn of \[\.\.\.routeChangeHooks\]\)/,
+    'the sweep must iterate [...routeChangeHooks] — a hook may add/remove entries mid-sweep');
+});
+
 // ───────────── the acceptance test (red-first) ─────────────
 
 test('RED-first: navigating away closes a mounted UI.confirm and resolves it false', async () => {
@@ -337,6 +347,29 @@ test('a throwing cleanup hook cannot break navigation, and later hooks still run
   await navigate(realm, '#/page-b');
   assert.equal(ran, true, 'hooks after the throwing one must still run');
   assert.ok(realm.content().innerHTML.includes('data-b'), 'the view still rendered');
+});
+
+test('a hook that detaches a LATER hook mid-sweep does not skip it (snapshot iteration)', async () => {
+  const realm = bootRealm();
+  registerTestRoutes(realm);
+  await navigate(realm, '#/page-a'); // warm up past the first paint
+  const ran = [];
+  let offB;
+  // Registration order = sweep order: the remover runs FIRST, the hook it
+  // unsubscribes runs SECOND. With live-array iteration the splice shifts
+  // the array under the cursor and B is skipped; with a snapshot B still
+  // runs for this sweep (its removal takes effect from the NEXT sweep).
+  realm.Router.onRouteChange(() => { ran.push('A'); offB(); });
+  offB = realm.Router.onRouteChange(() => { ran.push('B'); });
+
+  await navigate(realm, '#/page-b');
+  assert.deepEqual(ran, ['A', 'B'],
+    'a hook removed mid-sweep must still run for that sweep — the sweep iterates a snapshot');
+
+  // And on the NEXT navigation the removal has taken effect.
+  ran.length = 0;
+  await navigate(realm, '#/page-a');
+  assert.deepEqual(ran, ['A'], 'the detached hook stays detached for later sweeps');
 });
 
 test('onRouteChange ignores non-function registrations', () => {

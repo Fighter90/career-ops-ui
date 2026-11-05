@@ -136,6 +136,14 @@ Inline status edit (BACKLOG v1.246.0 #2). Body: `{ row, state, note?, dryRun? }`
 
 Dry-run/repair for dead tracker report links (BACKLOG v1.246.0 #4, parent `fix-report-links.mjs`). Body `{ mode: 'dry-run' | 'apply' }` — **dry-run is the default**. Apply rewrites only a single-link Report cell to `—` and runs inside `withFileLock(PATHS.applications, …)` (the parent script is deliberately NOT in `TRACKER_MUTATING` — the registry lock would nest with this one and deadlock). Plain-text parent output is parsed into `{ rows: [{num, detail}], summary }` and returned verbatim as `output`; exit ≠ 0 / timeout / missing script → **502** `{ error, code, output, detail }`. Drives the Repair card on `#/health` (`rlinks.*` ×19).
 
+### `POST /api/runners/report-dates`
+
+Dry-run/repair for report filename-vs-header date mismatches (CAR-233). Scans `reports/*.md` for `001-acme-2026-06-01.md`-shaped files whose `**Date:**` header disagrees with the filename stamp. Body `{ mode: 'dry-run' | 'apply' }` — **dry-run is the default**, returns `{ mode, count, rows }` without writing. Apply rewrites ONLY the `**Date:**` line to the filename date (CAR-101's `fixReportHeaderDate`), writes **one timestamped `.bak-…`** snapshot per run and commits each file atomically (temp-then-rename). Wrong `mode` → **400**.
+
+### `POST /api/runners/company-fix`
+
+Dry-run/repair for tracker Company cells (CAR-232 — the CAR-127/128 tail: rows filed under a source name like `hh`/`hh.ru`, or under the role title). Resolves each row's company from its linked report's H1 (`# Evaluation: {Company} — {Role}`); a row whose report is missing or unresolvable is reported with `fixed: null` — **never guessed**. Body `{ mode: 'dry-run' | 'apply' }` — **dry-run is the default**. Apply rewrites only the Company cell (line-surgical, every other byte identical; a `|` in the resolved company is flattened — a phantom column is worse than a renamed cell), under `withFileLock(PATHS.applications, …)` with a timestamped `.bak-…` backup and an atomic temp-then-rename commit. Returns `{ mode, count, changed, rows }`. Wrong `mode` → **400**. Route-level contract: `tests/runners-data-migrations.test.mjs`.
+
 ### `GET /api/liveness?url=<URL>`
 
 Zero-token, zero-browser "still live?" check for an ATS-hosted posting (Greenhouse / Lever / Ashby / Workday / SmartRecruiters public JSON). SSRF-safe: `isValidJobUrl` gate + fixed known hosts + `safeGet` + a cross-origin-redirect guard. Returns `{ result: 'live'|'expired'|'uncertain', code, reason, provider }`. An unrecognized ATS host or an inconclusive probe still returns **200** with `result: 'uncertain'`, `code: 'inconclusive'`, `provider: null` (no Playwright fallback at this rung). A loopback / `file:` / private / template URL → **400** `{ error }`. Drives the "still live?" badge on `#/tracker` and scan results.

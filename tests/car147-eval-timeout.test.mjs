@@ -85,9 +85,12 @@ test('source-static: the two-step evaluate carries per-step ceilings and a ≤30
   assert.match(two, /SCORING_TIMEOUT_MS = 120_000/);
   assert.match(two, /SCORING_MAX_TOKENS = 2000/);
   assert.match(two, /SCORING_TEMPERATURE = 0\.1/);
-  // Render keeps the 16384 ceiling with a hard ≤300 s clock — no "eternal" request.
+  // Render keeps a hard ≤300 s clock — no "eternal" request. The output
+  // budget is locale-aware again (review v1.268.1 restored CAR-174):
+  // the caller threads evalMaxTokens(lang) (16384 EN / 32768 token-dense);
+  // the literal below is the EN default for direct calls.
   assert.match(two, /RENDER_TIMEOUT_MS = 300_000/);
-  assert.match(two, /maxTokens: 16384/);
+  assert.match(two, /maxTokens: opts\.maxTokens \|\| 16384/);
   assert.match(two, /timeoutMs: RENDER_TIMEOUT_MS/);
 });
 
