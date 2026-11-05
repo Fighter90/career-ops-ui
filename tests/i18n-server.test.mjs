@@ -1,28 +1,28 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { loadI18nAliases as canonicalAliases } from '../server/lib/i18n-server.mjs';
+import { loadLocaleDict, loadI18nAliases, localeLabel } from '../server/lib/i18n-server.mjs';
 
-const ROOT = resolve(import.meta.dirname, '..');
+// import.meta.dirname needs Node >= 20.11 — CI still gates node 18.
+const ROOT = resolve(fileURLToPath(new URL('.', import.meta.url)), '..');
 
-// The loader caches per process; a fresh module instance per test group keeps
-// the assertions order-independent.
-async function freshLoader() {
-  return import(`../server/lib/i18n-server.mjs?case=${Math.random().toString(36).slice(2)}`);
-}
+// One canonical module instance only: query-busted re-imports of the same
+// file fragment the V8 coverage report into per-instance rows (the CI
+// coverage ratchet means every row must clear the floor). The caches are
+// keyed safely (dict by code, aliases by resolved dir), so sharing one
+// instance across tests is deterministic.
 
-// Canonical instance — per-dir alias caching makes ordering irrelevant.
 test('loadI18nAliases: a checkout without the alias file degrades to {} (injectable dir)', () => {
   const emptyDir = mkdtempSync(resolve(tmpdir(), 'i18n-server-empty-'));
-  const a = canonicalAliases(emptyDir);
+  const a = loadI18nAliases(emptyDir);
   assert.deepEqual(a, {}, 'missing alias file → empty map, never a throw');
-  assert.equal(canonicalAliases(emptyDir), a, 'degraded map is cached per dir');
+  assert.equal(loadI18nAliases(emptyDir), a, 'degraded map is cached per dir');
 });
 
-test('loadLocaleDict: empty / junk / unknown locales resolve null', async () => {
-  const { loadLocaleDict } = await freshLoader();
+test('loadLocaleDict: empty / junk / unknown locales resolve null', () => {
   assert.equal(loadLocaleDict(''), null, 'empty lang → null');
   assert.equal(loadLocaleDict(null), null, 'null lang → null');
   assert.equal(loadLocaleDict('///'), null, 'sanitizes to nothing → null (no file read)');
@@ -32,8 +32,7 @@ test('loadLocaleDict: empty / junk / unknown locales resolve null', async () => 
   assert.equal(loadLocaleDict('aliases'), null, 'a locale file without its global → null');
 });
 
-test('loadLocaleDict: reads the shipped per-locale table and caches it', async () => {
-  const { loadLocaleDict } = await freshLoader();
+test('loadLocaleDict: reads the shipped per-locale table and caches it', () => {
   const ru = loadLocaleDict('ru');
   assert.ok(ru && typeof ru === 'object', 'ru dict is an object');
   assert.equal(typeof ru['nav.scan'], 'string', 'ru nav.scan is a string');
@@ -43,8 +42,7 @@ test('loadLocaleDict: reads the shipped per-locale table and caches it', async (
   assert.ok(pt && typeof pt['nav.scan'] === 'string', 'pt-BR dict loads');
 });
 
-test('loadI18nAliases: the shipped alias map loads and caches per dir', async () => {
-  const { loadI18nAliases, LOCALES_DIR } = await freshLoader();
+test('loadI18nAliases: the shipped alias map loads and caches per dir', () => {
   const a1 = loadI18nAliases();
   assert.ok(a1 && typeof a1 === 'object');
   assert.equal(typeof a1['nav.apply'], 'string', 'nav.apply alias exists');
@@ -54,8 +52,7 @@ test('loadI18nAliases: the shipped alias map loads and caches per dir', async ()
   assert.equal(loadI18nAliases(), a1, 'the shipped dir cache is untouched by the fixture dir');
 });
 
-test('localeLabel: own key, alias hop, en fallback, prototype guard', async () => {
-  const { localeLabel } = await freshLoader();
+test('localeLabel: own key, alias hop, en fallback, prototype guard', () => {
   // Own-key lookup in the request locale.
   const ruScan = localeLabel('ru', 'nav.scan');
   assert.equal(typeof ruScan, 'string');
