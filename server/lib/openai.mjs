@@ -38,6 +38,23 @@ function isOpenAIHost(url) {
 }
 
 /**
+ * CAR-231 — surface cached prompt tokens. The OpenAI-compatible family reports
+ * them NESTED (OpenAI/OpenRouter `prompt_tokens_details.cached_tokens`,
+ * DeepSeek `prompt_cache_hit_tokens`), while the two-step evaluate aggregate
+ * (eval-two-step.mjs) and the live-QA cache gate read the TOP-LEVEL
+ * `cached_tokens` (Anthropic's cache_read_input_tokens is summed separately).
+ * A nested value is copied up; an existing top-level value is never
+ * overwritten; nothing is invented when no cached field exists.
+ */
+function withCachedTokens(usage) {
+  if (!usage || typeof usage !== 'object') return usage;
+  if (usage.cached_tokens !== undefined) return usage;
+  const nested = Number(usage.prompt_tokens_details?.cached_tokens ?? usage.prompt_cache_hit_tokens);
+  if (Number.isFinite(nested) && nested >= 0) usage.cached_tokens = nested;
+  return usage;
+}
+
+/**
  * @returns {{ markdown: string, usage: object|null, error: string|null }}
  */
 export async function runOpenAICompatible(prompt, opts = {}) {
@@ -104,9 +121,9 @@ export async function runOpenAICompatible(prompt, opts = {}) {
       // A 200 with no text (content filter, reasoning spent the whole budget)
       // is a failure, not an empty artifact.
       const reason = choice.finish_reason ? ` (${choice.finish_reason})` : '';
-      return { markdown: '', usage: json.usage || null, error: `${label} returned no text${reason}`, truncated };
+      return { markdown: '', usage: withCachedTokens(json.usage) || null, error: `${label} returned no text${reason}`, truncated };
     }
-    return { markdown, usage: json.usage || null, error: null, truncated };
+    return { markdown, usage: withCachedTokens(json.usage) || null, error: null, truncated };
   } catch (e) {
     return { markdown: '', usage: null, error: e.name === 'AbortError' ? 'timeout' : e.message };
   } finally {

@@ -113,6 +113,26 @@ test('OpenAI default model is a Chat Completions model, not the Responses-only g
   assert.equal(body.model, 'gpt-4.1');
 });
 
+test('OpenAI-compatible usage: nested cached tokens flatten to cached_tokens (CAR-231)', async () => {
+  // OpenAI / OpenRouter shape — cached prompt tokens live in prompt_tokens_details.
+  const r1 = await runOpenAI('p', { apiKey: 'sk', fetchImpl: reply({ choices: [{ message: { content: 'ok' } }], usage: { prompt_tokens: 40000, completion_tokens: 500, prompt_tokens_details: { cached_tokens: 36999 } } }) });
+  assert.equal(r1.usage.cached_tokens, 36999, 'nested cached_tokens must surface top-level');
+  assert.equal(r1.usage.prompt_tokens, 40000, 'the original fields survive');
+  assert.equal(r1.markdown, 'ok');
+  // DeepSeek shape — prompt_cache_hit_tokens.
+  const r2 = await runOpenAI('p', { apiKey: 'sk', fetchImpl: reply({ choices: [{ message: { content: 'ok' } }], usage: { prompt_tokens: 33000, completion_tokens: 10, prompt_cache_hit_tokens: 32000 } }) });
+  assert.equal(r2.usage.cached_tokens, 32000);
+  // A top-level cached_tokens already present is never overwritten.
+  const r3 = await runOpenAI('p', { apiKey: 'sk', fetchImpl: reply({ choices: [{ message: { content: 'ok' } }], usage: { prompt_tokens: 5, completion_tokens: 1, cached_tokens: 4, prompt_tokens_details: { cached_tokens: 10 } } }) });
+  assert.equal(r3.usage.cached_tokens, 4);
+  // runOpenAICompatible (the shared core behind Kimi/MiniMax/GLM/…) flattens too.
+  const r4 = await runOpenAICompatible('p', { apiKey: 'sk', baseUrl: 'https://api.example.test/v1', model: 'm', fetchImpl: reply({ choices: [{ message: { content: 'ok' } }], usage: { prompt_tokens: 37000, completion_tokens: 2, prompt_tokens_details: { cached_tokens: 36500 } } }) });
+  assert.equal(r4.usage.cached_tokens, 36500);
+  // No cached field anywhere → no invented key.
+  const r5 = await runOpenAI('p', { apiKey: 'sk', fetchImpl: reply({ choices: [{ message: { content: 'ok' } }], usage: { prompt_tokens: 3, completion_tokens: 1 } }) });
+  assert.equal(r5.usage.cached_tokens, undefined);
+});
+
 // ── Gemini truncation ───────────────────────────────────────────────────────
 
 test('Gemini: finishReason MAX_TOKENS with text marks the answer truncated', async () => {
