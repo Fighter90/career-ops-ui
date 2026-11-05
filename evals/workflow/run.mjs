@@ -182,6 +182,31 @@ function gradeNoPortRecorded() {
     `${deliberate.length} of ${bullets.length} Notes bullets`);
 }
 
+/**
+ * CAR-239 — the two evaluate-determinism graders. Unlike the repo-state
+ * graders above, these EXECUTE the pipeline: the real two-step evaluate
+ * against a deterministic stub provider in a temp CAREER_OPS_ROOT (offline,
+ * CI-isolated). A live leg (--live against a deployed /api/evaluate) exists
+ * in each grader for post-deploy runs and is deliberately NOT invoked here.
+ */
+function gradeEvaluateDeterminism() {
+  const t = 'evaluate-determinism-gates';
+  for (const [script, grader] of [
+    ['evals/evaluate-locale-parity/run.mjs', '1 JD × 19 locales → spread ≤ 0.5 (stub)'],
+    ['evals/evaluate-repeatability/run.mjs', 'en/ru/de × 3 repeats → spread ≤ 0.2 (stub)'],
+  ]) {
+    try {
+      const out = execFileSync('node', [join(ROOT, script)], { encoding: 'utf8', timeout: 300_000 });
+      const verdict = (out.match(/ (PASS|FAIL)\s*$/) || [])[1] || (out.trim().endsWith('PASS') ? 'PASS' : 'FAIL');
+      const spreadLine = (out.match(/spread [^\n]*/) || [''])[0];
+      record(t, grader, verdict === 'PASS' ? 'PASS' : 'FAIL', spreadLine.trim());
+    } catch (e) {
+      const tail = String(e.stdout || e.message).trim().split('\n').slice(-3).join(' | ');
+      record(t, grader, 'FAIL', tail.slice(0, 120));
+    }
+  }
+}
+
 function reportTrajectorySkips() {
   const spec = read('evals/workflow/tasks.yml');
   const n = (spec.match(/^\s+trajectory:/gm) || []).length;
@@ -198,6 +223,7 @@ gradeNoBlanketSweep();
 gradeLocaleFanout();
 gradeDivergences();
 gradeNoPortRecorded();
+gradeEvaluateDeterminism();
 reportTrajectorySkips();
 
 const shown = only ? results.filter((r) => r.task === only) : results;

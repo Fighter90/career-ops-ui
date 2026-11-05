@@ -95,11 +95,14 @@ export function resolveProvider() {
 /**
  * Run `fullPrompt` through the active provider cascade.
  *
- * @param {{ sizeCap?: number, maxTokens?: number, timeoutMs?: number, signal?: AbortSignal, cachePrefix?: string }} [opts]
+ * @param {{ sizeCap?: number, maxTokens?: number, timeoutMs?: number, signal?: AbortSignal, cachePrefix?: string, temperature?: number, seed?: number }} [opts]
  *   `maxTokens` / `timeoutMs` / `signal` are forwarded to the provider runner.
  *   `cachePrefix` (CAR-111) is forwarded ONLY to Anthropic — prompt caching is
  *   an Anthropic Messages-path feature; the OpenAI-compatible tail providers
  *   cache server-side automatically and are deliberately unchanged.
+ *   `temperature` / `seed` (CAR-229/CAR-239) ride the scoring step; seed is
+ *   honoured by the OpenAI-compatible family and silently ignored by
+ *   Anthropic/Gemini.
  * @returns one of:
  *   { mode, markdown, usage, truncated }   — success (`truncated`: the answer
  *                                            was cut off at the token limit)
@@ -108,7 +111,18 @@ export function resolveProvider() {
  *                                            returns the copy-paste prompt)
  *   { mode: 'too-large', size, cap }       — prompt exceeds the soft cap
  */
-export async function runActiveProvider(fullPrompt, { sizeCap = PROMPT_SIZE_SOFT_CAP, maxTokens, timeoutMs, signal, cachePrefix, temperature } = {}) {
+/**
+ * CAR-239 — whether the provider family accepts a sampling seed in the
+ * request body. The OpenAI-compatible family (OpenAI itself + every tail
+ * provider) does; the Anthropic and Gemini runners do not send one (they
+ * silently ignore the opt), so the two-step evaluate falls back to
+ * self-consistency sampling for them. `manual` never makes a call.
+ */
+export function providerAcceptsSeed(mode) {
+  return mode !== 'anthropic' && mode !== 'gemini' && mode !== 'manual' && mode != null;
+}
+
+export async function runActiveProvider(fullPrompt, { sizeCap = PROMPT_SIZE_SOFT_CAP, maxTokens, timeoutMs, signal, cachePrefix, temperature, seed } = {}) {
   if (typeof fullPrompt !== 'string' || !fullPrompt) return { mode: 'manual' };
   if (fullPrompt.length > sizeCap) return { mode: 'too-large', size: fullPrompt.length, cap: sizeCap };
 
@@ -120,6 +134,10 @@ export async function runActiveProvider(fullPrompt, { sizeCap = PROMPT_SIZE_SOFT
   // CAR-229 — the scoring step pins the sampling temperature (a measurement
   // must not be creative). Providers that do not support the field ignore it.
   if (temperature !== undefined) runOpts.temperature = temperature;
+  // CAR-239 — a fixed sampling seed rides the scoring step. Anthropic and
+  // Gemini runners do not read the field (ignored silently); the
+  // OpenAI-compatible core includes it in the request body when set.
+  if (seed !== undefined) runOpts.seed = seed;
   // CAR-92 — a route-level abort (the SSE client hung up) must reach the
   // provider request, not die at the dispatch boundary.
   if (signal) runOpts.signal = signal;

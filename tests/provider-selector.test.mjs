@@ -130,7 +130,9 @@ test('llm.mjs delegates the cascade to llm-dispatch (FULL-M5): one gate, no loca
     'deep + mode must each run through the shared cascade (evaluate moved to the two-step helper)');
   const two = readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), '..', 'server', 'lib', 'eval-two-step.mjs'), 'utf8');
   assert.match(two, /runTwoStepEvaluation/, 'the helper file exists');
-  assert.equal((two.match(/await runActiveProvider\(/g) || []).length, 2,
+  // CAR-239: the scoring call site sits inside the self-consistency
+  // Promise.all arrow (N parallel samples), so count CALL SITES, not awaits.
+  assert.equal((two.match(/runActiveProvider\(/g) || []).length, 2,
     'the two-step evaluate runs scoring + render through the shared cascade');
 });
 import { readFileSync } from 'node:fs';

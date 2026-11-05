@@ -113,8 +113,10 @@ test('a Spanish evaluation carries the SAME machine surface en does (CAR-102)', 
   // machine block and the server-written header.
   assert.doesNotMatch(done.markdown, /SCORE_SUMMARY|END_SUMMARY/);
   assert.match(done.markdown, /^# Evaluation: Acme — Ingeniera/m);
-  assert.match(done.markdown, /\*\*Score:\*\* 4\.1\/5/);
-  assert.match(done.markdown, /```yaml\ncompany: Acme\nrole: Ingeniera\nscore: 4\.1\nstatus: Evaluated\n/);
-  assert.match(done.markdown, /blocks: \{A: 3\.5, B: 3\.5, C: 3\.5, D: 3\.5, E: 3\.5, F: 3\.5, G: 3\.5\}/);
+  // CAR-239: the fixture carries INTEGER sub-scores (solver: A=5, B–F=4 for
+  // the 4.2 grid point); the pins assert the achieved score 4.2.
+  assert.match(done.markdown, /\*\*Score:\*\* 4\.2\/5/);
+  assert.match(done.markdown, /```yaml\ncompany: Acme\nrole: Ingeniera\nscore: 4\.2\nstatus: Evaluated\n/);
+  assert.match(done.markdown, /blocks: \{A: 5, B: 4, C: 4, D: 4, E: 4, F: 4, G: 4\}/);
   assert.match(done.markdown, /## A\) Sección/);
 });
