@@ -98,6 +98,10 @@ export async function runOpenAICompatible(prompt, opts = {}) {
         // CAR-229 — the scoring step pins the sampling temperature; providers
         // with their own fixed decoding simply ignore the field.
         ...(opts.temperature !== undefined ? { temperature: opts.temperature } : {}),
+        // CAR-239 — the fixed scoring seed rides the body when set
+        // (EVAL_SCORE_SEED via llm-dispatch). OpenAI-compatible vendors
+        // that do not implement seed ignore the field.
+        ...(opts.seed !== undefined ? { seed: opts.seed } : {}),
         messages: [{ role: 'user', content: prompt }],
       }),
     });
