@@ -17,10 +17,7 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, readdirSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
 
-// import.meta.dirname needs Node >= 20.11 — CI still gates node 18.
-const ROOT = resolve(fileURLToPath(new URL('.', import.meta.url)), '..');
 const SAVE = {};
 
 let createApp;

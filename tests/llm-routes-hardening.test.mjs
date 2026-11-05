@@ -119,8 +119,6 @@ const promptFromBody = (rawBody) => {
     }).join('\n');
   } catch { return ''; }
 };
-/** The prompt of a recorded mock call (Anthropic and OpenAI-compatible shapes). */
-const callPrompt = (call) => promptFromBody(call.body);
 /** Two-shape provider stub: scoring → JSON fixture, render → A–G body. */
 const makeTwoStep = (wrap) => (fix) => (body) => {
   const prompt = promptFromBody(body);
@@ -129,7 +127,6 @@ const makeTwoStep = (wrap) => (fix) => (body) => {
     : renderBodyFixture({});
   return wrap(text);
 };
-const anthropicTwoStep = (fix) => makeTwoStep((t) => ({ content: [{ type: 'text', text: t }], stop_reason: 'end_turn', usage: { input_tokens: 11, output_tokens: 7 } }))(fix);
 const openaiTwoStep = (fix) => makeTwoStep((t) => ({ choices: [{ message: { content: t }, finish_reason: 'stop' }], usage: { prompt_tokens: 5, completion_tokens: 3 } }))(fix);
 
 async function post(path, body) {

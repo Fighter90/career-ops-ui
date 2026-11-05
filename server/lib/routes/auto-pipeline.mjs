@@ -43,7 +43,7 @@ import { recordUsage, parseSubprocessUsage } from '../llm-usage.mjs';
 import { evalTimeoutMs, evalMaxTokens, geminiEvalArgs } from './llm.mjs';
 import { providerOrder } from '../env-config.mjs';
 import { stripDangerousMarkdown } from '../security.mjs';
-import { stripScoreSummary, validateEvaluationReport, cutRepeatedBlockHeadings, extractSummaryScore, extractBodyScore, fixReportDate } from '../eval-validate.mjs';
+import { stripScoreSummary, validateEvaluationReport, cutRepeatedBlockHeadings, extractSummaryScore, extractBodyScore, fixReportDate, scoreSummaryBlock } from '../eval-validate.mjs';
 import { parseReportHeader } from '../parsers.mjs';
 // v1.248.7 — the language check is a pure module shared with remote-qa.
 import { languageOk } from '../../../scripts/remote-qa/lang-check.mjs';
@@ -401,9 +401,12 @@ const LEGITIMACY_TIERS = [
 ];
 
 export function extractLegitimacy(md) {
-  const summary = String(md ?? '').match(/---SCORE_SUMMARY---\s*([\s\S]*?)---END_SUMMARY---/);
-  if (!summary) return '';
-  const field = summary[1].match(/^[ \t]*(?:\*\*)?[ \t]*LEGITIMACY[ \t]*(?:\*\*)?[ \t]*:[ \t]*(.*)$/mi);
+  // Review v1.268.1 — linear helper (CodeQL polynomial-ReDoS cluster #739/#740:
+  // the old `\s*([\s\S]*?)---END_SUMMARY---` regex rescanned uncontrolled
+  // model output from every position).
+  const summaryBlock = scoreSummaryBlock(md);
+  if (!summaryBlock) return '';
+  const field = summaryBlock.match(/^[ \t]*(?:\*\*)?[ \t]*LEGITIMACY[ \t]*(?:\*\*)?[ \t]*:[ \t]*(.*)$/mi);
   const value = (field?.[1] || '').trim().toLowerCase();
   const tier = LEGITIMACY_TIERS.find(([prefix]) => value.startsWith(prefix));
   return tier ? tier[1] : '';
@@ -452,6 +455,11 @@ export function synthesizeGeminiSummary(markdown, guess) {
 }
 
 function buildSlug(company, role) {
+  // Review v1.268.1 — cap uncontrolled inputs first (CodeQL #740: three
+  // sequential replace passes over model/JD-derived strings); the slug is
+  // sliced to 120 below anyway, so 400 chars of headroom is lossless.
+  company = String(company ?? '').slice(0, 400);
+  role = String(role ?? '').slice(0, 400);
   const base = `${today()}-${company}-${role}`.toLowerCase();
   return base.replace(/[^\w-]+/g, '-').replace(/^-+|-+$/g, '').replace(/-{2,}/g, '-').slice(0, 120) || `auto-${Date.now()}`;
 }
@@ -813,7 +821,9 @@ export function registerAutoPipelineRoutes(app) {
     const labelRe = new RegExp('^[ \\t]*\\*{0,2}[ \\t]*(?:' + H1_LABEL_WORDS.map(escReMeta).join('|') + ')[ \\t]*\\*{0,2}[ \\t]*[:：][ \\t]*(.+)$', 'iu');
     const labelMatch = rawTitle.match(labelRe);
     const labelled = Boolean(labelMatch);
-    const titleBody = (labelMatch ? labelMatch[1] : rawTitle).trim();
+    // Review v1.268.1 — cap before the dash split (CodeQL #741): the real
+    // header is a tracker cell, never beyond 400 chars.
+    const titleBody = (labelMatch ? labelMatch[1] : rawTitle).trim().slice(0, 400);
     // 2) after a label the format is `Company — Role` → the role is the
     //    RIGHT side; without a label `Role — Company` → the left side. A
     //    part that names the company decides regardless of the label.
@@ -868,13 +878,15 @@ export function registerAutoPipelineRoutes(app) {
         // Don't clobber existing — append epoch suffix. The tracker row and
         // the `done` event must point at the file actually written.
         const altSlug = `${slug}-${Date.now()}`;
-        writeFileSync(projPath('reports', `${altSlug}.md`), sanitized);
+        writeFileSync(projPath('reports', `${altSlug}.md`), sanitized.length > 512 * 1024 ? sanitized.slice(0, 512 * 1024) : sanitized);
         logActivity({ action: 'auto-pipeline.report.saved', target: `reports/${altSlug}.md`, detail: `deduped from ${slug}` });
         slug = altSlug;
         reportPath = `reports/${slug}.md`;
         step(3, 'done', slug);
       } else {
-        writeFileSync(file, sanitized);
+        // Review v1.268.1 — bound the network-derived write (CodeQL #742/#743):
+        // a report beyond 512KB is pathological output; readers assume bounded files.
+        writeFileSync(file, sanitized.length > 512 * 1024 ? sanitized.slice(0, 512 * 1024) : sanitized);
         logActivity({ action: 'auto-pipeline.report.saved', target: reportPath });
         step(3, 'done', slug);
       }

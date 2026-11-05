@@ -202,7 +202,11 @@ export function registerLlmRoutes(app) {
     if (save) {
       const name = `jd-${today()}-${Date.now()}.txt`;
       mkdirSync(PATHS.jdsDir, { recursive: true });
-      writeFileSync(projPath('jds', name), jd);
+      // Review v1.268.1 — the archived capture is already sanitizeJobDescription'd
+      // (line ~195); bound the write itself (CodeQL #744): a capture beyond 256KB
+      // is pathological input and the JD readers assume bounded files.
+      const boundedJd = jd.length > 256 * 1024 ? jd.slice(0, 256 * 1024) : jd;
+      writeFileSync(projPath('jds', name), boundedJd);
       saved = name;
     }
 

@@ -268,11 +268,7 @@
   flex-direction: column;
   box-shadow: var(--shadow-lg);
 }
-/* CAR-238 — one dialog contract for every dialog family: the corner ✕ is
-   absolutely positioned inside the header (out of the title's flow), the
-   header — the title's container — reserves the ✕'s room on the inline-end
-   side via a LOGICAL padding (52px over the base inset; [dir="rtl"] mirrors
-   it left), and titles wrap anywhere instead of clipping. */
+/* CAR-238 — the ✕ is absolutely positioned out of the title's flow; the header reserves its room via logical padding (RTL mirrors); titles wrap. */
 .modal-header {
   padding: var(--space-4) var(--space-5);
   padding-inline-end: calc(var(--space-5) + 52px);
@@ -288,7 +284,6 @@
   color: var(--foggy);
   padding: 0 6px;
   line-height: 1;
-  /* CAR-238 — pinned to the inline-end edge, vertically centered. */
   position: absolute;
   top: 50%;
   inset-inline-end: var(--space-4);
@@ -694,13 +689,7 @@
   pointer-events: none;
 }
 
-/* CAR-235 (P1 UX) — resizable sidebar frame. A 6px drag handle centered on
-   the sidebar's INLINE-END border; ONE rule serves both directions because
-   inset-inline-end measures from the inline-end edge (right in LTR, left in
-   RTL) — it mirrors under [dir="rtl"] with no override and no physical
-   left/right. The dragged width rides the existing --sidebar-w var (app.css
-   reads it on .sidebar AND .main, so the content reflows); the math,
-   bounds and persistence live in js/lib/sidebar-resize.js. */
+/* CAR-235 — drag handle on the sidebar's INLINE-END border (inset-inline-end mirrors under [dir="rtl"]); width rides --sidebar-w; math/persistence in js/lib/sidebar-resize.js. */
 .sidebar-resize {
   position: fixed; top: 0; bottom: 0;
   inset-inline-end: calc(100% - var(--sidebar-w) - 3px);
@@ -709,10 +698,7 @@
 }
 .sidebar-resize:hover, .sidebar-resize:focus-visible { background: var(--slate); }
 .sidebar-resize:focus-visible { outline: 2px solid var(--slate); outline-offset: 1px; }
-/* ≤900px is the mobile drawer's world — the frame is fixed-width there. */
-@media (max-width: 900px) {
-  .sidebar-resize { display: none; }
-}
+@media (max-width: 900px) { .sidebar-resize { display: none; } } /* mobile drawer is fixed-width */
 
 .usage-hud {
   position: fixed; inset-inline-start: 0; bottom: 0; z-index: var(--z-hud);

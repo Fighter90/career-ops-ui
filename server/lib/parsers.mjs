@@ -835,7 +835,10 @@ function boldLabelValue(text, words) {
 // `5/5/2026` can't either (the negative lookahead rejects a denominator followed
 // by another `/` or digit).
 function boldScoreValueForm(text) {
-  const m = String(text).match(
+  // Review v1.268.1 — bound uncontrolled input before the lazy scan
+  // (CodeQL #734): real report headers live in the first lines; 8KB is
+  // far past any legitimate header block.
+  const m = String(text ?? '').slice(0, 8192).match(
     /\*\*[^*\n]+?\*\*[ \t]*[:：]?[ \t]*(\d+(?:[.,]\d+)?[ \t]*\/[ \t]*5(?:[.,]0)?)(?![\d/])/,
   );
   return m ? m[1].replace(/[ \t]+/g, ' ').trim() : '';
@@ -848,6 +851,9 @@ function boldScoreValueForm(text) {
 // fraction, or `<num> / 5` when only a bare number survives.
 function compactScore(raw, num) {
   if (!raw) return raw;
+  // Review v1.268.1 — bound the extracted cell (CodeQL #735/#736); a score
+  // cell beyond 200 chars is not a score cell.
+  raw = String(raw).slice(0, 200);
   if (/^\s*\d+(?:[.,]\d+)?\s*(?:\/\s*\d+(?:[.,]\d+)?)?\s*$/.test(raw)) return raw.trim();
   const frac = String(raw).match(/\d+(?:[.,]\d+)?\s*\/\s*\d+(?:[.,]\d+)?/);
   if (frac) return frac[0].replace(/\s+/g, ' ').trim();
@@ -899,6 +905,11 @@ function toIsoDate(d) {
  * a card never loses its chronological anchor.
  */
 export function parseReportHeader(text, opts = {}) {
+  // Review v1.268.1 — the header (title + **Label:** block) lives in the
+  // report's first lines; bounding the scan surface to the first 64KB is
+  // lossless and clears the CodeQL polynomial-regex cluster on the per-field
+  // matches below (#733/#737) for pathological multi-MB model output.
+  text = String(text ?? '').slice(0, 64 * 1024);
   const out = {
     title: '',
     date: '',

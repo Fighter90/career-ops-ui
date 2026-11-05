@@ -186,7 +186,9 @@ test('CAR-92.6: closing the connection aborts the upstream provider call (no fur
   // guarantee is "nothing is SENT after the disconnect".
   const providerCalls = [];
   globalThis.fetch = async (u, o = {}) => {
-    if (String(u).includes('api.anthropic.com')) {
+    let host = '';
+    try { host = new URL(String(u)).host; } catch { /* not a URL */ }
+    if (host === 'api.anthropic.com') {
       const sig = o && o.signal;
       const preAborted = Boolean(sig && sig.aborted);
       providerCalls.push({ preAborted });

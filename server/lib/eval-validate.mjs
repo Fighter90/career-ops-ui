@@ -257,11 +257,10 @@ export function validateEvaluationReport(text) {
     }
   }
 
-  const summary = text.match(/---SCORE_SUMMARY---\s*([\s\S]*?)---END_SUMMARY---/);
-  if (!summary) {
+  const summaryBlock = scoreSummaryBlock(text);
+  if (!summaryBlock) {
     issues.push('missing SCORE_SUMMARY block');
   } else {
-    const summaryBlock = summary[1];
     // [ \t]*, not \s*: \s crosses newlines, so an EMPTY `ROLE:` line would
     // capture the next line ("SCORE: 4.1") as its value and pass.
     for (const key of ['COMPANY', 'ROLE', 'ARCHETYPE', 'LEGITIMACY']) {
@@ -300,10 +299,28 @@ export function validateEvaluationReport(text) {
  * @param {string} text the full report (or any string)
  * @returns {number | null}
  */
+/**
+ * The machine-readable ---SCORE_SUMMARY--- … ---END_SUMMARY--- block's INNER
+ * text, or null when either marker is missing. Linear (indexOf + slice): the
+ * historical `\s*([\s\S]*?)---END_SUMMARY---` regex rescanned the whole
+ * string from every position on uncontrolled model output (CodeQL
+ * polynomial-ReDoS ×5 — alert cluster #729-#732/#739). All consumers of the
+ * block go through this ONE helper.
+ */
+export function scoreSummaryBlock(text) {
+  const s = String(text ?? '');
+  const start = s.indexOf('---SCORE_SUMMARY---');
+  if (start === -1) return null;
+  const from = start + '---SCORE_SUMMARY---'.length;
+  const end = s.indexOf('---END_SUMMARY---', from);
+  if (end === -1) return null;
+  return s.slice(from, end);
+}
+
 export function extractSummaryScore(text) {
-  const summary = String(text ?? '').match(/---SCORE_SUMMARY---\s*([\s\S]*?)---END_SUMMARY---/);
-  if (!summary) return null;
-  return summaryScoreValue(summary[1]);
+  const summaryBlock = scoreSummaryBlock(text);
+  if (!summaryBlock) return null;
+  return summaryScoreValue(summaryBlock);
 }
 
 /**
