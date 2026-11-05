@@ -794,6 +794,7 @@ window.__I18N_DICT_EN = {
   'track.col.pdf': "PDF",
   'track.col.actions': "Actions",
   'track.fixHint': "Rewrites data/applications.md in place",
+  'track.moreActions': "More actions",
   'track.emptyTitle': "No applications yet",
   'track.emptyBody': "Run the pipeline or evaluate a JD to populate this tracker.",
   'track.emptyCta': "Open pipeline",
@@ -1858,4 +1859,8 @@ window.__I18N_DICT_EN = {
   "rlinks.confirmBody": "fix-report-links.mjs rewrites the Report cell of every broken tracker row to “—” (a .bak backup is kept). Nothing else in the file changes.",
   "rlinks.done": "Repair complete",
   "rlinks.failed": "fix-report-links.mjs failed",
+  'eval.stageScoring': 'Scoring the posting (canonical EN)…',
+  'eval.stageRendering': 'Rendering the report…',
+  'eval.stageAssembling': 'Assembling the report…',
+  'eval.etaHint': 'Usual: {p50}s median · p90 {p90}s',
 };

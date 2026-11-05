@@ -2,7 +2,13 @@
 
 This is the operating manual. Read it, then `PLAN.md` (order) and `BACKLOG.md` (what is left).
 
-## State (2026-11-04, день)
+## State (2026-11-05, v1.268.0)
+
+- Released: **v1.268.0** (2026-11-05) — the evaluate two-step contract: CAR-229 turns `/api/evaluate` into a two-step pipeline — an English scoring-JSON step + a localized render step, with the server building the report header/SCORE_SUMMARY/yaml machine block (temperature 0.1; 120 s scoring clock, ≤300 s render clock); SSE stage progress with real p50/p90 ETA (CAR-230); a prompt-cache stable shared prefix (CAR-111); data-migration runners (CAR-232/233); a Permissions-Policy header. (+38 tests.)
+- Gates: test:ci **7439/7436/0** · evals 0 ✗ · coverage **98.49/90.31**.
+- History: **v1.267.2** (2026-11-04, день) and earlier — see the state blocks below.
+
+## State (2026-11-04, день — v1.267.2)
 
 - Released: **v1.267.2** — getro truncation-warning parity (#6465, the fork-sync tail career-ops @ `31a29b30`): the board walk retries transient per-page failures through the shared `fetchJsonWithRetry`; the truncation warning names the failed page (1-based), the real request count (`err.attempts`) and the partials kept; `fetchJsonWithRetry` stamps `err.attempts` and takes an injectable `sleep`. The rest of the 11-commit fork-sync tail is deliberately not ported (parent-side: Ctrl+K #6084, onboarding CLI #6432, ua modes #6445, verify-ats perf #6442). PR **#621** → `edb21a22` = tag `v1.267.2`.
 - Before it: **v1.267.1** (PR #619 → `d4642b4e`) and **v1.267.0** (PR #618 → `09d5b520`) — see the 2026-11-04 night state below for the train details.

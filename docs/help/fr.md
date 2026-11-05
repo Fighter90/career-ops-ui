@@ -213,7 +213,7 @@ d'environnement exacte à corriger. Ne continuez pas tant que Health n'est
 pas verte.
 
 **Étape 3 — Cliquez sur `⚒ App settings` dans la barre latérale.** Vous
-arrivez sur l'onglet **API keys & runtime**.
+arrivez sur l'onglet **{{t:config.tabApi}}**.
 - Collez `ANTHROPIC_API_KEY` (préféré — meilleure notation des textes longs)
   et/ou `GEMINI_API_KEY`. Obtenez les clés sur
   <https://console.anthropic.com/settings/keys> ou
@@ -431,7 +431,7 @@ transitoire d'avant 1.34 a été promue en cette page).
 
 Trois onglets :
 
-1. **API keys & runtime** — formulaire structuré sur le `.env` du projet
+1. **{{t:config.tabApi}}** — formulaire structuré sur le `.env` du projet
    parent (le même fichier que lisent les scripts Node career-ops au
    démarrage). Groupé : API keys / Runtime / Regional sources. L'onglet
    expose aussi des sélecteurs de modèle par fournisseur — `OPENAI_MODEL`
@@ -457,7 +457,7 @@ pas de redémarrage du serveur.
 
 **Configurer votre fournisseur LLM (pas à pas).** L'évaluation live ⚡ de l'UI web tourne *headless* et utilise une seule clé API. Elle fonctionne par « OU » — définissez **n'importe laquelle** et ça marche ; avec plusieurs, `auto` les préfère dans cet ordre : Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi (Moonshot) → MiniMax → Mistral → Grok (xAI) → Together → Fireworks → Ollama → BytePlus Ark → Volcengine Ark. (career-ops lui-même est agnostique du CLI — vous l'exécutez aussi dans Claude Code, Cursor, Codex, Gemini, OpenCode, Antigravity, Grok Build, Qwen, Copilot ou Kimi ; c'est distinct de cette clé headless.)
 
-1. Ouvrez `#/config` → l'onglet **API keys & runtime**.
+1. Ouvrez `#/config` → l'onglet **{{t:config.tabApi}}**.
 2. Choisissez votre fournisseur dans **`LLM_PROVIDER`** : `auto` (utilise la clé définie), ou forcez-en un avec `claude` / `gemini` / `openai` / `qwen`.
 3. Renseignez la clé + le modèle du fournisseur choisi :
    - **Anthropic** — définissez `ANTHROPIC_API_KEY` (console.anthropic.com), éventuellement `ANTHROPIC_MODEL` (défaut `claude-sonnet-4-6`).
@@ -865,7 +865,7 @@ plus que l'UA par défaut (`habr-career`, scrape HTML ; `trudvsem`, API
 open-data gouvernementale — pas de clé, pas de barrière IP). Deux sont des
 scrapes HTML de sites tech (`getmatch`, `geekjob` — sans clé non plus). Un
 est l'API canonique hh.ru qui peut renvoyer 403 depuis des IP non russes
-sauf si vous définissez une variable `HH_USER_AGENT` via **App settings → API keys & runtime** (ou lancez le serveur depuis une IP / un nœud de sortie
+sauf si vous définissez une variable `HH_USER_AGENT` via **App settings → {{t:config.tabApi}}** (ou lancez le serveur depuis une IP / un nœud de sortie
 VPN russe).
 
 #### Source inventory
@@ -1615,10 +1615,10 @@ un modèle `modes/<slug>.md` précis :
 ### Shared shape
 
 Chaque page a un petit formulaire (les champs sont propres au mode), un
-bouton **▶ Generate prompt** (manuel), et — quand une clé Anthropic ou
+bouton **{{t:deep.run}}** (manuel), et — quand une clé Anthropic ou
 Gemini est présente — un bouton **⚡ Exécuter en direct** qui passe en primaire.
 
-Cliquer sur **▶ Generate prompt** renvoie le prompt assemblé avec vos
+Cliquer sur **{{t:deep.run}}** renvoie le prompt assemblé avec vos
 valeurs de formulaire converties en JSON dans un bloc `User-supplied
 context:`, suivi du modèle `modes/<slug>.md` verbatim. Copiez-collez dans le
 LLM de votre choix.

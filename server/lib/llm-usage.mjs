@@ -54,6 +54,12 @@ export function recordUsage(provider, usage, nowMs, file = PATHS.llmUsage) {
     const line = { ts: nowMs || Date.now(), provider: String(provider || 'unknown'), in: n.in, out: n.out };
     // Optional — old lines carry no `cost` key and parse unchanged.
     if (n.cost != null) line.cost = n.cost;
+    // v1.268.0 (CAR-230) — optional wall-clock duration of the call; old
+    // lines carry no key and parse unchanged. Feeds the evaluate ETA's
+    // p50/p90 (real statistics instead of the stale "2–4 min" copy).
+    if (usage && typeof usage === 'object' && Number.isFinite(usage.durationMs)) {
+      line.durationMs = Math.round(usage.durationMs);
+    }
     mkdirSync(dirname(file), { recursive: true });
     appendFileSync(file, JSON.stringify(line) + '\n');
   } catch { /* best-effort: never break the response over telemetry */ }
@@ -158,6 +164,10 @@ export function readUsage(file = PATHS.llmUsage) {
         const row = { ts: r.ts, provider: String(r.provider || 'unknown'), in: Number(r.in) || 0, out: Number(r.out) || 0 };
         const cost = Number(r.cost);
         if (Number.isFinite(cost) && cost >= 0) row.cost = cost;
+        // v1.268.0 (CAR-230) — the wall-clock duration rides the row so the
+        // evaluate ETA can quote real p50/p90 statistics.
+        const durationMs = Number(r.durationMs);
+        if (Number.isFinite(durationMs) && durationMs > 0) row.durationMs = durationMs;
         rows.push(row);
       }
     } catch { /* skip a corrupt line */ }

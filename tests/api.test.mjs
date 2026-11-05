@@ -223,16 +223,29 @@ test('POST /api/pipeline + DELETE round-trip', async () => {
 
 // ───────────────────────── evaluate fallback (no Gemini) ─────────────────────────
 
-test('POST /api/evaluate without GEMINI_API_KEY → manual prompt', async () => {
+// v1.268.0 — every /api/evaluate path answers as SSE: the no-key manual
+// prompt rides a `done` frame with the SAME payload the old JSON had.
+test('POST /api/evaluate without GEMINI_API_KEY → manual prompt (done frame)', async () => {
   const prevKey = process.env.GEMINI_API_KEY;
   delete process.env.GEMINI_API_KEY;
   try {
-    const r = await post('/api/evaluate', {
-      jd: 'About the role: looking for a Senior Backend Engineer with PHP and Go experience. Responsibilities include building services and reviewing code.',
+    const res = await fetch(baseUrl + '/api/evaluate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'text/event-stream' },
+      body: JSON.stringify({
+        jd: 'About the role: looking for a Senior Backend Engineer with PHP and Go experience. Responsibilities include building services and reviewing code.',
+      }),
     });
-    assert.equal(r.status, 200);
-    assert.equal(r.body.mode, 'manual');
-    assert.ok(r.body.prompt.includes('cv.md'));
+    assert.equal(res.status, 200);
+    assert.match(res.headers.get('content-type') || '', /text\/event-stream/);
+    const text = await res.text();
+    const frames = text.split('\n\n').filter(Boolean);
+    const ev = (f) => (f.match(/^event: (.+)$/m) || [])[1];
+    const dataOf = (f) => JSON.parse((f.match(/^data: ([\s\S]+)$/m) || [, '{}'])[1]);
+    const done = frames.filter((f) => ev(f) === 'done').map(dataOf);
+    assert.equal(done.length, 1, `exactly one done frame: ${JSON.stringify(frames.map(ev))}`);
+    assert.equal(done[0].mode, 'manual');
+    assert.ok(done[0].prompt.includes('cv.md'));
   } finally {
     if (prevKey) process.env.GEMINI_API_KEY = prevKey;
   }

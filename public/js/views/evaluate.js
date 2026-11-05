@@ -49,9 +49,47 @@ Router.register('evaluate', async () => {
       jdInput.focus();
       return;
     }
+    // v1.268.0 (CAR-230) — the evaluate endpoint streams SSE stage events
+    // (scoring → rendering → assembling); the loading line follows the stage
+    // and quotes the REAL latency (p50/p90 from the usage journal) instead
+    // of the stale "2–4 min" copy.
     out.innerHTML = `<div class="loading">${t('eval.evaluating')}</div>`;
+    let etaLine = null;
     try {
-      const r = await API.post('/api/evaluate', { jd, save: saveJd.checked }, { lang: true });
+      const u = await API.get('/api/usage');
+      if (u && u.llmLatency && u.llmLatency.p50Ms) {
+        etaLine = c('div', { className: 'field-hint', role: 'status' },
+          t('eval.etaHint', 'Usual: {p50}s median · p90 {p90}s')
+            .replace('{p50}', Math.round(u.llmLatency.p50Ms / 1000))
+            .replace('{p90}', Math.round(u.llmLatency.p90Ms / 1000)));
+        out.appendChild(etaLine);
+      }
+    } catch { /* the hint is best-effort; the run does not depend on it */ }
+    const stageLabel = (name) => {
+      if (name === 'scoring') return t('eval.stageScoring', 'Scoring the posting (canonical EN)…');
+      if (name === 'rendering') return t('eval.stageRendering', 'Rendering the report…');
+      if (name === 'assembling') return t('eval.stageAssembling', 'Assembling the report…');
+      return t('eval.evaluating');
+    };
+    const setStage = (name, detail) => {
+      if (etaLine) { etaLine.remove(); etaLine = null; }
+      out.innerHTML = `<div class="loading">${stageLabel(name)}${detail ? ` — ${detail}` : ''}</div>`;
+    };
+    try {
+      const r = await new Promise((resolve, reject) => {
+        let settled = false;
+        API.postStream('/api/evaluate', { jd, save: saveJd.checked }, (ev, data) => {
+          if (settled) return;
+          if (ev === 'done') { settled = true; resolve(data); }
+          else if (ev === 'stage') setStage(data.name, data.detail);
+          else if (ev === 'error') { settled = true; reject(new Error(data.message || 'stream error')); }
+        });
+        // The stream ends without a terminal frame → same contract as the
+        // other consumers: surface the no-terminal-frame error.
+      });
+      if (!r || (!r.markdown && r.mode !== 'manual')) {
+        throw new Error(t('err.evaluate.failed', 'Evaluation failed — check a provider key on #/config, or run again.'));
+      }
       renderResult(r);
     } catch (e) {
       out.innerHTML = '';

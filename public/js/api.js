@@ -571,6 +571,31 @@ window.UI = (function () {
     if (_onClose) { const cb = _onClose; _onClose = null; cb(); }
   }
 
+  // P3.3 (route-change overlay hygiene) — close every modal-class overlay
+  // when the router changes route. UI.confirm and UI.modal (the two-pager
+  // "Preview & export" modal, the AI-fill modal, …) all render into the
+  // shared top-level #modal element, so ONE close covers all of them. The
+  // modal lives OUTSIDE #content, so a navigation that happens while it is
+  // open (browser back/forward, a programmatic Router.go() from an async
+  // handler, keyboard activation that never hits the backdrop) used to
+  // leave it hanging over the NEW page. Registered with the router's
+  // route-change cleanup registry (router.js loads after api.js, so it can
+  // arm this at boot). Toasts are deliberately NOT touched here: they are
+  // transient by design (auto-dismiss + toast journal).
+  //
+  // Graceful: closeModal fires _onClose exactly once, which resolves any
+  // pending UI.confirm Promise as `false` (cancelled) — awaited handlers
+  // see the cancel and bail instead of hanging. Focus restoration into the
+  // view being torn down is skipped on purpose: the router's own
+  // focusNewView moves focus to the new view right after it renders.
+  function closeOverlays() {
+    const m = document.getElementById('modal');
+    if (!m || m.hidden) return false;
+    _modalFocusReturn = null; // don't restore focus into the dying view
+    closeModal();
+    return true;
+  }
+
   /**
    * Focus-trapped confirmation dialog. Returns Promise<boolean> — true
    * only when the user activates the confirm button; false on Cancel,
@@ -1074,5 +1099,5 @@ window.UI = (function () {
     return /^https?:\/\//i.test(s) ? s : null;
   }
 
-  return { toast, dismissToast, modal, closeModal, confirm, el, escapeHtml, md, withSpinner, paginate, providerCostHint, pageMeta, getToastHistory, onToast, clearToastHistory, dismissToastHistory, safeHref };
+  return { toast, dismissToast, modal, closeModal, closeOverlays, confirm, el, escapeHtml, md, withSpinner, paginate, providerCostHint, pageMeta, getToastHistory, onToast, clearToastHistory, dismissToastHistory, safeHref };
 })();

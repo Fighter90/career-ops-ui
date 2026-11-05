@@ -295,6 +295,8 @@ test('Playwright smoke: evaluate view returns a manual prompt without API key', 
   await page.goto(baseUrl + '/#/evaluate');
   await page.waitForSelector('#content');
   // Hit /api/evaluate directly with a JD ≥50 chars after sanitization.
+  // v1.268.0 (CAR-229): the endpoint answers as SSE — parse the terminal
+  // `done` frame instead of a JSON body.
   const result = await page.evaluate(async () => {
     const r = await fetch('/api/evaluate', {
       method: 'POST',
@@ -303,9 +305,17 @@ test('Playwright smoke: evaluate view returns a manual prompt without API key', 
         jd: 'Senior Backend Engineer with extensive PHP and Go responsibilities, including microservice architecture, code review, and on-call rotation for a high-traffic payments platform.',
       }),
     });
-    return { status: r.status, body: await r.json() };
+    const text = await r.text();
+    let body = null;
+    for (const frame of text.split('\n\n')) {
+      const ev = (frame.match(/^event:\s*(.+)$/m) || [])[1];
+      const data = (frame.match(/^data:\s*([\s\S]+)$/m) || [])[1];
+      if (ev === 'done' && data) body = JSON.parse(data);
+    }
+    return { status: r.status, body };
   });
   assert.equal(result.status, 200);
+  assert.ok(result.body, 'SSE stream must carry a terminal done frame');
   // No key set in the smoke fixture, so manual mode is the expected path.
   // Also valid: anthropic/gemini if a real key happens to leak from the
   // host shell into the test process.
@@ -394,6 +404,10 @@ test('Playwright smoke: dashboard ✨ Auto-pipeline button → #/auto screen wit
   page.on('console', (msg) => { if (msg.type() === 'error') consoleErrors.push(msg.text()); });
   // Real uncaught JS exceptions still fail (they never match BENIGN_CONSOLE).
   page.on('pageerror', (e) => consoleErrors.push('pageerror: ' + (e.stack || e.message)));
+  // Locale-stable: force EN — a prior language-switcher test leaves ru in the
+  // shared context's localStorage, and the v1.268.0 glossary localizes the CTA
+  // label («Авто-воронка по URL»), so the EN-substring click would never match.
+  await page.addInitScript(() => { try { localStorage.setItem('career-ops-ui:lang', 'en'); } catch { /* private mode */ } });
   await page.goto(baseUrl + '/#/dashboard');
   await page.waitForSelector('#content', { timeout: 5000 });
   // The CTA in the page-header now navigates to the dedicated screen.

@@ -102,8 +102,8 @@ test('UX-A11 (v1.58.64): es/pt-BR copy polish — English loanwords replaced wit
   // pt-BR analogous polish.
   assert.match(dict, /'pt-BR':\s*'Análise canônica A–G:[^']*aderência do CV[^']*Pontuação e legitimidade no cabeçalho do relatório/,
     'pt-BR eval.subtitle must use aderência do CV + Pontuação + cabeçalho + relatório');
-  // pipe.title polish: ES "Pipeline de candidaturas".
-  assert.match(dict, /'pipe\.title':\s*\{[^}]*es:\s*'Pipeline de candidaturas'/,
+  // pipe.title polish: ES "Embudo de candidaturas" (v1.268.0 glossary — Pipeline → Embudo).
+  assert.match(dict, /'pipe\.title':\s*\{[^}]*es:\s*'Embudo de candidaturas'/,
     'es pipe.title must read "Pipeline de candidaturas" (candidate-side perspective)');
 });
 

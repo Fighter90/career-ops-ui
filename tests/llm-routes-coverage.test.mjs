@@ -13,6 +13,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, existsSync, chmodSync, rmSync , 
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 import { promises as dns } from 'node:dns';
+import { scoringFixture, renderBodyFixture } from './helpers/eval-two-step-stub.mjs';
 
 const KEYS = ['ANTHROPIC_API_KEY', 'GEMINI_API_KEY', 'GOOGLE_API_KEY', 'OPENAI_API_KEY', 'QWEN_API_KEY',
   'OPENROUTER_API_KEY', 'GITHUB_MODELS_API_KEY', 'GITHUB_MODELS_TOKEN', 'LLM_PROVIDER'];
@@ -63,22 +64,44 @@ const json = (o, status = 200) => new Response(JSON.stringify(o), { status, head
 function mockProviders(map) {
   globalThis.fetch = async (u, o = {}) => {
     const s = String(u);
-    for (const [host, fn] of Object.entries(map)) if (s.includes(host)) return fn();
+    for (const [host, fn] of Object.entries(map)) if (s.includes(host)) return fn(u, o);
     return realFetch(u, o);
   };
 }
 const ok = (o) => () => json(o);
 const fail = (msg, status = 500) => () => json({ error: { message: msg } }, status);
 const antText = (t) => ok({ content: [{ type: 'text', text: t }], stop_reason: 'end_turn', usage: { input_tokens: 1, output_tokens: 1 } });
-// v1.248.3 — a report that passes validateEvaluationReport (A–G + a complete
-// SCORE_SUMMARY): the pipeline validates BEFORE saving, so gate stubs must
-// return a full report, not a one-block sketch.
-const FULL_REPORT = ['## A) Context', '## B) Fit', '## C) Risks', '## D) Salary',
-  '## E) Questions', '## F) Legitimacy: high', '## G) Verdict: proceed',
-  '---SCORE_SUMMARY---', 'COMPANY: Acme', 'ROLE: Engineer', 'ARCHETYPE: backend',
-  'LEGITIMACY: high', 'SCORE: 3.5/5', '---END_SUMMARY---'].join('\n');
 const oaiText = (t) => ok({ choices: [{ message: { content: t }, finish_reason: 'stop' }] });
 const gemText = (t) => ok({ candidates: [{ content: { parts: [{ text: t }] }, finishReason: 'STOP' }] });
+
+// v1.268.0 (CAR-229/230) — the two-step contract: a provider stub must answer
+// DIFFERENTLY on the two calls the cascade makes — scoring (its prompt
+// carries "Output ONLY a JSON object") gets the JSON fixture, render (its
+// prompt carries the "SCORING JSON (canonical" marker) gets the seven A–G
+// sections. Each sub-case swaps `scoringFix` to emulate what the model
+// extracts from that posting.
+let scoringFix = null;
+/** The prompt text of an Anthropic/OpenAI-compatible body — content may be a string or typed blocks (CAR-111 caching). */
+const promptFromBody = (rawBody) => {
+  try {
+    const b = JSON.parse(rawBody);
+    return (b.messages || []).map((m) => {
+      const c = m.content;
+      if (typeof c === 'string') return c;
+      if (Array.isArray(c)) return c.filter((p) => p && p.type === 'text').map((p) => p.text).join('');
+      return '';
+    }).join('\n');
+  } catch { return ''; }
+};
+const twoStep = (makeJson) => async (_u, o = {}) => {
+  const prompt = promptFromBody(String(o?.body || ''));
+  const text = prompt.includes('Output ONLY a JSON object')
+    ? JSON.stringify(scoringFix)
+    : renderBodyFixture({});
+  return makeJson(text);
+};
+const antTwoStep = () => twoStep((t) => json({ content: [{ type: 'text', text: t }], stop_reason: 'end_turn', usage: { input_tokens: 1, output_tokens: 1 } }));
+const oaiTwoStep = () => twoStep((t) => json({ choices: [{ message: { content: t }, finish_reason: 'stop' }] }));
 
 async function post(path, body) {
   const r = await fetch(baseUrl + path, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
@@ -104,35 +127,56 @@ const JD = 'Senior Backend Engineer at Acme. Go, PostgreSQL, Kubernetes, on-call
 
 test('/api/evaluate: short JD 400, manual mode, no-key manual, save writes the JD', async () => {
   assert.equal((await post('/api/evaluate', { jd: 'short' })).status, 400);
-  const m = await post('/api/evaluate', { jd: JD, mode: 'manual' });
-  assert.equal(m.body.mode, 'manual');
-  const n = await post('/api/evaluate', { jd: JD, save: true });
-  assert.equal(n.body.mode, 'manual');
-  assert.match(n.body.saved, /^jd-.*\.txt$/);
-  assert.ok(existsSync(resolve(ROOT, 'jds', n.body.saved)));
+  // v1.268.0 — every path answers on the SSE stream: manual mode and the
+  // no-key fallback are `done` frames carrying the SAME payload the old
+  // JSON had (mode/prompt/saved).
+  const mDone = sseEvents((await post('/api/evaluate', { jd: JD, mode: 'manual' })).text)
+    .find((e) => e.event === 'done')?.data;
+  assert.equal(mDone.mode, 'manual');
+  assert.match(mDone.prompt, /cv\.md/);
+  const nDone = sseEvents((await post('/api/evaluate', { jd: JD, save: true })).text)
+    .find((e) => e.event === 'done')?.data;
+  assert.equal(nDone.mode, 'manual');
+  assert.match(nDone.saved, /^jd-.*\.txt$/);
+  assert.ok(existsSync(resolve(ROOT, 'jds', nDone.saved)));
 });
 
-test('/api/evaluate: Anthropic error 502; success carries the CV truncation warning', async () => {
+test('/api/evaluate: Anthropic error surfaces as an error frame; success carries the CV truncation warning', async () => {
   process.env.ANTHROPIC_API_KEY = ANT;
   mockProviders({ 'api.anthropic.com': fail('overloaded', 529) });
+  // v1.268.0 — the stream is already open when the provider fails, so the
+  // failure is an `error` frame (status stays 200) naming the failed step.
   const e = await post('/api/evaluate', { jd: JD });
-  assert.equal(e.status, 502);
-  assert.match(e.body.error, /overloaded/);
-  mockProviders({ 'api.anthropic.com': antText('## Block A\nreport') });
+  assert.equal(e.status, 200);
+  const err = sseEvents(e.text).find((f) => f.event === 'error')?.data;
+  assert.match(err?.message || '', /overloaded/);
+  assert.equal(err?.step, 'scoring');
+  scoringFix = scoringFixture({ company: 'Acme', role: 'Engineer', score: 3.5 });
+  mockProviders({ 'api.anthropic.com': antTwoStep() });
   const r = await post('/api/evaluate', { jd: JD });
   assert.equal(r.status, 200);
-  assert.ok(r.body.warnings.some((w) => /^cv\.md truncated at \d+ of \d+ characters$/.test(w)), r.body.warnings.join('|'));
-  assert.ok(r.body.warnings.includes('missing SCORE_SUMMARY block'));
+  const done = sseEvents(r.text).find((f) => f.event === 'done')?.data;
+  assert.ok((done.warnings || []).some((w) => /^cv\.md truncated at \d+ of \d+ characters$/.test(w)), (done.warnings || []).join('|'));
+  // Two-step contract: 'missing SCORE_SUMMARY block' is impossible by
+  // construction — the SERVER assembles the machine surface. Pin it.
+  assert.match(done.markdown, /```yaml\ncompany: Acme/);
+  assert.equal(done.scoring.score, 3.5);
 });
 
-test('/api/evaluate: tail provider error 502 and success', async () => {
+test('/api/evaluate: tail provider error frame and success', async () => {
   process.env.OPENAI_API_KEY = OAI;
   mockProviders({ 'api.openai.com': fail('quota', 429) });
-  assert.equal((await post('/api/evaluate', { jd: JD })).status, 502);
-  mockProviders({ 'api.openai.com': oaiText('## Block A\nreport') });
+  const e = await post('/api/evaluate', { jd: JD });
+  assert.equal(e.status, 200);
+  const err = sseEvents(e.text).find((f) => f.event === 'error')?.data;
+  assert.match(err?.message || '', /quota/);
+  scoringFix = scoringFixture({ company: 'Acme', role: 'Engineer', score: 3.5 });
+  mockProviders({ 'api.openai.com': oaiTwoStep() });
   const r = await post('/api/evaluate', { jd: JD });
-  assert.equal(r.body.mode, 'openai');
-  assert.ok(r.body.warnings.length > 0);
+  const done = sseEvents(r.text).find((f) => f.event === 'done')?.data;
+  assert.equal(done.mode, 'openai');
+  assert.ok((done.warnings || []).length > 0);
+  assert.match(done.markdown, /```yaml\ncompany: Acme/);
 });
 
 test('/api/evaluate/test-anthropic: no key 400, provider error, ok sample', async () => {
@@ -216,19 +260,26 @@ test('/api/auto-pipeline: provider error fails step 3 with its message', async (
 
 test('/api/auto-pipeline: "Company — Role" title and hostname fallbacks', async () => {
   process.env.ANTHROPIC_API_KEY = ANT;
-  mockProviders({ 'api.anthropic.com': antText(FULL_REPORT) });
+  mockProviders({ 'api.anthropic.com': antTwoStep() });
+  // Two-step contract — the scoring step plays the model reading the
+  // posting: its JSON fixture carries the company/role the title shows.
   await stubPage(() => ({ body: '<h1>Initrode — Staff Platform Engineer</h1>\n' + LONG }));
+  scoringFix = scoringFixture({ company: 'Initrode', role: 'Staff Platform Engineer', score: 3.5 });
   let done = (await pipeline({ url: 'https://jobs.example.com/f' })).find((e) => e.event === 'done').data;
   // CAR-92 — extractLegitimacy returns the prompt's own enum value
   // (`High Confidence`), not the shorted word.
   assert.deepEqual([done.company, done.role, done.score, done.legitimacy], ['Initrode', 'Staff Platform Engineer', 3.5, 'High Confidence']);
-  // No title line: the company comes from the hostname.
+  // No title line: the company comes from the hostname (the pre-LLM
+  // heuristic); the scoring JSON has no company in the text — the role it
+  // can still read ('Software engineer wanted').
+  scoringFix = scoringFixture({ company: 'Unknown', role: 'Software Engineer', score: 3.5 });
   await stubPage(() => ({ body: LONG + '\n<p>Software engineer wanted</p>' }));
   done = (await pipeline({ url: 'https://careers.globodyne.com/g' })).find((e) => e.event === 'done').data;
   assert.equal(done.company, 'Globodyne');
   // An ATS host is not a company (v1.248.3, CAR follow-up): with no company
   // in the text the run is REJECTED instead of filing an `unknown-role`
   // report — the exact pattern that produced 44 junk `t-role` files on prod.
+  // (Unchanged by the contract: the identity gate fires BEFORE the LLM call.)
   await stubPage(() => ({ body: LONG }));
   const ev = await pipeline({ url: 'https://boards.greenhouse.io/x/jobs/1' });
   const err = ev.find((e) => e.event === 'error');
@@ -240,7 +291,8 @@ test('/api/auto-pipeline: "Company — Role" title and hostname fallbacks', asyn
 
 test('/api/auto-pipeline: a duplicate company/role row is deduped, not appended', async () => {
   process.env.ANTHROPIC_API_KEY = ANT;
-  mockProviders({ 'api.anthropic.com': antText(FULL_REPORT) });
+  mockProviders({ 'api.anthropic.com': antTwoStep() });
+  scoringFix = scoringFixture({ company: 'Soylent', role: 'Dedupe Engineer', score: 3.5 });
   await stubPage(() => ({ body: '<h1>Dedupe Engineer at Soylent</h1>' + LONG }));
   const a = (await pipeline({ url: 'https://jobs.example.com/h1' })).find((e) => e.event === 'done').data;
   const b = (await pipeline({ url: 'https://jobs.example.com/h2' })).find((e) => e.event === 'done').data;

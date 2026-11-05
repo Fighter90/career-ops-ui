@@ -8,6 +8,24 @@
 
 ---
 
+## [1.268.0] — 2026-11-05
+
+### 變更
+
+- **Evaluate 現在是兩步管線(CAR-229)** — 2026-11-04 的生產回歸顯示,同一份合成 JD 因報告語言不同而得到 1.0–4.0 的評分,且機器區塊只存在於 17 個語言中的 8 個。現在的合約是:(1)SCORING 步驟讀取上下文與 JD,只輸出一份規範的英文 JSON(company、role、archetype、legitimacy、score、逐區塊 A–G 分數 + summaries),temperature 0.1 固定、時鐘 120 s;(2)RENDER 步驟以報告語言詳述七個 A–G 章節 — 禁止改動數字,禁止寫標題或任何機器區塊。報告由伺服器組裝:`# Evaluation:` 標題、`**Date:**/**Score:**/**Legitimacy:**` 行、---SCORE_SUMMARY--- 區塊與 ```yaml 機器區塊全部由伺服器從 scoring JSON 建構 — 每個語言在結構上就擁有相同的機器表面,任何在正文裡「糾正」數字的模型都動不了規範值。用戶端酬載保留機器區塊(```yaml),剝除 summary 區塊。
+- **UI 中的 Evaluate 階段進度(CAR-230)** — /api/evaluate 以 SSE 階段(scoring → rendering → assembling)串流輸出,取代一次沉默的 POST;載入行引用真實延遲(來自使用日誌的 p50/p90 — llm-usage 列與 readUsage 現在攜帶 durationMs;/api/usage 公開 llmLatency),取代過時的「2–4 分鐘」文案。scoring 步驟對非 JSON 回答重試一次;重試後仍缺章節的 render 退回伺服器建構的正文(warning 保留,機器表面保持完整)。
+- **每個語言皆有的 Prompt 快取(CAR-111)** — 兩個步驟共享一個位元組穩定的英文指令標頭(上下文包 + 共享指令打開每個 prompt,在全部 19 個語言中逐位元組一致);語言指令、scoring JSON 與 JD 乘坐未快取的尾部。一項測試釘住所有語言的逐位元組一致穩定前綴 — 每語言快取未命中(非 en 上 cached_tokens 為 0)在結構上已消除。
+- **資料遷移執行器(CAR-232/233)** — `POST /api/runners/report-dates` 與 `POST /api/runners/company-fix`(預設 dry-run,apply 時附帶帶時間戳的 .bak 備份):報告標頭日期與檔名日期對齊(2026-10-26 之前的 368 列),持有來源名稱(「hh」— 123 列)或職位名稱(14 列)的追蹤器 Company 儲存格則從其報告的 H1 解析出雇主。先 dry-run;apply 只動指名的儲存格,逐列外科手術式。
+- **Permissions-Policy 標頭** — `camera=(), microphone=(), geolocation=(), payment=(), usb=()`:本應用從不使用的表面被明確拒絕(QA 2026-11-04)。
+
+### 備註
+
+- **本版本刻意不包含(2026-11-04 修復計畫的 P2/P3):**說明指南的 `{{t:key}}` 佔位符機制與深連結標籤在地化(CAR-107 尾巴)、儀表板詞彙表清掃(CAR-108 尾巴)、地圖聚合 + hh.ru 區域地理編碼(CAR-105)、面向破壞性操作的追蹤器標頭選單(CAR-117 尾巴)、網站標頭模糊 + 複製回饋(CAR-132/141 尾巴)、README ar/pl/uk/vi 對齊、每語言詞典分塊(CAR-104 尾巴)。它們已劃定範圍並排隊 — 本版本交付強制性的 P0+P1 集。
+- 生產資料遷移(報告日期、追蹤器公司、分數回填)是所有者的操作:執行新執行器的 dry-run,審閱後 apply — 工具隨本版本交付,資料變更不會自動執行。
+- v1.267.0 標籤繼續指向紅色合併提交 — 不重指;v1.267.1/1.267.2/1.268.0 是部署載體。
+
+- 測試 7395 → **7480**;覆蓋率 98.49 行 / 90.31 分支。
+
 ## [1.267.2] — 2026-11-04
 
 ### 修復

@@ -91,16 +91,27 @@ test('full journey: jd ingest → evaluate (manual) → tracker → activity aud
   assert.equal(await r.text(), jdBody);
 
   // 4. Evaluate — manual fallback (no API key set) returns a prompt
+  // v1.268.0 — every /api/evaluate path answers as an SSE stream; the manual
+  // fallback is the terminal `done` frame and the prompt echo lives in the
+  // frame payload.
   r = await fetch(baseUrl + '/api/evaluate', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ jd: jdBody, save: false }),
   });
   assert.equal(r.status, 200);
-  const evalResult = await r.json();
-  // Manual mode returns { ok, mode: 'manual', prompt } shape.
-  assert.ok(evalResult.prompt && evalResult.prompt.length > 100,
-    `expected non-empty manual prompt, got: ${JSON.stringify(evalResult).slice(0, 200)}`);
+  const evalText = await r.text();
+  const evalFrames = [];
+  for (const block of evalText.split('\n\n')) {
+    const ev = (block.match(/^event:\s*(.+)$/m) || [])[1];
+    const data = (block.match(/^data:\s*([\s\S]+)$/m) || [])[1];
+    if (ev) evalFrames.push({ ev, data: data ? JSON.parse(data) : {} });
+  }
+  const evalDone = evalFrames.find((f) => f.ev === 'done');
+  assert.ok(evalDone, `expected a done frame on the evaluate stream, got: ${evalText.slice(0, 200)}`);
+  // Manual fallback returns { mode: 'manual', prompt } on the done frame.
+  assert.ok(evalDone.data.prompt && evalDone.data.prompt.length > 100,
+    `expected non-empty manual prompt, got: ${JSON.stringify(evalDone.data).slice(0, 200)}`);
 
   // 5. Add row to tracker (user manually entered after running the prompt)
   r = await fetch(baseUrl + '/api/tracker', {

@@ -46,7 +46,7 @@ test('assembled dict is byte-for-byte the pre-split snapshot (lossless migration
   assert.deepEqual(assembled, snapshot);
   // The two filters are orthogonal: source/lifecycle vs. score state. Keep the
   // German labels explicit so regenerating the snapshot cannot blur them again.
-  assert.equal(assembled['map.layerPipeline'].de, 'Pipeline (ausstehend)');
+  assert.equal(assembled['map.layerPipeline'].de, 'Trichter (ausstehend)');
   assert.equal(assembled['map.filter.unevaluated'].de, 'Stellen ohne Score anzeigen');
 });
 

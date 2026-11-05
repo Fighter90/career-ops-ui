@@ -14,11 +14,12 @@
  * cascade; no key → the honest copy-paste prompt. No file writes.
  */
 import { readFileSync, existsSync } from 'node:fs';
-import { stripGithubOnlyBlocks } from '../help-markdown.mjs';
+import { stripGithubOnlyBlocks, substituteHelpPlaceholdersEn } from '../help-markdown.mjs';
 import { resolve } from 'node:path';
 import { WEB_UI_ROOT } from '../paths.mjs';
 import { resolveLocale } from '../prompts.mjs';
 import { cleanLlmMarkdown } from '../llm-output.mjs';
+import { localeLabel } from '../i18n-server.mjs';
 import { llmRateLimit } from '../rate-limit.mjs';
 import { runActiveProvider, providerAvailable } from '../llm-dispatch.mjs';
 
@@ -146,6 +147,35 @@ export function topSections(sections, question, n = TOP_SECTIONS) {
   return scored.filter((x) => x.score > 0).sort((a, b) => b.score - a.score).slice(0, n).map((x) => x.sec);
 }
 
+// ── Deep-link label localization (P2.2) ──────────────────────────────────────
+// The model signs screen links in English ("[Open the Scan page](#/scan)") no
+// matter the answer language. The live answer is post-processed server-side
+// (robust + language-independent): every markdown deep-link's LABEL becomes
+// the request locale's `nav.<route>` UI label — resolved through the same
+// per-locale dict files the sidebar uses (server/lib/i18n-server.mjs), one
+// alias hop allowed (nav.apply → apply.title). The href stays verbatim (the
+// SPA routes on the hash); a route with no nav key/alias keeps the model's
+// label; any lookup failure keeps the model's label — rewriting is additive,
+// it can never break a link. en answers are left untouched.
+const DEEPLINK_RE = /\[([^\]\n]+)\]\((#\/[a-zA-Z][a-zA-Z0-9/-]*)\)/g;
+
+/** `#/career-plan` → `nav.careerPlan` (kebab → camel, the dict's nav.* naming). */
+function deepLinkNavKey(href) {
+  return 'nav.' + href.slice(2).replace(/-([a-zA-Z0-9])/g, (m, c) => c.toUpperCase());
+}
+
+/** Rewrite deep-link labels to the locale's nav labels; hrefs stay verbatim. */
+export function localizeDeepLinks(markdown, lang) {
+  if (!markdown || lang === 'en') return markdown;
+  return String(markdown).replace(DEEPLINK_RE, (whole, label, href) => {
+    let localized = '';
+    try {
+      localized = localeLabel(lang, deepLinkNavKey(href));
+    } catch { localized = ''; }
+    return localized ? `[${localized}](${href})` : whole;
+  });
+}
+
 export function buildAskPrompt(picked, question, lang) {
   let ctx = '';
   for (const sec of picked) {
@@ -171,7 +201,11 @@ export function buildAskPrompt(picked, question, lang) {
     'do NOT invent features, routes, or settings. Be concise and practical; when',
     'useful, name the section you drew from.',
     'When a section covers a specific page (its title contains a `#/route`),',
-    'include a markdown link like [Open the Scan page](#/scan).',
+    'include a markdown link like [Open the Scan page](#/scan). Keep the',
+    '`(#/route)` target exactly as written.',
+    lang && lang !== 'en'
+      ? `Write deep-link labels in the user's language (${lang}) too — the label of a [#/route] link must be the page's localized UI name, not English.`
+      : '',
     lang && lang !== 'en' ? `Answer in the user's language (${lang}).` : '',
     '',
     '<help_excerpts>',
@@ -195,7 +229,13 @@ export function registerDocsAssistantRoutes(app) {
 
     // Same ingress rule as the Help page: the GitHub-only banner is markup
     // noise in a keyword-retrieval corpus, so it never enters the sections.
-    const picked = topSections(splitSections(stripGithubOnlyBlocks(readFileSync(file, 'utf8'))), question);
+    // {{t:key}} UI-label placeholders resolve to the EN dict value here —
+    // the assistant answers in the request language, and a raw placeholder
+    // in an excerpt would leak verbatim into its answer.
+    const picked = topSections(
+      splitSections(substituteHelpPlaceholdersEn(stripGithubOnlyBlocks(readFileSync(file, 'utf8')))),
+      question,
+    );
     const prompt = buildAskPrompt(picked, question, lang);
     const sections = picked.map((s) => s.title);
 
@@ -215,6 +255,8 @@ export function registerDocsAssistantRoutes(app) {
     }
     if (r.mode === 'manual') return res.json({ mode: 'manual', prompt, sections, message: 'No provider available — copy this prompt into any LLM.' });
     if (r.error) return res.status(502).json({ mode: r.mode, prompt, sections, error: r.error });
-    return res.json({ mode: r.mode, answer: cleanLlmMarkdown(r.markdown), sections, usage: r.usage });
+    // P2.2 — deep-link labels localized to the request locale AFTER the LLM
+    // boundary (belt = the prompt line above; suspenders = this rewrite).
+    return res.json({ mode: r.mode, answer: localizeDeepLinks(cleanLlmMarkdown(r.markdown), lang), sections, usage: r.usage });
   });
 }

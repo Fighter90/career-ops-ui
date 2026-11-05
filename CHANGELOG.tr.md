@@ -2,6 +2,24 @@
 
 > Bu changelog artık tüm sürüm geçmişini içerir. Türkçe yerelleştirmenin eklenmesinden (v1.85.0) önce yayınlanan girdiler aşağıda İngilizce özgün hâliyle yer alır — çeviri bekliyor; asıl kaynak [🇬🇧 CHANGELOG.md](CHANGELOG.md)'dir.
 
+## [1.268.0] — 2026-11-05
+
+### Değiştirildi
+
+- **Evaluate artık iki adımlı bir boru hattı (CAR-229)** — 2026-11-04 prod regresyonu aynı sentetik JD'nin rapor diline göre 1.0–4.0 puan aldığını ve makine bloğunun 17 locale'den yalnızca 8'inde bulunduğunu gösterdi. Sözleşme artık: (1) SCORING adımı bağlamı ve JD'yi okur ve SADECE kanonik İngilizce JSON çıktısı verir (company, role, archetype, legitimacy, score, blok başına A–G puanları + summaries), sabitlenmiş temperature 0.1 ve 120 s saatle; (2) RENDER adımı yedi A–G bölümünü rapor dilinde ayrıntılandırır — sayılara dokunmak yasak, başlığı veya herhangi bir makine bloğu yazmak yasak. Raporu SUNUCU kurar: `# Evaluation:` başlığı, `**Date:**/**Score:**/**Legitimacy:**` satırları, ---SCORE_SUMMARY--- bloğu ve ```yaml makine bloğu — hepsi scoring JSON'ından sunucu tarafında inşa edilir — her locale yapı gereği aynı makine yüzeyini sevk eder ve düzyazıda bir sayıyı "düzeltmeye" kalkan bir model kanonik değerleri oynatamaz. İstemci yükü makine bloğunu (```yaml) tutar ve summary bloğunu soyar.
+- **UI'da Evaluate aşama ilerlemesi (CAR-230)** — /api/evaluate tek sessiz POST yerine SSE aşamalarını (scoring → rendering → assembling) akıtır; yükleme satırı bayat "2–4 dk" metni yerine GERÇEK gecikmeyi aktarım günlüğünden p50/p90 ile verir (llm-usage satırları ve readUsage artık durationMs taşıyor; /api/usage llmLatency'yi açıyor). Scoring adımı JSON olmayan yanıtı bir kez yeniden dener; yeniden denemeden sonra bölümleri eksik bir render sunucuda inşa edilmiş gövdeye düşer (warning korunur, makine yüzeyi eksiksiz kalır).
+- **Her locale için prompt önbelleği (CAR-111)** — iki adım TEK bayt-kararlı İngilizce talimat başlığı paylaşır (bağlam demeti + paylaşılan talimatlar her prompt'u açar, 19 locale'nin tamamında bayt bayt özdeş); locale yönergesi, scoring JSON'ı ve JD önbelleklenmeyen kuyruğa biner. Bir test, tüm locale'lerde bayt bayt özdeş kararlı önekleri sabitler — locale başına önbellek ıskası (non-en'de cached_tokens 0) yapısal olarak ortadan kalktı.
+- **Veri göçü koşucuları (CAR-232/233)** — `POST /api/runners/report-dates` ve `POST /api/runners/company-fix` (varsayılan dry-run, zaman damgalı .bak yedeğiyle apply): rapor başlığı tarihleri dosya adı tarihiyle uzlaştırıldı (2026-10-26 öncesi 368 satır) ve kaynak adı taşıyan ("hh" — 123 satır) ya da rol başlığı taşıyan (14 satır) izleyici Company hücreleri kendi raporlarının H1'inden işverene çözüldü. Önce dry-run; apply yalnızca adı geçen hücrelere dokunur, satır satır cerrahi.
+- **Permissions-Policy başlığı** — `camera=(), microphone=(), geolocation=(), payment=(), usb=()`: bu uygulamanın asla kullanmadığı yüzeyler açıkça reddedilir (QA 2026-11-04).
+
+### Notlar
+
+- **Bu sürümde bilerek yok (2026-11-04 düzeltme programının P2/P3'ü):** yardım kılavuzunun `{{t:key}}` yer tutucu mekanizması ve derin bağlantı etiketlerinin yerelleştirilmesi (CAR-107 kuyrukları), pano sözlüğü süpürmesi (CAR-108 kuyruğu), harita toplamları + hh.ru alan jeokodlaması (CAR-105), yıkıcı işlemler için izleyici başlık menüsü (CAR-117 kuyruğu), site başlığı bulanıklığı + kopyalama geri bildirimi (CAR-132/141 kuyrukları), README ar/pl/uk/vi eşitliği ve locale başına sözlük parçaları (CAR-104 kuyruğu). Kapsamları çizildi ve kuyruğa alındı — bu sürüm zorunlu P0+P1 setini sevk ediyor.
+- Prod veri göçleri (rapor tarihleri, izleyici şirketleri, puan geri doldurma) SAHİP EYLEMLERİDİR: yeni koşucuların dry-run'ını çalıştırın, gözden geçirin, sonra apply — aletler buraya geliyor, veri değişiklikleri otomatik çalışmıyor.
+- v1.267.0 etiketi kırmızı birleştirme commit'ini işaret etmeye devam ediyor — yeniden işaretlenmedi; v1.267.1/1.267.2/1.268.0 dağıtım araçlarıdır.
+
+- Testler 7395 → **7480**; kapsam 98.49 satır / 90.31 dal.
+
 ## [1.267.2] — 2026-11-04
 
 ### Düzeltildi

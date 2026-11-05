@@ -196,7 +196,7 @@ If anything is red, the page tells you the exact file or env var to
 fix. Don't proceed until Health is green.
 
 **Step 3 — Click `⚒ App settings` in the sidebar.** You land on the
-**API keys & runtime** tab.
+**{{t:config.tabApi}}** tab.
 - Paste `ANTHROPIC_API_KEY` (preferred — better long-form scoring)
   and/or `GEMINI_API_KEY`. Get keys from
   <https://console.anthropic.com/settings/keys> or
@@ -366,7 +366,7 @@ success the result card deep-links straight to the saved report
 (`auto.viewTracker`). A failed step is marked red with its message and
 the button re-enables so you can fix the URL and retry without
 reloading. Starting a new run while one is still going is safe: the
-older run marks itself **Superseded — a newer run was requested**
+older run marks itself **{{t:auto.superseded}}**
 (`auto.superseded`) instead of double-spending on a stale answer.
 
 The empty page is honest about its one field: an **Example** tag and a
@@ -397,7 +397,7 @@ to this page).
 
 Three tabs:
 
-1. **API keys & runtime** — structured field form over the parent
+1. **{{t:config.tabApi}}** — structured field form over the parent
    project's `.env` (same file the career-ops Node scripts read on
    startup). Grouped: API keys / Runtime / Regional sources. The tab
    also exposes per-provider model selectors — `OPENAI_MODEL`
@@ -421,7 +421,7 @@ A save in any tab propagates immediately — no server restart.
 
 **Setting up your LLM provider (step by step).** The web UI's ⚡ live evaluation runs *headless* and uses one API key. It works via "OR" — set **any one** of these and it just works; with several set, `auto` prefers them in this order: Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi (Moonshot) → MiniMax → Mistral → Grok (xAI) → Together → Fireworks → Ollama → BytePlus Ark → Volcengine Ark. (career-ops itself is CLI-agnostic — you also run it inside Claude Code, Cursor, Codex, Gemini, OpenCode, Antigravity, Grok Build, Qwen, Copilot or Kimi; that's separate from this headless key.)
 
-1. Open `#/config` → the **API keys & runtime** tab.
+1. Open `#/config` → the **{{t:config.tabApi}}** tab.
 2. Pick your provider in **`LLM_PROVIDER`**: `auto` (use whichever key is set), or force one with any provider slug — `claude` / `gemini` / `openai` / `qwen` / `openrouter` / `github` / `hermes` / `deepseek` / `zai` / `kimi` / `minimax` / `mistral` / `grok` / `together` / `fireworks` / `ollama`.
 3. Fill the key + model for the provider you chose:
    - **Anthropic** — set `ANTHROPIC_API_KEY` (console.anthropic.com), optionally `ANTHROPIC_MODEL` (default `claude-sonnet-4-6`).
@@ -507,7 +507,7 @@ nothing while confirming the key is wired up correctly. Returns a
 
 **AI CLI tools tab.** career-ops is Claude-Code-driven but works with any agent CLI on the open skill standard. The **AI CLI tools** tab lists the ones it knows about — Claude Code, Cursor, Codex, Gemini CLI, OpenCode, GitHub Copilot CLI, Qwen, Antigravity, Kimi CLI, Grok Build CLI — and shows which are **installed on the machine running the server** and where. It's a read-only scan of the server's `PATH`: it only checks whether the binary exists, it **never runs it** (no `--version`, no execution), and writes nothing. If none show up, install one (e.g. Claude Code) to drive the pipeline from your terminal.
 
-**Appearance — company logos.** The **Appearance** card has one toggle: **Show company logos in the scan table**. Off by default. When on, each scan row shows the company's logo — its **favicon fetched from its own domain** and proxied through the server (`/api/logo`), so no third-party logo service ever learns which employers you're viewing. Postings hosted on a shared job board (Greenhouse, Lever, Ashby, …) show a coloured **letter badge** instead of the board's icon, and any logo that fails to load falls back to the same badge. It's purely cosmetic — nothing is written and no CV/profile data is involved.
+**Appearance — company logos.** The **Appearance** card has one toggle: **{{t:appear.logos}}**. Off by default. When on, each scan row shows the company's logo — its **favicon fetched from its own domain** and proxied through the server (`/api/logo`), so no third-party logo service ever learns which employers you're viewing. Postings hosted on a shared job board (Greenhouse, Lever, Ashby, …) show a coloured **letter badge** instead of the board's icon, and any logo that fails to load falls back to the same badge. It's purely cosmetic — nothing is written and no CV/profile data is involved.
 
 ### Setup doctor — spot an incomplete CV or profile
 
@@ -865,7 +865,7 @@ console will warn you about the conflict.
 
 ### Configuring Russian portals — detailed setup guide
 
-v1.29.0 ships 5 Russian-language adapters. Two need nothing more than the default UA (`habr-career`, HTML scrape; `trudvsem`, government open-data API — no key, no IP gate). Two are HTML scrapes of tech boards (`getmatch`, `geekjob` — also no key). One is the canonical hh.ru API which may 403 from non-Russian IPs unless you set a `HH_USER_AGENT` env var via **App settings → API keys & runtime** (or run the server from a Russian IP / VPN exit node).
+v1.29.0 ships 5 Russian-language adapters. Two need nothing more than the default UA (`habr-career`, HTML scrape; `trudvsem`, government open-data API — no key, no IP gate). Two are HTML scrapes of tech boards (`getmatch`, `geekjob` — also no key). One is the canonical hh.ru API which may 403 from non-Russian IPs unless you set a `HH_USER_AGENT` env var via **App settings → {{t:config.tabApi}}** (or run the server from a Russian IP / VPN exit node).
 
 #### Source inventory
 
@@ -1261,10 +1261,10 @@ inbox after a scan is the page's v2 centrepiece:
   Unknown companies group under their host — but a shared ATS host
   (say `jobs.lever.co`) only borrows a company name when *every*
   company-bearing entry on that host agrees on it.
-- **Hide already evaluated** (`pipe.hideTracked`) — on by default;
+- **{{t:pipe.hideTracked}}** (`pipe.hideTracked`) — on by default;
   entries whose posting already has a tracker row drop out of the
   view (and out of bulk selection) so you only ever act on fresh work.
-- **Select** (`pipe.selectOne`) any rows, or **Select all shown** (`pipe.selectAllShown`) — selection always follows the current filters, never invisible rows. The selection bar shows the count (`pipe.selectedCount`) and offers **✕ Remove selected (N)** (`pipe.bulkRemove`) plus **Evaluate first selected** (`pipe.evaluateSelected`) — bulk removal confirms once for the whole set, not per row.
+- **Select** (`pipe.selectOne`) any rows, or **{{t:pipe.selectAllShown}}** (`pipe.selectAllShown`) — selection always follows the current filters, never invisible rows. The selection bar shows the count (`pipe.selectedCount`) and offers **✕ Remove selected (N)** (`pipe.bulkRemove`) plus **Evaluate first selected** (`pipe.evaluateSelected`) — bulk removal confirms once for the whole set, not per row.
 
 Nothing is lost by mistake: every removal — single or bulk — returns
 an opaque restore token, and a bar at the bottom of the page
@@ -1437,7 +1437,7 @@ Every row's status badge is also a **select** — pick a stage and it saves inst
 
 **Stage-tab board (v1.131.0).** Above the table a **stage-tab strip** lets you walk the funnel: an **All** tab plus one tab per canonical status, each showing a live whole-history count — **including zero-count stages**, so the full pipeline is always visible at a glance. Click a stage to filter the table to it; click it again to return to **All**. The tabs (and the counts' folding of localized/legacy status aliases) come from `GET /api/tracker/stages`, which reads the same `templates/states.yml` the server uses — so the tab set stays in sync with the parent's status vocabulary automatically, with no hardcoded list on the page. Search, the score filter, sortable columns and per-row report/PDF/legitimacy are unchanged; with logos enabled, each row's company shows a brand mark.
 
-**Kanban view (v2).** The same board also reads as a drag-and-drop **kanban**: one column per canonical status (board title announced as *Applications by status*, `track.kanbanBoardAria`), a card per application. Drag a card to another column — or focus it and press **Move** — and the change is **previewed before anything is written** (`track.kanbanMoveHint`); a committed move records an entry in the outcome journal and rewrites `data/applications.md`, and the card tells you so (`track.moveJournal`) — to change a status back, use the row's **Outcome** button. Columns the pipeline manages on its own (and `Discarded`, whose semantics only you can pick) render read-only (`track.kanbanReadOnly`) and refuse drops. If the parent's outcome recorder is missing, status moves are disabled with an honest note (`track.kanbanMovesOff`). While the board loads it shows the same shimmer rows as the rest of the app, and an empty board says **No applications** (`track.kanbanEmpty`) with a pointer at the pipeline (`track.emptyBody`).
+**Kanban view (v2).** The same board also reads as a drag-and-drop **kanban**: one column per canonical status (board title announced as *{{t:track.kanbanBoardAria}}*, `track.kanbanBoardAria`), a card per application. Drag a card to another column — or focus it and press **Move** — and the change is **previewed before anything is written** (`track.kanbanMoveHint`); a committed move records an entry in the outcome journal and rewrites `data/applications.md`, and the card tells you so (`track.moveJournal`) — to change a status back, use the row's **Outcome** button. Columns the pipeline manages on its own (and `Discarded`, whose semantics only you can pick) render read-only (`track.kanbanReadOnly`) and refuse drops. If the parent's outcome recorder is missing, status moves are disabled with an honest note (`track.kanbanMovesOff`). While the board loads it shows the same shimmer rows as the rest of the app, and an empty board says **No applications** (`track.kanbanEmpty`) with a pointer at the pipeline (`track.emptyBody`).
 
 The status whitelist is enforced server-side; sending anything else in
 a `POST /api/tracker` defaults to `Evaluated`. The canonical
@@ -1508,7 +1508,7 @@ The check is deliberately conservative: it only says **Expired** on a hard 404/4
 
 When an application reaches its end — you got the offer, took the job, were turned down, or simply never heard back — click the **Outcome** button on that tracker row to log it. A small preview-then-confirm modal opens:
 
-- **Pick what happened** — Rejected, Offer received, Hired / accepted, Offer declined, No response / ghosted, or Advanced to interview.
+- **Pick what happened** — Rejected, Offer received, Hired / accepted, Offer declined, {{t:track.outcome.ghosted}}, or {{t:track.outcome.interview}}.
 - **Note (optional)** — a short line for yourself.
 - **Preview** — the app shows exactly what it will do (e.g. *"Will set #12 Acme → Rejected"*) and writes nothing yet.
 - **Record outcome** — confirms it.
@@ -1574,10 +1574,10 @@ retrospectives. Each one wraps a specific `modes/<slug>.md` template:
 ### Shared shape
 
 Each page has a small form (the fields are mode-specific), a
-**▶ Generate prompt** button (manual), and — when an Anthropic or Gemini
+**{{t:deep.run}}** button (manual), and — when an Anthropic or Gemini
 key is present — a **⚡ Run live** button that promotes to primary.
 
-Clicking **▶ Generate prompt** returns the assembled prompt with your
+Clicking **{{t:deep.run}}** returns the assembled prompt with your
 form values JSON-stringified into a `User-supplied context:` block,
 followed by the verbatim `modes/<slug>.md` template. Copy and paste
 into your LLM of choice.
@@ -2278,9 +2278,9 @@ Click **Save two-pager** to persist it. It is written to your **parent career-op
 
 ### The AI fill assistant
 
-Not sure how to phrase it? Click **✨ AI fill assistant** and it drafts the whole two-pager for you. When you have an **LLM provider configured** (see §3), it runs live: it reads **only** your own CV and profile, drafts every field — who you are, your loves, must-haves, hates, deal-breakers, non-negotiables, and target environment — and fills the form in place. Nothing is filed automatically: you **review, edit, and click Save** like any hand-typed two-pager. It never invents facts about you; it only reshapes what your CV and profile already say. With **no API key set**, it falls back to the old behavior — it shows the ready-to-run Mnookin prompt in a dialog so you can run it in any LLM and paste the YAML back.
+Not sure how to phrase it? Click **{{t:twoPager.aiFill}}** and it drafts the whole two-pager for you. When you have an **LLM provider configured** (see §3), it runs live: it reads **only** your own CV and profile, drafts every field — who you are, your loves, must-haves, hates, deal-breakers, non-negotiables, and target environment — and fills the form in place. Nothing is filed automatically: you **review, edit, and click Save** like any hand-typed two-pager. It never invents facts about you; it only reshapes what your CV and profile already say. With **no API key set**, it falls back to the old behavior — it shows the ready-to-run Mnookin prompt in a dialog so you can run it in any LLM and paste the YAML back.
 
-**Preview & export (PDF / DOCX / Markdown).** Click **👁 Preview & export** to see your two-pager rendered as a clean, formatted document. From the preview you can **Download .md**, **Save as PDF**, **Save as DOCX** (a real Word file — handy for sharing with a coach or recruiter), or **Copy** it to the clipboard. The same export bar now also appears on the **market report**, **career plan**, and **career orientation** pages. The `.docx` is built entirely in-app — no external service ever sees your two-pager.
+**Preview & export (PDF / DOCX / Markdown).** Click **{{t:twoPager.preview}}** to see your two-pager rendered as a clean, formatted document. From the preview you can **Download .md**, **Save as PDF**, **Save as DOCX** (a real Word file — handy for sharing with a coach or recruiter), or **Copy** it to the clipboard. The same export bar now also appears on the **market report**, **career plan**, and **career orientation** pages. The `.docx` is built entirely in-app — no external service ever sees your two-pager.
 
 ### The fit-to-what-you-want score
 
@@ -2461,7 +2461,7 @@ It is an **AI reflection of how your CV reads — not a psychometric test.** The
 
 Use **Download .md**, **Save as PDF**, or **Copy** to keep the profile — the same export controls used across the app's AI reports. The PDF goes through the existing inline-PDF generator; the Markdown is a direct download.
 
-## 29. The CareerOps Manifesto
+## 29. {{t:footer.manifesto}}
 
 career-ops — the parent project this app fronts — is the first reference implementation of [the CareerOps Manifesto](https://career-ops.org/manifesto) (parent v1.20.0). The manifesto names the practice this whole toolchain exists for: running a job search the way engineers run production — with evidence, with discipline, and with tools on the candidate's side of the table.
 
@@ -2549,7 +2549,7 @@ The UI reads the plugin's stable `config/plugins.yml` + `data/commute.tsv` contr
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/job-map-en.png" alt="Job map: scan results, pipeline and tracker postings on an OpenStreetMap map" width="760"></p>
 
 1. **Run a scan first** (`#/scan`) — the map draws what the last scan, the pipeline and the tracker hold; an empty project shows an empty map.
-2. **Open `#/map`.** The line under the title counts progress: *Places located: N/M* fills up as places are looked up (cached places appear at once), and *Without a location* counts postings that name no place (remote-only, "Anywhere").
+2. **Open `#/map`.** The line under the title counts progress: *Places located: N/M* fills up as places are looked up (cached places appear at once), and *{{t:map.noLocation}}* counts postings that name no place (remote-only, "Anywhere").
 3. **Read the colours.** Filled = your evaluation score (green good · yellow ok · blue medium · red weak). Ring = title fit before evaluation (same colours, grey = no fit signal).
 4. **Zoom in** on a number to split a group; at street level postings on the same spot fan out so each can be clicked.
 5. **Click a dot** to open the posting, or the evaluation report for a tracker entry.

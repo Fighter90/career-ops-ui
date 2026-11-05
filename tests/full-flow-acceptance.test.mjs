@@ -49,6 +49,18 @@ async function api(method, path, body, headers = {}) {
   return { status: res.status, data };
 }
 
+/** Parse an SSE body (the funnel's api() falls back to `{raw}` for non-JSON
+ *  responses) into `{ev, data}` frames — v1.268.0, /api/evaluate streams. */
+function drainSse(text) {
+  const frames = [];
+  for (const block of String(text || '').split('\n\n')) {
+    const ev = (block.match(/^event:\s*(.+)$/m) || [])[1];
+    const data = (block.match(/^data:\s*([\s\S]+)$/m) || [])[1];
+    if (ev) frames.push({ ev, data: data ? JSON.parse(data) : {} });
+  }
+  return frames;
+}
+
 before(async () => {
   dir = mkdtempSync(resolve(tmpdir(), 'flow-accept-'));
   mkdirSync(resolve(dir, 'config'), { recursive: true });
@@ -155,13 +167,20 @@ async function runFullFunnel(iteration) {
   }
 
   // Step 10 — /api/evaluate in 3 locales
+  // v1.268.0 — every /api/evaluate path answers as an SSE stream; the manual
+  // fallback is the terminal `done` frame carrying the copy-paste prompt.
   const longJd = 'Senior Backend Engineer with Go + PostgreSQL ownership, microservices, code review, on-call rotation, full-stack flexibility for greenfield work. ';
   for (const lang of FLOW_LOCALES) {
     const ev = await api('POST', '/api/evaluate', { jd: longJd.repeat(2), mode: 'manual', lang });
     assert.equal(ev.status, 200, `iter ${iteration}: evaluate ${lang} status`);
-    assert.equal(ev.data.mode, 'manual');
+    const frames = drainSse(ev.data.raw || '');
+    const doneFrame = frames.find((f) => f.ev === 'done');
+    assert.ok(doneFrame, `iter ${iteration}: evaluate ${lang} must end in a done frame`);
+    assert.equal(doneFrame.data.mode, 'manual');
+    assert.ok(doneFrame.data.prompt && doneFrame.data.prompt.length > 100,
+      `iter ${iteration}: manual evaluate prompt for ${lang} must be non-empty`);
     if (lang !== 'en') {
-      assert.match(ev.data.prompt, /Respond in/, `iter ${iteration}: ${lang} should embed locale directive`);
+      assert.match(doneFrame.data.prompt, /Respond in/, `iter ${iteration}: ${lang} should embed locale directive`);
     }
   }
 

@@ -78,6 +78,9 @@ export async function runOpenAICompatible(prompt, opts = {}) {
         // a 400. The compatible third parties document `max_tokens`, so only
         // api.openai.com gets the new name.
         [isOpenAIHost(url) ? 'max_completion_tokens' : 'max_tokens']: maxTokens,
+        // CAR-229 — the scoring step pins the sampling temperature; providers
+        // with their own fixed decoding simply ignore the field.
+        ...(opts.temperature !== undefined ? { temperature: opts.temperature } : {}),
         messages: [{ role: 'user', content: prompt }],
       }),
     });

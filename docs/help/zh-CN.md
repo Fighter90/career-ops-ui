@@ -182,7 +182,7 @@ career-ops-ui 的 `#/dashboard` 与 `#/tracker` 会高亮每一条 ≥ 4.0 的
 之前不要继续后续步骤。
 
 **第 3 步 — 在侧边栏点击 `⚒ App settings`。** 进入
-**API keys & runtime** 选项卡。
+**{{t:config.tabApi}}** 选项卡。
 - 粘贴 `ANTHROPIC_API_KEY`(首选 — 长文本评分质量更高)
   和/或 `GEMINI_API_KEY`。从
   <https://console.anthropic.com/settings/keys> 或
@@ -350,7 +350,7 @@ URL** 按钮(`v2empty.auto.tryExample`)会用一条示例职位填入输入框
 
 两个选项卡:
 
-1. **API keys & runtime** — 在浏览器中编辑父项目的 `.env` 文件(career-ops
+1. **{{t:config.tabApi}}** — 在浏览器中编辑父项目的 `.env` 文件(career-ops
    Node 脚本启动时读取的同一文件)。该选项卡还提供按供应方的模型
    选择器 —— 在 `ANTHROPIC_MODEL`、`GEMINI_MODEL` 旁新增
    `OPENAI_MODEL`(OpenAI/Codex)。
@@ -361,7 +361,7 @@ URL** 按钮(`v2empty.auto.tryExample`)会用一条示例职位填入输入框
 
 **设置你的 LLM 供应方(分步)。** web UI 的 ⚡ 实时评估以*无头*方式运行,使用一个 API 密钥。它通过 "OR" 工作 —— 设置其中**任意一个**即可正常工作;设置多个时,`auto` 按此顺序优先:Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi (Moonshot) → MiniMax → Mistral → Grok (xAI) → Together → Fireworks → Ollama → BytePlus Ark → Volcengine Ark。(career-ops 本身是 CLI 无关的 —— 你也可以在 Claude Code、Cursor、Codex、Gemini、OpenCode、Antigravity、Grok Build、Qwen、Copilot 或 Kimi 内运行它;那与此无头密钥无关。)
 
-1. 打开 `#/config` → **API keys & runtime** 选项卡。
+1. 打开 `#/config` → **{{t:config.tabApi}}** 选项卡。
 2. 在 **`LLM_PROVIDER`** 中选择你的供应方:`auto`(使用已设置的密钥),或用 `claude` / `gemini` / `openai` / `qwen` 强制指定一个。
 3. 填写你所选供应方的密钥 + 模型:
    - **Anthropic** —— 设置 `ANTHROPIC_API_KEY`(console.anthropic.com),可选 `ANTHROPIC_MODEL`(默认 `claude-sonnet-4-6`)。
@@ -716,7 +716,7 @@ russian_portals:
 
 ### 配置俄文门户 — 详细设置指南
 
-v1.29.0 自带 5 个俄文 adapter。两个无需默认 UA 之外的额外设置(`habr-career` HTML 抓取;`trudvsem` 政府开放数据 API — 无 key、无地理门)。两个是科技板块的 HTML 抓取(`getmatch`、`geekjob` — 同样无 key)。一个是 hh.ru 标准 API,从非俄罗斯 IP 可能返回 403,除非通过 **App settings → API keys & runtime** 设置 `HH_USER_AGENT` 环境变量(或从俄罗斯 IP / VPN 运行)。
+v1.29.0 自带 5 个俄文 adapter。两个无需默认 UA 之外的额外设置(`habr-career` HTML 抓取;`trudvsem` 政府开放数据 API — 无 key、无地理门)。两个是科技板块的 HTML 抓取(`getmatch`、`geekjob` — 同样无 key)。一个是 hh.ru 标准 API,从非俄罗斯 IP 可能返回 403,除非通过 **App settings → {{t:config.tabApi}}** 设置 `HH_USER_AGENT` 环境变量(或从俄罗斯 IP / VPN 运行)。
 
 #### 来源清单
 
@@ -1365,11 +1365,11 @@ reportSlug?, notes?, date? }`。按 `(company, role)` 大小写不敏感地
 
 ### 共同形态
 
-每页有一个小表单(字段因模式而异)、一个 **▶ Generate prompt**
+每页有一个小表单(字段因模式而异)、一个 **{{t:deep.run}}**
 (手工)按钮,以及在已设置 Anthropic 或 Gemini key 时,提升为主操
 作的 **⚡ 实时运行** 按钮。
 
-点击 **▶ Generate prompt** 返回组装好的提示: 表单值 JSON 序列化进
+点击 **{{t:deep.run}}** 返回组装好的提示: 表单值 JSON 序列化进
 `User-supplied context:` 块,后接原样的 `modes/<slug>.md` 模板。复
 制后粘贴到你选用的 LLM。
 
@@ -2008,7 +2008,7 @@ career-ops-ui 的大部分功能都在问“这份工作和我的 CV 匹配吗�
 
 ### AI 填写助手
 
-不确定该怎么措辞？点击 **✨ AI fill assistant**。它会构建一段可直接运行的提示词(Mnookin 格式，并把你的 CV 和个人资料内嵌其中),并在对话框中显示。把该提示词放到任意 LLM 中运行,然后把生成的 YAML 字段粘贴回表单。该助手始终只使用**你自己的** CV 和个人资料——它不会编造关于你的事实,而且点击此按钮不会发起任何实时 API 调用。
+不确定该怎么措辞？点击 **{{t:twoPager.aiFill}}**。它会构建一段可直接运行的提示词(Mnookin 格式，并把你的 CV 和个人资料内嵌其中),并在对话框中显示。把该提示词放到任意 LLM 中运行,然后把生成的 YAML 字段粘贴回表单。该助手始终只使用**你自己的** CV 和个人资料——它不会编造关于你的事实,而且点击此按钮不会发起任何实时 API 调用。
 
 ### 契合度评分——与你想要的相符程度
 

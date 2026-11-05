@@ -88,6 +88,8 @@ export async function runAnthropic(prompt, opts = {}) {
       body: JSON.stringify({
         model,
         max_tokens: maxTokens,
+        // CAR-229 — scoring-step temperature pinning (Anthropic supports it).
+        ...(opts.temperature !== undefined ? { temperature: opts.temperature } : {}),
         messages: [{ role: 'user', content }],
       }),
     });

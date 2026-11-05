@@ -7,21 +7,21 @@
 
 _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。_
 
-[![tests](https://img.shields.io/badge/tests-7398%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-7480%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.267.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.267.2)
+[![release](https://img.shields.io/badge/release-v1.268.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.268.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.267.2** — 四個新的掃描來源 — GermanTechJobs、Darwinbox、Keka、ApplicantPro/isolved(註冊表 129 = 124 EN + 5 RU)— ETag 看板回應重用、四個看板的日期、portals.yml 拼錯的鍵現在會大聲失敗、getro 走過舊的置頂釘(parent-sync @ 7d8feb6d)。測試 7096 → 7243。
+> **🆕 最新版本 — v1.268.0** — 四個新的掃描來源 — GermanTechJobs、Darwinbox、Keka、ApplicantPro/isolved(註冊表 129 = 124 EN + 5 RU)— ETag 看板回應重用、四個看板的日期、portals.yml 拼錯的鍵現在會大聲失敗、getro 走過舊的置頂釘(parent-sync @ 7d8feb6d)。測試 7096 → 7243。
 
 
 >
-> **前一版本 — v1.266.0** — personio language-dedup(CAR-223):同一職缺的語言版本在 scan_history.dedup_include_language 之後躲過去重、preferred_languages 排序、personio/recruitee 按語言的列。測試 7096 → 7203。
+> **前一版本 — v1.267.2** — personio language-dedup(CAR-223):同一職缺的語言版本在 scan_history.dedup_include_language 之後躲過去重、preferred_languages 排序、personio/recruitee 按語言的列。測試 7096 → 7203。
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

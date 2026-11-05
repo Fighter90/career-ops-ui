@@ -79,12 +79,16 @@ test('evalTimeoutMs is a pure function of the lang string', () => {
   assert.equal(evalTimeoutMs('en'), evalTimeoutMs('en'));
 });
 
-test('source-static: the merged /api/evaluate cascade carries both locale-aware knobs (CAR-147 timeout, CAR-174 tokens)', () => {
-  const llm = readFileSync(LLM_SRC, 'utf8');
-  assert.equal((llm.match(/maxTokens: evalMaxTokens\(lang\)/g) || []).length, 1);
-  assert.match(llm, /maxTokens: evalMaxTokens\(lang\),\s*timeoutMs: evalTimeoutMs\(lang\),/);
-  // and never reverts to a bare constant at that site (base or dense value)
-  assert.doesNotMatch(llm, /maxTokens: (?:EVAL_MAX_TOKENS|16384|32768)\b/);
+test('source-static: the two-step evaluate carries per-step ceilings and a ≤300 s render clock (CAR-229/230)', () => {
+  const two = readFileSync(resolve('server/lib/eval-two-step.mjs'), 'utf8');
+  // Scoring is a bounded JSON answer: ≤120 s, small budget, pinned temperature.
+  assert.match(two, /SCORING_TIMEOUT_MS = 120_000/);
+  assert.match(two, /SCORING_MAX_TOKENS = 2000/);
+  assert.match(two, /SCORING_TEMPERATURE = 0\.1/);
+  // Render keeps the 16384 ceiling with a hard ≤300 s clock — no "eternal" request.
+  assert.match(two, /RENDER_TIMEOUT_MS = 300_000/);
+  assert.match(two, /maxTokens: 16384/);
+  assert.match(two, /timeoutMs: RENDER_TIMEOUT_MS/);
 });
 
 test('source-static: the evaluate gemini-eval subprocess passes evalTimeoutMs(lang)', () => {
@@ -92,12 +96,13 @@ test('source-static: the evaluate gemini-eval subprocess passes evalTimeoutMs(la
   assert.match(llm, /runNodeScript\('gemini-eval\.mjs', args, \{ timeoutMs: evalTimeoutMs\(lang\) \}\)/);
 });
 
-test('source-static: the auto-pipeline evaluation (cascade + subprocess) carries the locale-aware knobs', () => {
+test('source-static: the auto-pipeline evaluation goes through the two-step helper; the gemini subprocess keeps evalTimeoutMs', () => {
   const ap = readFileSync(AUTO_SRC, 'utf8');
-  assert.match(ap, /maxTokens: evalMaxTokens\(lang\), timeoutMs: evalTimeoutMs\(lang\), signal: ctrl\.signal/);
-  assert.match(ap, /timeoutMs: evalTimeoutMs\(lang\), signal: ctrl\.signal \}\)/);
+  // The cascade path delegates to the shared two-step helper (per-step
+  // ceilings live there — see the CAR-229 test above).
+  assert.match(ap, /runTwoStepEvaluation\(jdText, lang,/);
   // the cloned 300_000 wall is gone — a future call site must use evalTimeoutMs
   assert.doesNotMatch(ap, /const EVAL_TIMEOUT_MS = 300_000/);
-  // and never a bare maxTokens constant/literal at the call site (CAR-174)
-  assert.doesNotMatch(ap, /maxTokens: (?:EVAL_MAX_TOKENS|16384|32768)\b/);
+  // The gemini subprocess keeps the locale-aware clock (evalTimeoutMs(lang)).
+  assert.match(ap, /timeoutMs: evalTimeoutMs\(lang\), signal: ctrl\.signal \}\)/);
 });

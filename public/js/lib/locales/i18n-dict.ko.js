@@ -376,7 +376,7 @@ window.__I18N_DICT_KO = {
   'activity.prefix.script': "스크립트",
   'top.search': "검색 또는 URL 붙여넣기",
   'top.search.label': "회사, 직무 또는 URL 검색",
-  'top.search.aria': "전역 검색 — Cmd+K 로 포커스, URL 을 붙여 넣고 Enter 로 auto-pipeline",
+  'top.search.aria': "전역 검색 — Cmd+K 로 포커스, URL 을 붙여 넣고 Enter 로 자동 파이프라인",
   'nav.toggleMenu': "메뉴 열기/닫기",
   'nav.closeMenu': "메뉴 닫기",
 
@@ -794,6 +794,7 @@ window.__I18N_DICT_KO = {
   'track.col.pdf': "PDF",
   'track.col.actions': "작업",
   'track.fixHint': "data/applications.md 를 그 자리에서 다시 씁니다",
+  'track.moreActions': "더 많은 작업",
   'track.emptyTitle': "아직 지원 내역이 없습니다",
   'track.emptyBody': "파이프라인을 실행하거나 JD 를 평가하면 이 트래커가 채워집니다.",
   'track.emptyCta': "파이프라인 열기",
@@ -1852,4 +1853,8 @@ window.__I18N_DICT_KO = {
   "rlinks.confirmBody": "fix-report-links.mjs가 끊어진 트래커 행의 Report 셀을 \"—\"로 다시 씁니다(.bak 백업이 유지됨). 파일의 다른 내용은 바뀌지 않습니다.",
   "rlinks.done": "복구 완료",
   "rlinks.failed": "fix-report-links.mjs 실패",
+  'eval.stageScoring': '채용공고 채점 (표준 EN)…',
+  'eval.stageRendering': '보고서 렌더링 중…',
+  'eval.stageAssembling': '보고서 조립 중…',
+  'eval.etaHint': '보통: 중앙값 {p50}초 · p90 {p90}초',
 };

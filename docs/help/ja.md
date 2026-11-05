@@ -199,7 +199,7 @@ career-ops-ui の `#/dashboard` と `#/tracker` は 4.0 以上の行を
 示します。Health が緑になるまで先に進まないでください。
 
 **ステップ 3 — サイドバーの `⚒ App settings` をクリックします。**
-**API keys & runtime** タブが開きます。
+**{{t:config.tabApi}}** タブが開きます。
 - `ANTHROPIC_API_KEY` (推奨 — 長文採点の品質が高い) かつ/または
   `GEMINI_API_KEY` を貼り付けます。キーは
   <https://console.anthropic.com/settings/keys> または
@@ -398,7 +398,7 @@ running → done / failed と点灯;`aria-current` がアクティブなステ�
 
 2 つのタブ:
 
-1. **API keys & runtime** — ブラウザから親プロジェクトの `.env` を
+1. **{{t:config.tabApi}}** — ブラウザから親プロジェクトの `.env` を
    編集 (career-ops の Node スクリプトが起動時に読むのと同じファイル)。
    このタブはプロバイダ別のモデルセレクタも提供します — `ANTHROPIC_MODEL`・
    `GEMINI_MODEL` と並んで `OPENAI_MODEL`(OpenAI/Codex)。
@@ -409,7 +409,7 @@ running → done / failed と点灯;`aria-current` がアクティブなステ�
 
 **LLM プロバイダのセットアップ(ステップバイステップ)。** web UI の ⚡ ライブ評価は*ヘッドレス*で実行され、1 つの API キーを使用します。"OR" で動作します — これらの**いずれか 1 つ**を設定すればそれだけで動作し、複数設定した場合は `auto` がこの順で優先します:Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi (Moonshot) → MiniMax → Mistral → Grok (xAI) → Together → Fireworks → Ollama → BytePlus Ark → Volcengine Ark。(career-ops 自体は CLI 非依存です — Claude Code、Cursor、Codex、Gemini、OpenCode、Antigravity、Grok Build、Qwen、Copilot または Kimi の中でも実行でき、それはこのヘッドレスキーとは別です。)
 
-1. `#/config` → **API keys & runtime** タブを開きます。
+1. `#/config` → **{{t:config.tabApi}}** タブを開きます。
 2. **`LLM_PROVIDER`** でプロバイダを選びます:`auto`(設定されているキーを使用)、または `claude` / `gemini` / `openai` / `qwen` で 1 つに固定。
 3. 選んだプロバイダのキー + モデルを入力します:
    - **Anthropic** — `ANTHROPIC_API_KEY`(console.anthropic.com)を設定、任意で `ANTHROPIC_MODEL`(既定 `claude-sonnet-4-6`)。
@@ -788,7 +788,7 @@ russian_portals:
 
 ### ロシア系ポータルの構成 — 詳細セットアップガイド
 
-v1.29.0 は 5 つのロシア向けアダプタを同梱しています。2 つはデフォルト UA 以上の設定不要(`habr-career` HTML スクレイプ、`trudvsem` 政府オープンデータ API — キーなし、地域制限なし)。2 つはテック系ポータルの HTML スクレイプ(`getmatch`、`geekjob` — キーなし)。1 つは hh.ru 標準 API で、ロシア国外 IP からは **App settings → API keys & runtime** で `HH_USER_AGENT` を設定しないと 403 を返す可能性があります(あるいはロシア IP / VPN を経由)。
+v1.29.0 は 5 つのロシア向けアダプタを同梱しています。2 つはデフォルト UA 以上の設定不要(`habr-career` HTML スクレイプ、`trudvsem` 政府オープンデータ API — キーなし、地域制限なし)。2 つはテック系ポータルの HTML スクレイプ(`getmatch`、`geekjob` — キーなし)。1 つは hh.ru 標準 API で、ロシア国外 IP からは **App settings → {{t:config.tabApi}}** で `HH_USER_AGENT` を設定しないと 403 を返す可能性があります(あるいはロシア IP / VPN を経由)。
 
 #### ソース一覧
 
@@ -1503,7 +1503,7 @@ Evaluate と同じフォールバックチェーン:
 prompt** ボタン (手動)、そして — Anthropic または Gemini キーがあれば
 — プライマリに昇格する **⚡ ライブ実行** ボタンを持ちます。
 
-**▶ Generate prompt** をクリックすると、フォーム値を JSON
+**{{t:deep.run}}** をクリックすると、フォーム値を JSON
 シリアライズした `User-supplied context:` ブロックに、その後に
 `modes/<slug>.md` テンプレートを逐語的に付けた組み立て済みプロンプトを
 返します。コピーして好みの LLM に貼り付けます。
@@ -2165,7 +2165,7 @@ career-ops-ui の大半は「この求人は自分の CV に合っているか�
 
 ### AI 記入アシスタント
 
-どう表現すればよいか分からない？ **✨ AI fill assistant** をクリックしてください。すぐに実行できるプロンプト（あなたの CV とプロフィールをインラインで含めた Mnookin 形式）を組み立て、ダイアログに表示します。そのプロンプトを任意の LLM で実行し、得られた YAML フィールドをフォームに貼り戻してください。このアシスタントが使うのは**あなた自身の** CV とプロフィールだけです — あなたに関する事実を捏造することはなく、このボタンからライブの API 呼び出しは行われません。
+どう表現すればよいか分からない？ **{{t:twoPager.aiFill}}** をクリックしてください。すぐに実行できるプロンプト（あなたの CV とプロフィールをインラインで含めた Mnookin 形式）を組み立て、ダイアログに表示します。そのプロンプトを任意の LLM で実行し、得られた YAML フィールドをフォームに貼り戻してください。このアシスタントが使うのは**あなた自身の** CV とプロフィールだけです — あなたに関する事実を捏造することはなく、このボタンからライブの API 呼び出しは行われません。
 
 ### 望むものとの適合スコア
 

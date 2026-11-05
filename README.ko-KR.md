@@ -7,21 +7,21 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-7398%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-7480%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.267.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.267.2)
+[![release](https://img.shields.io/badge/release-v1.268.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.268.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.267.2** — 네 개의 새 스캔 소스 — GermanTechJobs, Darwinbox, Keka, ApplicantPro/isolved(레지스트리 129 = 124 EN + 5 RU) — ETag 보드 응답 재사용, 네 보드의 날짜, portals.yml 오타 키는 이제 크게 실패, getro는 오래된 고정 핀을 지나갑니다(parent-sync @ 7d8feb6d). Tests 7096 → 7243.
+> **🆕 최신 릴리스 — v1.268.0** — 네 개의 새 스캔 소스 — GermanTechJobs, Darwinbox, Keka, ApplicantPro/isolved(레지스트리 129 = 124 EN + 5 RU) — ETag 보드 응답 재사용, 네 보드의 날짜, portals.yml 오타 키는 이제 크게 실패, getro는 오래된 고정 핀을 지나갑니다(parent-sync @ 7d8feb6d). Tests 7096 → 7243.
 
 
 >
-> **이전 버전 — v1.266.0** — personio language-dedup(CAR-223): 공고의 언어 버전이 scan_history.dedup_include_language 뒤에서 dedup을 생존하고, preferred_languages 정렬, personio/recruitee의 언어별 행. Tests 7096 → 7203.
+> **이전 버전 — v1.267.2** — personio language-dedup(CAR-223): 공고의 언어 버전이 scan_history.dedup_include_language 뒤에서 dedup을 생존하고, preferred_languages 정렬, personio/recruitee의 언어별 행. Tests 7096 → 7203.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

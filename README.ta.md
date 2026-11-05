@@ -7,19 +7,19 @@
 
 _அதிகாரப்பூர்வமற்ற இடைமுகம் — career-ops / santifer உடன் எந்தத் தொடர்பும் அல்ல, அவர்களால் அங்கீகரிக்கப்படவும் இல்லை._
 
-[![tests](https://img.shields.io/badge/tests-7398%20passed-brightgreen)](#சோதனைகள்)
+[![tests](https://img.shields.io/badge/tests-7480%20passed-brightgreen)](#சோதனைகள்)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#சோதனைகள்)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#சோதனைகள்)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#தேவைகள்)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.267.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.267.2)
+[![release](https://img.shields.io/badge/release-v1.268.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.268.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 சமீபத்திய வெளியீடு — v1.267.2** — நான்கு புதிய ஸ்கேன் மூலங்கள் — GermanTechJobs, Darwinbox, Keka, ApplicantPro/isolved (பதிவேடு 129 = 124 EN + 5 RU) — ETag மூலம் பலகை-பதில் மறுபயன்பாடு, நான்கு பலகைகளில் தேதிகள், தவறாக எழுதப்பட்ட portals.yml விசை இப்போது சத்தமாக தோல்வி, getro பழைய சிறப்பு பின்களை கடந்து செல்கிறது (parent-sync @ 7d8feb6d). Tests 7096 → 7243.
+> **🆕 சமீபத்திய வெளியீடு — v1.268.0** — நான்கு புதிய ஸ்கேன் மூலங்கள் — GermanTechJobs, Darwinbox, Keka, ApplicantPro/isolved (பதிவேடு 129 = 124 EN + 5 RU) — ETag மூலம் பலகை-பதில் மறுபயன்பாடு, நான்கு பலகைகளில் தேதிகள், தவறாக எழுதப்பட்ட portals.yml விசை இப்போது சத்தமாக தோல்வி, getro பழைய சிறப்பு பின்களை கடந்து செல்கிறது (parent-sync @ 7d8feb6d). Tests 7096 → 7243.
 >
-> **முந்தைய வெளியீடு — v1.266.0** — personio language-dedup (CAR-223): ஒரு பதவியின் மொழி பதிப்புகள் scan_history.dedup_include_language-க்குப் பின்னால் dedup-ஐ உயிர்பிழக்கின்றன, preferred_languages வரிசை, personio/recruitee-இல் மொழிவாரி வரிசைகள். Tests 7096 → 7203.
+> **முந்தைய வெளியீடு — v1.267.2** — personio language-dedup (CAR-223): ஒரு பதவியின் மொழி பதிப்புகள் scan_history.dedup_include_language-க்குப் பின்னால் dedup-ஐ உயிர்பிழக்கின்றன, preferred_languages வரிசை, personio/recruitee-இல் மொழிவாரி வரிசைகள். Tests 7096 → 7203.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -35,7 +35,7 @@ _அதிகாரப்பூர்வமற்ற இடைமுகம் �
 
 தேடல் முடிவுகள், நீரோட்டம் மற்றும் ட்ரேக்கர் ஒரே உலக வரைபடத்தில் (`#/map`) — ஆஃபர்கள் எங்கே குவிகின்றன, எந்த நகரங்களுக்குச் செல்லத் தகுந்தவை என்பது ஒரே பார்வையில். நிரப்பப்பட்ட புள்ளி = உங்கள் மதிப்பீட்டு மதிப்பெண்; வளையம் = தலைப்புப் பொருத்தம்; பொறி அறியப்பட்ட நிறுவன முகவரியில், இல்லையெனில் நகர மையத்தில் வைக்கப்படும் (OpenStreetMap இலவச geocoding, keys இல்லை).
 
-<!-- TODO(design): restore when images/job-map-ta.png is captured (full map geocode pending) -->
+![career-ops-ui — வேலை வரைபடம்](./images/job-map-ta.png)
 
 ## career-ops பற்றி
 

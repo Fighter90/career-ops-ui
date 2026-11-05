@@ -31,6 +31,7 @@ import { runActiveProvider, providerAvailable, resolveProvider, PROMPT_SIZE_SOFT
 import { runNodeScript } from '../runner.mjs';
 import { runAnthropic, hasAnthropicKey, hasGeminiKey } from '../anthropic.mjs';
 import { validateEvaluationReport, stripScoreSummary, fixReportDate } from '../eval-validate.mjs';
+import { runTwoStepEvaluation } from '../eval-two-step.mjs';
 // v1.248.8 (CAR-76) — the wrong-language report is surfaced as a warning on
 // /api/evaluate too (the auto-pipeline has had it since v1.248.7).
 import { languageOk } from '../../../scripts/remote-qa/lang-check.mjs';
@@ -94,6 +95,7 @@ import { cleanLlmMarkdown } from '../llm-output.mjs';
 import { llmRateLimit, writeRateLimit } from '../rate-limit.mjs';
 import {
   bundleProjectContext,
+  buildEvaluationPrompt,
   buildEvaluationPromptParts,
   buildDeepPrompt,
   buildModePrompt,
@@ -204,41 +206,57 @@ export function registerLlmRoutes(app) {
       saved = name;
     }
 
-    // CAR-111 — build the prompt once, as parts: `promptText` (stable +
-    // volatile, byte-identical to the pre-split prompt) is what manual mode
-    // echoes and error paths return; the Anthropic branch caches
-    // `ctx + stable` and leaves the volatile JD tail uncached.
-    const promptParts = buildEvaluationPromptParts(jd, lang);
-    const promptText = promptParts.stable + promptParts.volatile;
+    // v1.268.0 (CAR-229/230) — the live run streams SSE stage events
+    // (scoring → rendering → assembling) so a 150–400 s answer no longer
+    // looks like a hang; the terminal `done` frame carries the SAME payload
+    // shape the pre-streaming JSON had (mode/prompt/markdown/usage/warnings).
+    // Manual, gemini and no-key paths also answer on the stream so the
+    // client keeps ONE transport. A 4xx before the stream stays plain JSON —
+    // API.postStream turns a non-OK response into an error frame.
+    const started = Date.now();
+    const sseHead = () => {
+      res.writeHead(200, {
+        'Content-Type': 'text/event-stream; charset=utf-8',
+        'Cache-Control': 'no-cache',
+        Connection: 'keep-alive',
+        'X-Accel-Buffering': 'no',
+      });
+    };
+    const send = (event, data) => {
+      res.write(`event: ${event}\ndata: ${JSON.stringify(data ?? {})}\n\n`);
+    };
+    const failNow = (status, error, extra = {}) => {
+      if (!res.headersSent) return res.status(status).json({ error, ...extra });
+      send('error', { message: error, ...extra });
+      return res.end();
+    };
 
-    // F-009 — explicit manual mode mirrors /api/deep. Lets the user opt
-    // out of the live LLM call (and the Anthropic credit burn) even when
-    // a key is set — useful for offline copying into Claude Code.
+    // F-009 — explicit manual mode mirrors /api/deep: copy-pasteable
+    // single-shot prompt for external Claude/ChatGPT/Gemini (the two-step
+    // contract is a server-side pipeline; a hand-run needs the one prompt).
     if (mode === 'manual') {
-      return res.json({
+      const promptParts = buildEvaluationPromptParts(jd, lang);
+      const promptText = promptParts.stable + promptParts.volatile;
+      sseHead();
+      send('done', {
         mode: 'manual',
         prompt: promptText,
         message: 'Manual mode: copy this prompt into Claude/ChatGPT/Gemini.',
         saved,
       });
+      return res.end();
     }
 
-    // P-7 — Anthropic parity. FULL-M5: the cascade is resolved ONCE via the
-    // shared gate (llm-dispatch.mjs::resolveProvider). The Gemini branch is
-    // the CAR-92 gemini-eval.mjs subprocess (NOT a runGemini call), so it is
-    // intercepted before the cascade runs; the Anthropic + tail branches then
-    // go through runActiveProvider with a client-disconnect abort signal —
-    // a hung-up browser no longer burns the rest of a 480 s generation.
     const chosen = resolveProvider();
 
     if (chosen && chosen.mode === 'gemini') {
-      // Use the existing gemini-eval.mjs pipe interface — it reads the
-      // CV from disk itself (it's a standalone Node script), so no
-      // bundleProjectContext needed here. --no-save: the script otherwise
-      // writes its own report, tracker row and merge — side effects the user
-      // asked for only with `save`. The temp JD file is always removed.
-      // CAR-92: --lang, the 480 s timeout, a bounded error on a non-zero
-      // exit (raw stderr stays server-side) and best-effort usage recording.
+      // The oferta-tuned gemini-eval.mjs subprocess keeps its single-shot
+      // contract (it prompts, saves and merges internally — NOT two-step).
+      // Carried as one stage on the same stream (documented in the release
+      // Notes: the two-step machine-surface guarantee covers the in-process
+      // cascade; the Gemini subprocess path reports the same warnings).
+      sseHead();
+      send('stage', { name: 'scoring', detail: 'gemini-eval.mjs (single-shot subprocess)' });
       const tmpFile = projPath('output', `web-jd-${Date.now()}.txt`);
       mkdirSync(PATHS.outputDir, { recursive: true });
       writeFileSync(tmpFile, jd);
@@ -246,76 +264,59 @@ export function registerLlmRoutes(app) {
         const args = geminiEvalArgs(tmpFile, { save: !!save, lang });
         const result = await runNodeScript('gemini-eval.mjs', args, { timeoutMs: evalTimeoutMs(lang) });
         if (result.code !== 0) {
-          // Server log gets a bounded stderr excerpt (provider errors live
-          // there); the client gets the exit code, never the raw output.
           console.error(`[evaluate] gemini-eval.mjs exit ${result.code}: ${(result.stderr || '').trim().slice(0, 400)}`);
-          return res.status(502).json({ mode: 'gemini', prompt: promptText, saved, error: `gemini-eval.mjs exited with code ${result.code}` });
+          return failNow(502, `gemini-eval.mjs exited with code ${result.code}`, { mode: 'gemini', saved });
         }
         recordUsage('gemini', parseSubprocessUsage(result.stdout));
         const stdout = result.stdout || '';
-        // CAR-101 — same header-date correction as the in-process branches:
-        // the subprocess report's **Date:** line is the model's, today's is
-        // the server's. stdout stays raw; markdown is what the client saves.
         const dated = fixReportDate(stdout, today());
         const dateWarnings = dated.replaced ? [`report **Date:** corrected to ${today()}`] : [];
-        return res.json({ mode: 'gemini', prompt: promptText, saved, code: 0, stdout, markdown: dated.text, ...(dateWarnings.length ? { warnings: dateWarnings } : {}) });
+        send('done', { mode: 'gemini', saved, code: 0, stdout, markdown: dated.text, elapsedMs: Date.now() - started, ...(dateWarnings.length ? { warnings: dateWarnings } : {}) });
       } finally {
         unlinkQuiet(tmpFile);
       }
+      return res.end();
     }
 
     if (chosen) {
-      // REVIEW-A1 inlining: bundle cv + profile + _shared + oferta so the
-      // model has the files the prompt references. CAR-111 — build the prompt
-      // once, as parts: the byte-stable prefix (context + instructions) is
-      // what Anthropic caches; only the volatile JD tail — whose fence tag is
-      // random per prompt — stays uncached. `ctx + stable + volatile` is
-      // byte-identical to the tail providers' old `ctx + promptText`.
       const controller = clientAbort(res);
-      const ctxWarnings = [];
-      const ctx = bundleProjectContext({ modeSlugs: ['_shared', 'oferta'], lang, warnings: ctxWarnings });
-      const cachePrefix = ctx + promptParts.stable;
-      const fullPrompt = cachePrefix + promptParts.volatile;
-      // BF-3 — bail fast when the assembled prompt would exceed the
-      // soft cap. Otherwise we'd burn a multi-second roundtrip + tokens
-      // before the provider complains about context size.
-      if (fullPrompt.length > PROMPT_SIZE_SOFT_CAP) {
-        return res.status(413).json({
-          error: 'prompt too large',
-          details: [`assembled prompt is ${fullPrompt.length} bytes; soft cap is ${PROMPT_SIZE_SOFT_CAP}. Truncate the JD or shrink your CV.`],
+      sseHead();
+      send('start', { lang: lang || 'en' });
+      try {
+        const two = await runTwoStepEvaluation(jd, lang, {
+          url: typeof req.body?.url === 'string' ? req.body.url : undefined,
+          saved,
+          signal: controller.signal,
+          onStage: (name, detail) => send('stage', { name, detail }),
         });
+        if (controller.signal.aborted) return; // client hung up mid-generation
+        const warnings = [...two.warnings];
+        send('done', {
+          mode: resolveProvider()?.mode || 'llm',
+          markdown: stripScoreSummary(two.markdown),
+          scoring: two.scoring,
+          usage: two.usage,
+          steps: two.steps,
+          fallbackUsed: two.fallbackUsed,
+          saved,
+          elapsedMs: Date.now() - started,
+          ...(warnings.length ? { warnings } : {}),
+        });
+      } catch (e) {
+        const status = e.step === 'scoring' ? 502 : 502;
+        return failNow(status, e.message || 'evaluation failed', { step: e.step });
       }
-      const r = await runActiveProvider(fullPrompt, {
-        maxTokens: evalMaxTokens(lang),
-        timeoutMs: evalTimeoutMs(lang),
-        cachePrefix,
-        signal: controller.signal,
-      });
-      if (controller.signal.aborted) return; // client hung up mid-generation
-      if (r.error) return res.status(502).json({ mode: r.mode, prompt: promptText, error: r.error, saved });
-      // v1.75.0 (#819) — flag malformed A–G / SCORE_SUMMARY shape as a non-fatal
-      // warning so the user knows the report may be truncated/off-format.
-      const warnings = [...ctxWarnings, ...evaluationWarnings(r)];
-      // CAR-101 — the header date is server-side knowledge: a model that
-      // ignored the prompt's pinned date gets its **Date:** line rewritten to
-      // today here (a correction with a warning, never a rejection).
-      const dated = fixReportDate(r.markdown, today());
-      if (dated.replaced) warnings.push(`report **Date:** corrected to ${today()}`);
-      // v1.248.8 (CAR-76) — same language warning the auto-pipeline carries:
-      // a drift (ta came back 2–22 % own-script on prod) must surface on
-      // /api/evaluate as well, where remote-qa reads it.
-      if (lang && lang !== 'en' && r.markdown && !languageOk(r.markdown, lang)) {
-        warnings.push(`report not in ${lang}`);
-      }
-      return res.json({ mode: r.mode, prompt: promptText, markdown: stripScoreSummary(dated.text), usage: r.usage, saved, ...(warnings.length ? { warnings } : {}) });
+      return res.end();
     }
 
-    return res.json({
+    sseHead();
+    send('done', {
       mode: 'manual',
       message: 'No LLM key set — copy this prompt into Claude/ChatGPT/Gemini/Qwen',
-      prompt: promptText,
+      prompt: buildEvaluationPrompt(jd, lang),
       saved,
     });
+    return res.end();
   });
 
   // Smoke-test endpoints — verify each provider key is wired without

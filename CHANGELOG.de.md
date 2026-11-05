@@ -2,6 +2,24 @@
 
 > Dieses Changelog enthält die vollständige Versionsgeschichte. Einträge, die vor der deutschen Lokalisierung (v1.85.0) veröffentlicht wurden, stehen unten im englischen Original — Übersetzung ausstehend; maßgeblich bleibt [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.268.0] — 2026-11-05
+
+### Geändert
+
+- **Evaluate ist jetzt eine Zwei-Stufen-Pipeline (CAR-229)** — die Prod-Regression vom 2026-11-04 zeigte, dass derselbe synthetische JD je nach Berichtssprache 1.0–4.0 scoret, und der Maschinenblock nur in 8 von 17 Locales vorhanden war. Der Vertrag lautet jetzt: (1) ein SCORING-Schritt liest Kontext und JD und gibt NUR ein kanonisches englisches JSON aus (company, role, archetype, legitimacy, score, A–G-Scores pro Block + Summaries) bei einer fixierten temperature 0.1 mit einer Uhr von 120 s; (2) ein RENDER-Schritt elaboriert die sieben A–G-Abschnitte in der Berichtssprache — verboten, Zahlen anzufassen, verboten, den Header oder irgendeinen Maschinenblock zu schreiben. Der SERVER montiert den Bericht: der `# Evaluation:`-Header, die `**Date:**/**Score:**/**Legitimacy:**`-Zeilen, der ---SCORE_SUMMARY----Block und der ```yaml-Maschinenblock werden alle serverseitig aus dem Scoring-JSON gebaut — jede Locale liefert dieselbe Maschinenoberfläche aus der Konstruktion heraus, und ein Modell, das eine Zahl in der Prosa „korrigiert“, kann die kanonischen Werte nicht verschieben. Das Client-Payload behält den Maschinenblock (```yaml) und entfernt den Summary-Block.
+- **Evaluate-Stufenfortschritt in der UI (CAR-230)** — /api/evaluate streamt SSE-Stufen (scoring → rendering → assembling) statt eines stillen POST; die Ladezeile nennt die ECHTE Latenz (p50/p90 aus dem Usage-Journal — llm-usage-Zeilen und readUsage tragen jetzt durationMs; /api/usage legt llmLatency offen) statt der veralteten „2–4 min“-Kopie. Der Scoring-Schritt wiederholt eine Nicht-JSON-Antwort einmal; ein Render mit fehlenden Abschnitten nach einem Retry fällt auf einen serverseitig gebauten Body zurück (Warning erhalten, die Maschinenoberfläche bleibt vollständig).
+- **Prompt-Cache für jede Locale (CAR-111)** — beide Schritte teilen EINEN byte-stabilen englischen Instruktions-Header (das Kontext-Bundle + gemeinsame Anweisungen eröffnen jeden Prompt, byte-identisch über alle 19 Locales); die Locale-Direktive, das Scoring-JSON und der JD fahren im ungecachten Schwanz. Ein Test pinnt byte-identische stabile Präfixe über alle Locales — der Locale-Cache-Miss (cached_tokens 0 auf non-en) ist strukturell beseitigt.
+- **Datenmigrations-Runner (CAR-232/233)** — `POST /api/runners/report-dates` und `POST /api/runners/company-fix` (dry-run als Standard, Apply mit einem mit Zeitstempel versehenen .bak-Backup): Berichts-Header-Daten mit dem Dateinamen-Datum abgeglichen (368 Zeilen vor 2026-10-26), und Tracker-Company-Zellen mit einem Quellnamen („hh“ — 123 Zeilen) oder einem Rollentitel (14 Zeilen) zum Arbeitgeber aus dem H1 ihres Berichts aufgelöst. Erst dry-run; Apply fasst nur die genannten Zellen an, zeilenchirurgisch.
+- **Permissions-Policy-Header** — `camera=(), microphone=(), geolocation=(), payment=(), usb=()`: die Oberflächen, die diese App nie benutzt, werden explizit verweigert (QA 2026-11-04).
+
+### Hinweise
+
+- **Bewusst nicht in dieser Version (P2/P3 des Fix-Programms vom 2026-11-04):** der `{{t:key}}`-Placeholder-Mechanismus des Hilfe-Guides und die Deep-Link-Label-Lokalisierung (CAR-107-Schweife), der Dashboard-Glossar-Durchlauf (CAR-108-Schwanz), die Karten-Aggregate + hh.ru-Flächengeokodierung (CAR-105), das Tracker-Header-Menü für destruktive Operationen (CAR-117-Schwanz), der Site-Header-Blur + Copy-Feedback (CAR-132/141-Schweife), README ar/pl/uk/vi-Parität und die Locale-Wörterbuch-Stücke (CAR-104-Schwanz). Sie sind gescoped und eingereiht — diese Version liefert den Pflicht-Satz P0+P1.
+- Die Prod-Datenmigrationen (Berichtsdaten, Tracker-Firmen, Score-Backfill) sind BESITZER-AKTIONEN: den Dry-Run der neuen Runner fahren, prüfen, dann Apply — das Werkzeug kommt hier an, die Datenänderungen laufen nicht automatisch.
+- Der v1.267.0-Tag bleibt auf dem roten Merge-Commit — nicht umgehängt; v1.267.1/1.267.2/1.268.0 sind die Deploy-Fahrzeuge.
+
+- Tests 7395 → **7480**; Coverage 98.49 Zeile / 90.31 Zweig.
+
 ## [1.267.2] — 2026-11-04
 
 ### Behoben

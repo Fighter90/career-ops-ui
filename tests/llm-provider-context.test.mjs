@@ -64,7 +64,11 @@ function mockProvider(hostMatch, responseJson) {
     const u = String(url);
     if (u.includes(hostMatch)) {
       captured.hit = true; captured.url = u; captured.body = opts.body ? String(opts.body) : '';
-      return new Response(JSON.stringify(responseJson), { status: 200, headers: { 'content-type': 'application/json' } });
+      // v1.268.0 — a function payload branches per call (scoring vs render).
+      const json = typeof responseJson === 'function' ? responseJson(captured.body) : responseJson;
+      // Plain object — a real Response here dropped SSE frames mid-stream
+      // under the --test runner (same as evaluate-prompt-caching bisect).
+      return { ok: true, status: 200, text: async () => JSON.stringify(json) };
     }
     return realFetch(url, opts);
   };
@@ -86,6 +90,8 @@ const PROVIDERS = {
   openrouter: { key: 'OPENROUTER_API_KEY', val: 'sk-or-fake0123456789abcdefghijklmnop', host: 'openrouter.ai', resp: RESP.openaiLike, lp: 'openrouter' },
   github: { key: 'GITHUB_MODELS_API_KEY', val: 'github_pat_fake0123456789abcdefghijklmnop', host: 'models.github.ai', resp: RESP.openaiLike, lp: 'github' },
 };
+
+import { scoringFixture, renderBodyFixture } from './helpers/eval-two-step-stub.mjs';
 
 async function postJSON(path, body) {
   const res = await fetch(baseUrl + path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
@@ -124,16 +130,61 @@ for (const name of ['anthropic', 'gemini']) {
 }
 
 // ── /api/evaluate across in-process providers (Anthropic + OpenAI) ──
+// v1.268.0 — the two-step contract: TWO provider calls (scoring en-JSON,
+// render locale body), an SSE stream instead of JSON, and a SERVER-assembled
+// report (header + summary + yaml machine block). The context bundle rides
+// BOTH calls' prefixes.
+async function drainEvaluateSse(jd) {
+  const res = await fetch(baseUrl + '/api/evaluate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ jd, mode: 'live' }) });
+  assert.equal(res.status, 200);
+  const text = await res.text();
+  if (!text.includes('event: done')) {
+    throw new Error(`no done frame — stream: ${JSON.stringify(text.slice(0, 120))} ... ${JSON.stringify(text.slice(-400))}`);
+  }
+  const events = [];
+  for (const frame of text.split('\n\n')) {
+    const ev = (frame.match(/^event:\s*(.+)$/m) || [])[1];
+    const data = (frame.match(/^data:\s*([\s\S]+)$/m) || [])[1];
+    if (ev) events.push({ ev, data: data ? JSON.parse(data) : {} });
+  }
+  return events;
+}
+
 for (const name of ['anthropic', 'openai']) {
   const p = PROVIDERS[name];
   test(`/api/evaluate via ${name}: inlines cv + oferta, returns evaluation`, async () => {
     process.env[p.key] = p.val;
     process.env.LLM_PROVIDER = p.lp;
-    const cap = mockProvider(p.host, p.resp(`EVAL-${name.toUpperCase()}`));
-    const r = await postJSON('/api/evaluate', { jd: 'Senior backend role with Go + PostgreSQL and 50+ chars of detail.', mode: 'live' });
-    assert.equal(r.status, 200, `${name}: 200`);
-    assert.equal(r.body.markdown, `EVAL-${name.toUpperCase()}`, `${name}: evaluation returned`);
+    const cap = mockProvider(p.host, (promptText) => {
+      // Provider-SHAPED response (p.resp builds the right envelope): the
+      // scoring call gets the en JSON, the render call the seven sections.
+      const text = promptText.includes('Output ONLY a JSON object')
+        ? JSON.stringify(scoringFixture({ company: 'Acme', role: 'Engineer', score: 3.7 }))
+        : ['A', 'B', 'C', 'D', 'E', 'F', 'G'].map((L) => `## ${L}) Section\nGrounded prose for block ${L}.`).join('\n\n');
+      return p.resp(text);
+    });
+    const events = await drainEvaluateSse('Senior backend role with Go + PostgreSQL and 50+ chars of detail.');
+    const done = events.find((e) => e.ev === 'done').data;
+    assert.ok(done, `no done frame (${events.map((e) => e.ev)})`);
+    assert.match(done.markdown, /^# Evaluation: Acme — Engineer/m, `${name}: server header`);
+    assert.match(done.markdown, /```yaml/, `${name}: machine block`);
     assert.match(cap.body, new RegExp(CV_MARK), `${name}: cv.md inlined`);
     assert.match(cap.body, /MARKER-OFERTA/, `${name}: modes/oferta.md inlined`);
   });
 }
+
+// ── /api/deep across Anthropic + Gemini (Gemini = the fixed misrouting path) ──
+for (const name of ['anthropic', 'gemini']) {
+  const p = PROVIDERS[name];
+  test(`/api/deep via ${name}: inlines context + returns brief (not an oferta eval)`, async () => {
+    process.env[p.key] = p.val;
+    process.env.LLM_PROVIDER = p.lp;
+    const cap = mockProvider(p.host, p.resp(`DEEP-BRIEF-${name.toUpperCase()}`));
+    const r = await postJSON('/api/deep', { company: 'Acme', role: 'Team Lead', run: true });
+    assert.equal(r.status, 200, `${name}: 200`);
+    assert.ok(cap.hit, `${name}: provider called in-process (no gemini-eval.mjs subprocess)`);
+    assert.match(cap.body, new RegExp(CV_MARK), `${name}: cv.md inlined`);
+    assert.match(cap.body, /MARKER-DEEP/, `${name}: modes/deep.md inlined`);
+  });
+}
+

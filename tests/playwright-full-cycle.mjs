@@ -214,7 +214,15 @@ test('full-cycle [07/14] Evaluate manual fallback (no API keys in fixture)', { s
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ jd, save: true }),
     });
-    return await res.json();
+    // v1.268.0 (CAR-229): SSE stream — take the terminal `done` frame.
+    const text = await res.text();
+    let payload = null;
+    for (const frame of text.split('\n\n')) {
+      const ev = (frame.match(/^event:\s*(.+)$/m) || [])[1];
+      const data = (frame.match(/^data:\s*([\s\S]+)$/m) || [])[1];
+      if (ev === 'done' && data) payload = JSON.parse(data);
+    }
+    return payload;
   });
   // No keys → manual prompt path expected. Anthropic / Gemini are also
   // valid (if a host shell happened to leak) but we deleted them in

@@ -196,7 +196,7 @@ Nếu có gì đỏ, trang sẽ chỉ đúng tệp hay biến môi trường c�
 sửa. Đừng đi tiếp cho tới khi Health xanh.
 
 **Bước 3 — Bấm `⚒ App settings` trên thanh bên.** Bạn tới tab
-**API keys & runtime**.
+**{{t:config.tabApi}}**.
 - Dán `ANTHROPIC_API_KEY` (ưu tiên — chấm điểm dạng-dài tốt hơn)
   và/hoặc `GEMINI_API_KEY`. Lấy khóa từ
   <https://console.anthropic.com/settings/keys> hoặc
@@ -363,7 +363,7 @@ tiếp). Thành công thì thẻ kết quả dẫn thẳng tới báo cáo đã 
 (`auto.viewTracker`). Bước thất bại được đánh dấu đỏ kèm thông điệp
 và nút được bật lại để bạn sửa URL và thử lại mà không cần tải lại
 trang. Khởi chạy một lượt mới trong khi lượt cũ vẫn đang chạy là an
-toàn: lượt cũ tự đánh dấu **Superseded — a newer run was requested**
+toàn: lượt cũ tự đánh dấu **{{t:auto.superseded}}**
 (`auto.superseded`) thay vì tiêu tiền gấp đôi cho một câu trả lời
 quá hạn.
 
@@ -393,7 +393,7 @@ trang này).
 
 Ba tab:
 
-1. **API keys & runtime** — biểu mẫu trường có cấu trúc đè lên `.env`
+1. **{{t:config.tabApi}}** — biểu mẫu trường có cấu trúc đè lên `.env`
    của dự án gốc (cùng tệp mà các script Node career-ops đọc khi
    khởi động). Nhóm theo: Khóa API / Runtime / Nguồn khu vực. Tab
    cũng có các select mô-hình theo từng nhà cung cấp — `OPENAI_MODEL`
@@ -415,7 +415,7 @@ Lưu ở bất kỳ tab nào áp dụng ngay lập tức — không cần khởi
 
 **Thiết lập nhà cung cấp LLM (từng bước).** Đánh giá ⚡ trực tiếp của web UI chạy *headless* và dùng một khóa API. Nó hoạt động theo kiểu "HOẶC" — đặt **bất kỳ một** khóa nào trong số này là chạy ngay; nếu đặt nhiều, `auto` ưu tiên theo thứ tự: Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi (Moonshot) → MiniMax → Mistral → Grok (xAI) → Together → Fireworks → Ollama → BytePlus Ark → Volcengine Ark. (Bản thân career-ops không ràng buộc CLI — bạn cũng chạy nó bên trong Claude Code, Cursor, Codex, Gemini, OpenCode, Antigravity, Grok Build, Qwen, Copilot hay Kimi; điều đó tách biệt với khóa headless này.)
 
-1. Mở `#/config` → tab **API keys & runtime**.
+1. Mở `#/config` → tab **{{t:config.tabApi}}**.
 2. Chọn nhà cung cấp trong **`LLM_PROVIDER`**: `auto` (dùng khóa nào đã đặt), hoặc ép một slug — `claude` / `gemini` / `openai` / `qwen` / `openrouter` / `github` / `hermes` / `deepseek` / `zai` / `kimi` / `minimax` / `mistral` / `grok` / `together` / `fireworks` / `ollama`.
 3. Điền khóa + mô hình cho nhà cung cấp bạn chọn:
    - **Anthropic** — đặt `ANTHROPIC_API_KEY` (console.anthropic.com), tùy chọn `ANTHROPIC_MODEL` (mặc định `claude-sonnet-4-6`).
@@ -855,7 +855,7 @@ sẽ cảnh báo về xung đột.
 
 ### Cấu hình các cổng Nga — hướng dẫn thiết lập chi tiết
 
-v1.29.0 phát hành 5 adapter tiếng Nga. Hai cái không cần gì hơn UA mặc định (`habr-career`, scrape HTML; `trudvsem`, API open-data chính phủ — không khóa, không chặn IP). Hai cái là scrape HTML của các bảng công nghệ (`getmatch`, `geekjob` — cũng không khóa). Một cái là API hh.ru chính thức có thể 403 với IP ngoài-Nga trừ khi bạn đặt biến môi trường `HH_USER_AGENT` qua **App settings → API keys & runtime** (hoặc chạy máy chủ từ IP Nga / nút thoát VPN).
+v1.29.0 phát hành 5 adapter tiếng Nga. Hai cái không cần gì hơn UA mặc định (`habr-career`, scrape HTML; `trudvsem`, API open-data chính phủ — không khóa, không chặn IP). Hai cái là scrape HTML của các bảng công nghệ (`getmatch`, `geekjob` — cũng không khóa). Một cái là API hh.ru chính thức có thể 403 với IP ngoài-Nga trừ khi bạn đặt biến môi trường `HH_USER_AGENT` qua **App settings → {{t:config.tabApi}}** (hoặc chạy máy chủ từ IP Nga / nút thoát VPN).
 
 #### Bảng kê nguồn
 
@@ -1252,10 +1252,10 @@ hộp vào lớn sau một lượt quét là tâm điểm v2 của trang này:
   vùi lấp phần còn lại. Các công ty không-rõ nhóm dưới host của chúng
   — nhưng một host ATS dùng chung (ví dụ `jobs.lever.co`) chỉ mượn tên
   một công ty khi *mọi* mục có-công-ty trên host đó cùng đồng thuận.
-- **Hide already evaluated** (`pipe.hideTracked`) — bật theo mặc định;
+- **{{t:pipe.hideTracked}}** (`pipe.hideTracked`) — bật theo mặc định;
   các mục mà tin của nó đã có dòng tracker rơi khỏi khung xem (và khỏi
   vùng chọn hàng loạt) nên bạn chỉ bao giờ thao tác trên việc còn mới.
-- **Select** (`pipe.selectOne`) bất kỳ dòng nào, hay **Select all shown** (`pipe.selectAllShown`) — vùng chọn luôn bám theo các bộ lọc hiện tại, không bao giờ các dòng vô hình. Thanh vùng chọn hiện số đếm (`pipe.selectedCount`) và đưa ra **✕ Remove selected (N)** (`pipe.bulkRemove`) cộng với **Evaluate first selected** (`pipe.evaluateSelected`) — xóa hàng loạt xác nhận một lần cho cả bộ, không phải từng dòng.
+- **Select** (`pipe.selectOne`) bất kỳ dòng nào, hay **{{t:pipe.selectAllShown}}** (`pipe.selectAllShown`) — vùng chọn luôn bám theo các bộ lọc hiện tại, không bao giờ các dòng vô hình. Thanh vùng chọn hiện số đếm (`pipe.selectedCount`) và đưa ra **✕ Remove selected (N)** (`pipe.bulkRemove`) cộng với **Evaluate first selected** (`pipe.evaluateSelected`) — xóa hàng loạt xác nhận một lần cho cả bộ, không phải từng dòng.
 
 Không gì bị mất do sơ suất: mỗi lần xóa — đơn hay hàng loạt — trả về
 một token hoàn tác mờ-đục, và một thanh ở đáy trang (**Deleted: N**, `pipe.deleted`) đưa ra
@@ -1433,7 +1433,7 @@ backfill được đánh số `N/A`, hiển thị huy hiệu chỉ-đọc thay v
 
 **Kanban view (v2).** Cùng bảng đó còn đọc được dưới dạng **kanban**
 kéo-thả: mỗi trạng thái chính thức một cột (tiêu đề bảng được công bố
-là *Applications by status*, `track.kanbanBoardAria`), mỗi đơn một
+là *{{t:track.kanbanBoardAria}}*, `track.kanbanBoardAria`), mỗi đơn một
 thẻ. Kéo một thẻ sang cột khác — hoặc focus nó và bấm **Move** — và
 thay đổi được **xem trước trước khi bất cứ thứ gì được ghi** 
 (`track.kanbanMoveHint`); một lần di chuyển đã xác nhận ghi một mục
@@ -1517,7 +1517,7 @@ Lần kiểm tra được cố tình thận trọng: nó chỉ nói **Hết hạ
 
 Khi một đơn ứng tuyển đi tới điểm cuối — bạn nhận offer, nhận việc, bị từ chối, hay đơn giản không bao giờ nghe lại — bấm nút **Outcome** trên dòng tracker ấy để ghi lại. Một modal nhỏ xem trước rồi xác nhận mở ra:
 
-- **Chọn chuyện gì xảy ra** — Rejected, Offer received, Hired / accepted, Offer declined, No response / ghosted, hay Advanced to interview.
+- **Chọn chuyện gì xảy ra** — Rejected, Offer received, Hired / accepted, Offer declined, {{t:track.outcome.ghosted}}, hay {{t:track.outcome.interview}}.
 - **Ghi chú (tùy chọn)** — một dòng ngắn cho chính bạn.
 - **Xem trước** — ứng dụng cho thấy chính xác nó sẽ làm gì (vd *"Will set #12 Acme → Rejected"*) và chưa ghi gì cả.
 - **Record outcome** — xác nhận nó.
@@ -1582,10 +1582,10 @@ recruiter, one pager **Interview prep**, và hồi đáo **Patterns**
 ### Dạng chung
 
 Mỗi trang có một biểu mẫu nhỏ (các trường riêng từng mode), một nút
-**▶ Generate prompt** (thủ công), và — khi có khóa Anthropic hay Gemini
+**{{t:deep.run}}** (thủ công), và — khi có khóa Anthropic hay Gemini
 — một nút **⚡ Chạy trực tiếp** được nâng lên làm nút chính.
 
-Bấm **▶ Generate prompt** trả về prompt đã lắp ráp với các giá trị
+Bấm **{{t:deep.run}}** trả về prompt đã lắp ráp với các giá trị
 biểu mẫu JSON stringify vào một khối `User supplied context:`,
 tiếp theo là mẫu `modes/<slug>.md` nguyên văn. Sao chép và dán
 vào LLM tùy chọn của bạn.
@@ -2279,9 +2279,9 @@ Bấm **Save two-pager** để giữ nó. Nó được ghi vào **tầng ngườ
 
 ### Trợ lý điền AI
 
-Chưa biết diễn đạt ra sao? Bấm **✨ AI fill assistant** và nó soạn toàn bộ hai trang giúp bạn. Khi bạn đã **cấu hình một nhà cung cấp LLM** (xem §3), nó chạy trực tiếp: nó đọc **chỉ** CV và hồ sơ của chính bạn, soạn mọi trường — bạn là ai, điều bạn thích, điều bắt buộc, điều bạn ghét, điều phá vỡ thỏa thuận, điều không thoái thúc, và môi trường mục tiêu — và điền form ngay tại chỗ. Không gì được nộp tự động: bạn **xem lại, sửa, và bấm Lưu** như một hai trang gõ tay bất kỳ. Nó không bao giờ bịa sự kiện về bạn; nó chỉ định hình lại những gì CV và hồ sơ của bạn đã nói. **Chưa có khóa API**, nó quay về hành vi cũ — hiện prompt Mnookin chạy ngay trong một hộp thoại để bạn chạy nó trong bất kỳ LLM nào và dán YAML trở lại.
+Chưa biết diễn đạt ra sao? Bấm **{{t:twoPager.aiFill}}** và nó soạn toàn bộ hai trang giúp bạn. Khi bạn đã **cấu hình một nhà cung cấp LLM** (xem §3), nó chạy trực tiếp: nó đọc **chỉ** CV và hồ sơ của chính bạn, soạn mọi trường — bạn là ai, điều bạn thích, điều bắt buộc, điều bạn ghét, điều phá vỡ thỏa thuận, điều không thoái thúc, và môi trường mục tiêu — và điền form ngay tại chỗ. Không gì được nộp tự động: bạn **xem lại, sửa, và bấm Lưu** như một hai trang gõ tay bất kỳ. Nó không bao giờ bịa sự kiện về bạn; nó chỉ định hình lại những gì CV và hồ sơ của bạn đã nói. **Chưa có khóa API**, nó quay về hành vi cũ — hiện prompt Mnookin chạy ngay trong một hộp thoại để bạn chạy nó trong bất kỳ LLM nào và dán YAML trở lại.
 
-**Xem trước & xuất (PDF / DOCX / Markdown).** Bấm **👁 Preview & export** để thấy hai trang của bạn được render thành một tài liệu sạch, có định dạng. Từ bản xem trước bạn có thể **Download .md**, **Save as PDF**, **Save as DOCX** (một tệp Word thật — tiện khi chia sẻ với một coach hay recruiter), hay **Copy** nó vào clipboard. Cùng thanh xuất này giờ cũng xuất hiện trên các trang **báo cáo thị trường**, **kế hoạch sự nghiệp**, và **định hướng sự nghiệp**. Tệp `.docx` được dựng hoàn toàn trong ứng dụng — không dịch vụ bên ngoài nào từng thấy hai trang của bạn.
+**Xem trước & xuất (PDF / DOCX / Markdown).** Bấm **{{t:twoPager.preview}}** để thấy hai trang của bạn được render thành một tài liệu sạch, có định dạng. Từ bản xem trước bạn có thể **Download .md**, **Save as PDF**, **Save as DOCX** (một tệp Word thật — tiện khi chia sẻ với một coach hay recruiter), hay **Copy** nó vào clipboard. Cùng thanh xuất này giờ cũng xuất hiện trên các trang **báo cáo thị trường**, **kế hoạch sự nghiệp**, và **định hướng sự nghiệp**. Tệp `.docx` được dựng hoàn toàn trong ứng dụng — không dịch vụ bên ngoài nào từng thấy hai trang của bạn.
 
 ### Điểm khớp theo điều bạn muốn
 

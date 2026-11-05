@@ -201,8 +201,8 @@ body {
 }
 .site-header.scrolled {
   background: rgba(255, 255, 255, 0.78);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: saturate(1.4) blur(10px);
+  -webkit-backdrop-filter: saturate(1.4) blur(10px);
   border-bottom-color: var(--color-line);
 }
 /* Without backdrop-filter support the translucent fill would let content show

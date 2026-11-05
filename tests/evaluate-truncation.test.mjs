@@ -31,18 +31,22 @@ let buildEvaluationPrompt;
 
 const reply = (json) => async () => ({ ok: true, status: 200, text: async () => JSON.stringify(json) });
 
-let stub, lastPrompt = '', lastMaxTokens = 0;
-const REPLY = ['A', 'B', 'C', 'D', 'E', 'F', 'G'].map((L) => `## ${L}) Section\nThe candidate meets the requirements: relevant platform experience, Kubernetes and Go valued for this role.`).join('\n\n')
-  + '\n\n---SCORE_SUMMARY---\nCOMPANY: Acme\nROLE: Engineer\nSCORE: 4.1\nARCHETYPE: Platform\nLEGITIMACY: High Confidence\n---END_SUMMARY---\n';
+let stub, lastPrompt = '', lastMaxTokens = 0, callCount = 0;
+import { twoShapeAnswers, scoringFixture, renderBodyFixture } from './helpers/eval-two-step-stub.mjs';
+// v1.268.0 — the two-step contract: the stub branches on the prompt it
+// received (scoring → JSON; render → the A–G body). Tests swap `answers`
+// to drive the retry/fallback paths.
+let answers = twoShapeAnswers({ scoring: scoringFixture({ company: 'Acme', role: 'Engineer', score: 4.1 }), body: renderBodyFixture({}) });
 
 before(async () => {
   stub = http.createServer((req, res) => {
     let body = '';
     req.on('data', (c) => { body += c; });
     req.on('end', () => {
+      callCount += 1;
       try { const b = JSON.parse(body); lastPrompt = b.messages.map((m) => m.content).join('\n'); lastMaxTokens = b.max_tokens; } catch { lastPrompt = ''; }
       res.setHeader('content-type', 'application/json');
-      res.end(JSON.stringify({ choices: [{ message: { content: REPLY } }], usage: { prompt_tokens: 1, completion_tokens: 1 } }));
+      res.end(JSON.stringify({ choices: [{ message: { content: answers(lastPrompt) } }], usage: { prompt_tokens: 1, completion_tokens: 1, cached_tokens: callCount > 2 ? 999 : 0 } }));
     });
   });
   await new Promise((r) => stub.listen(0, '127.0.0.1', r));
@@ -167,23 +171,87 @@ test('provider SDKs still clamp overshoot at the 32768 ceiling', async () => {
   assert.equal(body.max_tokens, 32768);
 });
 
-test('a ta evaluation asks the provider for 32768 tokens; an en one keeps 16384', async () => {
+// ── v1.268.0 (CAR-229/230): the two-step contract over /api/evaluate ───────
+
+async function drainEvaluate(lang = 'en', jdText = 'Senior Platform Engineer at Acme. Kubernetes, Go, on-call. '.repeat(3)) {
   const { createApp } = await import('../server/index.mjs');
   const server = await new Promise((r) => { const s = createApp().listen(0, '127.0.0.1', () => r(s)); });
   try {
-    const post = (lang) => fetch(`http://127.0.0.1:${server.address().port}/api/evaluate`, {
+    const res = await fetch(`http://127.0.0.1:${server.address().port}/api/evaluate`, {
       method: 'POST',
-      headers: { 'content-type': 'application/json', 'accept-language': lang },
-      body: JSON.stringify({ jd: 'Senior Platform Engineer at Acme. Kubernetes, Go, on-call. '.repeat(3), save: false }),
-    }).then((r2) => r2.json());
-    await post('ta');
-    assert.equal(lastMaxTokens, 32768);
-    await post('en');
-    assert.equal(lastMaxTokens, 16384);
+      headers: { 'content-type': 'application/json', 'accept-language': lang, accept: 'text/event-stream' },
+      body: JSON.stringify({ jd: jdText, save: false }),
+    });
+    assert.equal(res.status, 200);
+    const text = await res.text();
+    const events = [];
+    for (const frame of text.split('\n\n')) {
+      const ev = (frame.match(/^event:\s*(.+)$/m) || [])[1];
+      const data = (frame.match(/^data:\s*([\s\S]+)$/m) || [])[1];
+      if (ev) events.push({ ev, data: data ? JSON.parse(data) : {} });
+    }
+    return events;
   } finally {
     server.closeAllConnections?.();
     await new Promise((r) => server.close(r));
   }
+}
+
+test('the two-step evaluate streams stages and the server writes the machine surfaces (CAR-229)', async () => {
+  answers = twoShapeAnswers({ scoring: scoringFixture({ company: 'Acme', role: 'Engineer', score: 4.1 }), body: renderBodyFixture({}) });
+  const events = await drainEvaluate('en');
+  const stages = events.filter((e) => e.ev === 'stage').map((e) => e.data.name);
+  assert.deepEqual(stages, ['scoring', 'rendering', 'assembling', 'done']);
+  const done = events.find((e) => e.ev === 'done').data;
+  // The SERVER writes the header + the yaml machine block from the scoring
+  // JSON; the display markdown strips the SCORE_SUMMARY (saved-file contract).
+  assert.match(done.markdown, /^# Evaluation: Acme — Engineer/m);
+  assert.match(done.markdown, /\*\*Score:\*\* 4\.1\/5/);
+  assert.match(done.markdown, /```yaml\ncompany: Acme\nrole: Engineer\nscore: 4\.1/);
+  assert.ok(!done.markdown.includes('---SCORE_SUMMARY---'), 'display markdown strips the summary block');
+  assert.equal(lastMaxTokens, 16384, 'the render call keeps the 16384 ceiling');
+  assert.equal(done.scoring.score, 4.1);
+});
+
+test('the machine surface is locale-independent (CAR-102): ru and ta carry the same header + yaml', async () => {
+  answers = twoShapeAnswers({ scoring: scoringFixture({ company: 'Acme', role: 'Engineer', score: 4.1 }), body: renderBodyFixture({}) });
+  for (const lang of ['ru', 'ta']) {
+    const events = await drainEvaluate(lang);
+    const done = events.find((e) => e.ev === 'done').data;
+    assert.match(done.markdown, /^# Evaluation: Acme — Engineer/m, `${lang}: header`);
+    assert.match(done.markdown, /\*\*Score:\*\* 4\.1\/5/, `${lang}: pinned score line`);
+    assert.match(done.markdown, /```yaml\ncompany: Acme/, `${lang}: yaml machine block`);
+    assert.match(done.markdown, /```yaml\n[\s\S]*\nblocks: \{A: 3\.5/, `${lang}: per-block map`);
+  }
+});
+
+test('a garbage scoring answer is retried once before failing the step (CAR-229)', async () => {
+  let scoringCalls = 0;
+  answers = (prompt) => {
+    if (prompt.includes('Output ONLY a JSON object')) {
+      scoringCalls += 1;
+      return scoringCalls === 1 ? 'The posting looks like a fine fit for this candidate overall.' : JSON.stringify(scoringFixture({ company: 'Acme', role: 'Engineer', score: 4.1 }));
+    }
+    return renderBodyFixture({});
+  };
+  const events = await drainEvaluate('en');
+  const done = events.find((e) => e.ev === 'done').data;
+  assert.ok(done.warnings.some((w) => /scoring retry/.test(w)), `retry warning present: ${done.warnings}`);
+  assert.match(done.markdown, /```yaml\ncompany: Acme/);
+});
+
+test('a render missing blocks after the retry falls back to the server body (CAR-229)', async () => {
+  answers = twoShapeAnswers({ scoring: scoringFixture({ score: 3.2 }), body: renderBodyFixture({ broken: ['B', 'C', 'D', 'E', 'F', 'G'] }) });
+  const events = await drainEvaluate('en');
+  const done = events.find((e) => e.ev === 'done').data;
+  assert.equal(done.fallbackUsed, true);
+  assert.ok(done.warnings.some((w) => /server fallback body used/.test(w)));
+  // The fallback body still carries ALL seven headings — the machine
+  // surface stays complete even when the localizer degrades.
+  for (const L of ['A', 'B', 'C', 'D', 'E', 'F', 'G']) {
+    assert.match(done.markdown, new RegExp(`## ${L}\\)`), `heading ${L}`);
+  }
+  assert.match(done.markdown, /```yaml\ncompany: Acme/);
 });
 
 // ── CAR-174 layer (b): the ta prompt carries a hard output-volume budget ───

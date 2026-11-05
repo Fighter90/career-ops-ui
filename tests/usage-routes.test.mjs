@@ -6,7 +6,7 @@ import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtempSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { join, dirname as dn } from 'node:path';
 
 let server; let baseUrl; let logFile;
 let normalizeUsage; let recordUsage; let readUsage; let aggregate; let priceFor;
@@ -143,4 +143,50 @@ test('GET /api/usage surfaces the Hermes gateway cost end-to-end', async () => {
   const hermes = j.windows.all.providers.find((p) => p.provider === 'hermes');
   assert.ok(hermes, 'hermes row present');
   assert.ok(Math.abs(hermes.usd - 4.2) < 1e-9, `hermes usd should be 4.2, got ${hermes.usd}`);
+});
+
+test('usage: llmLatency p50/p90/max from durationMs rows (v1.268.0 CAR-230)', async () => {
+  const { recordUsage, readUsage } = await import('../server/lib/llm-usage.mjs');
+  // PATHS resolves ONCE per process (to this suite's mkdtemp root): the journal
+  // is PATHS.llmUsage — write durations, then read the endpoint back.
+  recordUsage('anthropic', { input_tokens: 10, output_tokens: 5, durationMs: 120_000 });
+  recordUsage('anthropic', { input_tokens: 10, output_tokens: 5, durationMs: 180_000 });
+  recordUsage('anthropic', { input_tokens: 10, output_tokens: 5, durationMs: 400_000 });
+  const { createApp } = await import('../server/index.mjs');
+  const server = await new Promise((r) => { const s = createApp().listen(0, '127.0.0.1', () => r(s)); });
+  try {
+    const res = await fetch(`http://127.0.0.1:${server.address().port}/api/usage`);
+    const body = await res.json();
+    const journaled = readUsage().filter((r) => Number.isFinite(r.durationMs));
+    assert.ok(body.llmLatency, `durationMs rows → llmLatency present (journaled=${journaled.length}, totalCalls=${body.totalCalls})`);
+    assert.equal(body.llmLatency.n, 3);
+    assert.equal(body.llmLatency.p50Ms, 180_000, 'the middle value is the p50');
+    assert.equal(body.llmLatency.maxMs, 400_000);
+  } finally {
+    server.closeAllConnections?.();
+    await new Promise((r) => server.close(r));
+  }
+});
+
+test('usage: llmLatency null when the journal has no durationMs rows (v1.268.0 CAR-230)', async () => {
+  const { PATHS } = await import('../server/lib/paths.mjs');
+  // Isolated journal (PATHS resolves once per process — this suite's mkdtemp
+  // root is shared with the p50 test, so this test rebuilds the journal file
+  // with duration-free rows before reading).
+  const { writeFileSync, mkdirSync } = await import('node:fs');
+  mkdirSync(dn(PATHS.llmUsage), { recursive: true });
+  writeFileSync(PATHS.llmUsage, [
+    JSON.stringify({ ts: 1_000, provider: 'anthropic', in: 10, out: 5 }),
+    JSON.stringify({ ts: 2_000, provider: 'openrouter', in: 20, out: 8 }),
+  ].join('\n') + '\n');
+  const { createApp } = await import('../server/index.mjs');
+  const server = await new Promise((r) => { const s = createApp().listen(0, '127.0.0.1', () => r(s)); });
+  try {
+    const res = await fetch(`http://127.0.0.1:${server.address().port}/api/usage`);
+    const body = await res.json();
+    assert.equal(body.llmLatency, null, 'no durationMs rows → null latency');
+  } finally {
+    server.closeAllConnections?.();
+    await new Promise((r) => server.close(r));
+  }
 });

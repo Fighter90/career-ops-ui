@@ -83,6 +83,20 @@ test('F-002: GET /api/help/xx-YY for unknown locale falls back to en.md', async 
 
 // ───────────────────────── F-009: manual mode opt-out ─────────────────────────
 
+// v1.268.0 — every /api/evaluate path answers on the SSE stream. Drain the
+// `event:`/`data:` frames and return them; a pre-stream 4xx stays plain JSON.
+async function drainEvaluate(r) {
+  const text = await r.text();
+  const events = [];
+  for (const frame of text.split('\n\n')) {
+    const ev = (frame.match(/^event:\s*(.+)$/m) || [])[1];
+    const data = (frame.match(/^data:\s*([\s\S]+)$/m) || [])[1];
+    if (ev) events.push({ ev, data: data ? JSON.parse(data) : {} });
+  }
+  return events;
+}
+const doneOf = (events) => events.find((e) => e.ev === 'done')?.data;
+
 test('F-009: POST /api/evaluate { mode:"manual" } returns prompt without LLM call', async () => {
   // Even if ANTHROPIC_API_KEY is set in the environment, manual mode must
   // bypass it so users can paste the prompt into Claude Code by hand.
@@ -93,7 +107,9 @@ test('F-009: POST /api/evaluate { mode:"manual" } returns prompt without LLM cal
     body: JSON.stringify({ jd: longJd.repeat(2), mode: 'manual', lang: 'ru' }),
   });
   assert.equal(r.status, 200);
-  const data = await r.json();
+  // v1.268.0 — the payload rides the terminal `done` frame (same transport as
+  // the live path); the frame carries mode/prompt exactly as the old JSON did.
+  const data = doneOf(await drainEvaluate(r));
   assert.equal(data.mode, 'manual');
   assert.ok(data.prompt && data.prompt.length > 100);
   // Locale directive should be present because lang=ru.
@@ -390,7 +406,8 @@ test('F-009: POST /api/evaluate { mode:"manual" } skips Anthropic even when ANTH
     });
     const elapsed = Date.now() - start;
     assert.equal(r.status, 200);
-    const data = await r.json();
+    // v1.268.0 — the manual answer is the `done` frame of the SSE stream.
+    const data = doneOf(await drainEvaluate(r));
     assert.equal(data.mode, 'manual');
     assert.match(data.prompt, /Respond in Japanese/);
     // Manual-mode must respond fast; if Anthropic was reached the SDK would
@@ -415,7 +432,10 @@ test('PR-2: /api/evaluate honors Accept-Language when no body.lang/locale', asyn
     },
     body: JSON.stringify({ jd: longJd.repeat(2), mode: 'manual' }),
   });
-  const data = await r.json();
+  // v1.268.0 — the locale flows into the prompt (echoed on the `done` frame);
+  // the header survives the resolveLocale(req) preference order unchanged.
+  const data = doneOf(await drainEvaluate(r));
+  assert.equal(data.mode, 'manual');
   assert.match(data.prompt, /Respond in Brazilian Portuguese/);
 });
 

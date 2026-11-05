@@ -22,6 +22,8 @@ import { PATHS, PROJECT_ROOT, path as projPath } from '../paths.mjs';
 import { runTrackedScript, streamNodeScript } from '../runner.mjs';
 import { withFileLock } from '../file-lock.mjs';
 import { sanitizePathName } from '../security.mjs';
+import { scanReportDateMismatches, fixReportHeaderDate, scanTrackerCompanyIssues, applyTrackerCompanyFix } from '../data-migrations.mjs';
+import { extractCellUrl } from '../parsers.mjs';
 import { writeRateLimit } from '../rate-limit.mjs';
 import { parseJsonStdout, sanitizeDetail } from '../parent-relay.mjs';
 
@@ -371,6 +373,85 @@ export function registerRunnerRoutes(app) {
         dryRun: /\(dry-run\b/.test(r.stdout),
       },
     });
+  });
+
+  // ─── Data migrations (CAR-232/233) — dry-run default, apply with backup ──
+  // These are in-process (no parent script exists): the surfaces are the
+  // user's reports/ headers and the tracker Company cells. `mode` follows
+  // the report-links contract; `apply` always leaves a timestamped .bak
+  // beside the file it touched.
+
+  const REPORTS_DIR = PATHS.reportsDir;
+  const backupName = (file) => `${file}.bak-${new Date().toISOString().replace(/[:.]/g, '-')}`;
+
+  function resolveReportCompany(cellValue) {
+    const href = extractCellUrl(cellValue);
+    if (!href) return null;
+    const base = String(href).split('/').pop();
+    if (!/^\w[\w.-]*\.md$/.test(base)) return null;
+    const file = resolve(REPORTS_DIR, base);
+    if (!existsSync(file)) return null;
+    const text = readFileSync(file, 'utf8');
+    const h1 = text.split('\n').find((l) => /^#\s+(?:Evaluation|Оценка вакансии)?[:\s]/.test(l) || /^#\s+Evaluation/.test(l));
+    if (!h1) return null;
+    // The header convention: `# Evaluation: {Company} — {Role}` (a localized
+    // prose label was already stripped when the report was saved). The
+    // company is the LEFT side of the em dash; a one-part header names the
+    // company only when the report's own header says so (fixReportDate-era
+    // files carry the full two-part shape).
+    const body = h1.replace(/^#\s+/, '').replace(/^Evaluation:\s*/i, '').replace(/^Оценка вакансии:\s*/i, '').trim();
+    if (!body) return null;
+    const dash = body.indexOf('—') !== -1 ? body.indexOf('—') : body.indexOf(' — ') !== -1 ? body.indexOf('—') : body.indexOf('-');
+    return (dash > 0 ? body.slice(0, dash) : body).replace(/\*\*/g, '').trim();
+  }
+
+  app.post('/api/runners/report-dates', writeRateLimit(), async (req, res) => {
+    const body = (req.body && typeof req.body === 'object') ? req.body : {};
+    const mode = body.mode === undefined ? 'dry-run' : body.mode;
+    if (mode !== 'dry-run' && mode !== 'apply') {
+      return res.status(400).json({ error: "mode must be 'dry-run' or 'apply'" });
+    }
+    const mismatches = scanReportDateMismatches(REPORTS_DIR);
+    if (mode === 'dry-run' || !mismatches.length) {
+      return res.json({ mode, count: mismatches.length, rows: mismatches });
+    }
+    const applied = [];
+    for (const m of mismatches) {
+      const file = resolve(REPORTS_DIR, m.file);
+      try {
+        const text = readFileSync(file, 'utf8');
+        const fixed = fixReportHeaderDate(text, m.fileDate);
+        if (!fixed) continue;
+        writeFileSync(backupName(file), text); // timestamped backup beside the file
+        writeFileSync(file, fixed);
+        applied.push({ ...m, applied: true });
+      } catch (e) {
+        applied.push({ ...m, applied: false, error: e.message });
+      }
+    }
+    res.json({ mode, count: applied.filter((a) => a.applied).length, rows: applied });
+  });
+
+  app.post('/api/runners/company-fix', writeRateLimit(), async (req, res) => {
+    const body = (req.body && typeof req.body === 'object') ? req.body : {};
+    const mode = body.mode === undefined ? 'dry-run' : body.mode;
+    if (mode !== 'dry-run' && mode !== 'apply') {
+      return res.status(400).json({ error: "mode must be 'dry-run' or 'apply'" });
+    }
+    const run = () => {
+      let text = '';
+      try { text = readFileSync(PATHS.applications, 'utf8'); } catch { return { mode, count: 0, rows: [] }; }
+      const issues = scanTrackerCompanyIssues(text, resolveReportCompany);
+      if (mode === 'dry-run') return { mode, count: issues.length, rows: issues };
+      const { text: fixedText, changed } = applyTrackerCompanyFix(text, issues);
+      if (!changed) return { mode, count: issues.length, rows: issues };
+      writeFileSync(backupName(PATHS.applications), text); // timestamped backup
+      writeFileSync(PATHS.applications, fixedText);
+      return { mode, count: issues.length, changed, rows: issues };
+    };
+    // apply rewrites data/applications.md — under the tracker's own lock.
+    const payload = mode === 'apply' ? await withFileLock(PATHS.applications, run) : run();
+    res.json(payload);
   });
 
   // ─── List + download generated PDFs (output/*.pdf) ───
