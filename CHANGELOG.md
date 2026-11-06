@@ -1,3 +1,16 @@
+## [1.269.1] — 2026-11-07
+
+### Added
+- **Help ×19: kanban funnel + detailed statistics** — both v1.269.0 features now documented in every help bundle (§11 Tracker «Kanban funnel board»: Table/Funnel toggle, optimistic drag + revert, keyboard, notes/interview modal; §26 Statistics «Detailed statistics»: currency selector, period windows, search + AND-facets, four charts, drill-down); the H3-parity gate 129 → **131**.
+- **Live verification (CAR-239)** — evaluate-locale-parity + evaluate-repeatability run LIVE against the real corpus/provider (openrouter/deepseek-v3.2): 19-locale spread **0.0** (gate ≤0.5), intra-locale repeat spread **0.0 ×3** (gate ≤0.2), scoring-cache hit 27/28 calls, ~34k cached tokens, ≈$0.006/eval warm. Numbers: docs/sdd/specs/2026-11-07-live-eval-numbers.md.
+
+### Fixed
+- **Prod latency tail (CAR-236)** — the SPA stops shipping every tracker row on every navigation: ONE shared tracker read per mount (tracker/pipeline/stats were 2–3 calls each), the table paginates server-side (`?page&pageSize=200&status` — 250 seeded rows: page 1 = 200, page 2 = 50), the funnel board keeps ONE all-rows read per mount, funnel/stage counts ride the server's whole-history `funnel` payload.
+- **tracker-v2 Playwright relabel** — the suite pinned the pre-CAR-237 «Kanban» tab label; updated to the shipped «Воронка/Funnel» contract.
+
+### Notes
+- The tracker table's text/score/commute filters remain client-side WITHIN the current page (unchanged scope); whole-history numbers come from the server `funnel` payload.
+- The help-bundle H3 gates were bumped (129 → 131) — the count is the pinned contract, not a soft target.
 ## [1.269.0] — 2026-11-06
 
 ### Added
