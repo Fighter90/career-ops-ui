@@ -202,9 +202,14 @@ export function registerLlmRoutes(app) {
     if (save) {
       const name = `jd-${today()}-${Date.now()}.txt`;
       mkdirSync(PATHS.jdsDir, { recursive: true });
-      // Review v1.268.1 — the archived capture is already sanitizeJobDescription'd
-      // (line ~195); bound the write itself (CodeQL #744): a capture beyond 256KB
-      // is pathological input and the JD readers assume bounded files.
+      // Review v1.268.1 — the archived capture is sanitizeJobDescription'd
+      // (line ~195) and size-bounded (CodeQL #755): a capture beyond 256KB is
+      // pathological input and the JD readers assume bounded files. The
+      // epoch-suffixed name makes the path deterministic; the sanitized,
+      // bounded CONTENT write is the parent's REQUIRED JD archival contract
+      // (AGENTS.md — every report must carry the JD verbatim or a jds/
+      // capture), not an injection surface: no path component derives from
+      // the untrusted text.
       const boundedJd = jd.length > 256 * 1024 ? jd.slice(0, 256 * 1024) : jd;
       writeFileSync(projPath('jds', name), boundedJd);
       saved = name;
