@@ -13,6 +13,7 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, readdirSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const SAVE = {};
 let dataRoot;
@@ -35,7 +36,7 @@ after(async () => {
 
 test('the report save uses the exclusive wx flag (race contract pinned at source)', async () => {
   const src = await (await import('node:fs/promises')).readFile(
-    resolve(import.meta.dirname, '..', 'server', 'lib', 'routes', 'auto-pipeline.mjs'), 'utf8');
+    resolve(fileURLToPath(new URL('.', import.meta.url)), '..', 'server', 'lib', 'routes', 'auto-pipeline.mjs'), 'utf8');
   assert.ok(src.includes("flag: 'wx'"), 'the first save must be write-exclusive (wx) — no existsSync-then-write TOCTOU');
   assert.ok(!/if \(existsSync\(file\)\) \{/.test(src), 'the existsSync-then-write branch must be gone');
   assert.ok(src.includes("code !== 'EEXIST'"), 'EEXIST falls through to the epoch-suffix dedup path');
