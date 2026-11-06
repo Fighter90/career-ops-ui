@@ -96,7 +96,7 @@ career-ops прикасается):
 | **Архетип** | Профиль целевой роли в `config/profile.yml`. Рубрика взвешивает совпадения навыков относительно активного архетипа — **самое важное поле**. |
 | **Pipeline** | `data/pipeline.md` — инбокс JD-URL, ожидающих оценки. |
 | **Tracker** | `data/applications.md` — историческая GFM-таблица всех оценок и статусов заявок. |
-| **Report** | `reports/<NNN>-<company>-<DATE>.md` — полная оценка JD по секциям A–F со score и legitimacy в заголовке. |
+| **Report** | `reports/<NNN>-<company>-<DATE>.md` — полная оценка JD по секциям A–G со score и legitimacy в заголовке. |
 | **Scan history** | `data/scan-history.tsv` — append-only-журнал; предотвращает дубликаты между сканами. |
 | **Proof points** | STAR+R-блоки доказательств, извлечённые из `cv.md`; переиспользуются в оценке, ответах на форму и подготовке к интервью. |
 | **JD store** | `jds/jd-<date>-<ts>.txt` — описания вакансий, сохранённые при оценке для аудита. |
@@ -284,7 +284,7 @@ Workday (английские доски) и hh.ru / Habr Career / Trudvsem / Ge
 **Шаг 12 — Нажмите `▶ Evaluate` рядом с любым JD.** Перейдёте на
 `#/evaluate`. С заданным API-ключом запускается live; без ключа
 получаете готовый prompt для копирования в свой LLM. Live-режим
-выдаёт **оценку 0–5** против вашего CV по секциям A–F. Сохранение
+выдаёт **оценку 0–5** против вашего CV по секциям A–G. Сохранение
 идёт в `reports/<date>-<slug>.md`.
 
 **Шаг 13 — Кликните `Reports` в меню** и просмотрите свежую оценку.
@@ -1185,7 +1185,7 @@ SSRF-валидацией** — каждый заголовок `Location` сн�
 ## 9. Оценить (`#/evaluate`)
 
 Оценивает одно JD против `cv.md` и `config/profile.yml`. Возвращает
-структурированную оценку A–F по `modes/oferta.md` и score 0–5.
+структурированную оценку A–G по `modes/oferta.md` и score 0–5.
 
 ### Input
 
@@ -1210,29 +1210,18 @@ API-вызове — эффект тот же).
    который можно вставить в Claude Code, ChatGPT или любой другой
    LLM.
 
-### Output-секции (канонический A–F с career-ops.org)
+### Output-секции (A–G — `modes/oferta.md`)
 
-> **Выравнивание v1.15.0.** Буквы блоков теперь совпадают с
-> [канонической схемой career-ops.org](https://career-ops.org/docs).
-> До v1.15 отчёты использовали A–G (с `C=Risks`, `F=Verdict`,
-> `G=Legitimacy`); мы по-прежнему рендерим их как есть для обратной
-> совместимости, но новые отчёты эмитят A–F с канонической
-> семантикой ниже. Score и Legitimacy теперь живут в заголовке
-> отчёта (`score: 4.2/5`, `legitimacy: High|Medium|Low`).
+> Текущий шаблон `modes/oferta.md` выводит семь разделов A–G. Оценка 0–5 и краткий статус достоверности — в заголовке, подробная проверка вакансии — в G. В H черновики ответов на анкету появляются только при оценке от 4,5. Буквы разделов не являются пятью измерениями оценки. Старые отчёты показываются без изменений.
 
-A. **Role Summary** — 3 буллета (риски вынесены инлайном).
-B. **CV Match** — топ-3 совпавших навыка и топ-3 недостающих.
-C. **Strategy** — рекомендация: apply now / contacto first /
-deep first / skip. До v1.15 называлось `Risks`.
-D. **Compensation** — относительно вашего
-`target.comp_total_min_usd` (legacy) или
-`compensation.target_range` (canonical).
-E. **Personalization** — угол подачи, framing по архетипу, хуки
-для cover letter / outreach. До v1.15 называлось
-`Application Strategy`.
-F. **STAR stories** — 1–3 готовых STAR-блока под роль. До v1.15
-называлось `Verdict` (raw score); score теперь появляется в
-заголовке отчёта рядом с `legitimacy`.
+A. **Role Summary**
+B. **Match with CV**
+C. **Level and Strategy**
+D. **Comp and Demand**
+E. **Customization Plan**
+F. **Interview Plan**
+G. **Posting Legitimacy**
+H. **Draft Application Answers**
 
 ### Сохранение отчёта
 
@@ -1593,7 +1582,7 @@ Claude Code, который использует Playwright в родитель�
 **Автоматические обновления на `Submitted.`:**
 
 - Статус меняется `Evaluated → Applied` в `data/applications.md`.
-- Заполненные ответы остаются в секции G отчёта для будущих ссылок.
+- Заполненные ответы остаются в разделе `## Application Answers` отчёта для будущих ссылок.
 
 **Handoff в трекер:**
 

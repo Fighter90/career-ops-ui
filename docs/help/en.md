@@ -91,7 +91,7 @@ locally on your machine.
 | **Archetype** | A target-role profile in `config/profile.yml`. The rubric weights skill matches against the active archetype — **the single most important field**. |
 | **Pipeline** | `data/pipeline.md` — inbox of JD URLs waiting to be evaluated. |
 | **Tracker** | `data/applications.md` — historical GFM table of every evaluation + application status. |
-| **Report** | `reports/<NNN>-<company>-<DATE>.md` — full A–F evaluation per JD, with score + legitimacy in the header. |
+| **Report** | `reports/<NNN>-<company>-<DATE>.md` — full A–G evaluation per JD, with score + legitimacy in the header. |
 | **Scan history** | `data/scan-history.tsv` — append-only log; prevents duplicates across scans. |
 | **Proof points** | STAR+R evidence blocks extracted from `cv.md`, reused across evaluation, apply answers, interview prep. |
 | **JD store** | `jds/jd-<date>-<ts>.txt` — verbatim job descriptions saved during evaluation for the audit trail. |
@@ -1317,29 +1317,18 @@ effect).
 3. **Manual** — no key set. The page returns a fully-formed prompt
    you can paste into Claude Code, ChatGPT, or any other LLM.
 
-### Output sections (canonical career-ops.org A-F)
+### Output sections (A–G — `modes/oferta.md`)
 
-> **v1.15.0 realignment.** Block letters now match the
-> [canonical career-ops.org schema](https://career-ops.org/docs).
-> Pre-v1.15 reports used A–G (with `C=Risks`, `F=Verdict`,
-> `G=Legitimacy`); we still render them as-is for backward
-> compatibility, but new reports emit A–F with the canonical
-> semantics below. Score and Legitimacy now live in the report
-> header (`score: 4.2/5`, `legitimacy: High|Medium|Low`).
+> The current `modes/oferta.md` template emits seven A–G sections. The 0–5 score and short legitimacy status are in the report header; G contains the detailed posting check. H contains draft application answers only for scores of at least 4.5. These section letters are not the five scoring dimensions. Older saved reports are displayed as written.
 
-A. **Role Summary** — 3-bullet recap (risks called out inline).
-B. **CV Match** — top 3 skills hit + top 3 missing.
-C. **Strategy** — recommendation: apply now / contacto first /
-deep first / skip. Was `Risks` before v1.15.
-D. **Compensation** — relative to your
-`target.comp_total_min_usd` (legacy) or `compensation.target_range`
-(canonical).
-E. **Personalization** — angle to lead with, framing per archetype,
-hooks to mention in cover letter / outreach. Was `Application
-Strategy` before v1.15.
-F. **STAR stories** — 1–3 ready-to-paste S-T-A-R blocks tailored
-to the role. Was `Verdict` (raw score) before v1.15; score now
-appears in the report header alongside `legitimacy`.
+A. **Role Summary**
+B. **Match with CV**
+C. **Level and Strategy**
+D. **Comp and Demand**
+E. **Customization Plan**
+F. **Interview Plan**
+G. **Posting Legitimacy**
+H. **Draft Application Answers**
 
 ### Saving the report
 
@@ -1696,7 +1685,7 @@ Two routes for the actual submission:
 **Automatic updates on `Submitted.`:**
 
 - Status flips `Evaluated → Applied` in `data/applications.md`.
-- The filled answers persist in Section G of the report for future
+- The filled answers persist in `## Application Answers` of the report for future
   reference.
 
 **Handoff to tracker:**

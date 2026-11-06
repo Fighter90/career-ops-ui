@@ -92,7 +92,7 @@
 | **Archetype** | `config/profile.yml` のターゲットロールプロファイル。ルーブリックはアクティブな archetype に対してスキル一致を重み付けします — **単一で最重要のフィールド**です。 |
 | **Pipeline** | `data/pipeline.md` — 評価待ちの JD URL の受信箱。 |
 | **Tracker** | `data/applications.md` — すべての評価 + 応募ステータスの履歴的な GFM テーブル。 |
-| **Report** | `reports/<NNN>-<company>-<DATE>.md` — JD ごとの完全な A–F 評価。ヘッダに score と legitimacy を含みます。 |
+| **Report** | `reports/<NNN>-<company>-<DATE>.md` — JD ごとの完全な A–G 評価。ヘッダに score と legitimacy を含みます。 |
 | **Scan history** | `data/scan-history.tsv` — 追記専用ログ。スキャン間で重複を防止します。 |
 | **Proof points** | `cv.md` から抽出した STAR+R 形式の根拠ブロック。評価・apply 回答・面接準備で再利用されます。 |
 | **JD store** | `jds/jd-<date>-<ts>.txt` — 評価時に保存された求人説明の原文。監査証跡用です。 |
@@ -1231,29 +1231,18 @@ JD をテキストエリアに貼り付けるか、`#/pipeline` から `?url=<hr
 3. **手動** — キー未設定。ページは Claude Code、ChatGPT、または
    他の任意の LLM に貼り付けられる完全な形のプロンプトを返します。
 
-### 出力セクション (正規 career-ops.org A-F)
+### 出力セクション (A–G — `modes/oferta.md`)
 
-> **v1.15.0 リアラインメント。** ブロックレターは
-> [正規 career-ops.org スキーマ](https://career-ops.org/docs)
-> と一致するようになりました。v1.15 以前のレポートは A–G
-> (`C=Risks`、`F=Verdict`、`G=Legitimacy`) を使っていました。
-> 後方互換性のためそのまま描画しますが、新規レポートは以下の
-> 正規セマンティクスで A–F を出力します。Score と Legitimacy は
-> レポートヘッダに移動しました (`score: 4.2/5`、
-> `legitimacy: High|Medium|Low`)。
+> 現在の `modes/oferta.md` テンプレートは A–G の 7 セクションを出力します。0–5 のスコアと簡潔な求人の信頼性はヘッダーに、詳細な検証は G にあります。H はスコアが 4.5 以上の場合のみ応募フォームの回答案を含みます。セクション文字は 5 つの採点項目ではありません。過去のレポートはそのまま表示します。
 
-A. **Role Summary** — 3 つの箇条書きで要約 (リスクはインラインで明示)。
-B. **CV Match** — 上位 3 つの一致スキル + 上位 3 つの不足スキル。
-C. **Strategy** — 推奨: 即応募 / 先に contacto / 先に deep /
-スキップ。v1.15 以前は `Risks` でした。
-D. **Compensation** — `target.comp_total_min_usd` (レガシー)
-または `compensation.target_range` (正規) に対する相対評価。
-E. **Personalization** — リードするアングル、archetype ごとの
-フレーミング、カバーレター / アウトリーチで触れるフック。v1.15
-以前は `Application Strategy` でした。
-F. **STAR stories** — ロールに合わせた、貼り付け可能な S-T-A-R
-ブロック 1–3 件。v1.15 以前は `Verdict` (生 score) でした。
-score は現在 `legitimacy` と並んでレポートヘッダに表示されます。
+A. **Role Summary**
+B. **Match with CV**
+C. **Level and Strategy**
+D. **Comp and Demand**
+E. **Customization Plan**
+F. **Interview Plan**
+G. **Posting Legitimacy**
+H. **Draft Application Answers**
 
 ### レポートの保存
 

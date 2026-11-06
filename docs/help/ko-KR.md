@@ -92,7 +92,7 @@
 | **Archetype** | `config/profile.yml`에 있는 타깃 롤 프로필. 루브릭은 활성 archetype에 대한 스킬 매칭에 가중치를 부여 — **가장 중요한 단일 필드**. |
 | **Pipeline** | `data/pipeline.md` — 평가 대기 중인 JD URL의 inbox. |
 | **Tracker** | `data/applications.md` — 모든 평가와 지원 상태의 이력 GFM 테이블. |
-| **Report** | `reports/<NNN>-<company>-<DATE>.md` — JD별 전체 A–F 평가, 헤더에 score와 legitimacy 포함. |
+| **Report** | `reports/<NNN>-<company>-<DATE>.md` — JD별 전체 A–G 평가, 헤더에 score와 legitimacy 포함. |
 | **Scan history** | `data/scan-history.tsv` — append-only 로그. 스캔 간 중복 방지. |
 | **Proof points** | `cv.md`에서 추출한 STAR+R 증거 블록. 평가·apply 답변·인터뷰 준비에 재사용. |
 | **JD store** | `jds/jd-<date>-<ts>.txt` — 평가 시 그대로 저장된 채용 공고 원문. 감사 추적용. |
@@ -1179,28 +1179,18 @@ true`도 동일 효과).
 3. **수동** — 키가 없을 때. 페이지가 Claude Code, ChatGPT 또는
    다른 LLM에 붙여넣을 수 있는 완성된 프롬프트를 반환합니다.
 
-### 출력 섹션 (정식 career-ops.org A–F)
+### 출력 섹션 (A–G — `modes/oferta.md`)
 
-> **v1.15.0 정렬.** 블록 글자가 이제
-> [정식 career-ops.org 스키마](https://career-ops.org/docs)와
-> 일치합니다. v1.15 이전 보고서는 A–G(`C=Risks`, `F=Verdict`,
-> `G=Legitimacy`)를 사용했으며 호환성을 위해 그대로 렌더링되지만,
-> 새 보고서는 아래 정식 의미의 A–F를 발행합니다. Score와
-> Legitimacy는 이제 보고서 헤더에 있습니다 (`score: 4.2/5`,
-> `legitimacy: High|Medium|Low`).
+> 현재 `modes/oferta.md` 템플릿은 A–G 일곱 섹션을 생성합니다. 0–5점과 간단한 공고 신뢰도는 헤더에, 자세한 공고 검증은 G에 있습니다. H에는 점수가 4.5 이상일 때만 지원서 답변 초안이 들어갑니다. 섹션 문자는 다섯 가지 점수 차원이 아닙니다. 이전 보고서는 원본 그대로 표시합니다.
 
-A. **Role Summary** — 3불릿 요약 (리스크는 인라인으로 명시).
-B. **CV Match** — 매칭된 상위 3개 스킬 + 누락된 상위 3개.
-C. **Strategy** — 권장사항: 즉시 지원 / contacto 먼저 / deep
-먼저 / skip. v1.15 이전엔 `Risks`였음.
-D. **Compensation** — `target.comp_total_min_usd` (레거시) 또는
-`compensation.target_range` (정식) 대비.
-E. **Personalization** — 강조할 어프로치, archetype별 프레이밍,
-커버 레터 / outreach에서 언급할 후크. v1.15 이전엔 `Application
-Strategy`였음.
-F. **STAR stories** — 롤에 맞춘 즉시 붙여넣기 가능한 1–3개의
-S-T-A-R 블록. v1.15 이전엔 `Verdict` (원점수)였으며, score는 이제
-`legitimacy`와 함께 보고서 헤더에 표시됩니다.
+A. **Role Summary**
+B. **Match with CV**
+C. **Level and Strategy**
+D. **Comp and Demand**
+E. **Customization Plan**
+F. **Interview Plan**
+G. **Posting Legitimacy**
+H. **Draft Application Answers**
 
 ### 보고서 저장
 

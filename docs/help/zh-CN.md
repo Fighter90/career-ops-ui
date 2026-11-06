@@ -80,7 +80,7 @@
 | **Archetype** | `config/profile.yml` 中的目标角色画像。评分体系按当前 archetype 加权技能匹配 — **最重要的单一字段**。 |
 | **Pipeline** | `data/pipeline.md` — 等待评估的 JD URL 收件箱。 |
 | **Tracker** | `data/applications.md` — 历史 GFM 表格,记录每次评估与申请状态。 |
-| **Report** | `reports/<NNN>-<company>-<DATE>.md` — 每个 JD 的完整 A–F 评估,头部含 score 与合法性。 |
+| **Report** | `reports/<NNN>-<company>-<DATE>.md` — 每个 JD 的完整 A–G 评估,头部含 score 与合法性。 |
 | **Scan history** | `data/scan-history.tsv` — 仅追加日志,跨扫描去重。 |
 | **Proof points** | 从 `cv.md` 提取的 STAR+R 证据块,在评估、apply 答题、面试准备之间复用。 |
 | **JD store** | `jds/jd-<date>-<ts>.txt` — 评估期间保存的原始职位描述,用于审计跟踪。 |
@@ -1127,26 +1127,18 @@ Pipeline**(`pipe.undone`)。横条挂在页面自身标记之外,因此重新渲
 3. **手工** — 未设置 key 时。页面返回一个完整提示,你可以粘贴到
    Claude Code、ChatGPT 或其他 LLM。
 
-### 输出章节(权威 career-ops.org A–F)
+### 输出章节 (A–G — `modes/oferta.md`)
 
-> **v1.15.0 对齐变更。** 块字母现在与
-> [权威 career-ops.org schema](https://career-ops.org/docs)
-> 一致。v1.15 前的报告使用 A–G(其中 `C=Risks`、`F=Verdict`、
-> `G=Legitimacy`);为兼容性我们仍按原样渲染,但新报告输出 A–F 并采
-> 用下列权威语义。Score 与 Legitimacy 现在位于报告头部
-> (`score: 4.2/5`、`legitimacy: High|Medium|Low`)。
+> 当前 `modes/oferta.md` 模板输出 A–G 七个章节。0–5 分和简短的职位真实性状态在报告头部，详细核验在 G。仅当评分不低于 4.5 时，H 才包含申请表回答草稿。章节字母不等于五个评分维度。旧报告保持原样显示。
 
-A. **Role Summary** — 3 条要点摘要(行内列出风险)。
-B. **CV Match** — 命中的 3 项技能 + 缺失的 3 项。
-C. **Strategy** — 建议: 立刻申请 / 先 contacto / 先 deep / 跳过。
-v1.15 之前为 `Risks`。
-D. **Compensation** — 相对你的 `target.comp_total_min_usd`(旧)或
-`compensation.target_range`(权威)。
-E. **Personalization** — 切入角度,按 archetype 的行文框架,在求职
-信 / 外联中应提到的钩子。v1.15 之前为 `Application Strategy`。
-F. **STAR stories** — 1–3 条针对该角色定制、可直接粘贴的 S-T-A-R
-块。v1.15 之前为 `Verdict`(原始分);分数现在出现在报告头部,与
-`legitimacy` 并列。
+A. **Role Summary**
+B. **Match with CV**
+C. **Level and Strategy**
+D. **Comp and Demand**
+E. **Customization Plan**
+F. **Interview Plan**
+G. **Posting Legitimacy**
+H. **Draft Application Answers**
 
 ### 保存报告
 
@@ -1476,7 +1468,7 @@ SPA 清单适合不想调用 Playwright、希望手工填表的用户。空页�
 **`Submitted.` 触发的自动更新:**
 
 - `data/applications.md` 中状态从 `Evaluated` 翻转到 `Applied`。
-- 填写的答案持久化到报告的 Section G 以便日后参考。
+- 填写的答案持久化到报告的 `## Application Answers` 以便日后参考。
 
 **交接到 tracker:**
 

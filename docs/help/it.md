@@ -96,7 +96,7 @@ career-ops tocca):
 | **Archetype** | Un profilo di ruolo target in `config/profile.yml`. La rubrica pesa le corrispondenze di competenze rispetto all'archetipo attivo — **il singolo campo più importante**. |
 | **Pipeline** | `data/pipeline.md` — casella di posta di URL di JD in attesa di essere valutate. |
 | **Tracker** | `data/applications.md` — tabella GFM storica di ogni valutazione + stato della candidatura. |
-| **Report** | `reports/<NNN>-<company>-<DATE>.md` — valutazione A–F completa per JD, con punteggio + legittimità nell'intestazione. |
+| **Report** | `reports/<NNN>-<company>-<DATE>.md` — valutazione A–G completa per JD, con punteggio + legittimità nell'intestazione. |
 | **Scan history** | `data/scan-history.tsv` — log solo in accodamento; previene i duplicati tra le scansioni. |
 | **Proof points** | Blocchi di evidenza STAR+R estratti da `cv.md`, riutilizzati nella valutazione, nelle risposte di candidatura, nella preparazione ai colloqui. |
 | **JD store** | `jds/jd-<date>-<ts>.txt` — descrizioni di lavoro alla lettera salvate durante la valutazione per la tracciabilità. |
@@ -1325,29 +1325,18 @@ effetto).
 3. **Manuale** — nessuna chiave impostata. La pagina restituisce un prompt completamente formato
    che puoi incollare in Claude Code, ChatGPT, o qualsiasi altro LLM.
 
-### Sezioni di output (A-F canonico di career-ops.org)
+### Sezioni di output (A–G — `modes/oferta.md`)
 
-> **Riallineamento v1.15.0.** Le lettere dei blocchi ora corrispondono allo
-> [schema canonico di career-ops.org](https://career-ops.org/docs).
-> I rapporti pre-v1.15 usavano A–G (con `C=Risks`, `F=Verdict`,
-> `G=Legitimacy`); li rendiamo ancora così per retrocompatibilità,
-> ma i nuovi rapporti emettono A–F con la semantica canonica
-> qui sotto. Punteggio e Legittimità ora vivono nell'intestazione del
-> rapporto (`score: 4.2/5`, `legitimacy: High|Medium|Low`).
+> Il modello attuale `modes/oferta.md` produce sette sezioni A–G. Il punteggio 0–5 e lo stato sintetico di legittimità sono nell’intestazione; G contiene la verifica dettagliata dell’annuncio. H contiene bozze di risposte al modulo solo con un punteggio di almeno 4,5. Le lettere delle sezioni non sono le cinque dimensioni del punteggio. I report precedenti restano visualizzabili senza modifiche.
 
-A. **Role Summary** — recap in 3 punti (rischi indicati in linea).
-B. **CV Match** — le 3 principali competenze centrate + le 3 principali mancanti.
-C. **Strategy** — raccomandazione: apply now / contacto first /
-deep first / skip. Era `Risks` prima di v1.15.
-D. **Compensation** — relativa al tuo
-`target.comp_total_min_usd` (legacy) o `compensation.target_range`
-(canonico).
-E. **Personalization** — angolazione con cui aprire, framing per archetipo,
-ganci da menzionare nella lettera di presentazione / outreach. Era `Application
-Strategy` prima di v1.15.
-F. **STAR stories** — 1–3 blocchi S-T-A-R pronti da incollare su misura
-per il ruolo. Era `Verdict` (punteggio grezzo) prima di v1.15; il punteggio ora
-appare nell'intestazione del rapporto insieme a `legitimacy`.
+A. **Role Summary**
+B. **Match with CV**
+C. **Level and Strategy**
+D. **Comp and Demand**
+E. **Customization Plan**
+F. **Interview Plan**
+G. **Posting Legitimacy**
+H. **Draft Application Answers**
 
 ### Salvare il rapporto
 
