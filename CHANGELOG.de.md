@@ -2,6 +2,23 @@
 
 > Dieses Changelog enthält die vollständige Versionsgeschichte. Einträge, die vor der deutschen Lokalisierung (v1.85.0) veröffentlicht wurden, stehen unten im englischen Original — Übersetzung ausstehend; maßgeblich bleibt [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.269.1] — 2026-11-07
+
+### Neu
+
+- **Help ×19: Kanban-Funnel + detaillierte Statistiken** — beide v1.269.0-Features sind jetzt in jedem Help-Bundle dokumentiert (§11 Tracker «Kanban-Funnel-Board»: Tabelle/Funnel-Toggle, optimistischer Drag + Revert, Tastatur, Notizen/Interview-Modal; §26 Statistics «Detaillierte Statistiken»: Währungsselektor, Periodenfenster, Suche + AND-Facetten, vier Charts, Drill-down); das H3-Paritäts-Gate 129 → **131**.
+- **Live-Verifikation (CAR-239)** — evaluate-locale-parity + evaluate-repeatability laufen LIVE gegen das echte Korpus/den echten Provider (openrouter/deepseek-v3.2): Streuung über 19 Locales **0.0** (Gate ≤ 0.5), Wiederholungs-Streuung intra-Locale **0.0 ×3** (Gate ≤ 0.2), Scoring-Cache-Treffer 27/28 Aufrufe, ~34k gecachte Tokens, ≈$0.006/eval warm. Zahlen: docs/sdd/specs/2026-11-07-live-eval-numbers.md.
+
+### Behoben
+
+- **Prod-Latenz-Rest (CAR-236)** — die SPA hört auf, bei jeder Navigation jede Tracker-Zeile zu verschicken: EINE gemeinsame Tracker-Lesung pro Mount (tracker/pipeline/stats machten je 2–3 Aufrufe), die Tabelle paginiert serverseitig (`?page&pageSize=200&status` — 250 Seed-Zeilen: Seite 1 = 200, Seite 2 = 50), das Funnel-Board behält EINE Alles-Zeilen-Lesung pro Mount, und die Funnel-/Stufen-Zähler fahren im Whole-History-`funnel`-Payload des Servers mit.
+- **tracker-v2 Playwright-Umlabelung** — die Suite pinnte das «Kanban»-Tab-Label von vor CAR-237; aktualisiert auf den ausgelieferten «Воронка/Funnel»-Kontrakt.
+
+### Hinweise
+
+- Die Text-/Score-/Commute-Filter der Tracker-Tabelle bleiben clientseitig INNERHALB der aktuellen Seite (unveränderter Scope); die Whole-History-Zahlen kommen aus dem `funnel`-Payload des Servers.
+- Die H3-Gates der Help-Bundles wurden angehoben (129 → 131) — die Zahl ist der festgenadelte Kontrakt, kein weiches Ziel.
+
 ## [1.269.0] — 2026-11-06
 
 ### Neu

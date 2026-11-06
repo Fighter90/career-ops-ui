@@ -6,6 +6,23 @@
 
 ---
 
+## [1.269.1] — 2026-11-07
+
+### சேர்க்கப்பட்டது
+
+- **Help ×19: kanban funnel + விரிவான புள்ளிவிவரங்கள்** — v1.269.0 இரு அம்சங்களும் இப்போது ஒவ்வொரு help bundle-இலும் ஆவணப்படுத்தப்பட்டுள்ளன (§11 Tracker «kanban funnel board»: table/funnel toggle, optimistic drag + revert, keyboard, notes/interview modal; §26 Statistics «விரிவான புள்ளிவிவரங்கள்»: currency selector, period windows, search + AND facets, நான்கு charts, drill-down); H3-parity gate 129 → **131**.
+- **Live verification (CAR-239)** — evaluate-locale-parity + evaluate-repeatability உண்மையான corpus/provider-இன் (openrouter/deepseek-v3.2) மீது LIVE ஆக இயங்குகிறது: 19 locale spread **0.0** (gate ≤ 0.5), intra-locale repeat spread **0.0 ×3** (gate ≤ 0.2), scoring-cache hit 27/28 calls, ~34k cached tokens, வெப்ப நிலையில் ≈$0.006/eval. எண்கள்: docs/sdd/specs/2026-11-07-live-eval-numbers.md.
+
+### சரி செய்யப்பட்டது
+
+- **Prod latency வால் (CAR-236)** — SPA ஒவ்வொரு navigation-இலும் ஒவ்வொரு tracker row-ஐயும் அனுப்புவதை நிறுத்துகிறது: mount-க்கு ஒரே ஒரு பகிர்வு tracker read (tracker/pipeline/stats தலா 2–3 calls), table server-side ஆக paginate ஆகிறது (`?page&pageSize=200&status` — 250 seeded rows: page 1 = 200, page 2 = 50), funnel board mount-க்கு ஒரே ஒரு all-rows read-ஐ வைத்திருக்கிறது, funnel/stage counts server-இன் whole-history `funnel` payload-இல் பயணிக்கின்றன.
+- **tracker-v2 Playwright relabel** — suite CAR-237-க்கு முந்தைய «Kanban» tab label-இல் பொருத்தப்பட்டிருந்தது; வழங்கப்பட்ட «Воронка/Funnel» contract-க்கு புதுப்பிக்கப்பட்டது.
+
+### குறிப்புகள்
+
+- Tracker table-இன் text/score/commute வடிகட்டிகள் தற்போதைய page-க்குள் client-side ஆகவே இருக்கின்றன (scope மாறவில்லை); whole-history எண்கள் server-இன் `funnel` payload-இலிருந்து வருகின்றன.
+- Help bundle-களின் H3 gate-கள் உயர்த்தப்பட்டன (129 → 131) — எண்ணிக்கை பொருத்தப்பட்ட contract, soft target அல்ல.
+
 ## [1.269.0] — 2026-11-06
 
 ### சேர்க்கப்பட்டது

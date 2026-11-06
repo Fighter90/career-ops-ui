@@ -6,6 +6,23 @@ Bản dịch: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.269.1] — 2026-11-07
+
+### Đã thêm
+
+- **Help ×19: phễu kanban + thống kê chi tiết** — cả hai tính năng của v1.269.0 nay đã được ghi lại trong mọi gói trợ giúp (§11 Tracker «Bảng kanban phễu»: toggle bảng/phễu, kéo lạc quan + hoàn tác, bàn phím, modal ghi chú/phỏng vấn; §26 Statistics «Thống kê chi tiết»: bộ chọn tiền tệ, các cửa sổ kỳ, tìm kiếm + facet AND, bốn biểu đồ, drill-down); cổng tương thích H3 129 → **131**.
+- **Xác minh trực tiếp (CAR-239)** — evaluate-locale-parity + evaluate-repeatability chạy TRỰC TIẾP trên corpus/provider thật (openrouter/deepseek-v3.2): độ lan tỏa qua 19 locale **0.0** (gate ≤ 0.5), độ lan tỏa lặp trong từng locale **0.0 ×3** (gate ≤ 0.2), cache chấm điểm trúng 27/28 lần gọi, ~34k token được cache, ≈$0.006/eval khi nóng. Số liệu: docs/sdd/specs/2026-11-07-live-eval-numbers.md.
+
+### Đã sửa
+
+- **Đuôi độ trễ prod (CAR-236)** — SPA ngừng chở từng dòng tracker qua mỗi lần điều hướng: MỘT lần đọc tracker chia sẻ mỗi mount (tracker/pipeline/stats từng gọi 2–3 lần mỗi cái), bảng phân trang phía máy chủ (`?page&pageSize=200&status` — 250 dòng gieo sẵn: trang 1 = 200, trang 2 = 50), bảng phễu giữ MỘT lần đọc mọi dòng mỗi mount, các con số phễu/giai đoạn đi theo payload `funnel` toàn bộ lịch sử của máy chủ.
+- **Gắn lại nhãn Playwright của tracker-v2** — bộ test từng ghim nhãn tab «Kanban» trước CAR-237; đã cập nhật sang hợp đồng «Воронка/Funnel» đã giao.
+
+### Ghi chú
+
+- Các bộ lọc văn bản/điểm/commute của bảng tracker vẫn phía client TRONG trang hiện tại (phạm vi không đổi); số liệu toàn bộ lịch sử đến từ payload `funnel` của máy chủ.
+- Các cổng H3 của gói trợ giúp được nâng lên (129 → 131) — con số này là hợp đồng đã ghim, không phải mục tiêu mềm.
+
 ## [1.269.0] — 2026-11-06
 
 ### Đã thêm

@@ -12,16 +12,16 @@ _Interface non officielle — sans affiliation ni approbation de career-ops / sa
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.269.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.269.0)
+[![release](https://img.shields.io/badge/release-v1.269.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.269.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Dernière version — v1.269.0** — tableau kanban en entonnoir sur #/tracker (CAR-237, avec le toggle «Воронка | Таблица»), onglet «Детали» sur #/stats (CAR-247), profondeur des rapports restaurée (CAR-245), vidéo hero sur cvstart.org, plus des caches mtime contre la latence des pages en prod (CAR-236) et la queue du balayage CodeQL.
+> **🆕 Dernière version — v1.269.1** — Help ×19 documente l'entonnoir kanban + les statistiques détaillées (gate H3 129 → 131), la vérification en direct de la parité d'evaluate (CAR-239 : dispersion 0.0 sur les 19 locales, répétitions 0.0 ×3, cache de scoring 27/28, ≈$0.006/eval à chaud) et la queue de latence en prod (CAR-236) : une lecture partagée du tracker par montage, pagination de table côté serveur (`?page&pageSize=200`).
 
 
 >
-> **Précédente — v1.268.1** — score déterministe (CAR-239) : le score est calculé par le SERVEUR à partir de sous-scores entiers ancrés, à temperature 0 + graine fixe — le même JD converge à 0.0 près sur les 19 locales ; observabilité du cache de prompt (CAR-240), runners de migration de données ×19 (CAR-241/242/243), barre latérale redimensionnable (CAR-235). Tests 7510.
+> **Précédente — v1.269.0** — tableau kanban en entonnoir sur #/tracker (CAR-237, avec le toggle «Воронка | Таблица»), onglet «Детали» sur #/stats (CAR-247), profondeur des rapports restaurée (CAR-245), vidéo hero sur cvstart.org, plus des caches mtime contre la latence des pages en prod (CAR-236) et la queue du balayage CodeQL.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

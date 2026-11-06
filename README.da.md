@@ -12,14 +12,14 @@ _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santi
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.269.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.269.0)
+[![release](https://img.shields.io/badge/release-v1.269.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.269.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Seneste udgivelse — v1.269.0** — kanban-tragtbord på #/tracker (CAR-237, med «Воронка | Таблица»-kontakten), fanebladet «Детали» på #/stats (CAR-247), genoprettet rapportdybde (CAR-245), hero-video på cvstart.org, plus mtime-caches mod prod-sideforsinkelse (CAR-236) og CodeQL-svejsens hale.
+> **🆕 Seneste udgivelse — v1.269.1** — Help ×19 dokumenterer kanban-tragten + de detaljerede statistikker (H3-gate 129 → 131); live-verificering (CAR-239): spredning 0.0 over 19 locales, gentagelser 0.0 ×3, scoring-cache 27/28 kald, ≈$0.006/eval varmt; prod-forsinkelseshalen (CAR-236) — én delt tracker-læsning pr. mount, server-side tabel-paginering (`?page&pageSize=200`).
 >
-> **Tidligere — v1.268.1** — deterministisk scoring (CAR-239): scoren beregnes af SERVEREN ud fra ankrede heltals-subscores ved temperature 0 + fast seed — samme JD konvergerer inden for 0.0 i alle 19 locales; prompt-cache-observerbarhed (CAR-240), migrations-runners ×19 (CAR-241/242/243), resizable sidebar (CAR-235). Tests 7510.
+> **Tidligere — v1.269.0** — kanban-tragtbord på #/tracker (CAR-237, med «Воронка | Таблица»-kontakten), fanebladet «Детали» på #/stats (CAR-247), genoprettet rapportdybde (CAR-245), hero-video på cvstart.org, plus mtime-caches mod prod-sideforsinkelse (CAR-236) og CodeQL-svejsens hale.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

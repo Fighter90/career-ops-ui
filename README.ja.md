@@ -12,14 +12,14 @@ _非公式 UI — career-ops / santifer とは提携しておらず、承認も�
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.269.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.269.0)
+[![release](https://img.shields.io/badge/release-v1.269.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.269.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新リリース — v1.269.0** — #/tracker にカンバン・ファネルボード(CAR-237、«Воронка | Таблица» トグル)、#/stats に「Детали」タブ(CAR-247)、復元されたレポートの深さ(CAR-245)、cvstart.org のヒーロー動画、さらに本番ページのレイテンシを抑える mtime キャッシュ(CAR-236)と CodeQL 掃討の尾。
+> **🆕 最新リリース — v1.269.1** — Help ×19 にカンバン・ファネル + 詳細統計を文書化(H3 ゲート 129 → 131)、evaluate のライブ検証(CAR-239: 19 ロケールのスプレッド 0.0、リピート 0.0 ×3、スコアリングキャッシュ 27/28、ウォーム時 ≈$0.006/eval)、さらに CAR-236 の本番レイテンシの尾 — マウントごとに 1 つの共有トラッカー読み取り、サーバー側テーブルページング(`?page&pageSize=200`)。
 >
-> **前バージョン — v1.268.1** — 決定論的スコアリング(CAR-239):SERVER がアンカー付き整数サブスコアからスコアを計算、temperature 0 + 固定シード — 同一 JD が全 19 ロケールで 0.0 以内に収束;プロンプトキャッシュの可観測性(CAR-240)、データ移行ランナー ×19(CAR-241/242/243)、リサイズ可能なサイドバー(CAR-235)。テスト 7510。
+> **前バージョン — v1.269.0** — #/tracker にカンバン・ファネルボード(CAR-237、«Воронка | Таблица» トグル)、#/stats に「Детали」タブ(CAR-247)、復元されたレポートの深さ(CAR-245)、cvstart.org のヒーロー動画、さらに本番ページのレイテンシを抑える mtime キャッシュ(CAR-236)と CodeQL 掃討の尾。
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

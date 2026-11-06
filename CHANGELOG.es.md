@@ -13,6 +13,23 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.269.1] — 2026-11-07
+
+### Añadido
+
+- **Help ×19: embudo kanban + estadísticas detalladas** — ambas funcionalidades de v1.269.0 están ahora documentadas en cada paquete de ayuda (§11 Tracker «Tablero de embudo kanban»: toggle Tabla/Embudo, arrastre optimista + reversión, teclado, modal de notas/entrevista; §26 Statistics «Estadísticas detalladas»: selector de divisa, ventanas de periodo, búsqueda + facetas AND, cuatro gráficos, drill-down); la gate de paridad H3 pasa de 129 → **131**.
+- **Verificación en vivo (CAR-239)** — evaluate-locale-parity + evaluate-repeatability se ejecutan EN VIVO contra el corpus/proveedor real (openrouter/deepseek-v3.2): dispersión de 19 locales **0.0** (gate ≤ 0.5), dispersión de repeticiones intra-locale **0.0 ×3** (gate ≤ 0.2), aciertos de la caché de scoring 27/28 llamadas, ~34k tokens cacheados, ≈$0.006/eval en caliente. Cifras: docs/sdd/specs/2026-11-07-live-eval-numbers.md.
+
+### Corregido
+
+- **Cola de latencia en prod (CAR-236)** — la SPA deja de enviar cada fila del tracker en cada navegación: UNA lectura compartida del tracker por montaje (tracker/pipeline/stats hacían 2–3 llamadas cada uno), la tabla pagina del lado del servidor (`?page&pageSize=200&status` — 250 filas sembradas: página 1 = 200, página 2 = 50), el tablero de embudo mantiene UNA lectura de todas las filas por montaje, y los recuentos de embudo/etapas viajan en el payload `funnel` de historia completa del servidor.
+- **Relabelado en Playwright de tracker-v2** — la suite estaba anclada a la etiqueta de pestaña «Kanban» previa a CAR-237; actualizada al contrato enviado «Воронка/Funnel».
+
+### Notas
+
+- Los filtros de texto/puntuación/commute de la tabla del tracker siguen siendo del lado del cliente DENTRO de la página actual (alcance sin cambios); las cifras de historia completa vienen del payload `funnel` del servidor.
+- Las gates H3 de los paquetes de ayuda se elevaron (129 → 131) — el número es el contrato anclado, no un objetivo blando.
+
 ## [1.269.0] — 2026-11-06
 
 ### Añadido

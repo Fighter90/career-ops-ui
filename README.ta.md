@@ -12,14 +12,14 @@ _அதிகாரப்பூர்வமற்ற இடைமுகம் �
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#சோதனைகள்)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#தேவைகள்)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.269.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.269.0)
+[![release](https://img.shields.io/badge/release-v1.269.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.269.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 சமீபத்திய வெளியீடு — v1.269.0** — #/tracker-இல் kanban funnel board (CAR-237, «Воронка | Таблица» toggle உடன்), #/stats-இன் «Детали» tab (CAR-247), மீட்டெடுக்கப்பட்ட அறிக்கை ஆழம் (CAR-245), cvstart.org hero video, மேலும் prod page latency-க்கு எதிரான mtime காச்கள் (CAR-236) மற்றும் CodeQL sweep வால்.
+> **🆕 சமீபத்திய வெளியீடு — v1.269.1** — Help ×19 kanban funnel + விரிவான புள்ளிவிவரங்களை ஆவணப்படுத்துகிறது (H3 gate 129 → 131); live verification (CAR-239): 19 locale spread 0.0, repeats 0.0 ×3, scoring-cache 27/28 calls, வெப்ப நிலையில் ≈$0.006/eval; prod latency வால் (CAR-236) — mount-க்கு ஒரே பகிர்வு tracker read, server-side table paging (`?page&pageSize=200`).
 >
-> **முந்தைய வெளியீடு — v1.268.1** — SERVER-ஆல் கணக்கிடப்படும் நிலையான scoring (CAR-239): evaluate மதிப்பெண் அனைத்து 19 லோக்கேல்களிலும் ஒரே மாதிரி; prompt-cache கண்காணிப்பு (CAR-240), மொழியாக்கப்பட்ட migration runner-கள் (CAR-241/242/243), அளவு மாற்றக்கூடிய sidebar (CAR-235), CodeQL 21 அலை, dialog-overlap திருத்தங்கள். Tests 7510.
+> **முந்தைய வெளியீடு — v1.269.0** — #/tracker-இல் kanban funnel board (CAR-237, «Воронка | Таблица» toggle உடன்), #/stats-இன் «Детали» tab (CAR-247), மீட்டெடுக்கப்பட்ட அறிக்கை ஆழம் (CAR-245), cvstart.org hero video, மேலும் prod page latency-க்கு எதிரான mtime காச்கள் (CAR-236) மற்றும் CodeQL sweep வால்.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

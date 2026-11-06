@@ -9,6 +9,23 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 ---
 
 
+## [1.269.1] — 2026-11-07
+
+### Tilføjet
+
+- **Help ×19: kanban-tragt + detaljerede statistikker** — begge v1.269.0-funktioner er nu dokumenteret i hver hjælpepakke (§11 Tracker «Kanban-tragtbord»: tabel/tragt-kontakt, optimistisk træk + revert, tastatur, note/interview-modal; §26 Statistics «Detaljerede statistikker»: valuta-vælger, periodevinduer, søgning + AND-facetter, fire diagrammer, drill-down); H3-paritetsgaten 129 → **131**.
+- **Live-verificering (CAR-239)** — evaluate-locale-parity + evaluate-repeatability kører LIVE mod det reelle korpus/provider (openrouter/deepseek-v3.2): spredning over 19 locales **0.0** (gate ≤ 0.5), gentagelsesspredning intra-locale **0.0 ×3** (gate ≤ 0.2), scoring-cache-træffere 27/28 kald, ~34k cachede tokens, ≈$0.006/eval varmt. Tal: docs/sdd/specs/2026-11-07-live-eval-numbers.md.
+
+### Rettet
+
+- **Prod-forsinkelseshalen (CAR-236)** — SPA holder op med at sende hver tracker-række ved hver navigation: ÉN delt tracker-læsning pr. mount (tracker/pipeline/stats lavede 2–3 kald hver), tabellen pagerer server-side (`?page&pageSize=200&status` — 250 seedede rækker: side 1 = 200, side 2 = 50), tragtbordet beholder ÉN alle-rækker-læsning pr. mount, og tragt/stage-antallene rider på serverens whole-history `funnel`-payload.
+- **tracker-v2 Playwright-omlabel** — suiten var fastgjort til «Kanban»-fanebladsetiketten fra før CAR-237; opdateret til den udsendte «Воронка/Funnel»-kontrakt.
+
+### Noter
+
+- Tracker-tabellens tekst/score/commute-filtre forbliver klientside INDEN FOR den aktuelle side (uændret scope); hele-historien-tallene kommer fra serverens `funnel`-payload.
+- Hjælpepakkerne H3-gates blev hævet (129 → 131) — antallet er den fastgjorte kontrakt, ikke et blødt mål.
+
 ## [1.269.0] — 2026-11-06
 
 ### Tilføjet

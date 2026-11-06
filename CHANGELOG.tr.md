@@ -2,6 +2,23 @@
 
 > Bu changelog artık tüm sürüm geçmişini içerir. Türkçe yerelleştirmenin eklenmesinden (v1.85.0) önce yayınlanan girdiler aşağıda İngilizce özgün hâliyle yer alır — çeviri bekliyor; asıl kaynak [🇬🇧 CHANGELOG.md](CHANGELOG.md)'dir.
 
+## [1.269.1] — 2026-11-07
+
+### Eklendi
+
+- **Help ×19: kanban hunisi + ayrıntılı istatistikler** — v1.269.0'un her iki özelliği artık her yardım paketinde belgelendi (§11 Tracker «Kanban huni panosu»: Tablo/Huni düğmesi, iyimser sürükleme + revert, klavye, not/mülakat modalı; §26 Statistics «Ayrıntılı istatistikler»: para birimi seçici, dönem pencereleri, arama + AND facetleri, dört grafik, drill-down); H3 eşitlik kapısı 129 → **131**.
+- **Canlı doğrulama (CAR-239)** — evaluate-locale-parity + evaluate-repeatability gerçek korpus/sağlayıcıya (openrouter/deepseek-v3.2) karşı CANLI koşuyor: 19 locale'ye yayılan sapma **0.0** (kapı ≤ 0.5), locale içi tekrar sapması **0.0 ×3** (kapı ≤ 0.2), puanlama önbelleği isabeti 27/28 çağrı, ~34k önbelleklenmiş token, sıcakta ≈$0.006/eval. Sayılar: docs/sdd/specs/2026-11-07-live-eval-numbers.md.
+
+### Düzeltildi
+
+- **Prod gecikme kuyruğu (CAR-236)** — SPA artık her gezinmede her tracker satırını göndermiyor: mount başına TEK paylaşılan tracker okuması (tracker/pipeline/stats her biri 2–3 çağrı yapıyordu), tablo sunucu tarafında sayfalanıyor (`?page&pageSize=200&status` — 250 ekili satır: sayfa 1 = 200, sayfa 2 = 50), huni panosu mount başına TEK tüm-satırlar okumasını koruyor, huni/aşama sayıları sunucunun tüm-geçmiş `funnel` yüküne biniyor.
+- **tracker-v2 Playwright yeniden etiketleme** — suite CAR-237 öncesindeki «Kanban» sekme etiketine çakılıydı; gönderilen «Воронка/Funnel» sözleşmesine güncellendi.
+
+### Notlar
+
+- Tracker tablosunun metin/puan/commute filtreleri geçerli sayfa İÇİNDE istemci tarafında kalıyor (kapsam değişmedi); tüm-geçmiş sayıları sunucunun `funnel` yükünden geliyor.
+- Yardım paketlerinin H3 kapıları yükseltildi (129 → 131) — sayı çakılı sözleşmedir, yumuşak bir hedef değil.
+
 ## [1.269.0] — 2026-11-06
 
 ### Eklendi

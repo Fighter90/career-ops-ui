@@ -14,16 +14,16 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.269.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.269.0)
+[![release](https://img.shields.io/badge/release-v1.269.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.269.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.269.0** — #/tracker पर कानबन फ़नल बोर्ड (CAR-237, «Воронка | Таблица» टॉगल के साथ), #/stats का «Детали» टैब (CAR-247), बहाल रिपोर्ट गहराई (CAR-245), cvstart.org हीरो वीडियो, साथ में प्रोड पेज लेटेंसी के खिलाफ mtime कैश (CAR-236) और CodeQL स्वीप की पूंछ।
+> **🆕 नवीनतम रिलीज़ — v1.269.1** — Help ×19 कानबन फ़नल + विस्तृत आंकड़े डॉक्यूमेंट करता है (H3 गेट 129 → 131); लाइव वेरिफिकेशन (CAR-239): 19 लोकेल का फैलाव 0.0, रिपीट 0.0 ×3, स्कोरिंग कैश 27/28 कॉल, गर्म अवस्था पर ≈$0.006/eval; प्रोड लेटेंसी की पूंछ (CAR-236) — प्रति माउंट एक साझा ट्रैकर रीड, सर्वर-साइड टेबल पेजिनेशन (`?page&pageSize=200`)।
 
 
 >
-> **पिछला — v1.268.1** — सर्वर से गणना होने वाली नियतात्मक स्कोरिंग (CAR-239): evaluate स्कोर अब सभी 19 लोकेल में एक समान; प्रॉम्प्ट-कैश अवलोकनीयता (CAR-240), स्थानीयकृत माइग्रेशन रनर (CAR-241/242/243), आकार बदलने योग्य साइडबार (CAR-235), CodeQL लहर 21 और डायलॉग-ओवरलैप सुधार। Tests 7510।
+> **पिछला — v1.269.0** — #/tracker पर कानबन फ़नल बोर्ड (CAR-237, «Воронка | Таблица» टॉगल के साथ), #/stats का «Детали» टैब (CAR-247), बहाल रिपोर्ट गहराई (CAR-245), cvstart.org हीरो वीडियो, साथ में प्रोड पेज लेटेंसी के खिलाफ mtime कैश (CAR-236) और CodeQL स्वीप की पूंछ।
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

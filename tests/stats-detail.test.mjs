@@ -24,9 +24,6 @@ new Function('window', readFileSync(resolve(ROOT, 'public/js/lib/countries.js'),
 new Function('window', readFileSync(resolve(ROOT, 'public/js/lib/skills.js'), 'utf8'))(w); // eslint-disable-line no-new-func
 new Function('window', readFileSync(resolve(ROOT, 'public/js/lib/role-stats.js'), 'utf8'))(w); // eslint-disable-line no-new-func
 const RS = w.RoleStats;
-const C = w.Countries;
-
-const DAY = 86400000;
 // A fixed "now" (mid-day UTC) so period boundaries are deterministic.
 const NOW = Date.parse('2026-11-06T15:30:00Z');
 
@@ -279,7 +276,6 @@ test('topCompanies: descending counts, capped at n, case-folded merge', () => {
 // ── 7. view + shell wiring canaries ───────────────────────────────────────────
 
 const read = (p) => readFileSync(resolve(ROOT, p), 'utf8');
-const reEsc = (s) => String(s).replace(/[.*+?^${}()|[\]\\-]/g, '\\$&');
 
 test('stats.js wires the Details tab (tab def, render, persistence keys)', () => {
   const src = read('public/js/views/stats.js');

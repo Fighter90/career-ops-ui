@@ -110,7 +110,7 @@ test('a scan-history append invalidates only the scan index', async () => {
     'https://delta.example.com/jobs/4\tOps\tDelta\tStuttgart, Germany\t2026-01-03',
     '',
   ].join('\n'));
-  const { status, body } = await getJson('/api/map/jobs');
+  const { status } = await getJson('/api/map/jobs');
   assert.equal(status, 200);
   assert.equal(__mapCache.scanBuilds, 2);
   assert.equal(__mapCache.jdsBuilds, 2, 'the scan-history write does not rebuild the jds index');

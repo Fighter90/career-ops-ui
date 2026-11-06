@@ -12,16 +12,16 @@ _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.269.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.269.0)
+[![release](https://img.shields.io/badge/release-v1.269.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.269.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.269.0** — #/tracker 的看板漏斗板(CAR-237,附「Воронка | Таблица」切换),#/stats 的「Детали」标签(CAR-247),恢复的报告深度(CAR-245),cvstart.org 头图视频,外加对抗生产页延迟的 mtime 缓存(CAR-236)与 CodeQL 清扫收尾。
+> **🆕 最新版本 — v1.269.1** — Help ×19 记录看板漏斗 + 详细统计(H3 门槛 129 → 131),evaluate 一致性实况验证(CAR-239:19 个语言离散度 0.0、重复 0.0 ×3、评分缓存 27/28、热态 ≈$0.006/eval),以及 CAR-236 生产延迟收尾 — 每次挂载共享一次 tracker 读取,表格服务器端分页(`?page&pageSize=200`)。
 
 
 >
-> **上一版本 — v1.268.1** — 确定性评分(CAR-239):SERVER 从锚定的整数子分数计算分数,temperature 0 + 固定种子 — 同一 JD 在全部 19 个语言中收敛于 0.0 以内;Prompt 缓存可观测性(CAR-240)、数据迁移运行器 ×19(CAR-241/242/243)、可调宽侧边栏(CAR-235)。测试 7510.
+> **上一版本 — v1.269.0** — #/tracker 的看板漏斗板(CAR-237,附「Воронка | Таблица」切换),#/stats 的「Детали」标签(CAR-247),恢复的报告深度(CAR-245),cvstart.org 头图视频,外加对抗生产页延迟的 mtime 缓存(CAR-236)与 CodeQL 清扫收尾。
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

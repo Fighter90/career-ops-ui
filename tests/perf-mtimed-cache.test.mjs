@@ -21,7 +21,6 @@ before(async () => {
 });
 
 const file = (...p) => resolve(dir, ...p);
-const calls = () => n;
 let n = 0;
 const counter = () => ++n;
 

@@ -12,6 +12,23 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.269.1] — 2026-11-07
+
+### Ajouté
+
+- **Help ×19 : entonnoir kanban + statistiques détaillées** — les deux fonctionnalités de la v1.269.0 sont désormais documentées dans chaque bundle d'aide (§11 Tracker « Tableau kanban en entonnoir » : toggle Tableau/Entonnoir, glisser optimiste + revert, clavier, modale notes/entretien ; §26 Statistics « Statistiques détaillées » : sélecteur de devise, fenêtres de période, recherche + facettes AND, quatre graphiques, drill-down) ; la gate de parité H3 passe de 129 → **131**.
+- **Vérification en direct (CAR-239)** — evaluate-locale-parity + evaluate-repeatability s'exécutent EN DIRECT contre le corpus/fournisseur réels (openrouter/deepseek-v3.2) : dispersion sur les 19 locales **0.0** (gate ≤ 0.5), dispersion des répétitions intra-locale **0.0 ×3** (gate ≤ 0.2), hits du cache de scoring 27/28 appels, ~34k tokens en cache, ≈$0.006/eval à chaud. Chiffres : docs/sdd/specs/2026-11-07-live-eval-numbers.md.
+
+### Corrigé
+
+- **Queue de latence en prod (CAR-236)** — la SPA cesse d'expédier chaque ligne du tracker à chaque navigation : UNE lecture partagée du tracker par montage (tracker/pipeline/stats faisaient 2–3 appels chacun), la table pagine côté serveur (`?page&pageSize=200&status` — 250 lignes semées : page 1 = 200, page 2 = 50), le tableau en entonnoir conserve UNE lecture toutes-lignes par montage, et les comptages entonnoir/étapes empruntent le payload `funnel` d'historique complet du serveur.
+- **Relibellage Playwright de tracker-v2** — la suite épinglait le libellé d'onglet « Kanban » d'avant CAR-237 ; mise à jour vers le contrat livré « Воронка/Funnel ».
+
+### Notes
+
+- Les filtres texte/score/commute de la table du tracker restent côté client DANS la page courante (périmètre inchangé) ; les chiffres d'historique complet viennent du payload `funnel` du serveur.
+- Les gates H3 des bundles d'aide ont été relevées (129 → 131) — le compte est le contrat épinglé, pas une cible souple.
+
 ## [1.269.0] — 2026-11-06
 
 ### Ajouté

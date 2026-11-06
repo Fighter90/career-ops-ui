@@ -2,6 +2,12 @@
 
 This is the operating manual. Read it, then `PLAN.md` (order) and `BACKLOG.md` (what is left).
 
+## State (2026-11-07, v1.269.1)
+
+- Released: **v1.269.1** (2026-11-07) — the docs + perf-paging patch on top of v1.269.0's features: help ×19 kanban+stats sections (H3 131 — §11 "Kanban funnel board" CAR-237 + §26 "Detailed statistics" CAR-247 in every localized guide); live verification numbers recorded — evaluate locale-parity spread **0.0** / repeatability **0.0** (the v1.268.0 failure-mode 1.5-spread confirmed gone, the determinism graders pass offline); SPA tracker pagination — one shared read per mount, server-side table paging (`GET /api/tracker?page=N&pageSize=200`, route caps pageSize at 500, answers `{rows, total, page, pageSize, funnel}`), the kanban board reads ALL rows; tracker-v2 relabel.
+- Gates: test:ci **7699 tests / 7696 pass / 0 fail / 3 skip** · browser **201 pass / 0 fail / 1 opt-in skip** · evals 0 ✗ (16 pass, incl. locale-parity 0.0 + repeatability 0.0 offline) · coverage **98.55/90.41** (above ratchet) · changelog parity ✓ ×19 at 1.269.1, 489 releases each · /api/health **1.269.1 / parent 1.38.0**.
+- History: **v1.269.0** (2026-11-06) and earlier — see the state blocks below.
+
 ## State (2026-11-05, v1.268.0)
 
 - Released: **v1.268.0** (2026-11-05) — the evaluate two-step contract: CAR-229 turns `/api/evaluate` into a two-step pipeline — an English scoring-JSON step + a localized render step, with the server building the report header/SCORE_SUMMARY/yaml machine block (temperature 0.1; 120 s scoring clock, ≤300 s render clock); SSE stage progress with real p50/p90 ETA (CAR-230); a prompt-cache stable shared prefix (CAR-111); data-migration runners (CAR-232/233); a Permissions-Policy header. (+38 tests.)

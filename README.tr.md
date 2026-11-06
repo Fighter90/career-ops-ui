@@ -12,16 +12,16 @@ _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve 
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.269.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.269.0)
+[![release](https://img.shields.io/badge/release-v1.269.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.269.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Son sürüm — v1.269.0** — #/tracker üzerinde kanban huni panosu (CAR-237, «Воронка | Таблица» düğmesiyle), #/stats üzerinde «Детали» sekmesi (CAR-247), geri getirilen rapor derinliği (CAR-245), cvstart.org’da hero videosu, ayrıca prod sayfa gecikmesine karşı mtime önbellekleri (CAR-236) ve CodeQL süpürme kuyruğu.
+> **🆕 Son sürüm — v1.269.1** — Help ×19 kanban hunisini + ayrıntılı istatistikleri belgelendiriyor (H3 kapısı 129 → 131); canlı doğrulama (CAR-239): 19 locale'de sapma 0.0, tekrarlar 0.0 ×3, puanlama önbelleği 27/28 çağrı, sıcakta ≈$0.006/eval; prod gecikme kuyruğu (CAR-236) — mount başına tek paylaşılan tracker okuması, sunucu tarafı tablo sayfalaması (`?page&pageSize=200`).
 
 
 >
-> **Önceki — v1.268.1** — SUNUCU tarafından hesaplanan deterministik puanlama (CAR-239): evaluate puanı 19 locale'nin tamamında özdeş; prompt önbelleği gözlemlenebilirliği (CAR-240), yerelleştirilmiş göç koşucuları (CAR-241/242/243), yeniden boyutlandırılabilir kenar çubuğu (CAR-235), CodeQL 21. dalga ve diyalog üst üste binme düzeltmeleri. Tests 7510.
+> **Önceki — v1.269.0** — #/tracker üzerinde kanban huni panosu (CAR-237, «Воронка | Таблица» düğmesiyle), #/stats üzerinde «Детали» sekmesi (CAR-247), geri getirilen rapor derinliği (CAR-245), cvstart.org’da hero videosu, ayrıca prod sayfa gecikmesine karşı mtime önbellekleri (CAR-236) ve CodeQL süpürme kuyruğu.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

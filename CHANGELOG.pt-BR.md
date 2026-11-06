@@ -8,6 +8,23 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.269.1] — 2026-11-07
+
+### Adicionado
+
+- **Help ×19: funil kanban + estatísticas detalhadas** — as duas funcionalidades da v1.269.0 agora estão documentadas em cada pacote de ajuda (§11 Tracker «Quadro kanban de funil»: toggle Tabela/Funil, arrasto otimista + reversão, teclado, modal de notas/entrevista; §26 Statistics «Estatísticas detalhadas»: seletor de moeda, janelas de período, busca + facetas AND, quatro gráficos, drill-down); o gate de paridade H3 vai de 129 → **131**.
+- **Verificação ao vivo (CAR-239)** — evaluate-locale-parity + evaluate-repeatability rodam AO VIVO contra o corpus/provedor real (openrouter/deepseek-v3.2): dispersão nas 19 locales **0.0** (gate ≤ 0.5), dispersão das repetições intra-locale **0.0 ×3** (gate ≤ 0.2), acertos do cache de scoring 27/28 chamadas, ~34k tokens em cache, ≈$0.006/eval quente. Números: docs/sdd/specs/2026-11-07-live-eval-numbers.md.
+
+### Corrigido
+
+- **Cauda de latência em prod (CAR-236)** — a SPA para de enviar toda linha do tracker a cada navegação: UMA leitura compartilhada do tracker por montagem (tracker/pipeline/stats faziam 2–3 chamadas cada), a tabela pagina no servidor (`?page&pageSize=200&status` — 250 linhas semeadas: página 1 = 200, página 2 = 50), o quadro de funil mantém UMA leitura de todas as linhas por montagem, e as contagens de funil/estágio viajam no payload `funnel` de histórico completo do servidor.
+- **Renomeação no Playwright do tracker-v2** — a suite estava presa ao rótulo de aba «Kanban» pré-CAR-237; atualizada para o contrato entregue «Воронка/Funnel».
+
+### Notas
+
+- Os filtros de texto/pontuação/commute da tabela do tracker continuam no cliente DENTRO da página atual (escopo inalterado); os números de histórico completo vêm do payload `funnel` do servidor.
+- Os gates H3 dos pacotes de ajuda foram elevados (129 → 131) — o número é o contrato fixado, não uma meta flexível.
+
 ## [1.269.0] — 2026-11-06
 
 ### Adicionado

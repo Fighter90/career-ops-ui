@@ -12,16 +12,16 @@ _Giao diện không chính thức — không liên kết với career-ops / sant
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#kiểm-thử)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#yêu-cầu)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.269.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.269.0)
+[![release](https://img.shields.io/badge/release-v1.269.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.269.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Bản phát hành mới nhất — v1.269.0** — bảng kanban phễu trên #/tracker (CAR-237, kèm toggle «Воронка | Таблица»), tab «Детали» trên #/stats (CAR-247), chiều sâu báo cáo được khôi phục (CAR-245), video hero trên cvstart.org, cùng các cache mtime chống độ trễ trang prod (CAR-236) và đuôi càn quét CodeQL.
+> **🆕 Bản phát hành mới nhất — v1.269.1** — Help ×19 ghi lại phễu kanban + thống kê chi tiết (cổng H3 129 → 131); xác minh trực tiếp (CAR-239): độ lan tỏa 0.0 qua 19 locale, lặp 0.0 ×3, cache chấm điểm 27/28 lần gọi, ≈$0.006/eval khi nóng; đuôi độ trễ prod (CAR-236) — một lần đọc tracker chia sẻ mỗi mount, phân trang bảng phía máy chủ (`?page&pageSize=200`).
 
 
 >
-> **Bản trước — v1.268.1** — chấm điểm xác định do SERVER tính (CAR-239): điểm evaluate đồng nhất trên cả 19 locale; khả năng quan sát prompt cache (CAR-240), runner di trú bản địa hóa (CAR-241/242/243), sidebar co giãn được (CAR-235), đợt CodeQL 21 và các bản sửa dialog chồng lấn. Tests 7510.
+> **Bản trước — v1.269.0** — bảng kanban phễu trên #/tracker (CAR-237, kèm toggle «Воронка | Таблица»), tab «Детали» trên #/stats (CAR-247), chiều sâu báo cáo được khôi phục (CAR-245), video hero trên cvstart.org, cùng các cache mtime chống độ trễ trang prod (CAR-236) và đuôi càn quét CodeQL.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

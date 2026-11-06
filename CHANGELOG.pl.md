@@ -10,6 +10,23 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.269.1] — 2026-11-07
+
+### Dodano
+
+- **Help ×19: lejek kanbanowy + szczegółowe statystyki** — obie funkcje v1.269.0 są teraz udokumentowane w każdym bundlu pomocy (§11 Tracker «Kanbanowa tablica lejka»: toggle Tabela/Lejek, optymistyczny drag + revert, klawiatura, modal notatek/interview; §26 Statistics «Szczegółowe statystyki»: selektor waluty, okna okresów, wyszukiwanie + facety AND, cztery wykresy, drill-down); gate parności H3 podniesiony 129 → **131**.
+- **Weryfikacja na żywo (CAR-239)** — evaluate-locale-parity + evaluate-repeatability lecą NA ŻYWO na realnym korpusie/providerrze (openrouter/deepseek-v3.2): rozrzut na 19 locale **0.0** (gate ≤ 0.5), rozrzut powtórzeń wewnątrz-locale **0.0 ×3** (gate ≤ 0.2), trafienia cache scoringu 27/28 wywołań, ~34k zcache'owanych tokenów, ≈$0.006/eval na ciepło. Liczby: docs/sdd/specs/2026-11-07-live-eval-numbers.md.
+
+### Naprawiono
+
+- **Ogon opóźnień na prodzie (CAR-236)** — SPA przestaje odsyłać każdy wiersz trackera przy każdej nawigacji: JEDNO współdzielone czytanie trackera na mount (tracker/pipeline/stats robiły po 2–3 wywołania), tabela paginuje po stronie serwera (`?page&pageSize=200&status` — 250 zasianych wierszy: strona 1 = 200, strona 2 = 50), tablica lejka zachowuje JEDNO czytanie wszystkich wierszy na mount, a liczniki lejka/etapów jadą na serwerowym whole-history payloadzie `funnel`.
+- **Przemianowanie w tracker-v2 Playwright** — suite był przybity do etykiety zakładki «Kanban» sprzed CAR-237; zaktualizowany do wysłanego kontraktu «Воронка/Funnel».
+
+### Uwagi
+
+- Filtry tekstowe/scoringowe/commute tabeli trackera pozostają klienckie W OBRĘBIE bieżącej strony (zakres bez zmian); liczby za całą historię przychodzą z serwerowego payloadu `funnel`.
+- Gate'y H3 bundli pomocy zostały podbite (129 → 131) — liczba to przypięty kontrakt, nie miękki cel.
+
 ## [1.269.0] — 2026-11-06
 
 ### Dodano

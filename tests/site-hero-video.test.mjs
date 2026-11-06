@@ -24,7 +24,7 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, existsSync, statSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -41,17 +41,18 @@ const SITEJS = readFileSync(resolve(SITE, 'src/scripts/site.js'), 'utf8');
 /* ------------------------------------------------------------------ assets */
 
 test('hero video + poster are self-hosted real media files on disk', () => {
-  assert.ok(existsSync(VIDEO), 'site/public/assets/hero-swarm.mp4 must exist (no third-party hotlinking)');
-  assert.ok(existsSync(POSTER), 'site/public/assets/hero-poster.jpg must exist (fallback for mobile/reduced-motion)');
-  const vb = statSync(VIDEO).size;
-  const pb = statSync(POSTER).size;
+  // Read each file ONCE and derive every check from the same buffer — a
+  // stat-then-read sequence is a TOCTOU window (CodeQL); the buffer is the
+  // single source of truth for existence, size and magic bytes alike.
+  const vBuf = readFileSync(VIDEO);
+  const pBuf = readFileSync(POSTER);
+  const vb = vBuf.length;
+  const pb = pBuf.length;
   assert.ok(vb > 100 * 1024, `video must be a real asset, got ${vb} bytes`);
   assert.ok(vb < 8 * 1024 * 1024, `video should stay under the 8MB budget, got ${vb} bytes`);
   assert.ok(pb > 10 * 1024, `poster must be a real image, got ${pb} bytes`);
   // magic bytes: MP4 box 'ftyp' at offset 4, JPEG SOI FFD8
-  const vBuf = readFileSync(VIDEO);
   assert.equal(vBuf.subarray(4, 8).toString('latin1'), 'ftyp', 'hero-swarm.mp4 is not a real MP4');
-  const pBuf = readFileSync(POSTER);
   assert.equal(pBuf[0], 0xff, 'hero-poster.jpg is not a real JPEG');
   assert.equal(pBuf[1], 0xd8, 'hero-poster.jpg is not a real JPEG');
 });
@@ -139,8 +140,9 @@ test('palette untouched: @theme token hex set is byte-identical to the baseline'
     '--color-night': '#1a1a1a',
   };
   const theme = CSS_SRC.match(/@theme\s*\{[\s\S]*?\n\}/)?.[0] || '';
+  const reEscape = (v) => v.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   for (const [token, hex] of Object.entries(BASELINE)) {
-    assert.match(theme, new RegExp(`${token.replace(/-/g, '\\-')}:\\s*${hex.replace('#', '#')}[;,]`), `${token} must stay ${hex}`);
+    assert.match(theme, new RegExp(`${reEscape(token)}:\\s*${reEscape(hex)}[;,]`), `${token} must stay ${hex}`);
   }
 });
 

@@ -2,6 +2,23 @@
 
 > Questo changelog contiene ora la cronologia completa delle versioni. Le voci pubblicate prima della localizzazione italiana (v1.85.0) compaiono sotto nell'originale inglese — traduzione in attesa; il riferimento resta [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.269.1] — 2026-11-07
+
+### Aggiunto
+
+- **Help ×19: funnel kanban + statistiche dettagliate** — entrambe le funzionalità della v1.269.0 sono ora documentate in ogni bundle della guida (§11 Tracker «Board kanban a funnel»: toggle Tabella/Funnel, trascinamento ottimista + revert, tastiera, modale note/colloquio; §26 Statistics «Statistiche dettagliate»: selettore valuta, finestre di periodo, ricerca + facet AND, quattro grafici, drill-down); la gate di parità H3 passa da 129 → **131**.
+- **Verifica dal vivo (CAR-239)** — evaluate-locale-parity + evaluate-repeatability girano IN DIRETTA contro il corpus/provider reale (openrouter/deepseek-v3.2): dispersione sulle 19 locale **0.0** (gate ≤ 0.5), dispersione delle ripetizioni intra-locale **0.0 ×3** (gate ≤ 0.2), hit della cache di scoring 27/28 chiamate, ~34k token in cache, ≈$0.006/eval a caldo. Numeri: docs/sdd/specs/2026-11-07-live-eval-numbers.md.
+
+### Corretto
+
+- **Coda di latenza in prod (CAR-236)** — la SPA smette di spedire ogni riga del tracker a ogni navigazione: UNA lettura condivisa del tracker per mount (tracker/pipeline/stats facevano 2–3 chiamate ciascuno), la tabella pagina lato server (`?page&pageSize=200&status` — 250 righe di seed: pagina 1 = 200, pagina 2 = 50), la board a funnel mantiene UNA lettura di tutte le righe per mount, e i conteggi funnel/stage viaggiano nel payload `funnel` di storia completa del server.
+- **Rietichettatura Playwright di tracker-v2** — la suite era conficcata sull'etichetta di scheda «Kanban» precedente a CAR-237; aggiornata al contratto consegnato «Воронка/Funnel».
+
+### Note
+
+- I filtri testo/punteggio/commute della tabella del tracker restano lato client ENTRO la pagina corrente (scope invariato); i numeri di storia completa arrivano dal payload `funnel` del server.
+- Le gate H3 dei bundle della guida sono state alzate (129 → 131) — il conteggio è il contratto conficcato, non un obiettivo morbido.
+
 ## [1.269.0] — 2026-11-06
 
 ### Aggiunto
