@@ -28,7 +28,12 @@ import { twoShapeAnswers, scoringFixture, isScoringCall, RENDER_MARKER } from '.
 
 let createApp, stub, lastPrompt = '', lastMaxTokens = 0, lastRenderPrompt = '';
 let currentAnswers = null; // tests swap fixtures via setAnswers()
-const ES_BODY = ['A', 'B', 'C', 'D', 'E', 'F', 'G'].map((L) => `## ${L}) Sección\nEl candidato cumple los requisitos del puesto: su experiencia en la plataforma es relevante, y el equipo valora el conocimiento de Kubernetes y Go para este rol.`).join('\n\n');
+// CAR-245 — the ES render fixture must sit AT the render-depth floor
+// (EVAL_MIN_BODY_CHARS = 2500): a well-formed run answers with a deep body,
+// and a thin stub would now honestly trip the 'blocks too thin' warning the
+// "no warnings" pin below forbids.
+const ES_LINE = 'El candidato cumple los requisitos del puesto: su experiencia en la plataforma es relevante, y el equipo valora el conocimiento de Kubernetes y Go para este rol. ';
+const ES_BODY = ['A', 'B', 'C', 'D', 'E', 'F', 'G'].map((L) => `## ${L}) Sección\n${ES_LINE.repeat(3)}`).join('\n\n');
 
 before(async () => {
   stub = http.createServer((req, res) => {
