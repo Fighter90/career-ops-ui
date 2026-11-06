@@ -874,20 +874,24 @@ export function registerAutoPipelineRoutes(app) {
       const sanitized = h1At > 0 ? sanitizedFull.slice(h1At) : sanitizedFull;
       mkdirSync(PATHS.reportsDir, { recursive: true });
       const file = projPath('reports', `${slug}.md`);
-      if (existsSync(file)) {
+      // Review v1.269 — race-free create: the write uses the exclusive `wx`
+      // flag, so an existsSync-then-write TOCTOU window (CodeQL #752) cannot
+      // exist — the kernel refuses to clobber, and we retry with an epoch
+      // suffix. Two concurrent pipelines can never overwrite each other.
+      const bounded = sanitized.length > 512 * 1024 ? sanitized.slice(0, 512 * 1024) : sanitized;
+      try {
+        writeFileSync(file, bounded, { flag: 'wx' });
+        logActivity({ action: 'auto-pipeline.report.saved', target: reportPath });
+        step(3, 'done', slug);
+      } catch (e) {
+        if (e.code !== 'EEXIST') throw e;
         // Don't clobber existing — append epoch suffix. The tracker row and
         // the `done` event must point at the file actually written.
         const altSlug = `${slug}-${Date.now()}`;
-        writeFileSync(projPath('reports', `${altSlug}.md`), sanitized.length > 512 * 1024 ? sanitized.slice(0, 512 * 1024) : sanitized);
+        writeFileSync(projPath('reports', `${altSlug}.md`), bounded);
         logActivity({ action: 'auto-pipeline.report.saved', target: `reports/${altSlug}.md`, detail: `deduped from ${slug}` });
         slug = altSlug;
         reportPath = `reports/${slug}.md`;
-        step(3, 'done', slug);
-      } else {
-        // Review v1.268.1 — bound the network-derived write (CodeQL #742/#743):
-        // a report beyond 512KB is pathological output; readers assume bounded files.
-        writeFileSync(file, sanitized.length > 512 * 1024 ? sanitized.slice(0, 512 * 1024) : sanitized);
-        logActivity({ action: 'auto-pipeline.report.saved', target: reportPath });
         step(3, 'done', slug);
       }
     } catch (e) {
