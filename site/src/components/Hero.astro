@@ -14,6 +14,27 @@ const adaptersRounded = Math.floor(facts.adapters / 5) * 5; // honest, registry-
 ---
 
 <section class="relative overflow-hidden pt-28 pb-16 md:pt-36 md:pb-24">
+  <!-- Hero video underlay (aixle-style ambient motion): self-hosted, muted,
+       decorative. The DEFAULT rendering is the static end-state — the poster
+       background on .hero-media plus the paper wash overlay; the video element
+       itself only displays ≥640px with motion allowed (global.css gate) and
+       cross-fades in over the poster. The whole layer is pointer-events:none. -->
+  <div class="hero-media" aria-hidden="true">
+    <video
+      class="hero-video"
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="auto"
+      poster="/assets/hero-poster.jpg"
+      aria-hidden="true"
+      tabindex="-1"
+    >
+      <source src="/assets/hero-swarm.mp4" type="video/mp4" />
+    </video>
+    <div class="hero-video-overlay"></div>
+  </div>
   <!-- CAR-133 parallax layers: decorative blobs + the demo frame drift at
        different rates on scroll. JS only sets --plx; CSS applies it strictly
        inside `prefers-reduced-motion: no-preference` + fine pointer. -->
