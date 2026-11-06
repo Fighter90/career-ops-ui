@@ -480,15 +480,21 @@ Router.register('tracker', async () => {
           : t('track.noMatch')));
         return;
       }
-      kanbanHost.appendChild(TS.kanbanBoard({
+      // CAR-237 — the «Воронка» board (lib/tracker-kanban.js): columns are the
+      // canonical funnel, cards are rows, drops write the canonical
+      // /api/tracker/status relay with an optimistic move + revert. onChanged
+      // recounts the stage tabs after every optimistic mutation.
+      kanbanHost.appendChild(window.TrackerKanban.createBoard({
         rows: visible,
         stages: STAGES,
         fold,
         statusLabel,
         scoreClass: (v) => scoreCls(v),
-        movesReady,
+        reportLabel: t('track.report'),
         t,
-        onMove: (picked, presetTo) => moveFlow.open(picked, presetTo),
+        // An optimistic mutation (or its revert) recounts the stage tabs AND
+        // rebuilds the board so the card visibly lands in its new column.
+        onChanged: () => { renderTabs(); renderKanban(); },
       }));
     });
   }
@@ -509,6 +515,9 @@ Router.register('tracker', async () => {
     kanbanHost.style.display = tableActive ? 'none' : '';
     if (!tableActive) renderKanban();
     if (bulk) bulk.el.hidden = bulk.size() === 0 || tableActive;
+    // CAR-237 — the funnel lib owns the authoritative view-persistence key;
+    // applyViewMode is the one place every mode flip lands.
+    if (window.TrackerKanban) window.TrackerKanban.saveViewPref(viewModeNow());
   }
 
   // v1.118.0 — parent v1.18.0 parity: job-landed celebration. When any row
@@ -572,6 +581,13 @@ Router.register('tracker', async () => {
     th.style.top = '0';
     th.style.zIndex = '2';
   }
+
+  // CAR-237 — the funnel tab wiring runs BEFORE the first applyViewMode():
+  // applyViewMode persists the effective mode, so a restore issued after it
+  // would read its own 'table' write instead of the stored «Воронка» choice.
+  // Runs after the hosts above exist — the restore (when it fires) calls
+  // applyViewMode() synchronously through the toggle's onChange.
+  if (viewToggle && window.TrackerKanban) window.TrackerKanban.funnelTab(viewToggle, t);
 
   applyViewMode();
 
