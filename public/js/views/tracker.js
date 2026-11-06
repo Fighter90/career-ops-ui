@@ -1,6 +1,48 @@
 /* global Router, API, UI, I18n, HelpHint, MapPrefs, PostingUrlKey */
 // TODO: split by concern — the CAR-117 pattern (tracker-stages.js /
 // tracker-import.js); buildHeaderMenu is the next extract candidate.
+
+// ── CAR-236 · the shared tracker-row loader ────────────────────────────────
+// Every consumer (#/tracker table + funnel board, #/pipeline overview,
+// #/stats tabs) reads tracker rows through this one module, so a navigation
+// costs ONE /api/tracker fetch instead of three or four, and the table never
+// ships more than one page of rows:
+//   - TrackerRows.mount() — a view render calls it FIRST: it drops the
+//     previous mount's shared promise, so a fresh navigation always re-reads.
+//   - TrackerRows.all({ fresh }) — the ALL-rows read (no params — the legacy
+//     `{ rows }` shape; the funnel board and the stats aggregates need every
+//     row). Memoized per mount; `{ fresh: true }` bypasses the cache and
+//     never poisons it (the pipeline's post-mutation refresh()).
+//   - TrackerRows.page(n, { status }) — the TABLE's server-side pagination
+//     (`?page=&pageSize=200`, optionally `?status=<canonical stage>`). The
+//     route caps pageSize at 500 and answers `{ rows, total, funnel }` with
+//     the funnel computed over the FULL history regardless of the filters —
+//     which is what keeps the stage tabs truthful under pagination.
+window.TrackerRows = (function () {
+  const TABLE_PAGE_SIZE = 200; // server-side page size for the #/tracker table
+  let shared = null; // the per-mount ALL-rows promise
+  function mount() { shared = null; }
+  function all(opts) {
+    const fresh = !!(opts && opts.fresh);
+    if (!fresh && shared) return shared;
+    const p = window.API.get('/api/tracker');
+    if (fresh) return p; // a fresh read bypasses the cache and never poisons it
+    shared = p;
+    // A failed read must not stick for the whole mount: the next all() retries.
+    p.catch(() => { if (shared === p) shared = null; });
+    return p;
+  }
+  function page(n, opts) {
+    const o = opts || {};
+    const size = o.pageSize || TABLE_PAGE_SIZE;
+    const num = (Number.isFinite(n) && n >= 1) ? Math.floor(n) : 1;
+    let url = '/api/tracker?page=' + num + '&pageSize=' + size;
+    if (o.status) url += '&status=' + encodeURIComponent(String(o.status));
+    return window.API.get(url);
+  }
+  return { mount: mount, all: all, page: page, TABLE_PAGE_SIZE: TABLE_PAGE_SIZE };
+})();
+
 Router.register('tracker', async () => {
   const c = UI.el;
   const t = (k, f) => I18n.t(k, f);
@@ -24,15 +66,36 @@ Router.register('tracker', async () => {
   // the canonical funnel are fetched together; the stages endpoint fails soft
   // to an empty funnel (the board degrades to an ALL-only view) so the tracker
   // still renders if the parent's states.yml is momentarily unreadable.
+  // CAR-236 — the view declares its mount FIRST (drops the previous mount's
+  // shared promise), the persisted view choice decides WHAT to fetch: the
+  // table is the default, so it reads one server page (?page=1&pageSize=200);
+  // a restored funnel board reads ALL rows (it groups every application).
+  TrackerRows.mount();
+  const TS = window.TrackerStages;
+  const viewToggle = TS ? TS.createViewToggle({ t, onChange: () => onModeFlip() }) : null;
+  const initialMode = viewToggle ? viewToggle.mode() : 'table';
+  const PAGE_SIZE = TrackerRows.TABLE_PAGE_SIZE;
   const [data, stagesData, commute] = await Promise.all([
-    API.get('/api/tracker'),
+    initialMode === 'kanban' ? TrackerRows.all() : TrackerRows.page(1),
     API.get('/api/tracker/stages').catch(() => ({ stages: [], aliases: {} })),
     API.get('/api/commute').catch(() => null),
   ]);
-  const rows = data.rows || [];
+  // CAR-236 — mode-aware row state. `rows` always feeds the ACTIVE view: the
+  // funnel board sees ALL rows, the table sees one server page. `allRows`
+  // caches the ALL-rows read for this mount (loaded eagerly above when the
+  // funnel choice was restored, lazily on the first funnel flip); once loaded,
+  // the table derives its pages locally from it, so a status move on the
+  // board is already in when the user flips back (no staleness, no fetch).
+  let allRows = initialMode === 'kanban' ? (data.rows || []) : null;
+  let rows = initialMode === 'kanban' ? allRows : (data.rows || []);
+  let serverTotal = rows.length;
+  let serverFunnel = null; // the paginated response's whole-history funnel (pure-table path)
+  if (initialMode !== 'kanban') {
+    serverTotal = (data && data.total != null) ? data.total : rows.length;
+    serverFunnel = (data && data.funnel) || {};
+  }
   const STAGES = Array.isArray(stagesData.stages) ? stagesData.stages : [];
   const ALIASES = stagesData.aliases || {};
-  const TS = window.TrackerStages;
   const fold = (s) => (TS ? TS.foldStatus(s, ALIASES) : (s || ''));
   const commutePrefs = MapPrefs ? MapPrefs.loadCommute() : { maxMinutes: null, showUnknown: true };
   const commuteOf = (r) => {
@@ -45,6 +108,32 @@ Router.register('tracker', async () => {
   // (POST /api/outcome). When the parent script is missing, the first failed
   // write flips this off and the board re-renders read-only with a hint.
   let movesReady = true;
+
+  // ── CAR-236 · whole-history numbers ───────────────────────────────────────
+  // The stage tabs, the header count and the hired banner describe the WHOLE
+  // tracker, never just the table's current page. With allRows in memory the
+  // numbers recount client-side (fresh after board moves); the pure-table
+  // path reads the server response's funnel — computed over the FULL history
+  // regardless of the page/status filters.
+  const funnelSum = (f) => Object.keys(f || {}).reduce((a, k) => a + (f[k] || 0), 0);
+  function totalForTabs() {
+    if (allRows) return allRows.length;
+    if (serverFunnel && Object.keys(serverFunnel).length) return funnelSum(serverFunnel);
+    return serverTotal;
+  }
+  function countsForTabs() {
+    if (allRows) return TS ? TS.stageCounts(allRows, STAGES, ALIASES) : {};
+    const counts = {};
+    for (const s of STAGES) counts[s] = (serverFunnel && serverFunnel[s]) || 0;
+    return counts;
+  }
+  // An optimistic status move adjusts the whole-history funnel in place (the
+  // allRows path needs no bump — stageCounts recounts from the mutated rows).
+  function bumpFunnel(prev, next) {
+    if (!serverFunnel) return;
+    if (serverFunnel[prev]) serverFunnel[prev] -= 1;
+    serverFunnel[next] = (serverFunnel[next] || 0) + 1;
+  }
 
   const filterScore = c('select', { className: 'select', style: { maxWidth: '180px' }, 'aria-label': t('track.anyScore') }, [
     c('option', { value: '' }, t('track.anyScore')),
@@ -99,7 +188,7 @@ Router.register('tracker', async () => {
   });
   function renderTabs() {
     tabBar.textContent = '';
-    const counts = TS ? TS.stageCounts(rows, STAGES, ALIASES) : {};
+    const counts = countsForTabs(); // CAR-236 — whole-history counts, never page-local
     const tab = (label, stageValue, n) => {
       const active = activeStage === stageValue;
       const b = c('button', {
@@ -116,14 +205,15 @@ Router.register('tracker', async () => {
           // funnel-chip toggle behaviour).
           activeStage = (activeStage === stageValue) ? '' : stageValue;
           pager.reset();
-          refreshView();
-          // renderTabs() (called from applyFilters) tears down and rebuilds every
-          // tab button, so the one that was just clicked — and had focus — is
-          // gone. Restore focus to the now-active tab so keyboard users stay on
-          // the strip (WAI-ARIA Tabs pattern). Scoped to tab activation only, so
-          // sort/search/paging re-renders never steal focus.
-          const nowActive = tabBar.querySelector('.tracker-tab.is-active');
-          if (nowActive) nowActive.focus();
+          // CAR-236 — the stage filter rides the SERVER in table mode
+          // (?status=<canonical stage>, page 1); the board filters its
+          // all-rows client-side as before.
+          const restoreTabFocus = () => {
+            const nowActive = tabBar.querySelector('.tracker-tab.is-active');
+            if (nowActive) nowActive.focus();
+          };
+          if (viewModeNow() === 'table') loadTable(1).then(restoreTabFocus);
+          else { refreshView(); restoreTabFocus(); }
         },
       }, [
         c('span', null, label),
@@ -131,7 +221,7 @@ Router.register('tracker', async () => {
       ]);
       return b;
     };
-    tabBar.appendChild(tab(t('track.allStatus', 'All'), '', rows.length));
+    tabBar.appendChild(tab(t('track.allStatus', 'All'), '', totalForTabs()));
     // The tab's DISPLAYED caption is the localized label; the tab's filter
     // VALUE stays the canonical stage label `s` (comparison + folding below).
     for (const s of STAGES) tabBar.appendChild(tab(statusLabel(s), s, counts[s] || 0));
@@ -140,10 +230,45 @@ Router.register('tracker', async () => {
   const tbody = c('tbody');
   const pgWrap = c('div'); // paginator container, re-rendered on each filter change
 
-  // 25 rows per page — same default the activity log uses. The paginator
-  // auto-clamps when the filter narrows the list so the user can't land on an
-  // empty page after typing in the search.
-  const pager = UI.paginate({ pageSize: 25, onChange: () => applyFilters() });
+  // ── CAR-236 · server-side table pagination ────────────────────────────────
+  // The paginator stays the control surface, but its page buttons drive
+  // TrackerRows.page re-fetches (?page=&pageSize=200) instead of a client-side
+  // slice: every filtered row of the CURRENT page renders, and the pager pages
+  // over the WHOLE total. One superseded-load token guards every async table
+  // (re)load below.
+  let loadToken = 0;
+  const pager = UI.paginate({ pageSize: PAGE_SIZE, onChange: () => { loadTable(pager.page + 1); } });
+
+  // The table's paging source once ALL rows are in memory (the funnel board
+  // was visited): the active stage filter folds rows the same way the server's
+  // ?status= does, so both paging paths agree on the total.
+  function stageList() {
+    if (!allRows) return null;
+    return activeStage ? allRows.filter((r) => fold(r.status) === activeStage) : allRows;
+  }
+
+  // (Re)load the table for 1-based server page `n` — from the server while
+  // the funnel board has not been visited, locally from allRows afterwards.
+  // Re-renders through applyFilters().
+  async function loadTable(n) {
+    const token = ++loadToken;
+    let d;
+    if (allRows) {
+      const list = stageList();
+      const start = (Math.max(1, n || 1) - 1) * PAGE_SIZE;
+      d = { rows: list.slice(start, start + PAGE_SIZE), total: list.length };
+    } else {
+      try {
+        d = await TrackerRows.page(Math.max(1, n || 1), activeStage ? { status: activeStage } : {});
+      } catch {
+        return; // keep the current page; mount failures surface through the router
+      }
+    }
+    if (token !== loadToken) return; // a newer load superseded this one
+    rows = d.rows || [];
+    serverTotal = (d.total != null) ? d.total : rows.length;
+    applyFilters();
+  }
 
   // ── CAR-117 · view mode (table | kanban) ──────────────────────────────────
   // The table stays the DEFAULT (least surprise; the browser suites pin it).
@@ -226,15 +351,18 @@ Router.register('tracker', async () => {
   }) : null;
   // r2 #5 — guarded like its siblings: a tracker-stages load failure must not
   // throw the whole route; mode() reads go through the null-safe accessor
-  // below (default: table).
-  // Created before the first applyFilters() below reads its mode (TDZ).
-  const viewToggle = TS ? TS.createViewToggle({ t, onChange: () => applyViewMode() }) : null;
+  // below (default: table). CAR-236 — the toggle itself is created BEFORE the
+  // mount fetch (the restored choice decides what to fetch); its onChange
+  // lands on onModeFlip, which loads what the new mode needs first.
   const viewModeNow = () => (viewToggle ? viewToggle.mode() : 'table');
 
   function applyFilters() {
     renderTabs(); // whole-history counts; reflects the active stage tab
     const all = sorted(filtered());
-    const page = pager.slice(all);
+    // CAR-236 — server pagination: every filtered row of the CURRENT page
+    // renders (no client slice); the pager pages over the whole filtered
+    // total and its page-change drives a TrackerRows.page re-fetch.
+    const page = all;
     // L-FOCUS (v1.243.0) — this rebuild replaces the nodes a keyboard user is
     // on (a row's Report/Outcome button, a .pg-btn), dropping focus to <body>.
     // Restore it (see lib/focus-preserve.js).
@@ -243,17 +371,22 @@ Router.register('tracker', async () => {
       // CAR-210 — the first-run empty state (title + body + CTA) no longer
       // renders inside the min-width table (cut off at 390px): it gets a
       // full-width host instead, and the table is hidden while it shows.
+      // CAR-236 — "no applications at all" (totalForTabs() === 0), never
+      // "this page has none": with server pagination an empty filtered page
+      // must fall through to the in-table no-match notice below.
       if (rows.length === 0) {
-        FocusPreserved.withFocusPreserved(emptyHost, () => {
-          emptyHost.textContent = '';
-          emptyHost.appendChild(c('div', { className: 'card empty' }, [
-            c('strong', null, t('track.emptyTitle', 'No applications yet')),
-            c('p', { style: { margin: '8px 0 0' } }, t('track.emptyBody', 'Run the pipeline or evaluate a JD to populate this tracker.')),
-            c('div', { style: { marginTop: '12px' } },
-              c('a', { href: '#/pipeline', className: 'btn btn-primary btn-sm' }, t('track.emptyCta', 'Open pipeline'))),
-          ]));
-        });
-        return;
+        if (totalForTabs() === 0) {
+          FocusPreserved.withFocusPreserved(emptyHost, () => {
+            emptyHost.textContent = '';
+            emptyHost.appendChild(c('div', { className: 'card empty' }, [
+              c('strong', null, t('track.emptyTitle', 'No applications yet')),
+              c('p', { style: { margin: '8px 0 0' } }, t('track.emptyBody', 'Run the pipeline or evaluate a JD to populate this tracker.')),
+              c('div', { style: { marginTop: '12px' } },
+                c('a', { href: '#/pipeline', className: 'btn btn-primary btn-sm' }, t('track.emptyCta', 'Open pipeline'))),
+            ]));
+          });
+          return;
+        }
       }
       emptyHost.textContent = '';
       if (all.length === 0) {
@@ -273,8 +406,9 @@ Router.register('tracker', async () => {
     }
     FocusPreserved.withFocusPreserved(pgWrap, () => {
       pgWrap.innerHTML = '';
-      if (all.length === 0) return;
-      pgWrap.appendChild(pager.controls(page.length, all.length));
+      const pagerTotal = allRows ? stageList().length : serverTotal;
+      if (pagerTotal === 0) return;
+      pgWrap.appendChild(pager.controls(page.length, pagerTotal));
     });
   }
 
@@ -291,7 +425,8 @@ Router.register('tracker', async () => {
       onClick: () => {
         if (sortKey === key) sortDir = sortDir === 'asc' ? 'desc' : 'asc';
         else { sortKey = key; sortDir = 'asc'; }
-        pager.reset();
+        // CAR-236 — no pager.reset(): sorting reorders the CURRENT page's
+        // rows; paging stays where the user is.
         // aria-sort belongs only on sortable headers — reset just those (not the
         // plain columns), then mark the active one.
         for (const h of th.parentElement.children) {
@@ -311,8 +446,11 @@ Router.register('tracker', async () => {
   // Resetting the pager when filter inputs change keeps page-1 sticky.
   // CAR-117 — filters drive BOTH hosts, so refreshView() re-renders whichever
   // view is active.
+  // CAR-236 — score/text/commute are NOT server parameters: they filter
+  // client-side WITHIN the current page, so the pager keeps the page (the old
+  // reset-to-page-1 semantic belonged to the client-side 25-row pager).
   ;[filterScore, filterText, filterCommute, showUnknown].forEach((el) =>
-    el.addEventListener('input', () => { pager.reset(); refreshView(); })
+    el.addEventListener('input', () => { refreshView(); })
   );
   ;[filterCommute, showUnknown].forEach((el) => el.addEventListener('input', () => {
     MapPrefs?.saveCommute({ maxMinutes: filterCommute.value ? Number(filterCommute.value) : null, showUnknown: showUnknown.checked });
@@ -367,7 +505,15 @@ Router.register('tracker', async () => {
     try {
       await API.post('/api/tracker/status', { row: Number(r.num), state: target });
       r.status = target;
-      // In-place refresh: the select keeps focus; the tabs recount from `rows`.
+      // In-place refresh: the select keeps focus; the tabs recount.
+      // CAR-236 — keep the mount's other row copies in sync: the funnel
+      // board's allRows twin (so flipping to the board shows the move), and
+      // the whole-history funnel counts (the pure-table path's tab numbers).
+      if (allRows) {
+        const twin = allRows.find((x) => String(x.num) === String(r.num));
+        if (twin) twin.status = target;
+      }
+      bumpFunnel(prev, target);
       sel.className = 'badge ' + trackerStatusClass(r.status);
       renderTabs();
       UI.toast(t('track.statusUpdated', 'Status updated to {state}').replace('{state}', statusLabel(target)), 'success');
@@ -504,11 +650,49 @@ Router.register('tracker', async () => {
     if (viewModeNow() === 'kanban') renderKanban();
   }
 
+  // ── CAR-236 · the mode flip loads first, then applies visibility ──────────
+  // Funnel board: the ALL-rows read — once per mount (TrackerRows.all() is
+  // memoized), with shimmer rows standing in while it is in flight. Table:
+  // derived from allRows when the board has been visited (its moves are
+  // already in — no staleness, no fetch), otherwise the mount's server page
+  // is already current and only the visibility flips.
+  let modeLoads = 0;
+  async function onModeFlip() {
+    const mode = viewModeNow();
+    const token = ++modeLoads;
+    if (mode === 'kanban') {
+      if (allRows == null) {
+        FocusPreserved.withFocusPreserved(kanbanHost, () => {
+          kanbanHost.textContent = '';
+          kanbanHost.appendChild(window.Skeleton
+            ? window.Skeleton.block(6, t('common.loading', 'Loading…'))
+            : c('div', { className: 'card mb-3', style: { padding: '24px', textAlign: 'center', color: 'var(--foggy)' } }, t('common.loading', 'Loading…')));
+        });
+        let d = null;
+        try { d = await TrackerRows.all(); } catch { d = { rows: [] }; }
+        if (token !== modeLoads) return; // a newer flip superseded this load
+        allRows = (d && d.rows) || [];
+      }
+      rows = allRows;
+      applyFilters();
+      // renderKanban() is applyViewMode's own non-table branch below — one
+      // board build per flip, not two.
+    } else if (allRows) {
+      // Page 1 of the board-fresh rows (board moves are already in).
+      pager.reset();
+      await loadTable(1);
+      if (token !== modeLoads) return;
+    }
+    applyViewMode();
+  }
+
   function applyViewMode() {
     const tableActive = viewModeNow() === 'table';
     // CAR-210 — a first-run empty tracker shows the full-width empty host
     // instead of the (hidden) table; the kanban host keeps its own empty card.
-    const emptyFirstRun = rows.length === 0;
+    // CAR-236 — "first run" is a whole-history fact (totalForTabs()), never a
+    // page-local one: an empty filtered page must not hide the table.
+    const emptyFirstRun = totalForTabs() === 0;
     emptyHost.hidden = !(tableActive && emptyFirstRun);
     tableWrap.style.display = tableActive && !emptyFirstRun ? '' : 'none';
     pgWrap.style.display = tableActive && !emptyFirstRun ? '' : 'none';
@@ -524,12 +708,18 @@ Router.register('tracker', async () => {
   // reaches the canonical 'Hired' state, greet it above the board — static
   // markup, no timers/confetti (CSP-safe, calm-by-default). v1.131.0: count by
   // the FOLDED status so a Spanish/legacy alias (e.g. "contratado") still lands.
+  // CAR-236 — in board mode rows IS allRows, so this is already the
+  // whole-tracker count; the table-only path tops it up from the server
+  // funnel's Hired bucket below (computed over the FULL history).
   const hiredCount = rows.filter((r) => fold(r && r.status) === 'Hired').length;
+  const hiredWhole = allRows
+    ? hiredCount
+    : Math.max(hiredCount, (serverFunnel && serverFunnel.Hired) || 0);
   const hiredBanner = hiredCount
     ? c('div', { className: 'card mb-3 hired-banner', role: 'status' }, [
       c('span', { className: 'hired-banner-emoji', 'aria-hidden': 'true' }, '🎉'),
       c('strong', null, t('track.hiredTitle', 'Congratulations — job landed!')),
-      c('span', null, ` ${hiredCount} × ${statusLabel('Hired')} · ${t('track.hiredNote', 'The search that ends well.')}`),
+      c('span', null, ` ${hiredWhole} × ${statusLabel('Hired')} · ${t('track.hiredNote', 'The search that ends well.')}`),
     ])
     : null;
 
@@ -596,7 +786,7 @@ Router.register('tracker', async () => {
     c('header', { className: 'page-header' }, [
       c('div', null, [
         HelpHint.title(t('track.title'), 'help.hint.tracker'),
-        c('p', { className: 'page-subtitle' }, `${rows.length} ${t('track.entriesIn')} data/applications.md`),
+        c('p', { className: 'page-subtitle' }, `${totalForTabs()} ${t('track.entriesIn')} data/applications.md`),
       ]),
       // CAR-117 tail (P3.2) — the four heavy operations (Normalize / Dedup /
       // Merge TSV / Import CSV) collapse into the compact «⋯» overflow menu
@@ -616,7 +806,10 @@ Router.register('tracker', async () => {
     ]),
 
     bulk ? bulk.el : null,
-    TS ? TS.companyHistoryCard(rows, c, t) : null,
+    // CAR-236 — the card describes the whole tracker: allRows when the board
+    // loaded them, the current server page otherwise (static per mount, as
+    // before).
+    TS ? TS.companyHistoryCard(allRows || rows, c, t) : null,
 
     emptyHost,
     tableWrap,

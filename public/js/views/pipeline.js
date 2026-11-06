@@ -1,4 +1,4 @@
-/* global Router, API, UI, I18n, HelpHint, PipelineView */
+/* global Router, API, UI, I18n, HelpHint, PipelineView, TrackerRows */
 // TODO: split by concern — the v2 grouped view (CAR-116) grew this file
 // past the 800-LOC hard target (the flat-view legacy block is pinned
 // in place by the pipeline-view test contracts). A follow-up should
@@ -1006,15 +1006,13 @@ Router.register('pipeline', async () => {
   async function refresh() {
     // CAR-21 (v1.243.0) — pipeline + tracker rows are re-read together so
     // the overview strip stays truthful after add/delete (it used to be
-    // built once at mount and never refreshed).
-    // CAR-93 — a failed /api/tracker read used to fall back to {} and
-    // render as "0 tracked", indistinguishable from an empty tracker.
-    // trackerLoadFailed makes the failure visible (the chip shows "—").
+    // built once at mount and never refreshed). CAR-236 — the read goes
+    // through readTrackerRows(true): a FRESH '/api/tracker' read that
+    // bypasses (and never poisons) the shared per-mount cache, so the strip
+    // reflects the mutation that triggered this refresh.
     const [fresh, tr] = await Promise.all([
       API.get('/api/pipeline'),
-      API.get('/api/tracker').then(
-        (r) => { trackerLoadFailed = false; return r; },
-        () => { trackerLoadFailed = true; return {}; }),
+      readTrackerRows(true),
     ]);
     allUrls = fresh.urls || [];
     trackerRows = (tr && tr.rows) || [];
@@ -1060,6 +1058,18 @@ Router.register('pipeline', async () => {
   // CAR-93 — true when the last /api/tracker read failed; paintOverview()
   // shows "—" instead of a fake "0 tracked" (see refresh() above).
   let trackerLoadFailed = false;
+  // CAR-236 — tracker rows ride the shared per-mount loader (window.TrackerRows
+  // — ONE whole-table fetch per navigation, memoized; `fresh` bypasses the
+  // cache for the post-mutation refresh()). The guarded direct read is the
+  // dead fallback for a harness without the loader (a synthetic-window test
+  // sandbox has no cross-view globals — the stats-overview-car120 lesson) and
+  // keeps the v1.109 canary's textual shape. A failed read marks
+  // trackerLoadFailed (CAR-93): paintOverview() shows "—", never a fake 0.
+  const trackerOk = (r) => { trackerLoadFailed = false; return r; };
+  const trackerFail = () => { trackerLoadFailed = true; return {}; };
+  const readTrackerRows = (fresh) => (window.TrackerRows
+    ? TrackerRows.all(fresh ? { fresh: true } : undefined).then(trackerOk, trackerFail)
+    : API.get('/api/tracker').then(trackerOk, trackerFail));
   let STAGES = [];
   let ALIASES = {};
   const overview = c('div', { className: 'card mb-3', style: { display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center' } });
@@ -1090,13 +1100,15 @@ Router.register('pipeline', async () => {
   // fail-soft: /api/reports (report headers) and /api/map/jobs (the
   // checklist cells the parent scanner already writes). Both are
   // existing endpoints; the view invents nothing.
+  // CAR-236 — the view declares its mount first, then reads tracker rows
+  // through the shared loader: one whole-table fetch per navigation, shared
+  // with any other consumer of this mount.
+  if (window.TrackerRows) TrackerRows.mount();
   let mountReports = [];
   let mountMapRows = [];
   const [p0, tr0, sd0, rep0, map0] = await Promise.all([
     API.get('/api/pipeline'),
-    API.get('/api/tracker').then(
-      (r) => { trackerLoadFailed = false; return r; },
-      () => { trackerLoadFailed = true; return {}; }),
+    readTrackerRows(),
     API.get('/api/tracker/stages').catch(() => ({})),
     API.get('/api/reports').catch(() => null),
     API.get('/api/map/jobs').catch(() => null),
