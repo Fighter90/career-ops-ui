@@ -25,6 +25,8 @@
  * scoring-cache env itself and carries its own inline fixtures.
  */
 import { test, before, after } from 'node:test';
+
+const H2 = 'stable-header';
 import assert from 'node:assert/strict';
 import http from 'node:http';
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync } from 'node:fs';
@@ -235,4 +237,86 @@ test('writes are locked and atomic: concurrent writes all land, the file stays v
   const map = JSON.parse(readFileSync(SCORING_CACHE_FILE, 'utf8'));
   for (let i = 0; i < 8; i += 1) assert.ok(map.entries[`conc-${i}`], `conc-${i} landed`);
   assert.ok(readScoringCache('conc-3', { now: t + 50 }), 'all entries readable after the concurrent burst');
+});
+
+test('v1.268.1 coverage tail: read-side LRU bumps prune past MAX_ENTRIES and reads keep working', async () => {
+  const { writeScoringCache, readScoringCache, scoringCacheKey } = await import('../server/lib/scoring-cache.mjs');
+  const H = 'stable-header';
+  // Earlier tests stamp poisons at 2e12 (the LRU seed) and 3e12..3e12+7
+  // (the conc-* burst) — OUR writes stamp TP = 3.1e12, beyond every poison,
+  // so the survivor set is deterministic: with 506 fresh writes over a
+  // 500-cap map, exactly the FIRST 6 of ours evict and the last 500
+  // survive; hitting the survivors grows the bump map past MAX_ENTRIES and
+  // pruneBumps fires mid-loop.
+  const TP = 3_100_000_000_000; // also beyond the conc-* burst (3e12+i)
+  const keys = [];
+  for (let i = 0; i < 506; i += 1) {
+    const k = scoringCacheKey({ stableHeader: H, jd: `JD number ${i}`, model: 'openrouter:m' });
+    keys.push(k);
+    await writeScoringCache(k, { blocks: { A: 3, B: 3, C: 3, D: 3, E: 3, F: 3 }, final: 3.0 }, { now: TP });
+  }
+  for (const k of keys.slice(6)) {
+    const v = readScoringCache(k, { now: TP });
+    assert.ok(v && v.final === 3.0, `surviving entry reads back: ${k.slice(0, 8)}`);
+  }
+  for (const k of keys.slice(0, 6)) {
+    assert.equal(readScoringCache(k, { now: TP }), null, `the evicted entry is gone: ${k.slice(0, 8)}`);
+  }
+  // Generation 2: another 506 fresh writes evict generation 1 wholesale, so
+  // the bump map now holds ~1000 DISTINCT keys (gen-1 bumps + gen-2 bumps) —
+  // past MAX_ENTRIES → pruneBumps actually fires (keeps the hottest 500:
+  // gen-2's). The pruned state never corrupts the contract.
+  const keys2 = [];
+  for (let i = 0; i < 506; i += 1) {
+    const k = scoringCacheKey({ stableHeader: H, jd: `second generation ${i}`, model: 'openrouter:m' });
+    keys2.push(k);
+    await writeScoringCache(k, { blocks: { A: 4, B: 4, C: 4, D: 4, E: 4, F: 4 }, final: 4.0 }, { now: TP + 1 + i });
+  }
+  for (const k of keys2.slice(6)) {
+    const v = readScoringCache(k, { now: TP + 2 });
+    assert.ok(v && v.final === 4.0, `gen-2 entry reads back: ${k.slice(0, 8)}`);
+  }
+  for (const k of keys2.slice(0, 6)) {
+    assert.equal(readScoringCache(k, { now: TP + 2 }), null, `gen-1 leftover is gone: ${k.slice(0, 8)}`);
+  }
+});
+
+test('v1.268.1: an entry with no lastUsed/cachedAt (hand-edited file) sorts oldest and evicts without throwing', async () => {
+  const { writeScoringCache, readScoringCache, scoringCacheKey, SCORING_CACHE_FILE } = await import('../server/lib/scoring-cache.mjs');
+  const { readFileSync, writeFileSync } = await import('node:fs');
+  // A hand-edited entry missing BOTH freshness fields — entryFreshness falls
+  // through to 0, so it sorts oldest and is evicted first; no throw.
+  const map = JSON.parse(readFileSync(SCORING_CACHE_FILE, 'utf8'));
+  map.entries['hand-edited-broken'] = { scoring: { blocks: { A: 1 }, final: 1.0 } };
+  writeFileSync(SCORING_CACHE_FILE, JSON.stringify(map));
+  const TP2 = 4_000_000_000_000;
+  for (let i = 0; i < 6; i += 1) {
+    const k = scoringCacheKey({ stableHeader: H2, jd: `post-broken ${i}`, model: 'openrouter:m' });
+    await writeScoringCache(k, { blocks: { A: 5 }, final: 5.0 }, { now: TP2 + i });
+  }
+  const after = JSON.parse(readFileSync(SCORING_CACHE_FILE, 'utf8'));
+  assert.equal(after.entries['hand-edited-broken'], undefined, 'the freshness-less entry was evicted first');
+  assert.ok(readScoringCache(scoringCacheKey({ stableHeader: H2, jd: 'post-broken 0', model: 'openrouter:m' }), { now: TP2 })?.final === 5.0);
+});
+
+test('v1.268.1: an entry with cachedAt but no lastUsed sorts by cachedAt (entryFreshness mid-branch)', async () => {
+  const { writeScoringCache, readScoringCache, scoringCacheKey, SCORING_CACHE_FILE } = await import('../server/lib/scoring-cache.mjs');
+  const { readFileSync, writeFileSync } = await import('node:fs');
+  // lastUsed absent, cachedAt present → freshness rides cachedAt: a FRESH
+  // cachedAt survives eviction even when written by hand.
+  const TP3 = 5_000_000_000_000;
+  for (let i = 0; i < 6; i += 1) {
+    const k = scoringCacheKey({ stableHeader: H2, jd: `cachedAt-only ${i}`, model: 'openrouter:m' });
+    await writeScoringCache(k, { blocks: { A: 2 }, final: 2.0 }, { now: TP3 + i });
+  }
+  const map = JSON.parse(readFileSync(SCORING_CACHE_FILE, 'utf8'));
+  map.entries['hand-cachedAt-only'] = { scoring: { blocks: { A: 1 }, final: 1.0 }, cachedAt: TP3 + 100 };
+  writeFileSync(SCORING_CACHE_FILE, JSON.stringify(map));
+  // One more write forces a sort over the hand-made entry — it is fresher
+  // than nothing else? TP3+100 > TP3+5 → it SURVIVES (freshest side).
+  const k2 = scoringCacheKey({ stableHeader: H2, jd: 'post-cachedAt 0', model: 'openrouter:m' });
+  await writeScoringCache(k2, { blocks: { A: 5 }, final: 5.0 }, { now: TP3 + 50 });
+  const after = JSON.parse(readFileSync(SCORING_CACHE_FILE, 'utf8'));
+  assert.ok(after.entries['hand-cachedAt-only'], 'the cachedAt-only entry survives (fresher than the burst)');
+  assert.ok(readScoringCache(scoringCacheKey({ stableHeader: H2, jd: 'post-cachedAt 0', model: 'openrouter:m' }), { now: TP3 + 50 })?.final === 5.0);
 });
