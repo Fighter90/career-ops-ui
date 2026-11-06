@@ -221,5 +221,291 @@
     };
   }
 
-  window.RoleStats = { parseSalaryUSD, matchRole, aggregate, FX_TO_USD };
+  // ── CAR-247 — the #/stats «Детали» (Details) dataset layer ─────────────────
+  // Pure, window-free helpers: the view builds ONE filterable dataset from the
+  // tracker (/api/tracker) + the latest scan snapshot (/api/scan-results) and
+  // runs currency conversion, period windows, search, facets and chart
+  // aggregation through these. All rates/thresholds are static and documented.
+
+  // USD → display-currency rates for the Details tab selector. STATIC and
+  // explicitly approximate (the salary caveat already says "approximate FX" —
+  // never presented as a live quote), same round numbers the stats view's
+  // market-report selector has used since v1.94.0. A currency missing here
+  // degrades to USD passthrough in convertFromUsd — never a guessed rate.
+  const USD_TO_DISPLAY = { USD: 1, EUR: 0.92, RUB: 90, GBP: 0.79, CNY: 7.2 };
+  const DISPLAY_CURRENCIES = Object.keys(USD_TO_DISPLAY);
+
+  /**
+   * Convert a USD amount into the selected display currency. An unknown or
+   * missing currency passes the USD amount through unchanged (rate 1) —
+   * an unknown currency must never silently use a wrong rate.
+   * @param {number|null} v USD amount
+   * @param {string} cur ISO code from DISPLAY_CURRENCIES (or anything)
+   * @returns {number|null} rounded display-currency amount, or null for non-finite input
+   */
+  function convertFromUsd(v, cur) {
+    if (v == null) return null; // null/undefined → null (Number(null) would be 0)
+    const n = Number(v);
+    if (!Number.isFinite(n)) return null;
+    const rate = USD_TO_DISPLAY[cur];
+    return Math.round(n * (typeof rate === 'number' && rate > 0 ? rate : 1));
+  }
+
+  // One normalized posting-URL key for the tracker↔scan join: lowercase host
+  // (www. stripped) + path, query/fragment dropped on purpose — tracking
+  // params (`?gh_src=…`) and SPA hops must not split one posting in two.
+  function urlKey(u) {
+    const s = String(u == null ? '' : u).trim();
+    if (!/^https?:\/\//i.test(s)) return '';
+    try {
+      const url = new URL(s);
+      return url.host.toLowerCase().replace(/^www\./, '') + url.pathname.replace(/\/+$/, '');
+    } catch { return ''; }
+  }
+
+  // `[\d+](reports/042-acme-….md)` → the report path; a sentinel / bare cell
+  // → null. (Extracts the FIRST parenthesised target, matching how the
+  // tracker renders the Report cell's markdown link.)
+  function reportPathOf(rawReport) {
+    const m = String(rawReport == null ? '' : rawReport).match(/\(([^()\s][^()]*)\)/);
+    return (m && m[1]) ? m[1] : null;
+  }
+
+  // Tracker/scores "4.2/5" → 4.2; null when no finite number is present.
+  function scoreNum(raw) {
+    if (typeof raw === 'number' && Number.isFinite(raw)) return raw;
+    const m = String(raw == null ? '' : raw).match(/(\d+(?:\.\d+)?)/);
+    if (!m) return null;
+    const n = parseFloat(m[1]);
+    return Number.isFinite(n) ? n : null;
+  }
+
+  // Free-text location → { code, name, flag } via the shared Countries table
+  // (ONE country table for the whole app). Remote-ish text folds to 'remote',
+  // anything unparseable to 'other'; an EMPTY location → null so the entry
+  // honestly carries no country (it can never match a country chip).
+  function countryOf(location, C) {
+    const loc = String(location == null ? '' : location).trim();
+    if (!loc) return null;
+    const c = C && C.detectCountry ? C.detectCountry(loc) : null;
+    if (c) return { code: c.code, name: c.name, flag: c.flag };
+    if (/(remote|anywhere|worldwide)/i.test(loc)) return { code: 'remote', name: 'Remote', flag: '🌐' };
+    return { code: 'other', name: 'Other', flag: '🏳️' };
+  }
+
+  /**
+   * Build the Details dataset: tracked applications (+ any scanned postings
+   * that ARE tracked rows, folded in as enrichment — never duplicated) and
+   * the remaining scan postings as their own entries.
+   * @param {Array} trackerRows /api/tracker rows
+   * @param {Array} jobs /api/scan-results rows (en + ru merged by the caller)
+   * @param {{fold?:Function, countries?:object, parseSalaryUsd?:Function}} [deps]
+   *   fold folds a raw tracker status to its canonical stage (server alias map);
+   *   countries/parseSalaryUsd are injectable for tests (defaults: window.Countries / parseSalaryUSD)
+   * @returns {Array<{kind:'tracked'|'posting', num, company, role, score, status,
+   *   date, salaryUsd, country, source, location, url, reportPath}>}
+   */
+  function buildEntries(trackerRows, jobs, deps) {
+    const d = deps || {};
+    const C = d.countries || (typeof window !== 'undefined' && window.Countries) || null;
+    const parseSal = d.parseSalaryUsd || parseSalaryUSD;
+    const fold = typeof d.fold === 'function' ? d.fold : (s) => String(s == null ? '' : s).trim();
+    const entries = [];
+    const byUrl = new Map();
+
+    for (const r of (Array.isArray(trackerRows) ? trackerRows : [])) {
+      if (!r) continue;
+      const e = {
+        kind: 'tracked',
+        num: (r.num ?? null),
+        company: String(r.company || '').trim(),
+        role: String(r.role || '').trim(),
+        score: scoreNum(r.score),
+        status: fold(r.status),
+        date: String(r.date || '').trim(),
+        salaryUsd: null,
+        country: countryOf(r.location, C),
+        source: null,
+        location: String(r.location || '').trim(),
+        url: String(r.url || '').trim(),
+        reportPath: reportPathOf(r.report),
+      };
+      entries.push(e);
+      const k = urlKey(e.url);
+      if (k && !byUrl.has(k)) byUrl.set(k, e);
+    }
+
+    const rows = Array.isArray(jobs) ? jobs : [];
+    for (const j of rows) {
+      if (!j) continue;
+      const sal = parseSal(j.salary);
+      const salaryUsd = sal ? { minUsd: sal.minUsd, maxUsd: sal.maxUsd, currency: sal.currency } : null;
+      const k = urlKey(j.url);
+      const hit = k ? byUrl.get(k) : null;
+      if (hit) {
+        // One posting seen twice (tracked + scanned) = ONE fuller entry.
+        if (!hit.salaryUsd && salaryUsd) hit.salaryUsd = salaryUsd;
+        if (!hit.country && j.location) hit.country = countryOf(j.location, C);
+        if (!hit.location && j.location) hit.location = String(j.location).trim();
+        if (!hit.source && j.source) hit.source = String(j.source);
+        continue;
+      }
+      entries.push({
+        kind: 'posting',
+        num: null,
+        company: String(j.company || '').trim(),
+        role: String(j.title || '').trim(),
+        score: null,
+        status: null,
+        date: String(j.date || '').trim(),
+        salaryUsd,
+        country: countryOf(j.location, C),
+        source: j.source ? String(j.source) : null,
+        location: String(j.location || '').trim(),
+        url: String(j.url || '').trim(),
+        reportPath: null,
+      });
+    }
+    return entries;
+  }
+
+  // Rolling period windows in CALENDAR DAYS (day-granular data → day-granular
+  // math): month = last 30 days including today, quarter = 91, year = 365.
+  // An entry with an unparseable/absent date is EXCLUDED from a bounded window
+  // (guessing "recent" would fabricate data) and included under 'all'.
+  const DAY_MS = 86400000;
+  const PERIOD_DAYS = { month: 30, quarter: 91, year: 365 };
+
+  function withinPeriod(dateStr, period, nowMs) {
+    const p = period || 'all';
+    if (p === 'all') return true;
+    const days = PERIOD_DAYS[p];
+    if (!days) return true; // unknown period behaves as 'all' (defensive)
+    const m = String(dateStr == null ? '' : dateStr).match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (!m) return false;
+    const ms = Date.parse(`${m[1]}-${m[2]}-${m[3]}T00:00:00Z`);
+    if (!Number.isFinite(ms)) return false;
+    const now = Number.isFinite(nowMs) ? nowMs : Date.now();
+    const nowDay = Math.floor(now / DAY_MS) * DAY_MS;
+    return ms >= nowDay - (days - 1) * DAY_MS;
+  }
+
+  function filterPeriod(entries, period, nowMs) {
+    return (Array.isArray(entries) ? entries : []).filter((e) => withinPeriod(e && e.date, period, nowMs));
+  }
+
+  // Case-insensitive substring over company + role. An empty/blank query is a
+  // no-op (a copy, so callers can treat the result as theirs).
+  function searchEntries(entries, q) {
+    const needle = String(q == null ? '' : q).trim().toLowerCase();
+    const list = Array.isArray(entries) ? entries : [];
+    if (!needle) return list.slice();
+    return list.filter((e) => (`${(e && e.company) || ''}\n${(e && e.role) || ''}`)
+      .toLowerCase()
+      .includes(needle));
+  }
+
+  // The three facet dimensions the tab builds chips from.
+  const FACET_KEYS = ['country', 'status', 'source'];
+
+  function facetValue(e, key) {
+    if (!e) return null;
+    if (key === 'country') return (e.country && e.country.name) || null;
+    if (key === 'status') return e.status || null;
+    if (key === 'source') return e.source || null;
+    return null;
+  }
+
+  /**
+   * Distinct values of one facet with counts, descending by count then value.
+   * @returns {Array<{value:string,count:number}>}
+   */
+  function facetCounts(entries, key) {
+    const counts = new Map();
+    for (const e of (Array.isArray(entries) ? entries : [])) {
+      const v = facetValue(e, key);
+      if (!v) continue;
+      counts.set(v, (counts.get(v) || 0) + 1);
+    }
+    return [...counts.entries()]
+      .map(([value, count]) => ({ value, count }))
+      .sort((a, b) => (b.count - a.count) || a.value.localeCompare(b.value));
+  }
+
+  /**
+   * Faceted filter: chips within ONE group are OR (an entry has exactly one
+   * country — ANDing within the group would always be empty), across groups
+   * they AND. `active` is { country:[…], status:[…], source:[…] } (arrays or
+   * single values; absent/empty groups are inert).
+   */
+  function facetFilter(entries, active) {
+    const list = Array.isArray(entries) ? entries : [];
+    const a = active || {};
+    const groups = FACET_KEYS
+      .map((key) => ({ key, set: new Set(Array.isArray(a[key]) ? a[key] : (a[key] ? [a[key]] : [])) }))
+      .filter((g) => g.set.size > 0);
+    if (!groups.length) return list.slice();
+    return list.filter((e) => groups.every((g) => g.set.has(facetValue(e, g.key))));
+  }
+
+  /**
+   * Salary min/median/max (USD) per country from entries that carry BOTH a
+   * parsed salary and a country — sorted by count desc (ties by median desc),
+   * capped at `topN` (default 8, the chart's bar budget).
+   * @returns {Array<{code,name,flag,count,minUsd,medianUsd,maxUsd}>}
+   */
+  function salaryRangeByCountry(entries, topN) {
+    const by = new Map(); // name → { code, name, flag, mids[], mins[], maxs[] }
+    for (const e of (Array.isArray(entries) ? entries : [])) {
+      if (!e || !e.salaryUsd || !e.country) continue;
+      const { minUsd, maxUsd } = e.salaryUsd;
+      if (!Number.isFinite(minUsd) && !Number.isFinite(maxUsd)) continue;
+      let b = by.get(e.country.name);
+      if (!b) { b = { code: e.country.code, name: e.country.name, flag: e.country.flag || '', mids: [], mins: [], maxs: [] }; by.set(e.country.name, b); }
+      const lo = Number.isFinite(minUsd) ? minUsd : maxUsd;
+      const hi = Number.isFinite(maxUsd) ? maxUsd : minUsd;
+      b.mins.push(lo); b.maxs.push(hi);
+      // Same one-end rule as the grade medians: a midpoint only when BOTH
+      // ends exist, otherwise the one end we have.
+      b.mids.push((minUsd && maxUsd) ? Math.round((minUsd + maxUsd) / 2) : Math.round(lo || hi));
+    }
+    const cap = Number.isInteger(topN) && topN > 0 ? topN : 8;
+    return [...by.values()].map((b) => {
+      const mids = b.mids.slice().sort((x, y) => x - y);
+      const n = mids.length;
+      const med = n % 2 ? mids[(n - 1) / 2] : Math.round((mids[n / 2 - 1] + mids[n / 2]) / 2);
+      return { code: b.code, name: b.name, flag: b.flag, count: n, minUsd: Math.min(...b.mins), medianUsd: med, maxUsd: Math.max(...b.maxs) };
+    }).sort((a, b2) => (b2.count - a.count) || ((b2.medianUsd || 0) - (a.medianUsd || 0))).slice(0, cap);
+  }
+
+  /** Entries with a parseable date → [{label:'YYYY-MM', value}] ascending. */
+  function monthlyCounts(entries) {
+    const byMonth = {};
+    for (const e of (Array.isArray(entries) ? entries : [])) {
+      const m = String((e && e.date) || '').match(/^(\d{4}-\d{2})/);
+      if (m) byMonth[m[1]] = (byMonth[m[1]] || 0) + 1;
+    }
+    return Object.keys(byMonth).sort().map((m) => ({ label: m, value: byMonth[m] }));
+  }
+
+  /** Entries → top-n companies by count (case-folded merge; first spelling wins). */
+  function topCompanies(entries, n) {
+    const counts = new Map();
+    for (const e of (Array.isArray(entries) ? entries : [])) {
+      const k = String((e && e.company) || '').trim();
+      if (!k) continue;
+      const lk = k.toLowerCase();
+      const prev = counts.get(lk);
+      counts.set(lk, { label: prev ? prev.label : k, value: (prev ? prev.value : 0) + 1 });
+    }
+    return [...counts.values()].sort((a, b) => b.value - a.value).slice(0, Number.isInteger(n) && n > 0 ? n : 10);
+  }
+
+  window.RoleStats = {
+    parseSalaryUSD, matchRole, aggregate, FX_TO_USD,
+    // CAR-247 Details dataset
+    DISPLAY_CURRENCIES, USD_TO_DISPLAY, convertFromUsd,
+    buildEntries, filterPeriod, searchEntries, facetCounts, facetFilter,
+    salaryRangeByCountry, monthlyCounts, topCompanies,
+  };
 })();

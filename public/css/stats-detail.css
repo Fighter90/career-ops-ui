@@ -1,0 +1,74 @@
+/* CAR-247 — #/stats «Детали» (Details) tab owns this sheet.
+ *
+ * Small on purpose: chips/cards/tables reuse the existing cascade (.chip,
+ * .card, .tbl, .stat-cards); only the details-specific chrome lives here.
+ * Logical properties only (paddingInline / borderInlineStart) so RTL mirrors
+ * with no [dir="rtl"] overrides. Loads after the v2 sheets (index.html),
+ * so an override here wins the cascade.
+ */
+
+/* Controls row — search + currency + period + Reset. */
+.v2-statsd-controls {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  margin: 8px 0 14px;
+  padding: 12px 14px;
+}
+.v2-statsd-controls .btn {
+  margin-bottom: 2px;
+}
+
+/* Facet chip rows. */
+.v2-statsd-facets {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0 0 16px;
+}
+.v2-statsd-facet-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+  min-width: 0;
+}
+.v2-statsd-facet-label {
+  flex: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--foggy, #6b7280);
+  min-width: 64px;
+}
+.v2-statsd-chip {
+  cursor: pointer;
+  border: 1px solid var(--line, #e5e7eb);
+  background: var(--paper, #fff);
+  color: inherit;
+}
+.v2-statsd-chip.is-on,
+.v2-statsd-chip[aria-pressed='true'] {
+  border-color: var(--accent, #4c8bf5);
+  font-weight: 600;
+}
+
+/* Sortable drill-down table. */
+.v2-statsd-table th {
+  white-space: nowrap;
+}
+.v2-statsd-sort {
+  border: 0;
+  background: none;
+  padding: 0;
+  font: inherit;
+  color: var(--foggy, #6b7280);
+  cursor: pointer;
+}
+.v2-statsd-sort.is-active {
+  color: var(--ink, #111);
+  font-weight: 600;
+}
+.v2-statsd-row:hover {
+  background: var(--elev, #f8fafc);
+}

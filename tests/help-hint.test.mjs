@@ -41,11 +41,11 @@ test('help-hint.js exposes the primitive and is CSP-safe', () => {
   assert.match(src, /role['"]?\s*:\s*['"]tooltip['"]/, 'popover is role=tooltip');
 });
 
-test('#/stats attaches a `?` hint to every one of the 9 tabs', () => {
+test('#/stats attaches a `?` hint to every one of the 10 tabs', () => {
   const src = read('public/js/views/stats.js');
   const hintKeys = [...src.matchAll(/hint:\s*'(stats\.hint\.[a-z]+)'/g)].map((m) => m[1]);
-  assert.equal(hintKeys.length, 9, `expected 9 tab hint keys, got ${hintKeys.length}: ${hintKeys}`);
-  for (const k of ['stats.hint.overview', 'stats.hint.market', 'stats.hint.pipeline', 'stats.hint.trend', 'stats.hint.patterns', 'stats.hint.lifetime', 'stats.hint.funnel', 'stats.hint.upskill', 'stats.hint.rejection']) {
+  assert.equal(hintKeys.length, 10, `expected 10 tab hint keys, got ${hintKeys.length}: ${hintKeys}`);
+  for (const k of ['stats.hint.overview', 'stats.hint.market', 'stats.hint.pipeline', 'stats.hint.trend', 'stats.hint.details', 'stats.hint.patterns', 'stats.hint.lifetime', 'stats.hint.funnel', 'stats.hint.upskill', 'stats.hint.rejection']) {
     assert.ok(hintKeys.includes(k), `missing tab hint ${k}`);
   }
   assert.match(src, /HelpHint\.icon\(/, 'stats renders the hint via HelpHint.icon');

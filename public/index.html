@@ -39,6 +39,9 @@
          v2 view sheets — cascade override lives in the file. -->
     <link rel="stylesheet" href="/css/v2-nav.css" />
     <link rel="stylesheet" href="/css/v2-dash.css" />
+    <!-- CAR-247 — the #/stats «Детали» (Details) tab owns its sheet; loads
+         after the v2 view sheets, before tokens-v3 (cascade override wins). -->
+    <link rel="stylesheet" href="/css/stats-detail.css" />
     <link rel="stylesheet" href="/css/map.css" />
     <!-- Phase 1/3 (Lovable design integration) — passive --cv3-* token sheet:
          nothing consumes it yet. Loaded LAST of the app sheets so the phase-2
