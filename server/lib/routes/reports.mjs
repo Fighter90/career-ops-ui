@@ -35,8 +35,13 @@ function sanitizeSlug(s) {
 }
 
 export function registerReportsRoutes(app) {
-  app.get('/api/reports', (_req, res) => {
-    res.json({ reports: safeListReports() });
+  // CAR-236 (P1 perf) — `?fields=slim` projects every entry to the card
+  // fields minus the heavy scoreEvidence/confidenceGaps and the file name
+  // (store.safeListReports({ slim })). The default shape is untouched —
+  // #/reports reads the evidence chips and must keep them.
+  app.get('/api/reports', (req, res) => {
+    const slim = (req.query && req.query.fields) === 'slim';
+    res.json({ reports: safeListReports({ slim }) });
   });
 
   app.get('/api/reports/:slug', (req, res) => {

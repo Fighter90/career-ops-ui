@@ -18,17 +18,39 @@
  * Stuttgart for a job in Turin), so the map tries `workplace` first and falls
  * back to `location` when it does not geocode to a settlement.
  */
-import { readFileSync, readdirSync } from 'node:fs';
+import { readFileSync, readdirSync, openSync, readSync, closeSync } from 'node:fs';
 import { resolve, sep } from 'node:path';
 import { PATHS } from '../paths.mjs';
 import { parsePipelineRows, parseReportHeader } from '../parsers.mjs';
 import { safeReadApps } from '../store.mjs';
+import { cachedByMtime, __mtimedCache } from '../mtimed-cache.mjs';
 import { titleFit, loadProfileTargetRoles } from '../title-fit.mjs';
 import { commutePayload } from '../commute.mjs';
 
 const read = (f) => { try { return readFileSync(f, 'utf8'); } catch { return ''; } };
 // Only http(s) links reach window.open in the client — parent data is LLM-written.
 const httpOnly = (u) => (/^https?:\/\//i.test(u || '') ? u : '');
+
+// CAR-236 (P1 perf) — the URL→location index inputs are memoized by
+// (path, mtimeMs, size) instead of being rebuilt from scratch on every
+// request: the jds dir's own stat covers its capture set (captures are
+// write-once — archive-posting names carry a URL hash, collisions get a
+// -2/-3 suffix — so an in-place rewrite never happens), scan-history.tsv
+// is keyed per file, and a url-less tracker row's report header is parsed
+// once per report file instead of per row per request. A warm request
+// stats instead of reading every capture's full text plus the whole TSV.
+// Diagnostic counters mirror __reportCache/__appsCache (tests spy on them).
+// reset() also drops this route's memo entries (via __mtimedCache.reset())
+// so a test that resets sees the next call rebuild from scratch.
+export const __mapCache = {
+  jdsBuilds: 0,
+  scanBuilds: 0,
+  reportParses: 0,
+  reset() {
+    this.jdsBuilds = 0; this.scanBuilds = 0; this.reportParses = 0;
+    __mtimedCache.reset();
+  },
+};
 
 /**
  * Leading place in a tracker Notes cell, or ''. Only a short, capitalised
@@ -45,7 +67,8 @@ export function notesPlace(notes) {
   return /^\p{Lu}[\p{L}.]*(?:[- ]\p{Lu}[\p{L}.]*){0,2}$/u.test(s) && s.length <= 40 ? s : '';
 }
 
-// ponytail: rebuilt per request by reading scan-history + every JD header; cache by mtime if it gets slow.
+// ponytail resolved (CAR-236): the scan-history / jds / report-header parts
+// of the index are mtime-keyed memos now (see __mapCache above).
 export function buildLocationIndex({ pipelineRows = [], scanHistory = '', jds = [] } = {}) {
   const idx = new Map();
   const put = (url, loc) => { if (url && loc && !idx.has(url)) idx.set(url, loc); };
@@ -66,10 +89,48 @@ export function buildLocationIndex({ pipelineRows = [], scanHistory = '', jds = 
   return idx;
 }
 
-function readJds() {
+// The builder consumes only the first 1500 chars of each capture (the slice
+// below in buildLocationIndex), so a capture head is all we ever read:
+// HEAD_CHARS * 4 bytes is the worst-case UTF-8 encoding of HEAD_CHARS code
+// points, guaranteeing the slice sees exactly the window a full read used to.
+const HEAD_CHARS = 1500;
+const HEAD_BYTES = HEAD_CHARS * 4;
+
+/** First HEAD_CHARS of a capture — the index never reads deeper. */
+function readHead(file) {
+  let fd;
   try {
-    return readdirSync(PATHS.jdsDir).filter((f) => f.endsWith('.md')).map((f) => read(resolve(PATHS.jdsDir, f)));
+    fd = openSync(file, 'r');
+    const buf = Buffer.alloc(HEAD_BYTES);
+    const n = readSync(fd, buf, 0, HEAD_BYTES, 0);
+    return buf.toString('utf8', 0, n).slice(0, HEAD_CHARS);
+  } catch {
+    return '';
+  } finally {
+    if (fd !== undefined) { try { closeSync(fd); } catch { /* already closed */ } }
+  }
+}
+
+function readJdHeads(dir) {
+  try {
+    return readdirSync(dir).filter((f) => f.endsWith('.md')).map((f) => readHead(resolve(dir, f)));
   } catch { return []; }
+}
+
+/** jds captures → {url → location}, rebuilt only when the dir stat changes. */
+function jdsIndex() {
+  return cachedByMtime(PATHS.jdsDir, () => {
+    __mapCache.jdsBuilds++;
+    return buildLocationIndex({ jds: readJdHeads(PATHS.jdsDir) });
+  });
+}
+
+/** scan-history TSV → {url → location}, rebuilt only when the file changes. */
+function scanHistoryIndex() {
+  return cachedByMtime(PATHS.scanHistory, (file) => {
+    __mapCache.scanBuilds++;
+    return buildLocationIndex({ scanHistory: read(file) });
+  });
 }
 
 /** Report URL for a tracker row's reportPath, confined to the reports dir. */
@@ -77,7 +138,11 @@ function reportUrl(reportPath) {
   if (!reportPath) return '';
   const file = resolve(PATHS.reportsDir, reportPath.replace(/^(\.\.\/)*(reports\/)?/, ''));
   if (!file.startsWith(PATHS.reportsDir + sep)) return '';
-  return parseReportHeader(read(file)).url || '';
+  const header = cachedByMtime(file, (f) => {
+    __mapCache.reportParses++;
+    return parseReportHeader(read(f));
+  });
+  return header.url || '';
 }
 
 const OSM_TILES = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
@@ -139,11 +204,19 @@ export function registerMapRoutes(app) {
 
   app.get('/api/map/jobs', (_req, res) => {
     const pending = parsePipelineRows(read(PATHS.pipeline));
-    const idx = buildLocationIndex({
-      pipelineRows: pending,
-      scanHistory: read(PATHS.scanHistory),
-      jds: readJds(),
-    });
+    // CAR-236: the pipeline part of the index is computed fresh (pipeline.md
+    // is small and changes on every pipeline write); the scan-history and
+    // jds parts come from mtime-keyed memos. The merge keeps
+    // buildLocationIndex's first-wins precedence: pipeline → scan-history
+    // → jds. Fail-open: an index bug degrades to unlocated pins, never a 500.
+    let idx;
+    try {
+      idx = buildLocationIndex({ pipelineRows: pending });
+      for (const [u, loc] of scanHistoryIndex()) if (!idx.has(u)) idx.set(u, loc);
+      for (const [u, loc] of jdsIndex()) if (!idx.has(u)) idx.set(u, loc);
+    } catch {
+      idx = new Map();
+    }
     const targets = loadProfileTargetRoles();
     const pipeline = pending.map((r) => {
       const f = titleFit(r.title, targets);
@@ -151,7 +224,8 @@ export function registerMapRoutes(app) {
       return f ? { ...row, fit: { band: f.band, score: f.score } } : row;
     });
     const tracker = safeReadApps().map((r) => {
-      const href = r.url || reportUrl(r.reportPath);
+      let href = r.url;
+      if (!href) { try { href = reportUrl(r.reportPath); } catch { href = ''; } }
       return { ...r, href: httpOnly(href), location: r.location || idx.get(href) || '', workplace: notesPlace(r.notes) };
     });
     const { url, attribution, dark } = tileConfig();

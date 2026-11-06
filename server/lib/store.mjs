@@ -11,11 +11,43 @@ import yaml from 'js-yaml';
 import { PATHS, path as projPath } from './paths.mjs';
 import { parseApplications, parsePipeline, parseReportHeader } from './parsers.mjs';
 
+// CAR-236 (P1 perf) — applications.md was re-read and re-parsed on every
+// call: GET /api/tracker plus /api/map/jobs parsed it twice within one
+// #/pipeline mount, and parseApplications walks every cell with split
+// + 2 regex passes. The parsed rows are memoized keyed on (mtimeMs, size)
+// — the same invalidation discipline as reportCache below, so a write
+// through withFileLock/atomicWrite here OR the parent's set-status.mjs /
+// runners in another process always changes the stat and busts it.
+// Callers get a fresh shallow copy per call (array + rows) — same contract
+// as safeListReports — so a mutating caller cannot poison the cache.
+let appsCache = null; // { mtimeMs, size, rows }
+export const __appsCache = {
+  hits: 0,
+  misses: 0,
+  get size() { return appsCache ? 1 : 0; },
+  reset() { appsCache = null; this.hits = 0; this.misses = 0; },
+};
+
 export function safeReadApps() {
+  let fd;
   try {
-    return parseApplications(readFileSync(PATHS.applications, 'utf8'));
+    // One descriptor for both the stat and the read (the reportCache
+    // discipline): the mtime/size the cache is keyed on belongs to the
+    // exact bytes that were parsed.
+    fd = openSync(PATHS.applications, 'r');
+    const stat = fstatSync(fd);
+    if (appsCache && appsCache.mtimeMs === stat.mtimeMs && appsCache.size === stat.size) {
+      __appsCache.hits++;
+      return appsCache.rows.map((r) => ({ ...r }));
+    }
+    __appsCache.misses++;
+    const rows = parseApplications(readFileSync(fd, 'utf8'));
+    appsCache = { mtimeMs: stat.mtimeMs, size: stat.size, rows };
+    return rows.map((r) => ({ ...r }));
   } catch {
     return [];
+  } finally {
+    if (fd !== undefined) { try { closeSync(fd); } catch { /* already closed */ } }
   }
 }
 
@@ -35,7 +67,15 @@ export function safeReadPipeline() {
 const reportCache = new Map();
 export const __reportCache = { hits: 0, misses: 0, get size() { return reportCache.size; }, reset() { reportCache.clear(); this.hits = 0; this.misses = 0; } };
 
-export function safeListReports() {
+// CAR-236 (P1 perf) — the list payload carried scoreEvidence + confidenceGaps
+// + file on every entry: hundreds of KB of JSON for 1000+ reports, though
+// /api/dashboard needs only reports[0]'s header fields and future slim
+// callers need the card fields. `slim` projects each entry to the same
+// fields minus those three; `#/reports` (the full-shape consumer of the
+// evidence chips) keeps the default.
+const SLIM_DROP = new Set(['scoreEvidence', 'confidenceGaps', 'file']);
+
+export function safeListReports({ slim = false } = {}) {
   if (!existsSync(PATHS.reportsDir)) return [];
   const files = readdirSync(PATHS.reportsDir).filter((f) => f.endsWith('.md'));
   const seen = new Set();
@@ -61,7 +101,8 @@ export function safeListReports() {
         hit = { mtimeMs: stat.mtimeMs, size: stat.size, entry: { slug: f.replace(/\.md$/, ''), file: f, mtime: stat.mtime, ...header } };
         reportCache.set(file, hit);
       }
-      out.push({ ...hit.entry });
+      const entry = hit.entry;
+      out.push(slim ? Object.fromEntries(Object.entries(entry).filter(([k]) => !SLIM_DROP.has(k))) : { ...entry });
     } catch {
       // unreadable report: skip it, as before
     } finally {
