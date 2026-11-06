@@ -12,6 +12,10 @@
  *     roles/timeline/conversions), folded through the canonical stages.
  *   • Target-role trend — the original v1.86.0 view: vacancy/salary by country
  *     from your latest scan, plus the save-snapshot trend line.
+ *   • Details — CAR-247: tracker + scan joined into ONE filterable dataset
+ *     (display currency, period windows, search, facet chips, salary-range /
+ *     funnel / monthly / top-companies charts, sortable drill-down into
+ *     #/reports). Pure logic lives on RoleStats (role-stats.js).
  *   • Funnel & velocity / Lifetime / Rejection patterns / What to learn /
  *     Silent after interview — zero-token read-only relays of the parent
  *     project's own scripts, honest empty states when they are absent.
@@ -209,6 +213,11 @@ Router.register('stats', async () => {
     { id: 'overview', label: t('stats.tabOverview', 'Overview'), hint: 'stats.hint.overview', render: renderOverview },
     { id: 'pipeline', label: t('stats.tabPipeline', 'My pipeline'), hint: 'stats.hint.pipeline', render: renderPipeline },
     { id: 'trend', label: t('stats.tabTrend', 'Target-role trend'), hint: 'stats.hint.trend', render: renderTrend },
+    // CAR-247 — «Детали»: tracker + scan joined into ONE filterable dataset
+    // (display currency, period windows, search, facet chips, four charts,
+    // sortable drill-down into #/reports). Pure logic lives on RoleStats
+    // (role-stats.js) — this view is wiring only.
+    { id: 'details', label: t('statsd.tab', 'Details'), hint: 'stats.hint.details', render: renderDetails },
     // funnel calibration vs benchmarks + waiting list + stage velocity,
     // relayed read-only by /api/stats/funnel (funnel-velocity.mjs).
     { id: 'funnel', label: t('stats.tabFunnel', 'Funnel & velocity'), hint: 'stats.hint.funnel', render: renderFunnel },
@@ -858,6 +867,374 @@ Router.register('stats', async () => {
         `${pts.length} ${t('stats.snapshotsCount', 'snapshots')} · ${t('stats.trendMetric', 'total postings over time')}`));
     }
     await loadTrend();
+    return wrap;
+  }
+
+  // ── tab: CAR-247 «Детали» (Details) — one filterable dataset ────────────────
+  // Tracker rows + the latest scan snapshot joined by normalized posting URL
+  // (a scanned posting that IS a tracked application enriches it, never
+  // duplicates) through RoleStats.buildEntries. Currency conversion runs
+  // through RoleStats.convertFromUsd (static, documented approximate rates —
+  // unknown currency degrades to USD, never a guess); periods, search and
+  // facets are the shared pure helpers too. Selector state persists in
+  // localStorage (career-ops-ui:statsCurrency / career-ops-ui:statsPeriod).
+  async function renderDetails() {
+    const wrap = c('div');
+    const [trackerRes, stagesRes, scanRes] = await Promise.all([
+      API.get('/api/tracker').catch(() => ({})),
+      API.get('/api/tracker/stages').catch(() => ({})),
+      API.get('/api/scan-results').catch(() => ({})),
+    ]);
+    const rows = Array.isArray(trackerRes && trackerRes.rows) ? trackerRes.rows : [];
+    const aliases = (stagesRes && stagesRes.aliases) || {};
+    const TS = window.TrackerStages;
+    const fold = (s) => (TS ? TS.foldStatus(s, aliases) : (s || ''));
+    const jobs = [
+      ...((scanRes && scanRes.en && Array.isArray(scanRes.en.filtered)) ? scanRes.en.filtered : []),
+      ...((scanRes && scanRes.ru && Array.isArray(scanRes.ru.filtered)) ? scanRes.ru.filtered : []),
+    ];
+    if (!rows.length && !jobs.length) {
+      return emptyState(
+        t('stats.noScan', 'No scan data yet. Run a scan first, then come back for the stats.'),
+        t('stats.goScan', 'Run a scan'), '#/scan');
+    }
+    // TODO: split by concern — the pure dataset work lives in role-stats.js;
+    // when stats.js gets its next split pass, this tab is the extraction point.
+    const all = (window.RoleStats && RoleStats.buildEntries) ? RoleStats.buildEntries(rows, jobs, { fold }) : [];
+    if (!all.length) {
+      return emptyState(t('statsd.empty', 'Nothing matches the current filters.'), null, '');
+    }
+
+    const CUR_KEY = 'career-ops-ui:statsCurrency';
+    const PER_KEY = 'career-ops-ui:statsPeriod';
+    const currencies = (window.RoleStats && RoleStats.DISPLAY_CURRENCIES) || ['USD'];
+    let currency = 'USD';
+    let period = 'all';
+    try { currency = localStorage.getItem(CUR_KEY) || 'USD'; } catch { /* private mode */ }
+    try { period = localStorage.getItem(PER_KEY) || 'all'; } catch { /* private mode */ }
+    if (!currencies.includes(currency)) currency = 'USD';
+
+    let query = '';
+    const active = { country: new Set(), status: new Set(), source: new Set() };
+
+    // Localized stage labels via composed keys — the established pattern that
+    // keeps the static t()-key scan from seeing phantom 'track.status.*' literals.
+    const stageLabel = (s) => {
+      const k = 'track.status.' + String(s || '').toLowerCase();
+      return t(k, s || '');
+    };
+
+    // Money formatting in the selected display currency (Intl cached per code).
+    const numFmt = (() => {
+      try { return new Intl.NumberFormat(loc, { maximumFractionDigits: 0, numberingSystem: 'latn' }); }
+      catch { return new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }); }
+    })();
+    const curFmtCache = {};
+    const fmtCur = (v) => {
+      if (!curFmtCache[currency]) {
+        try { curFmtCache[currency] = new Intl.NumberFormat(loc, { style: 'currency', currency, maximumFractionDigits: 0, numberingSystem: 'latn' }); }
+        catch { curFmtCache[currency] = null; }
+      }
+      const f = curFmtCache[currency];
+      return f ? f.format(v) : `${numFmt.format(v)} ${currency}`;
+    };
+    const money = (usd) => (usd == null ? '—' : fmtCur(RoleStats.convertFromUsd(usd, currency)));
+    const salaryCell = (e) => {
+      if (!e.salaryUsd) return '—';
+      const lo = RoleStats.convertFromUsd(e.salaryUsd.minUsd ?? e.salaryUsd.maxUsd, currency);
+      const hi = RoleStats.convertFromUsd(e.salaryUsd.maxUsd ?? e.salaryUsd.minUsd, currency);
+      return lo === hi ? fmtCur(lo) : `${fmtCur(lo)}–${fmtCur(hi)}`;
+    };
+
+    const hint = (txt) => c('p', { style: { color: 'var(--foggy)', fontSize: '12px', margin: '10px 0 0' } }, txt);
+    const labeled = (label, el) => c('label', { style: { display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '12px', color: 'var(--foggy)' } }, [label, el]);
+
+    // ── controls ──
+    const searchIn = c('input', {
+      type: 'search', className: 'input', 'data-testid': 'statsd-search',
+      'aria-label': t('statsd.search', 'Search company or role'),
+      placeholder: t('statsd.search', 'Search company or role'),
+      style: { minWidth: '220px' },
+    });
+    const curSel = c('select', { className: 'lang-select', 'data-testid': 'statsd-currency', 'aria-label': t('statsd.currency', 'Display currency') },
+      currencies.map((cur) => c('option', { value: cur }, cur)));
+    curSel.value = currency;
+    const perSel = c('select', { className: 'lang-select', 'data-testid': 'statsd-period', 'aria-label': t('statsd.period', 'Period') }, [
+      c('option', { value: 'month' }, t('statsd.period.month', 'Last month')),
+      c('option', { value: 'quarter' }, t('statsd.period.quarter', 'Last quarter')),
+      c('option', { value: 'year' }, t('statsd.period.year', 'Last year')),
+      c('option', { value: 'all' }, t('statsd.period.all', 'All time')),
+    ]);
+    perSel.value = period;
+    const resetBtn = c('button', { className: 'btn btn-ghost btn-sm', type: 'button' }, t('statsd.reset', 'Reset'));
+    wrap.appendChild(c('div', { className: 'v2-statsd-controls' }, [
+      labeled(t('statsd.search', 'Search company or role'), searchIn),
+      labeled(t('statsd.currency', 'Display currency'), curSel),
+      labeled(t('statsd.period', 'Period'), perSel),
+      resetBtn,
+    ]));
+
+    // Everything below the controls re-renders in place on any filter change;
+    // focus restoration across the rebuild is FocusPreserved's job.
+    const resultsEl = c('div');
+    wrap.appendChild(resultsEl);
+
+    const activeMap = () => {
+      const m = {};
+      for (const k of ['country', 'status', 'source']) if (active[k].size) m[k] = [...active[k]];
+      return m;
+    };
+    const baseSet = () => RoleStats.searchEntries(RoleStats.filterPeriod(all, period), query);
+
+    // ── facet chip rows (counts from the period+search set) ──
+    function renderFacets(base) {
+      const groups = [
+        ['country', t('statsd.facet.country', 'Country')],
+        ['status', t('statsd.facet.status', 'Status')],
+        ['source', t('statsd.facet.source', 'Source')],
+      ];
+      const box = c('div', { className: 'v2-statsd-facets' });
+      for (const [key, label] of groups) {
+        const counts = RoleStats.facetCounts(base, key);
+        if (!counts.length) continue;
+        const row = c('div', { className: 'v2-statsd-facet-row' });
+        row.appendChild(c('span', { className: 'v2-statsd-facet-label' }, label));
+        for (const { value, count } of counts) {
+          const on = active[key].has(value);
+          const chip = c('button', {
+            type: 'button',
+            className: 'chip v2-statsd-chip' + (on ? ' is-on' : ''),
+            'aria-pressed': on ? 'true' : 'false',
+            'data-chip': `${key}:${value}`,
+            'data-testid': `statsd-chip-${key}`,
+          }, `${value} (${count})`);
+          chip.addEventListener('click', () => {
+            if (active[key].has(value)) active[key].delete(value);
+            else active[key].add(value);
+            draw();
+          });
+          row.appendChild(chip);
+        }
+        box.appendChild(row);
+      }
+      return box;
+    }
+
+    // ── salary range chart (min→max bar, median tick per country) ──
+    function rangeChart(items, opts) {
+      const o = opts || {};
+      const chartRows = (Array.isArray(items) ? items : [])
+        .filter((r) => Number.isFinite(r.max) && Number.isFinite(r.min));
+      if (!chartRows.length) return c('p', { style: { color: 'var(--foggy)', padding: '8px 0' } }, t('stats.noData', 'No data for this selection.'));
+      const max = Math.max(...chartRows.map((r) => r.max));
+      const min0 = Math.min(...chartRows.map((r) => r.min));
+      const labelW = 200; const trackW = 360; const rowH = 30;
+      const svg = document.createElementNS(SVGNS, 'svg');
+      svg.setAttribute('width', '100%');
+      svg.setAttribute('viewBox', `0 0 ${labelW + trackW + 150} ${chartRows.length * rowH + 8}`);
+      svg.setAttribute('role', 'img');
+      // CAR-120 — the accessible summary rides the role="img" node; the table
+      // below remains the full a11y answer for the same data.
+      if (o.ariaLabel) svg.setAttribute('aria-label', o.ariaLabel);
+      // Charts are LTR compositions — pin the inherited direction (RTL pages).
+      svg.style.direction = 'ltr';
+      const span = Math.max(1, max - min0);
+      const x = (v) => labelW + ((v - min0) / span) * trackW;
+      const fmt = o.fmt || ((v) => String(v));
+      chartRows.forEach((r, i) => {
+        const y = i * rowH + 6;
+        const g = document.createElementNS(SVGNS, 'g');
+        const tip = document.createElementNS(SVGNS, 'title');
+        tip.textContent = `${r.label}: ${fmt(r.min)}–${fmt(r.max)} · ${t('stats.colMedian', 'Median')} ${fmt(r.med)} (n=${r.count})`;
+        g.appendChild(tip);
+        const fullLabel = String(r.label || '');
+        const label = document.createElementNS(SVGNS, 'text');
+        label.setAttribute('x', '0'); label.setAttribute('y', String(y + 11));
+        label.setAttribute('font-size', '13'); label.setAttribute('fill', 'currentColor');
+        const MAXC = 30;
+        label.textContent = fullLabel.length > MAXC ? fullLabel.slice(0, MAXC - 1) + '…' : fullLabel;
+        if (fullLabel.length > MAXC) {
+          const ttl = document.createElementNS(SVGNS, 'title');
+          ttl.textContent = fullLabel;
+          label.appendChild(ttl);
+        }
+        const baseLine = document.createElementNS(SVGNS, 'line');
+        baseLine.setAttribute('x1', String(labelW)); baseLine.setAttribute('x2', String(labelW + trackW));
+        baseLine.setAttribute('y1', String(y + 7)); baseLine.setAttribute('y2', String(y + 7));
+        baseLine.setAttribute('stroke', 'var(--line, #e5e7eb)'); baseLine.setAttribute('stroke-width', '1');
+        const rect = document.createElementNS(SVGNS, 'rect');
+        rect.setAttribute('x', String(x(r.min))); rect.setAttribute('y', String(y));
+        rect.setAttribute('width', String(Math.max(2, x(r.max) - x(r.min)))); rect.setAttribute('height', '14');
+        rect.setAttribute('rx', '4'); rect.setAttribute('fill', o.barFill || 'var(--accent, #4c8bf5)');
+        const tick = document.createElementNS(SVGNS, 'line');
+        tick.setAttribute('x1', String(x(r.med))); tick.setAttribute('x2', String(x(r.med)));
+        tick.setAttribute('y1', String(y - 2)); tick.setAttribute('y2', String(y + 16));
+        tick.setAttribute('stroke', 'currentColor'); tick.setAttribute('stroke-width', '2');
+        const val = document.createElementNS(SVGNS, 'text');
+        val.setAttribute('x', String(labelW + trackW + 8)); val.setAttribute('y', String(y + 12));
+        val.setAttribute('font-size', '11'); val.setAttribute('fill', 'var(--foggy)');
+        val.textContent = `${fmt(r.min)}–${fmt(r.max)}`;
+        g.appendChild(label); g.appendChild(baseLine); g.appendChild(rect); g.appendChild(tick); g.appendChild(val);
+        svg.appendChild(g);
+      });
+      return svg;
+    }
+
+    // ── charts + KPIs + drill-down table ──
+    function renderResults() {
+      const base = baseSet();
+      const filtered = RoleStats.facetFilter(base, activeMap());
+
+      resultsEl.textContent = '';
+      resultsEl.appendChild(renderFacets(base));
+
+      // KPI row.
+      resultsEl.appendChild(c('div', { className: 'stat-cards', style: { display: 'flex', gap: '12px', flexWrap: 'wrap', margin: '0 0 16px' } }, [
+        statCard(filtered.length, t('statsd.kpiTotal', 'Entries')),
+        statCard(filtered.filter((e) => e.salaryUsd).length, t('statsd.kpiSalary', 'With salary')),
+        statCard(new Set(filtered.filter((e) => e.country).map((e) => e.country.name)).size, t('statsd.kpiCountries', 'Countries')),
+        statCard(distinctCompanies(filtered), t('statsd.kpiCompanies', 'Companies')),
+      ]));
+
+      // (a) Salary range by country — min/median/max, honoring currency+period+filters.
+      const ranges = RoleStats.salaryRangeByCountry(filtered, 8).map((r) => ({
+        label: `${r.flag || ''} ${r.name}`.trim(),
+        min: RoleStats.convertFromUsd(r.minUsd, currency),
+        med: RoleStats.convertFromUsd(r.medianUsd, currency),
+        max: RoleStats.convertFromUsd(r.maxUsd, currency),
+        count: r.count,
+      }));
+      if (ranges.length) {
+        const titleText = t('statsd.chart.salary', 'Salary range by country');
+        const aria = `${titleText}: ` + ranges
+          .map((r) => `${r.label} ${money(r.min)}–${money(r.max)} (${t('stats.colMedian', 'Median')} ${money(r.med)})`)
+          .join(', ');
+        resultsEl.appendChild(section(titleText, c('div', null, [
+          rangeChart(ranges, { fmt: fmtCur, ariaLabel: aria }),
+          hint(t('stats.sampleCaveat', 'Based only on postings with a parseable salary — sparse data, treat as indicative. Amounts normalized to USD (approximate FX).')),
+        ])));
+      }
+
+      // (b) Status funnel — canonical order first (statuses are already folded
+      // to canonical stages by buildEntries), unknown labels last.
+      const order = ['Evaluated', 'Applied', 'Responded', 'Interview', 'Offer', 'Hired', 'Rejected', 'Discarded', 'SKIP'];
+      const counts = {};
+      for (const e of filtered) {
+        if (e.status) counts[e.status] = (counts[e.status] || 0) + 1;
+      }
+      const funnel = order.filter((s) => counts[s]).map((s) => ({ label: stageLabel(s), value: counts[s] }));
+      Object.keys(counts).filter((s) => !order.includes(s)).forEach((s) => funnel.push({ label: s, value: counts[s] }));
+      if (funnel.length) resultsEl.appendChild(section(t('statsd.chart.funnel', 'Status funnel'), barChart(funnel)));
+
+      // (c) Monthly dynamics.
+      const monthly = RoleStats.monthlyCounts(filtered);
+      if (monthly.length) resultsEl.appendChild(section(t('statsd.chart.monthly', 'Entries by month'), barChart(monthly)));
+
+      // (d) Top companies.
+      const top = RoleStats.topCompanies(filtered, 10);
+      if (top.length) resultsEl.appendChild(section(t('statsd.chart.companies', 'Top companies'), barChart(top)));
+
+      renderTable(filtered);
+    }
+
+    // ── sortable drill-down table ──
+    let sortKey = 'date';
+    let sortDir = 'desc';
+    const reportHref = (e) => {
+      const slug = String(e.reportPath || '').replace(/\.md$/, '').replace(/^reports\//, '');
+      return '#/reports' + (slug ? '/' + slug : '');
+    };
+    function renderTable(entries) {
+      const cols = [
+        { key: 'company', label: t('statsd.col.company', 'Company') },
+        { key: 'role', label: t('statsd.col.role', 'Role') },
+        { key: 'score', label: t('statsd.col.score', 'Score'), num: true },
+        { key: 'status', label: t('statsd.col.status', 'Status') },
+        { key: 'date', label: t('statsd.col.date', 'Date') },
+        { key: 'salary', label: t('statsd.col.salary', 'Salary'), num: true, val: (e) => (e.salaryUsd ? ((e.salaryUsd.minUsd || 0) + (e.salaryUsd.maxUsd || 0)) / 2 : null) },
+      ];
+      if (!entries.length) {
+        resultsEl.appendChild(section(t('statsd.tab', 'Details'),
+          c('p', { style: { color: 'var(--foggy)', padding: '8px 0' } }, t('statsd.empty', 'Nothing matches the current filters.'))));
+        return;
+      }
+      const sorted = entries.slice().sort((a, b) => {
+        const col = cols.find((cc) => cc.key === sortKey) || cols[4];
+        const get = (e) => (col.val ? col.val(e) : e[col.key]);
+        const av = get(a); const bv = get(b);
+        const an = av == null || av === '';
+        const bn = bv == null || bv === '';
+        if (an && bn) return 0;
+        if (an) return 1; // nulls last regardless of direction
+        if (bn) return -1;
+        const cmp = col.num ? Number(av) - Number(bv) : String(av).localeCompare(String(bv));
+        return sortDir === 'asc' ? cmp : -cmp;
+      });
+      const ths = cols.map((col) => {
+        const isSort = col.key === sortKey;
+        const th = c('th', {
+          scope: 'col',
+          className: 'v2-statsd-th',
+          'aria-sort': isSort ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none',
+        });
+        const btn = c('button', {
+          type: 'button',
+          className: 'v2-statsd-sort' + (isSort ? ' is-active' : ''),
+          'aria-label': `${col.label} — ${t('statsd.sortAria', 'sort')}`,
+        }, isSort ? `${col.label} ${sortDir === 'asc' ? '↑' : '↓'}` : col.label);
+        btn.addEventListener('click', () => {
+          if (sortKey === col.key) sortDir = (sortDir === 'asc' ? 'desc' : 'asc');
+          else { sortKey = col.key; sortDir = col.num ? 'desc' : 'asc'; }
+          draw();
+        });
+        th.appendChild(btn);
+        return th;
+      });
+      const trs = sorted.map((e) => {
+        const tr = c('tr', { className: 'v2-statsd-row' });
+        const link = c('a', { href: reportHref(e) }, e.company || '—');
+        tr.appendChild(c('td', null, link));
+        tr.appendChild(c('td', null, e.role || '—'));
+        tr.appendChild(c('td', { style: { fontVariantNumeric: 'tabular-nums' } }, e.score == null ? '—' : String(e.score)));
+        tr.appendChild(c('td', null, e.status ? stageLabel(e.status) : '—'));
+        tr.appendChild(c('td', { style: { fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' } }, e.date ? String(e.date).slice(0, 10) : '—'));
+        tr.appendChild(c('td', { style: { fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' } }, salaryCell(e)));
+        return tr;
+      });
+      resultsEl.appendChild(section(t('statsd.tab', 'Details'), c('div', { className: 'table-wrap' },
+        c('table', { className: 'tbl v2-statsd-table' }, [
+          c('thead', null, c('tr', null, ths)),
+          c('tbody', { 'data-testid': 'statsd-tbody' }, trs),
+        ]))));
+    }
+
+    function draw() {
+      FocusPreserved.withFocusPreserved(resultsEl, renderResults);
+    }
+
+    searchIn.addEventListener('input', () => { query = searchIn.value; draw(); });
+    curSel.addEventListener('change', () => {
+      currency = curSel.value;
+      try { localStorage.setItem(CUR_KEY, currency); } catch { /* private mode */ }
+      draw();
+    });
+    perSel.addEventListener('change', () => {
+      period = perSel.value;
+      try { localStorage.setItem(PER_KEY, period); } catch { /* private mode */ }
+      draw();
+    });
+    resetBtn.addEventListener('click', () => {
+      query = '';
+      searchIn.value = '';
+      for (const k of ['country', 'status', 'source']) active[k].clear();
+      currency = 'USD';
+      period = 'all';
+      curSel.value = 'USD';
+      perSel.value = 'all';
+      try { localStorage.setItem(CUR_KEY, currency); localStorage.setItem(PER_KEY, period); } catch { /* private mode */ }
+      draw();
+    });
+    draw();
     return wrap;
   }
 
