@@ -129,3 +129,81 @@ prose sections capped at 5 sentences per block, machine surface server-built;
 the JD-verbatim archive section is currently not part of the web-ui report
 body."* A Notes line is required by the ship-train convention ("Notes must
 name what is deliberately *not* done") and this is exactly such a case.
+
+---
+
+## Implemented (CAR-245, 2026-11-06) — recommendation (c) executed
+
+Branch `feat/car245-report-depth` off `origin/main` (c1a6b9f1). Red-first:
+the new pins were written and verified failing against the v1.268.1 code
+before the source change.
+
+**1. Render prompt depth (`server/lib/eval-scoring.mjs` `RENDER_INSTRUCTIONS`).**
+The ≤5-sentence cap is gone. The bullet now reads: *Elaborate EVERY block to
+AT LEAST 3 substantive bullets … each covering a DIFFERENT aspect of the JD
+evidence: the concrete requirement, the CV evidence that meets or misses it,
+and the risk … never pad, never fabricate*, plus a depth-target bullet
+(*1500–2500 words across the seven blocks*; Blocks B and E each name specific
+cv.md bullets by content). The framing is kept verbatim: seven sections only,
+machine surfaces server-built, 'Output only the seven `## ` sections,
+nothing before or after'. The guidance lives in the CACHE-STABLE prefix —
+byte-identical across all 19 locales (CAR-111 parity kept, gated). The
+scoring rubric (`EVAL_SCORING_STABLE_HEADER`) is untouched, so CAR-239
+determinism and existing scoring-cache keys are unaffected.
+
+**2. Server-side JD archive (#2789).** `assembleReport` takes `jdArchive`;
+`runTwoStepEvaluation` passes the sanitized JD it already holds. The section
+appends AFTER the yaml fence, exact shape:
+
+```
+```yaml
+…machine block…
+```
+
+## Job Description (archived verbatim)
+
+<jd, verbatim, bounded to 60 000 chars (JD_ARCHIVE_MAX_CHARS)>
+```
+
+Heading + bound mirror the parent's `lib/jd-archive-section.mjs` writer, so
+its `check-jd-archive.mjs` reader validates web-ui reports unchanged. An
+empty/whitespace JD appends nothing (direct assemble callers keep the exact
+pre-CAR-245 byte shape — backward compat gated). The archive SURVIVES into
+the saved file: the auto-pipeline save path strips only
+`---SCORE_SUMMARY---`…`---END_SUMMARY---` (`stripScoreSummary`) and the
+route-level test proves the archive lands in `reports/<slug>.md` with the
+posting text, summary block stripped. `/api/evaluate`'s display payload
+keeps it too (the same strip).
+
+**3. Length guard (`server/lib/eval-two-step.mjs`).** After assembly, a
+rendered A–G body (before the archive) under `EVAL_MIN_BODY_CHARS = 2500`
+pushes `'report depth below target — blocks too thin'` into the same
+warnings array the UI/API already surface (truncation channel). Warn, never
+reject. The fallback body (thin by construction) warns honestly alongside
+its existing fallback warning.
+
+**Tests (red-first, +10).** `tests/eval-scoring.test.mjs`: the depth floor
+present + no `at most 5 sentences` anywhere in the render prompt; cache-stable
+parity across locales; archive appended after yaml with bounded JD; 60 k
+bound; no-opt/empty-opt backward compat; JD sub-headings archived verbatim.
+`tests/eval-two-step.test.mjs`: thin body → the depth warning (deep body →
+none); fallback body warns; the archived JD is the sanitized input byte-
+faithful; **route-level**: `/api/auto-pipeline` saves a report whose FILE
+carries the archive (stub page with a marker string, saved file asserted).
+`tests/evaluate-truncation.test.mjs`: the display payload keeps the archive
+after the summary strip. Two suites pinning warning-free well-formed runs on
+thin stub fixtures were updated mechanically to answer AT the floor (no
+assertion changes): `tests/evaluate-score-summary.test.mjs` (ES_BODY
+lengthened), `tests/full-m5-cascade.test.mjs` (render fixture line lengthened).
+
+**Gates (local, Node 22):** the four eval suites green (66 pass / 0 fail) ·
+`npm run test:ci` **7613 pass / 0 fail / 3 skipped** (the 3 are the opt-in
+layout-capture skips) · `node evals/workflow/run.mjs` 16 pass / 0 fail /
+1 skip (evaluate-determinism spread 0.0 ✓) · `npm run test:coverage:gate`
+exit 0, mean line 98.53 % / branch 90.37 % (eval-scoring 100/94.85,
+eval-two-step 100/96.30) · `npm run test:e2e:browser` **182 pass / 0 fail /
+1 opt-in skip**. Environment note: the first test:ci run showed 15 failures
+(map-cluster-visual / map-specialization-tokens / scan-redesign-layout) —
+all reproduced identically on clean `origin/main`; cause was the local
+Playwright browser cache missing `chromium_headless_shell` (the known
+cache-wipe hazard in PROGRESS), not the diff.

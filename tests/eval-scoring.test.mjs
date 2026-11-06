@@ -39,6 +39,8 @@ import {
   EVAL_BLOCK_WEIGHTS,
   EVAL_SCORING_STABLE_HEADER,
   EVAL_SHARED_INSTRUCTIONS,
+  JD_ARCHIVE_HEADING,
+  JD_ARCHIVE_MAX_CHARS,
   serverToday,
 } from '../server/lib/eval-scoring.mjs';
 
@@ -282,4 +284,84 @@ test('locale + shape edges: unknown locale falls back to English, long fields ar
   assert.equal(scoring.score, 3.0, 'all-3 sub-scores → server-computed 3.0');
   const { volatile } = buildRenderPromptParts('jd', 'xx-YY', scoring);
   assert.match(volatile, /Target language: English\./, 'unknown locale → English fallback');
+});
+
+// ── CAR-245 — render depth: the ≤5-sentence cap is gone, the floor is in ────
+
+test('CAR-245: the render prompt carries the depth floor — no ≤5-sentence cap', () => {
+  const scoring = normalizeScoring(SCORING);
+  const { stable } = buildRenderPromptParts('A JD about Go.', 'en', scoring);
+  // The anchored floor (the v1.268.0 cap compressed every report to 1.6–4 k chars).
+  assert.match(stable, /AT LEAST 3 substantive bullets/, 'per-block minimum is stated');
+  assert.match(stable, /DIFFERENT aspect/, 'bullets must cover different aspects of the JD evidence');
+  assert.match(stable, /1500–2500 words/, 'the whole-body depth target is stated');
+  assert.match(stable, /Block B \(Match with CV\) and Block E \(Customization Plan\)/, 'B/E name cv.md bullets by content');
+  assert.match(stable, /never pad, never fabricate/, 'the floor is anchored, not an invitation to pad');
+  // The cap itself must be GONE from the prompt.
+  assert.ok(!stable.includes('at most 5 sentences'), 'the ≤5-sentence cap must not survive anywhere in the render prompt');
+  // The framing is kept: seven sections only, machine surfaces server-built.
+  assert.match(stable, /Write EXACTLY seven sections/);
+  assert.match(stable, /Output only the seven `## ` sections, nothing before or after\./);
+  assert.match(stable, /do NOT write any SCORE_SUMMARY block or yaml block/);
+});
+
+test('CAR-245: the depth guidance lives in the CACHE-STABLE prefix (CAR-111 parity kept)', () => {
+  const scoring = normalizeScoring(SCORING);
+  const en = buildRenderPromptParts('jd', 'en', scoring).stable;
+  const ru = buildRenderPromptParts('jd', 'ru', scoring).stable;
+  const ta = buildRenderPromptParts('jd', 'ta', scoring).stable;
+  assert.equal(en, ru, 'the render stable prefix must stay byte-identical across locales');
+  assert.equal(en, ta);
+  assert.match(en, /AT LEAST 3 substantive bullets/, 'the depth floor is part of the shared (cached) bytes');
+});
+
+// ── CAR-245 — the server-side JD archive (#2789) in assembleReport ─────────
+
+const ARCHIVE_BODY = EVAL_BLOCK_LETTERS.map((L) => `## ${L}) Section\nprose`).join('\n');
+const archScoring = () => normalizeScoring(SCORING);
+
+test('CAR-245: assembleReport with jdArchive appends the verbatim-JD section after the yaml block', () => {
+  const jd = 'Backend Engineer at ExampleCorp.\nGo, Kubernetes, 450000 RUB/mo.';
+  const md = assembleReport({ scoring: archScoring(), body: ARCHIVE_BODY, today: '2026-11-05', jdArchive: jd });
+  // Exact shape: yaml fence → blank line → heading → blank line → jd → final newline.
+  assert.match(md, /```yaml\n[\s\S]*?\n```\n\n## Job Description \(archived verbatim\)\n\nBackend Engineer at ExampleCorp\.\nGo, Kubernetes, 450000 RUB\/mo\.\n$/);
+  // The archive is the LAST section of the file — nothing follows it.
+  assert.ok(md.trimEnd().endsWith('Go, Kubernetes, 450000 RUB/mo.'), 'the JD text closes the report');
+  // The machine surfaces stay above the archive and unchanged.
+  assert.ok(md.indexOf('---SCORE_SUMMARY---') < md.indexOf(JD_ARCHIVE_HEADING));
+  assert.ok(md.indexOf('```yaml') < md.indexOf(JD_ARCHIVE_HEADING));
+});
+
+test('CAR-245: the archived JD is bounded to 60 000 chars', () => {
+  assert.equal(JD_ARCHIVE_MAX_CHARS, 60_000);
+  const long = 'x'.repeat(70_000);
+  const md = assembleReport({ scoring: archScoring(), body: ARCHIVE_BODY, today: '2026-11-05', jdArchive: long });
+  const at = md.indexOf(JD_ARCHIVE_HEADING);
+  assert.ok(at !== -1, 'the archive section exists');
+  const archived = md.slice(at + JD_ARCHIVE_HEADING.length).replace(/^\n+/, '').replace(/\n$/, '');
+  assert.equal(archived.length, JD_ARCHIVE_MAX_CHARS, 'the JD is truncated at the bound, never longer');
+});
+
+test('CAR-245: no jdArchive opt → no archive section (direct assemble callers unchanged)', () => {
+  const md = assembleReport({ scoring: archScoring(), body: ARCHIVE_BODY, today: '2026-11-05' });
+  assert.ok(!md.includes('Job Description'), 'backward compat: no opt, no section');
+  assert.ok(md.trimEnd().endsWith('```'), 'the report still ends at the yaml fence');
+  // An empty / whitespace-only JD appends nothing either (the parent's
+  // withJdArchiveSection contract: an empty archive must not hide behind an
+  // empty section).
+  for (const empty of ['', '   ', null, undefined]) {
+    const m = assembleReport({ scoring: archScoring(), body: ARCHIVE_BODY, today: '2026-11-05', jdArchive: empty });
+    assert.ok(!m.includes('Job Description'), `empty opt (${JSON.stringify(empty)}) appends nothing`);
+    assert.ok(m.trimEnd().endsWith('```'));
+  }
+});
+
+test('CAR-245: a JD containing markdown sub-headings is archived verbatim (the section reader allowlists)', () => {
+  // The parent's check-jd-archive.mjs reads the section up to the next KNOWN
+  // report section — a JD that itself carries `## Responsibilities` must not
+  // be mangled by the writer.
+  const jd = 'Backend role.\n\n## Responsibilities\nShip the platform.\n\n## Requirements\n5 years Go.';
+  const md = assembleReport({ scoring: archScoring(), body: ARCHIVE_BODY, today: '2026-11-05', jdArchive: jd });
+  assert.ok(md.includes('## Responsibilities\nShip the platform.'), 'sub-headings ride verbatim');
+  assert.ok(md.includes('## Requirements\n5 years Go.'));
 });

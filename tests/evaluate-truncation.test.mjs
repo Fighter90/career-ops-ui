@@ -230,6 +230,18 @@ test('the machine surface is locale-independent (CAR-102): ru and ta carry the s
   }
 });
 
+test('CAR-245: the display payload keeps the JD-verbatim archive (only SCORE_SUMMARY is stripped)', async () => {
+  answers = twoShapeAnswers({ scoring: scoringFixture({ company: 'Acme', role: 'Engineer', score: 4.1 }), body: renderBodyFixture({}) });
+  const events = await drainEvaluate('en');
+  const done = events.find((e) => e.ev === 'done').data;
+  // stripScoreSummary removes the machine summary block ONLY — the JD archive
+  // appended after the yaml fence must survive into every consumer (the
+  // auto-pipeline saved file is asserted in tests/eval-two-step.test.mjs).
+  assert.match(done.markdown, /```yaml\n[\s\S]*?\n```\n\n## Job Description \(archived verbatim\)\n\nSenior Platform Engineer at Acme\./);
+  assert.ok(done.markdown.includes('on-call.'), 'the JD text rides verbatim');
+  assert.ok(!done.markdown.includes('---SCORE_SUMMARY---'), 'the summary block is still stripped');
+});
+
 test('a garbage scoring answer is retried once before failing the step (CAR-229)', async () => {
   let scoringCalls = 0;
   answers = (prompt) => {
