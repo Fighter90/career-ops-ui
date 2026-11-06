@@ -1426,7 +1426,7 @@ Every row's status badge is also a **select** — pick a stage and it saves inst
 
 **Stage-tab board (v1.131.0).** Above the table a **stage-tab strip** lets you walk the funnel: an **All** tab plus one tab per canonical status, each showing a live whole-history count — **including zero-count stages**, so the full pipeline is always visible at a glance. Click a stage to filter the table to it; click it again to return to **All**. The tabs (and the counts' folding of localized/legacy status aliases) come from `GET /api/tracker/stages`, which reads the same `templates/states.yml` the server uses — so the tab set stays in sync with the parent's status vocabulary automatically, with no hardcoded list on the page. Search, the score filter, sortable columns and per-row report/PDF/legitimacy are unchanged; with logos enabled, each row's company shows a brand mark.
 
-**Kanban view (v2).** The same board also reads as a drag-and-drop **kanban**: one column per canonical status (board title announced as *{{t:track.kanbanBoardAria}}*, `track.kanbanBoardAria`), a card per application. Drag a card to another column — or focus it and press **Move** — and the change is **previewed before anything is written** (`track.kanbanMoveHint`); a committed move records an entry in the outcome journal and rewrites `data/applications.md`, and the card tells you so (`track.moveJournal`) — to change a status back, use the row's **Outcome** button. Columns the pipeline manages on its own (and `Discarded`, whose semantics only you can pick) render read-only (`track.kanbanReadOnly`) and refuse drops. If the parent's outcome recorder is missing, status moves are disabled with an honest note (`track.kanbanMovesOff`). While the board loads it shows the same shimmer rows as the rest of the app, and an empty board says **No applications** (`track.kanbanEmpty`) with a pointer at the pipeline (`track.emptyBody`).
+**Kanban view (rebuilt in v1.269.0).** The drag-and-drop board has become a single funnel view — see **Kanban funnel board** below. The earlier preview-based kanban (board announced as *{{t:track.kanbanBoardAria}}*, moves previewed before anything was written, read-only pipeline columns) is no longer mounted.
 
 The status whitelist is enforced server-side; sending anything else in
 a `POST /api/tracker` defaults to `Evaluated`. The canonical
@@ -1446,6 +1446,18 @@ a `POST /api/tracker` defaults to `Evaluated`. The canonical
 | `PDF` | ✅ once `generate-pdf.mjs` succeeded for this row. |
 | `Report` | Markdown link to the matching `reports/*.md`. |
 | `Notes` | Free text, capped at 200 chars. |
+
+### Kanban funnel board (v1.269.0)
+
+The tracker's board view was rebuilt as one **kanban funnel**: switch with the **{{t:track.viewTable}} | {{t:kanban.tab}}** toggle above the table — the table stays the default, and your choice is remembered per browser. Instead of rows you get one column per canonical stage, **including empty ones**, each with a live count badge, so the whole funnel is visible at a glance.
+
+**Moving a card.** Drag it into another column — the move is saved at once through the canonical tracker writer (`set-status.mjs` under the applications lock), and if the save fails the card returns to its old column with an honest toast. Every canonical column accepts drops, even an empty one; cards in the trailing **{{t:track.kanbanOther}}** column (a status the canonical vocabulary does not know) can be dragged out to any canonical stage, but that column itself is not a drop target.
+
+**Keyboard and screen readers.** A card is focusable: **←** / **→** move it to the previous / next stage, **Enter** opens its menu. Column counts are announced as they change, and every card carries a spoken label (`#{num} {company}, {role} — {stage}`).
+
+**Notes and interview time.** **Enter** (or the ⋯ button) opens the **{{t:kanban.modalTitle}}** dialog: free-text **{{t:kanban.notes}}** and an **{{t:kanban.interviewAt}}** (date and time). Saving writes them into the row's Notes cell through the canonical notes writer — the status itself does not change — and the dialog always pre-fills the latest recorded values, because notes are append-only journal entries.
+
+**On a phone.** Below 900 px the board becomes a horizontal scroll strip. Dragging works where the platform supports it, and nothing requires it: the **{{t:kanban.status}}** selector inside the card menu moves any card without a drag.
 
 ### Filters
 
@@ -2409,6 +2421,22 @@ The **My pipeline** tab charts your own application tracker — nothing external
 ### Target-role trend
 
 The **Target-role trend** tab is the original view: vacancy counts and median salary by country for your target roles, aggregated from your latest scan, with a currency selector and a **Postings by target role** overview. **Save snapshot** records the current aggregate so you can watch how vacancy counts move over time, and the trend line reads those snapshots back. Sparse data is expected and labelled as indicative — it is never padded with invented numbers.
+
+### Detailed statistics (v1.269.0)
+
+The **{{t:statsd.tab}}** tab turns every application and scanned posting into one filterable dataset — salary in the currency you pick, four charts, and a sortable table that deep-links into `#/reports`.
+
+- **{{t:statsd.currency}}** — USD→EUR/RUB/GBP/CNY conversion at documented approximate rates; every figure, chart axis and table column follows it (an unknown currency falls back to USD instead of guessing).
+
+- **{{t:statsd.period}}** — last month / last quarter / last year / all time. Entries without a usable date are excluded from bounded periods (honest, not guessed) and counted only in "all time".
+
+- **{{t:statsd.search}}** and facet chips — substring search over company and role, plus **{{t:statsd.facet.country}}** / **{{t:statsd.facet.status}}** / **{{t:statsd.facet.source}}** chips with live counts. Chips compose: within a group any one chip matches, across groups all must match; **{{t:statsd.reset}}** clears everything.
+
+- **Four charts** — {{t:statsd.chart.salary}} (minimum / median / maximum per country), {{t:statsd.chart.funnel}}, {{t:statsd.chart.monthly}} and {{t:statsd.chart.companies}}.
+
+- **Drill-down** — a sortable per-vacancy table under KPI cards (entries, entries with a parsed salary, countries, companies); the company cell is a real link into `#/reports/{slug}` when the row carries a report.
+
+The display currency and period persist across reloads (`career-ops-ui:statsCurrency` / `career-ops-ui:statsPeriod` in localStorage).
 
 ### Lifetime & compensation
 

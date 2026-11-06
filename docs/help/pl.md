@@ -1357,23 +1357,7 @@ Odznaka statusu w każdym wierszu to także **select**: wybierz etap — i zapis
 
 **Tablica zakładek etapów (v1.131.0).** Nad tabelą **pasek zakładek etapów** pozwala przejść przez cały lejek: zakładka **Wszystkie** plus jedna zakładka na każdy kanoniczny status, każda pokazuje na żywo liczbę z całej historii — **w tym etapy z zerową liczbą**, dzięki czemu cały pipeline jest zawsze widoczny na pierwszy rzut oka. Kliknij etap, aby przefiltrować do niego tabelę; kliknij ponownie, aby wrócić do **Wszystkie**. Zakładki (oraz składanie zlokalizowanych/starszych aliasów statusów w liczbach) pochodzą z `GET /api/tracker/stages`, która czyta ten sam plik `templates/states.yml`, którego używa serwer — dzięki czemu zestaw zakładek pozostaje automatycznie zsynchronizowany ze słownictwem statusów rodzica, bez zakodowanej na sztywno listy na stronie. Wyszukiwanie, filtr wyniku, sortowalne kolumny oraz raport/PDF/legalność w każdym wierszu pozostają bez zmian; a przy włączonym pokazywaniu logo, firma w każdym wierszu pokazuje znak marki.
 
-**Widok kanban (v2).** Ta sama tablica czyta się też jako **kanban** z
-przeciąganiem i upuszczaniem: jedna kolumna na każdy kanoniczny status
-(tytuł tablicy ogłaszany jako *Aplikacje według statusu*,
-`track.kanbanBoardAria`), jedna karta na aplikację. Przeciągnij kartę
-do innej kolumny — albo ustaw na niej fokus i naciśnij **Przenieś** —
-a zmiana jest **pokazywana, zanim cokolwiek zostanie zapisane**
-(`track.kanbanMoveHint`); potwierdzona zmiana zapisuje wpis w
-dzienniku wyników i przepisuje `data/applications.md`, a karta mówi ci
-o tym (`track.moveJournal`) — aby zmienić status z powrotem, użyj
-przycisku **wyniku** w wierszu. Kolumny zarządzane same przez siebie
-przez pipeline (i `Discarded`, którego semantykę wybierasz tylko ty)
-renderują się tylko do odczytu (`track.kanbanReadOnly`) i odrzucają
-upuszczenia. Gdy rejestratora wyników rodzica brakuje, zmiany statusu
-są wyłączone z uczciwą notą (`track.kanbanMovesOff`). Podczas
-ładowania tablica pokazuje te same migające wiersze co reszta
-aplikacji, a pusta tablica mówi **Brak aplikacji** (`track.kanbanEmpty`)
-z wskazówką na pipeline (`track.emptyBody`).
+**Widok kanban (przebudowany w v1.269.0).** Tablica z przeciąganiem stała się jednym widokiem lejka — zobacz poniżej **Tablica kanban-lejek**. Poprzedni kanban z podglądem (tablica ogłaszana jako *{{t:track.kanbanBoardAria}}*, przeniesienia najpierw podglądane, potem zapisywane, kolumny pipeline tylko do odczytu) nie jest już montowany.
 
 Biała lista statusów jest egzekwowana po stronie serwera; wysłanie czegokolwiek innego w
 `POST /api/tracker` domyślnie ustawia `Evaluated`. Kanoniczne
@@ -1393,6 +1377,18 @@ przejście `Evaluated → Applied` jest automatyczne, gdy potwierdzisz
 | `PDF` | ✅ gdy `generate-pdf.mjs` powiodło się dla tego wiersza. |
 | `Report` | Link Markdown do pasującego `reports/*.md`. |
 | `Notes` | Dowolny tekst, ograniczony do 200 znaków. |
+
+### Tablica kanban-lejek (v1.269.0)
+
+Widok tablicy w trackerze przebudowano w jeden **kanban-lejek**: przełączaj przełącznikiem **{{t:track.viewTable}} | {{t:kanban.tab}}** nad tabelą — tabela pozostaje trybem domyślnym, a wybór jest zapamiętywany na poziomie przeglądarki. Zamiast wierszy dostajesz kolumnę na każdy kanoniczny etap, **również puste**, każdą z licznikiem na żywo, więc cały lejek widać jednym rzutem oka.
+
+**Przenoszenie karty.** Przeciągnij ją do innej kolumny — przeniesienie od razu zapisuje kanoniczny zapisywacz trackera (`set-status.mjs` pod blokadą applications); jeśli zapis się nie powiedzie, karta wraca do swojej kolumny z uczciwym komunikatem. Każda kanoniczna kolumna przyjmuje karty, nawet pusta; karty z końcowej kolumny **{{t:track.kanbanOther}}** (status, którego słownik kanoniczny nie zna) można przeciągnąć na dowolny kanoniczny etap, ale ta kolumna sama nie jest celem upuszczania.
+
+**Klawiatura i czytniki ekranu.** Karta jest fokusowalna: **←** / **→** przenosi ją do poprzedniego / następnego etapu, **Enter** otwiera jej menu. Liczniki kolumn są ogłaszane przy każdej zmianie, a każda karta ma odczytywaną etykietę (`#{num} {company}, {role} — {stage}`).
+
+**Notatki i czas rozmowy.** **Enter** (lub przycisk ⋯) otwiera okno **{{t:kanban.modalTitle}}**: **{{t:kanban.notes}}** w wolnym tekście i **{{t:kanban.interviewAt}}** (data i godzina). Zapis wpisuje je do komórki Notes wiersza kanonicznym zapisywaczem notatek — sam status się nie zmienia — a okno zawsze podstawia ostatnie zapisane wartości, bo notatki to dziennik tylko-do-dodawania.
+
+**Na telefonie.** Poniżej 900 px tablica staje się poziomą wstęgą przewijania. Przeciąganie działa tam, gdzie platforma je obsługuje, i niczego nie wymaga: selektor **{{t:kanban.status}}** w menu karty przenosi dowolną kartę bez przeciągania.
 
 ### Filtry
 
@@ -2343,6 +2339,22 @@ Karta **Mój pipeline** wykreśla twój własny tracker aplikacji — nic zewnę
 ### **Trend ról docelowych**
 
 Karta **Trend ról docelowych** to pierwotny widok: liczba ofert i mediana wynagrodzenia według kraju dla twoich docelowych ról, zagregowane z twojego ostatniego skanu, z selektorem waluty i przeglądem **Ogłoszenia według docelowej roli**. **Zapisz migawkę** zapisuje bieżący agregat, abyś mógł obserwować, jak liczba ofert zmienia się w czasie, a linia trendu odczytuje te migawki z powrotem. Skąpe dane są oczekiwane i oznaczane jako orientacyjne — nigdy nie są uzupełniane wymyślonymi liczbami.
+
+### Statystyki szczegółowe (v1.269.0)
+
+Karta **{{t:statsd.tab}}** zamienia każdą aplikację i każdą zeskanowaną ofertę w jeden filtrowalny zbiór danych — pensje w wybranej przez Ciebie walucie, cztery wykresy i sortowalną tabelę z bezpośrednimi linkami do `#/reports`.
+
+- **{{t:statsd.currency}}** — przeliczanie USD→EUR/RUB/GBP/CNY według udokumentowanych przybliżonych kursów; wszystkie liczby, osie wykresów i kolumny tabeli go respektują (nieznana waluta cofa się do USD zamiast zgadywać).
+
+- **{{t:statsd.period}}** — ostatni miesiąc / ostatni kwartał / ostatni rok / cały okres. Wpisy bez użytecznej daty są wykluczane z ograniczonych okresów (uczciwie, bez zgadywania) i liczą się tylko w „całym okresie”.
+
+- **{{t:statsd.search}}** i chipy faset — wyszukiwanie po podciągu w firmie i roli plus chipy **{{t:statsd.facet.country}}** / **{{t:statsd.facet.status}}** / **{{t:statsd.facet.source}}** z licznikami na żywo. Chipy się łączą: w ramach grupy wystarczy jeden, między grupami muszą pasować wszystkie; **{{t:statsd.reset}}** czyści wszystko.
+
+- **Cztery wykresy** — {{t:statsd.chart.salary}} (minimum / mediana / maksimum według krajów), {{t:statsd.chart.funnel}}, {{t:statsd.chart.monthly}} i {{t:statsd.chart.companies}}.
+
+- **Przejście w głąb** — sortowalna tabela per oferta pod kartami KPI (wpisy, wpisy z rozpoznaną pensją, kraje, firmy); komórka firmy to prawdziwy link do `#/reports/{slug}`, gdy wiersz ma raport.
+
+Waluta wyświetlania i okres są zapamiętywane między odświeżeniami (`career-ops-ui:statsCurrency` / `career-ops-ui:statsPeriod` w localStorage).
 
 ### Łącznie i wynagrodzenia
 

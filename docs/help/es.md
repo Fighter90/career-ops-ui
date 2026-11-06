@@ -1325,23 +1325,7 @@ El badge de estado de cada fila es también un **select** — elige una etapa y 
 
 **Tablero de pestañas de etapa (v1.131.0).** Encima de la tabla, una **franja de pestañas de etapa** permite recorrer el embudo: una pestaña **All** más una por cada estado canónico, cada una mostrando un recuento en vivo de todo el historial —**incluidas las etapas con recuento cero**, para que el embudo completo sea siempre visible de un vistazo. Pulsa una etapa para filtrar la tabla a esa etapa; púlsala de nuevo para volver a **All**. Las pestañas (y el plegado de alias de estado localizados/legacy de los recuentos) provienen de `GET /api/tracker/stages`, que lee el mismo `templates/states.yml` que usa el servidor — así el conjunto de pestañas se mantiene sincronizado automáticamente con el vocabulario de estados del padre, sin lista fija en la página. La búsqueda, el filtro de puntuación, las columnas ordenables y el informe/PDF/legitimidad por fila no cambian; con los logos activados, la empresa de cada fila muestra una marca.
 
-**Vista kanban (v2).** El mismo tablero también se lee como un
-**kanban** de arrastrar-y-soltar: una columna por estado canónico
-(título anunciado como *{{t:track.kanbanBoardAria}}*, `track.kanbanBoardAria`),
-una tarjeta por candidatura. Arrastra una tarjeta a otra columna — o
-enfócala y pulsa **Mover** — y el cambio se
-**previsualiza antes de escribir nada** (`track.kanbanMoveHint`); un movimiento confirmado
-registra entrada en el diario de outcomes y reescribe
-`data/applications.md`, y la tarjeta te lo dice (`track.moveJournal`)
-— para devolver un estado, usa el botón **Outcome** de la fila. Las
-columnas que el pipeline gestiona por sí mismo (y `Discarded`, cuya
-semántica solo tú puedes elegir) se renderizan de solo lectura
-(`track.kanbanReadOnly`) y rechazan drops. Si el grabador de outcomes
-del padre falta, los movimientos se desactivan con una nota honesta
-(`track.kanbanMovesOff`). Mientras el tablero carga muestra las mismas
-filas con brillo que el resto de la app, y un tablero vacío dice
-**No hay candidaturas** (`track.kanbanEmpty`) con un puntero al pipeline
-(`track.emptyBody`).
+**Vista kanban (reconstruida en v1.269.0).** El tablero de arrastrar y soltar se convirtió en una única vista de embudo — ver **Tablero kanban de embudo** abajo. El kanban anterior con vista previa (tablero anunciado como *{{t:track.kanbanBoardAria}}*, movimientos previsualizados antes de escribirse, columnas del pipeline de solo lectura) ya no se monta.
 
 La whitelist de estados se aplica del lado del servidor; enviar
 cualquier otra cosa en un `POST /api/tracker` cae por defecto a
@@ -1362,6 +1346,18 @@ apply` (ver §14).
 | `PDF` | ✅ una vez que `generate-pdf.mjs` tuvo éxito para esta fila. |
 | `Report` | Enlace markdown al `reports/*.md` correspondiente. |
 | `Notes` | Texto libre, capado a 200 chars. |
+
+### Tablero kanban de embudo (v1.269.0)
+
+La vista de tablero del tracker se reconstruyó como un único **embudo kanban**: cambia con el alternador **{{t:track.viewTable}} | {{t:kanban.tab}}** sobre la tabla — la tabla sigue siendo el modo por defecto y tu elección se recuerda por navegador. En vez de filas tienes una columna por etapa canónica, **incluidas las vacías**, cada una con un contador en vivo, así que todo el embudo se ve de un vistazo.
+
+**Mover una tarjeta.** Arrástrala a otra columna — el cambio se guarda de inmediato con el escritor canónico del tracker (`set-status.mjs` bajo el bloqueo de applications); si el guardado falla, la tarjeta vuelve a su columna con un aviso honesto. Cada columna canónica acepta tarjetas, incluso una vacía; las tarjetas de la columna final **{{t:track.kanbanOther}}** (un estado que el vocabulario canónico no conoce) pueden arrastrarse a cualquier etapa canónica, pero esa columna no acepta depósitos.
+
+**Teclado y lectores de pantalla.** Una tarjeta es enfocable: **←** / **→** la mueven a la etapa anterior / siguiente, **Enter** abre su menú. Los contadores de columna se anuncian al cambiar, y cada tarjeta lleva una etiqueta hablada (`#{num} {company}, {role} — {stage}`).
+
+**Notas y hora de entrevista.** **Enter** (o el botón ⋯) abre el diálogo **{{t:kanban.modalTitle}}**: **{{t:kanban.notes}}** en texto libre y una **{{t:kanban.interviewAt}}** (fecha y hora). Guardar las escribe en la celda Notes de la fila mediante el escritor canónico de notas — el estado no cambia — y el diálogo siempre prellena los últimos valores guardados, porque las notas son un diario de solo adiciones.
+
+**En el móvil.** Por debajo de 900 px el tablero se vuelve una tira de desplazamiento horizontal. Arrastrar funciona donde la plataforma lo permite, y nada lo exige: el selector **{{t:kanban.status}}** dentro del menú de la tarjeta mueve cualquier tarjeta sin arrastrar.
 
 ### Filtros
 
@@ -2318,6 +2314,22 @@ La pestaña **Mi pipeline** grafica tu propio tracker de candidaturas — nada e
 ### Tendencia de roles objetivo
 
 La pestaña **Tendencia de roles objetivo** es la vista original: recuento de vacantes y salario mediano por país para tus roles objetivo, agregados a partir de tu último escaneo, con un selector de moneda y un resumen de **Vacantes por rol objetivo**. **Guardar snapshot** registra el agregado actual para que puedas observar cómo se mueven los recuentos de vacantes con el tiempo, y la línea de tendencia relee esos snapshots. Los datos escasos son esperables y se etiquetan como indicativos — nunca se rellenan con números inventados.
+
+### Estadísticas detalladas (v1.269.0)
+
+La pestaña **{{t:statsd.tab}}** convierte cada aplicación y cada vacante escaneada en un conjunto de datos filtrable — salarios en la moneda que elijas, cuatro gráficos y una tabla ordenable con enlaces profundos a `#/reports`.
+
+- **{{t:statsd.currency}}** — conversión USD→EUR/RUB/GBP/CNY a tipos aproximados documentados; todas las cifras, ejes y columnas la siguen (una moneda desconocida cae a USD en vez de adivinar).
+
+- **{{t:statsd.period}}** — último mes / último trimestre / último año / todo el tiempo. Las entradas sin fecha utilizable quedan fuera de los períodos acotados (honesto, no adivinado) y solo cuentan en «todo el tiempo».
+
+- **{{t:statsd.search}}** y chips de facetas — búsqueda por subcadena de empresa y rol, más chips **{{t:statsd.facet.country}}** / **{{t:statsd.facet.status}}** / **{{t:statsd.facet.source}}** con contadores en vivo. Los chips se combinan: dentro de un grupo basta uno, entre grupos deben coincidir todos; **{{t:statsd.reset}}** lo borra todo.
+
+- **Cuatro gráficos** — {{t:statsd.chart.salary}} (mínimo / mediana / máximo por país), {{t:statsd.chart.funnel}}, {{t:statsd.chart.monthly}} y {{t:statsd.chart.companies}}.
+
+- **Profundizar** — una tabla ordenable por vacante bajo tarjetas KPI (entradas, entradas con salario analizado, países, empresas); la celda de empresa es un enlace real a `#/reports/{slug}` cuando la fila tiene informe.
+
+La moneda de visualización y el período persisten entre recargas (`career-ops-ui:statsCurrency` / `career-ops-ui:statsPeriod` en localStorage).
 
 ### Histórico y compensación
 

@@ -1450,24 +1450,7 @@ Le badge de statut de chaque ligne est aussi un **select** — choisissez une é
 
 **Tableau à onglets d'étape (v1.131.0).** Au-dessus du tableau, une **bande d'onglets d'étape** permet de parcourir l'entonnoir : un onglet **All** plus un onglet par statut canonique, chacun affichant un compte en direct sur tout l'historique — **y compris les étapes à zéro** — afin que le pipeline complet reste toujours visible d'un coup d'œil. Cliquez sur une étape pour filtrer le tableau dessus ; cliquez à nouveau pour revenir à **All**. Les onglets (et le repli des alias de statut localisés/hérités dans les comptes) proviennent de `GET /api/tracker/stages`, qui lit le même `templates/states.yml` que le serveur — de sorte que l'ensemble des onglets reste automatiquement synchronisé avec le vocabulaire de statuts du parent, sans liste codée en dur sur la page. La recherche, le filtre de score, les colonnes triables et les actions rapport/PDF/légitimité par ligne restent inchangés ; avec les logos activés, l'entreprise de chaque ligne affiche une marque.
 
-**Vue kanban (v2).** Le même tableau se lit aussi comme un **kanban** à
-glisser-déposer : une colonne par statut canonique (titre du tableau
-annoncé comme *Candidatures par statut*, `track.kanbanBoardAria`), une
-carte par candidature. Faites glisser une carte vers une autre colonne
-— ou focalisez-la et pressez **Déplacer** — et le changement est
-**prévisualisé avant toute écriture** (`track.kanbanMoveHint`) ; un
-déplacement confirmé consigne une entrée dans le journal des résultats
-et réécrit `data/applications.md`, et la carte vous le dit
-(`track.moveJournal`) — pour ramener un statut en arrière, utilisez le
-bouton **Outcome** de la ligne. Les colonnes que la pipeline gère
-elle-même (et `Discarded`, dont la sémantique ne peut être choisie que
-par vous) se rendent en lecture seule (`track.kanbanReadOnly`) et
-refusent les dépôts. Si l'enregistreur de résultats du parent manque,
-les changements de statut sont désactivés avec une note honnête
-(`track.kanbanMovesOff`). Pendant le chargement, le tableau affiche les
-mêmes rangées scintillantes que le reste de l'app, et un tableau vide
-dit **Aucune candidature** (`track.kanbanEmpty`) avec un pointeur vers
-la pipeline (`track.emptyBody`).
+**Vue kanban (refaite en v1.269.0).** Le tableau à glisser-déposer est devenu une vue entonnoir unique — voir **Tableau kanban en entonnoir** ci-dessous. L'ancien kanban à aperçu (tableau annoncé comme *{{t:track.kanbanBoardAria}}*, déplacements prévisualisés avant écriture, colonnes du pipeline en lecture seule) n'est plus monté.
 
 La liste blanche de statuts est imposée côté serveur ; envoyer autre chose
 dans un `POST /api/tracker` retombe sur `Evaluated`. La transition canonique
@@ -1487,6 +1470,18 @@ fin de `/career-ops apply` (voir §14).
 | `PDF` | ✅ une fois que `generate-pdf.mjs` a réussi pour cette ligne. |
 | `Report` | Lien markdown vers le `reports/*.md` correspondant. |
 | `Notes` | Texte libre, plafonné à 200 caractères. |
+
+### Tableau kanban en entonnoir (v1.269.0)
+
+La vue tableau du tracker est devenue un seul **entonnoir kanban** : basculez avec le commutateur **{{t:track.viewTable}} | {{t:kanban.tab}}** au-dessus du tableau — la table reste le mode par défaut et votre choix est mémorisé par navigateur. Au lieu de lignes, vous obtenez une colonne par étape canonique, **y compris vides**, chacune avec un compteur en direct, pour que tout l'entonnoir soit visible d'un coup d'œil.
+
+**Déplacer une carte.** Glissez-la dans une autre colonne — le déplacement est enregistré aussitôt par l'écrivain canonique du tracker (`set-status.mjs` sous le verrou applications) ; si l'enregistrement échoue, la carte revient dans sa colonne d'origine avec un message honnête. Chaque colonne canonique accepte les dépôts, même vide ; les cartes de la colonne terminale **{{t:track.kanbanOther}}** (un statut que le vocabulaire canonique ne connaît pas) peuvent être glissées vers n'importe quelle étape canonique, mais cette colonne n'est pas une cible de dépôt.
+
+**Clavier et lecteurs d'écran.** Une carte est focalisable : **←** / **→** la déplacent vers l'étape précédente / suivante, **Entrée** ouvre son menu. Les compteurs de colonnes sont annoncés à chaque changement, et chaque carte porte une étiquette énoncée (`#{num} {company}, {role} — {stage}`).
+
+**Notes et heure d'entretien.** **Entrée** (ou le bouton ⋯) ouvre la boîte de dialogue **{{t:kanban.modalTitle}}** : **{{t:kanban.notes}}** en texte libre et une **{{t:kanban.interviewAt}}** (date et heure). L'enregistrement les écrit dans la cellule Notes de la ligne via l'écrivain canonique des notes — le statut lui-même ne change pas — et la boîte préremplit toujours les dernières valeurs enregistrées, car les notes sont un journal en ajout seul.
+
+**Sur téléphone.** Sous 900 px, le tableau devient une bande à défilement horizontal. Le glisser fonctionne là où la plateforme le permet, mais rien ne l'exige : le sélecteur **{{t:kanban.status}}** dans le menu de la carte déplace n'importe quelle carte sans glisser.
 
 ### Filters
 
@@ -2459,6 +2454,22 @@ L'onglet **Mon pipeline** trace votre propre suivi de candidatures — rien d'ex
 ### **Tendance des rôles cibles**
 
 L'onglet **Tendance des rôles cibles** est la vue d'origine : le nombre d'offres et le salaire médian par pays pour vos rôles cibles, agrégés depuis votre dernier scan, avec un sélecteur de devise et un aperçu **Offres par rôle cible**. **Enregistrer un instantané** consigne l'agrégat actuel pour que vous puissiez observer l'évolution du nombre d'offres dans le temps, et la courbe de tendance relit ces instantanés. Des données éparses sont attendues et étiquetées comme indicatives — elles ne sont jamais complétées par des nombres inventés.
+
+### Statistiques détaillées (v1.269.0)
+
+L'onglet **{{t:statsd.tab}}** transforme chaque candidature et chaque offre scannée en un jeu de données filtrable — salaires dans la devise de votre choix, quatre graphiques et une table triable avec liens profonds vers `#/reports`.
+
+- **{{t:statsd.currency}}** — conversion USD→EUR/RUB/GBP/CNY à des taux approximatifs documentés ; tous les chiffres, axes de graphiques et colonnes la suivent (une devise inconnue retombe sur USD au lieu de deviner).
+
+- **{{t:statsd.period}}** — dernier mois / dernier trimestre / dernière année / tout. Les entrées sans date exploitable sont exclues des périodes bornées (honnête, pas deviné) et ne comptent que dans « tout ».
+
+- **{{t:statsd.search}}** et puces à facettes — recherche par sous-chaîne sur l'entreprise et le rôle, plus des puces **{{t:statsd.facet.country}}** / **{{t:statsd.facet.status}}** / **{{t:statsd.facet.source}}** avec compteurs en direct. Les puces se combinent : dans un groupe une seule suffit, entre groupes toutes doivent correspondre ; **{{t:statsd.reset}}** remet à zéro.
+
+- **Quatre graphiques** — {{t:statsd.chart.salary}} (minimum / médiane / maximum par pays), {{t:statsd.chart.funnel}}, {{t:statsd.chart.monthly}} et {{t:statsd.chart.companies}}.
+
+- **Forage vers le détail** — une table triable par offre sous des cartes KPI (entrées, entrées avec salaire analysé, pays, entreprises) ; la cellule entreprise est un vrai lien vers `#/reports/{slug}` quand la ligne a un rapport.
+
+La devise d'affichage et la période persistent d'un rechargement à l'autre (`career-ops-ui:statsCurrency` / `career-ops-ui:statsPeriod` dans localStorage).
 
 ### Cumul et rémunération
 

@@ -1485,22 +1485,7 @@ Her satırın durum rozeti aynı zamanda bir **seçici**dir — bir aşama seçi
 
 **Aşama-sekmesi panosu (v1.131.0).** Tablonun üstünde bir **aşama-sekmesi şeridi** huni boyunca gezinmenizi sağlar: bir **Tümü** sekmesi artı her kanonik durum için bir sekme, her biri canlı bir tüm-geçmiş sayısı gösterir — **sıfır sayılı aşamalar dahil**, böylece tüm hat her zaman tek bakışta görünür. Bir aşamaya tıklamak tabloyu ona filtreler; tekrar tıklamak **Tümü**'ne döner. Sekmeler (ve sayıların yerelleştirilmiş/eski durum takma adlarını katlaması) `GET /api/tracker/stages`'ten gelir, bu da sunucunun kullandığı aynı `templates/states.yml`'i okur — böylece sekme kümesi, sayfada sabit kodlanmış bir liste olmadan üst projenin durum sözlüğüyle otomatik olarak senkronize kalır. Search, puan filtresi, sıralanabilir sütunlar ve satır başına rapor/PDF/meşruiyet değişmeden kalır; logolar etkinleştirildiğinde her satırın şirketi bir marka işareti gösterir.
 
-**Kanban görünümü (v2).** Aynı pano, sürükle-bırak bir **kanban** olarak
-da okunur: kanonik durum başına bir sütun (pano başlığı *Duruma göre
-başvurular* olarak duyurulur, `track.kanbanBoardAria`), başvuru başına
-bir kart. Bir kartı başka bir sütuna sürükleyin — ya da odağa alıp
-**Taşı**'ya basın — ve değişiklik **hiçbir şey yazılmadan önce önizlenir**
-(`track.kanbanMoveHint`); onaylanan bir taşıma, sonuç günlüğüne bir kayıt
-ekler ve `data/applications.md` dosyasını yeniden yazar, kart bunu size
-söyler (`track.moveJournal`) — bir durumu geri çevirmek için satırdaki
-**Sonuç** düğmesini kullanın. Pipeline'ın kendisinin yönettiği sütunlar
-(ve semantiğini yalnızca sizin seçebildiğiniz `Discarded`) salt okunur
-işlenir (`track.kanbanReadOnly`) ve bırakmaları reddeder. Üst projenin
-sonuç kaydedicisi eksikse durum taşımaları dürüst bir notla devre dışı
-bırakılır (`track.kanbanMovesOff`). Pano yüklenirken uygulamanın geri
-kalanıyla aynı iskelet satırlarını gösterir ve boş bir pano **Başvuru yok** der
-(`track.kanbanEmpty`) ve pipeline'a işaret eder
-(`track.emptyBody`).
+**Kanban görünümü (v1.269.0'da yeniden yapıldı).** Sürükle-bırak panosu tek bir huni görünümüne dönüştü — aşağıdaki **Kanban huni panosu** bölümüne bakın. Önizlemeli eski kanban (pano *{{t:track.kanbanBoardAria}}* olarak duyurulurdu, taşımalar yazılmadan önce önizlenirdi, pipeline sütunları salt okunurdu) artık monte edilmiyor.
 
 Durum beyaz listesi sunucu tarafında zorlanır; bir `POST /api/tracker`'da
 başka herhangi bir şey göndermek `Evaluated`'a varsayılır. Kanonik
@@ -1520,6 +1505,18 @@ başka herhangi bir şey göndermek `Evaluated`'a varsayılır. Kanonik
 | `PDF` | Bu satır için `generate-pdf.mjs` başarılı olduğunda ✅. |
 | `Report` | Eşleşen `reports/*.md`'ye markdown bağlantısı. |
 | `Notes` | Serbest metin, 200 karakterle sınırlı. |
+
+### Kanban huni panosu (v1.269.0)
+
+Tracker'ın pano görünümü tek bir **kanban hunisi** olarak yeniden inşa edildi: tablonun üstündeki **{{t:track.viewTable}} | {{t:kanban.tab}}** düğmesiyle geçin — tablo varsayılan mod olarak kalır ve seçiminiz tarayıcı başına hatırlanır. Satırlar yerine her kanonik aşama için bir sütun alırsınız, **boş olanlar dâhil**, her birinde canlı bir sayacıyla; böylece bütün huni tek bakışta görünür.
+
+**Bir kartı taşımak.** Onu başka bir sütuna sürükleyin — taşıma, tracker'ın kanonik yazıcısıyla (`set-status.mjs`, applications kilidi altında) anında kaydedilir; kaydetme başarısız olursa kart dürüst bir bildirimle eski sütununa döner. Her kanonik sütun kart kabul eder, boş olan bile; kuyruktaki **{{t:track.kanbanOther}}** sütunundaki kartlar (kanonik sözlüğün tanımadığı bir durum) herhangi bir kanonik aşamaya sürüklenebilir ama o sütunun kendisi bırakma hedefi değildir.
+
+**Klavye ve ekran okuyucular.** Bir kart odaklanabilir: **←** / **→** onu önceki / sonraki aşamaya taşır, **Enter** menüsünü açar. Sütun sayaçları her değişimde duyurulur ve her kart sesli bir etiket taşır (`#{num} {company}, {role} — {stage}`).
+
+**Notlar ve mülakat saati.** **Enter** (veya ⋯ düğmesi) **{{t:kanban.modalTitle}}** penceresini açar: serbest metin **{{t:kanban.notes}}** ve bir **{{t:kanban.interviewAt}}** (tarih ve saat). Kaydetmek, onları kanonik not yazıcısıyla satırın Notes hücresine yazar — durumun kendisi değişmez — ve pencere her zaman kaydedilen son değerleri önceden doldurur, çünkü notlar yalnızca-eklemeli bir günlüktür.
+
+**Telefonda.** 900 px altında pano yatay kaydırma şeridine dönüşür. Sürükleme platformun desteklediği yerde çalışır ve hiçbir şey zorunlu değildir: kart menüsündeki **{{t:kanban.status}}** seçicisi herhangi bir kartı sürüklemesiz taşır.
 
 ### Filtreler
 
@@ -2479,6 +2476,22 @@ Ne yazacağınızdan emin değil misiniz? **✨ Verilerimden öner**, başvuru i
 ### Hedef rol eğilimi
 
 **Hedef rol eğilimi** sekmesi özgün görünümdür: hedef rolleriniz için ülkeye göre ilan sayıları ve medyan maaş, en son taramanızdan toplanır; bir para birimi seçici ve bir **Hedef role göre ilanlar** genel görünümü ile birlikte. **Anlık görüntüyü kaydet**, mevcut toplamı kaydeder; böylece ilan sayılarının zaman içinde nasıl değiştiğini izleyebilirsiniz ve eğilim çizgisi bu anlık görüntüleri geri okur. Seyrek veri beklenir ve gösterge niteliğinde olarak etiketlenir — asla uydurma sayılarla doldurulmaz.
+
+### Ayrıntılı istatistikler (v1.269.0)
+
+**{{t:statsd.tab}}** sekmesi her başvuruyu ve taranan her ilanı tek bir filtrelenebilir veri kümesine çevirir — seçtiğiniz para biriminde maaşlar, dört grafik ve `#/reports` bağlantılarına inen sıralanabilir bir tablo.
+
+- **{{t:statsd.currency}}** — belgelenmiş yaklaşık kurlarla USD→EUR/RUB/GBP/CNY dönüşümü; tüm sayılar, grafik eksenleri ve tablo sütunları ona uyar (bilinmeyen bir para birimi tahmin yürütmek yerine USD'ye döner).
+
+- **{{t:statsd.period}}** — son ay / son çeyrek / son yıl / tüm zamanlar. Kullanılabilir tarihi olmayan kayıtlar sınırlı dönemlerin dışında tutulur (dürüstçe, tahmin edilmeden) ve yalnızca “tüm zamanlar”da sayılır.
+
+- **{{t:statsd.search}}** ve facet çipleri — şirket ve rol üzerinde alt dize araması artı canlı sayaçlarla **{{t:statsd.facet.country}}** / **{{t:statsd.facet.status}}** / **{{t:statsd.facet.source}}** çipleri. Çipler birleşir: bir grubun içinde tek biri yeter, gruplar arasında tümü eşleşmeli; **{{t:statsd.reset}}** her şeyi temizler.
+
+- **Dört grafik** — {{t:statsd.chart.salary}} (ülkeye göre en az / medyan / en çok), {{t:statsd.chart.funnel}}, {{t:statsd.chart.monthly}} ve {{t:statsd.chart.companies}}.
+
+- **Derine inme** — KPI kartlarının altında ilan başına sıralanabilir tablo (kayıtlar, maaşı çözümlenmiş kayıtlar, ülkeler, şirketler); şirket hücresi, satırın raporu varken `#/reports/{slug}` bağlantısına giden gerçek bir bağlantıdır.
+
+Görüntüleme para birimi ve dönem yenilemeler arasında kalıcıdır (`career-ops-ui:statsCurrency` / `career-ops-ui:statsPeriod`, localStorage'da).
 
 ### Toplam ve ücret
 

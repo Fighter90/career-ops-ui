@@ -1421,22 +1421,7 @@ backfill được đánh số `N/A`, hiển thị huy hiệu chỉ-đọc thay v
 
 **Bảng tab giai đoạn (v1.131.0).** Phía trên bảng, một **dải tab giai đoạn** cho bạn đi bộ phễu: một tab **All** cộng một tab cho mỗi trạng thái chính thức, mỗi tab hiện số đếm toàn lịch sử trực tiếp — **bao gồm cả giai đoạn số đếm bằng-0**, nên toàn bộ pipeline luôn hiện rõ trong một cái nhìn. Bấm một giai đoạn để lọc bảng về nó; bấm lần nữa để quay về **All**. Các tab (và cách số đếm gộp các bí danh trạng thái đã bản địa hóa/legacy) đến từ `GET /api/tracker/stages`, vốn đọc cùng `templates/states.yml` máy chủ dùng — nên bộ tab luôn đồng bộ với từ vựng trạng thái của dự án gốc một cách tự động, không có danh sách hardcode nào trên trang. Search, bộ lọc điểm, các cột sắp xếp được và report/PDF/legitimacy từng dòng không đổi; khi bật logo, công ty của mỗi dòng hiện một dấu thương hiệu.
 
-**Kanban view (v2).** Cùng bảng đó còn đọc được dưới dạng **kanban**
-kéo-thả: mỗi trạng thái chính thức một cột (tiêu đề bảng được công bố
-là *{{t:track.kanbanBoardAria}}*, `track.kanbanBoardAria`), mỗi đơn một
-thẻ. Kéo một thẻ sang cột khác — hoặc focus nó và bấm **Move** — và
-thay đổi được **xem trước trước khi bất cứ thứ gì được ghi** 
-(`track.kanbanMoveHint`); một lần di chuyển đã xác nhận ghi một mục
-vào nhật ký kết quả và viết lại `data/applications.md`, và thẻ cho
-bạn biết điều đó (`track.moveJournal`) — để đổi trạng thái ngược lại,
-dùng nút **Outcome** của dòng. Các cột mà pipeline tự quản lý (và
-`Discarded`, vốn chỉ bạn mới có thể quyết ý nghĩa của nó) hiển thị
-chỉ-đọc (`track.kanbanReadOnly`) và từ chối thả vào. Nếu trình ghi
-kết quả của dự án gốc vắng mặt, việc di chuyển trạng thái bị tắt kèm
-một ghi chú thành thật (`track.kanbanMovesOff`). Trong lúc bảng tải,
-nó hiện cùng các hàng lấp lánh với phần còn lại của ứng dụng, và một
-bảng rỗng nói **No applications** (`track.kanbanEmpty`) kèm chỉ dẫn
-về pipeline (`track.emptyBody`).
+**Khung xem kanban (dựng lại trong v1.269.0).** Bảng kéo-thả đã trở thành một khung xem phễu duy nhất — xem **Bảng kanban phễu** bên dưới. Kanban trước đây có xem trước (bảng được công bố là *{{t:track.kanbanBoardAria}}*, thao tác chuyển được xem trước trước khi ghi, các cột pipeline chỉ đọc) không còn được gắn nữa.
 
 Danh sách trạng thái cho phép được ép phía máy chủ; gửi thứ gì khác trong
 `POST /api/tracker` sẽ mặc định về `Evaluated`. Chuyển tiếp
@@ -1456,6 +1441,18 @@ chính thức `Evaluated → Applied` diễn ra tự động khi bạn xác nh�
 | `PDF` | ✅ khi `generate pdf.mjs` đã chạy thành công cho dòng này. |
 | `Report` | Liên kết markdown tới `reports/*.md` tương ứng. |
 | `Notes` | Văn bản tự do, giới hạn 200 ký tự. |
+
+### Bảng kanban phễu (v1.269.0)
+
+Khung xem bảng của tracker được dựng lại thành một **phễu kanban**: chuyển bằng nút bật **{{t:track.viewTable}} | {{t:kanban.tab}}** phía trên bảng — bảng vẫn là chế độ mặc định và lựa chọn của bạn được ghi nhớ theo trình duyệt. Thay vì các hàng, bạn có một cột cho mỗi giai đoạn chuẩn, **gồm cả cột trống**, mỗi cột có huy hiệu đếm trực tiếp, nên cả phễu hiển thị trong một cái nhìn.
+
+**Di chuyển thẻ.** Kéo nó sang cột khác — việc chuyển được lưu ngay bằng bộ ghi chuẩn của tracker (`set-status.mjs` dưới khóa applications); nếu lưu thất bại, thẻ quay về cột cũ kèm thông báo trung thực. Mọi cột chuẩn đều nhận thẻ, kể cả cột trống; các thẻ trong cột cuối **{{t:track.kanbanOther}}** (một trạng thái mà bộ từ vựng chuẩn không biết) có thể kéo tới bất kỳ giai đoạn chuẩn nào, nhưng bản thân cột đó không phải điểm thả.
+
+**Bàn phím và trình đọc màn hình.** Thẻ có thể focus: **←** / **→** đưa nó tới giai đoạn trước / sau, **Enter** mở menu. Bộ đếm cột được công bố khi thay đổi, và mỗi thẻ mang nhãn được đọc lên (`#{num} {company}, {role} — {stage}`).
+
+**Ghi chú và giờ phỏng vấn.** **Enter** (hoặc nút ⋯) mở hộp thoại **{{t:kanban.modalTitle}}**: **{{t:kanban.notes}}** dạng văn bản tự do và **{{t:kanban.interviewAt}}** (ngày và giờ). Lưu ghi chúng vào ô Notes của hàng qua bộ ghi chú chuẩn — bản thân trạng thái không đổi — và hộp thoại luôn điền sẵn giá trị được ghi gần nhất, vì ghi chú là nhật ký chỉ-thêm-vào.
+
+**Trên điện thoại.** Dưới 900 px bảng trở thành dải cuộn ngang. Kéo hoạt động nơi nền tảng hỗ trợ và không có gì bắt buộc: bộ chọn **{{t:kanban.status}}** trong menu thẻ di chuyển mọi thẻ mà không cần kéo.
 
 ### Bộ lọc
 
@@ -2411,6 +2408,22 @@ Tab **My pipeline** vẽ tracker ứng tuyển của chính bạn — không gì
 ### Xu hướng vị trí mục tiêu
 
 Tab **Target role trend** là chế độ xem ban đầu: số đếm việc làm và lương trung vị theo quốc gia cho các vị trí mục tiêu của bạn, tổng hợp từ lượt quét gần nhất của bạn, với một bộ chọn tiền tệ và một tổng quan **Postings by target role**. **Save snapshot** ghi lại tổng hợp hiện tại để bạn xem số đếm việc làm di chuyển ra sao theo thời gian, và đường xu hướng đọc lại những ảnh chụp ấy. Dữ liệu thưa là mong đợi và được gán nhãn tham khảo — nó không bao giờ được làm đầy bằng số bịa.
+
+### Thống kê chi tiết (v1.269.0)
+
+Thẻ **{{t:statsd.tab}}** biến mỗi đơn ứng tuyển và mỗi bài đăng đã quét thành một bộ dữ liệu có thể lọc — lương theo đơn vị tiền bạn chọn, bốn biểu đồ và một bảng sắp xếp được với liên kết sâu vào `#/reports`.
+
+- **{{t:statsd.currency}}** — quy đổi USD→EUR/RUB/GBP/CNY theo tỷ lệ gần đúng đã được tài liệu hóa; mọi con số, trục biểu đồ và cột bảng đều tuân theo (đơn vị tiền lạ quay về USD thay vì đoán).
+
+- **{{t:statsd.period}}** — tháng vừa qua / quý vừa qua / năm vừa qua / toàn bộ thời gian. Các mục không có ngày dùng được bị loại khỏi các khoảng thời gian có giới hạn (trung thực, không đoán) và chỉ được tính trong “toàn bộ thời gian”.
+
+- **{{t:statsd.search}}** và chip khía cạnh — tìm kiếm chuỗi con theo công ty và vị trí, cộng các chip **{{t:statsd.facet.country}}** / **{{t:statsd.facet.status}}** / **{{t:statsd.facet.source}}** với bộ đếm trực tiếp. Chip kết hợp được: trong một nhóm chỉ cần một, giữa các nhóm thì tất cả phải khớp; **{{t:statsd.reset}}** xóa sạch.
+
+- **Bốn biểu đồ** — {{t:statsd.chart.salary}} (tối thiểu / trung vị / tối đa theo quốc gia), {{t:statsd.chart.funnel}}, {{t:statsd.chart.monthly}} và {{t:statsd.chart.companies}}.
+
+- **Khoan xuống chi tiết** — một bảng sắp xếp được theo tin đăng dưới các thẻ KPI (mục, mục có lương được phân tích, quốc gia, công ty); ô công ty là một liên kết thật vào `#/reports/{slug}` khi hàng có báo cáo.
+
+Đơn vị tiền hiển thị và khoảng thời gian được giữ giữa các lần tải lại (`career-ops-ui:statsCurrency` / `career-ops-ui:statsPeriod` trong localStorage).
 
 ### Toàn thời gian & lương thưởng
 

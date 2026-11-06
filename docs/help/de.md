@@ -1535,25 +1535,7 @@ Das Status-Badge jeder Zeile ist auch ein **Select** — eine Stufe auswählen, 
 
 **Stage-Tab-Board (v1.131.0).** Oberhalb der Tabelle lässt Sie eine **Stage-Tab-Leiste** durch den Funnel wandern: ein **Alle**-Tab plus ein Tab pro kanonischem Status, jeweils mit einer live berechneten Gesamtverlaufs-Anzahl — **einschließlich Stufen mit null Treffern**, sodass die gesamte Pipeline stets auf einen Blick sichtbar ist. Klicken Sie auf eine Stufe, um die Tabelle darauf zu filtern; klicken Sie erneut, um zu **Alle** zurückzukehren. Die Tabs (und die Faltung lokalisierter/veralteter Status-Aliase in den Zählungen) stammen aus `GET /api/tracker/stages`, das dieselbe `templates/states.yml` liest, die auch der Server verwendet — sodass die Tab-Menge automatisch mit dem Status-Vokabular des Elternprojekts synchron bleibt, ohne hartcodierte Liste auf der Seite. Suche, der Score-Filter, sortierbare Spalten und die Report-/PDF-/Legitimitäts-Hinweise pro Zeile bleiben unverändert; bei aktivierten Logos zeigt jede Firmenzeile eine Marke.
 
-**Kanban-Ansicht (v2).** Dasselbe Board liest sich auch als
-Drag-and-Drop-**Kanban**: eine Spalte pro kanonischem Status
-(Board-Titel angekündigt als *Bewerbungen nach Status*,
-`track.kanbanBoardAria`), eine Karte pro Bewerbung. Ziehen Sie eine
-Karte in eine andere Spalte — oder fokussieren Sie sie und drücken
-Sie **Verschieben** — und die Änderung wird
-**angezeigt, bevor etwas geschrieben wird** (`track.kanbanMoveHint`); eine bestätigte
-Verschiebung schreibt einen Eintrag ins Ergebnistagebuch und
-überschreibt `data/applications.md`, und die Karte sagt es Ihnen
-(`track.moveJournal`) — um einen Status zurückzuändern, nutzen Sie
-die **Ergebnis**-Schaltfläche der Zeile. Spalten, die die Pipeline
-selbst verwaltet (und `Discarded`, dessen Semantik nur Sie wählen
-können), rendern schreibgeschützt (`track.kanbanReadOnly`) und weisen
-Drops ab. Fehlt der Ergebnis-Recorder des Elternprojekts, sind
-Statuswechsel mit einer ehrlichen Notiz deaktiviert
-(`track.kanbanMovesOff`). Während das Board lädt, zeigt es dieselben
-Schimmer-Zeilen wie der Rest der App, und ein leeres Board sagt
-**Keine Bewerbungen** (`track.kanbanEmpty`) mit einem Verweis auf die
-Pipeline (`track.emptyBody`).
+**Kanban-Ansicht (neu gebaut in v1.269.0).** Das Drag-and-Drop-Board ist zu einer einzigen Funnel-Ansicht geworden — siehe unten **Kanban-Funnel-Board**. Das frühere Kanban mit Vorschau (Board als *{{t:track.kanbanBoardAria}}* angesagt, Züge erst vorgeschaut, dann geschrieben, Pipeline-Spalten nur lesend) wird nicht mehr eingebunden.
 
 Die Status-Whitelist wird serverseitig durchgesetzt; das Senden von etwas
 anderem in einem `POST /api/tracker` fällt auf `Evaluated` zurück. Der
@@ -1573,6 +1555,18 @@ kanonische `Evaluated → Applied`-Übergang ist automatisch, wenn Sie
 | `PDF` | ✅, sobald `generate-pdf.mjs` für diese Zeile erfolgreich war. |
 | `Report` | Markdown-Link zum passenden `reports/*.md`. |
 | `Notes` | Freitext, bei 200 Zeichen begrenzt. |
+
+### Kanban-Funnel-Board (v1.269.0)
+
+Die Board-Ansicht des Trackers wurde zu einem einzigen **Kanban-Funnel** umgebaut: schalten Sie mit dem Umschalter **{{t:track.viewTable}} | {{t:kanban.tab}}** über der Tabelle um — die Tabelle bleibt der Standard, und die Wahl wird pro Browser gemerkt. Statt Zeilen bekommen Sie eine Spalte pro kanonischem Stadium, **auch leere**, jeweils mit Live-Zähler im Spaltenkopf, sodass der ganze Funnel auf einen Blick sichtbar ist.
+
+**Karte verschieben.** Ziehen Sie sie in eine andere Spalte — der Zug wird sofort über den kanonischen Tracker-Schreiber gespeichert (`set-status.mjs` unter der Applications-Sperre); schlägt das Speichern fehl, kehrt die Karte mit einer ehrlichen Meldung in ihre alte Spalte zurück. Jede kanonische Spalte nimmt Karten an, auch eine leere; Karten in der hinteren Spalte **{{t:track.kanbanOther}}** (ein Status, den das kanonische Vokabular nicht kennt) lassen sich in jedes kanonische Stadium ziehen, aber diese Spalte selbst ist kein Ablageziel.
+
+**Tastatur und Screenreader.** Eine Karte ist fokussierbar: **←** / **→** verschiebt sie ins vorherige / nächste Stadium, **Enter** öffnet ihr Menü. Spaltenzähler werden bei jeder Änderung angesagt, und jede Karte trägt ein vorgelesenes Label (`#{num} {company}, {role} — {stage}`).
+
+**Notizen und Interviewzeit.** **Enter** (oder die ⋯-Schaltfläche) öffnet den Dialog **{{t:kanban.modalTitle}}**: Freitext-**{{t:kanban.notes}}** und eine **{{t:kanban.interviewAt}}** (Datum und Uhrzeit). Das Speichern schreibt sie über den kanonischen Notiz-Schreiber in die Notes-Zelle der Zeile — der Status selbst ändert sich nicht —, und der Dialog füllt stets die zuletzt gespeicherten Werte vor, denn Notizen sind ein Nur-Anhängen-Journal.
+
+**Auf dem Handy.** Unter 900 px wird das Board zu einer horizontalen Scroll-Leiste. Ziehen funktioniert, wo die Plattform es unterstützt, und nötig ist nichts: der **{{t:kanban.status}}**-Selector im Kartenmenü verschiebt jede Karte ohne Ziehen.
 
 ### Filter
 
@@ -2554,6 +2548,22 @@ Der Reiter **Meine Pipeline** stellt deinen eigenen Bewerbungs-Tracker grafisch 
 ### Zielrollen-Trend
 
 Der Reiter **Zielrollen-Trend** ist die ursprüngliche Ansicht: Stellenzahlen und Mediangehalt nach Land für deine Zielrollen, aggregiert aus deinem letzten Scan, mit einer Währungsauswahl und einer Übersicht **Stellen nach Zielrolle**. **Snapshot speichern** hält die aktuelle Aggregation fest, sodass du beobachten kannst, wie sich die Stellenzahlen im Zeitverlauf bewegen, und die Trendlinie liest diese Snapshots zurück. Spärliche Daten sind zu erwarten und werden als richtungsweisend gekennzeichnet — sie werden nie mit erfundenen Zahlen aufgefüllt.
+
+### Detaillierte Statistiken (v1.269.0)
+
+Der Tab **{{t:statsd.tab}}** macht aus jeder Bewerbung und jedem gescannten Posting einen filterbaren Datensatz — Gehälter in der von Ihnen gewählten Währung, vier Diagramme und eine sortierbare Tabelle mit Deep-Links in `#/reports`.
+
+- **{{t:statsd.currency}}** — Umrechnung USD→EUR/RUB/GBP/CNY zu dokumentierten Näherungskursen; alle Zahlen, Diagrammachsen und Tabellenspalten folgen ihr (eine unbekannte Währung fällt auf USD zurück, statt zu raten).
+
+- **{{t:statsd.period}}** — letzter Monat / letztes Quartal / letztes Jahr / gesamte Zeit. Einträge ohne verwertbares Datum bleiben aus begrenzten Perioden ausgeschlossen (ehrlich, nicht geraten) und zählen nur in „gesamte Zeit“.
+
+- **{{t:statsd.search}}** und Facetten-Chips — Teilzeichensuche über Firma und Rolle, plus **{{t:statsd.facet.country}}** / **{{t:statsd.facet.status}}** / **{{t:statsd.facet.source}}**-Chips mit Live-Zählern. Chips kombinieren sich: innerhalb einer Gruppe genügt einer, über Gruppen hinweg müssen alle passen; **{{t:statsd.reset}}** räumt auf.
+
+- **Vier Diagramme** — {{t:statsd.chart.salary}} (Minimum / Median / Maximum je Land), {{t:statsd.chart.funnel}}, {{t:statsd.chart.monthly}} und {{t:statsd.chart.companies}}.
+
+- **Drill-down** — eine sortierbare Tabelle pro Stelle unter KPI-Karten (Einträge, Einträge mit erkanntem Gehalt, Länder, Firmen); die Firmenzelle ist ein echter Link in `#/reports/{slug}`, wenn die Zeile einen Report trägt.
+
+Anzeigewährung und Periode bleiben über Neuladen hinweg erhalten (`career-ops-ui:statsCurrency` / `career-ops-ui:statsPeriod` im localStorage).
 
 ### Gesamt & Vergütung
 

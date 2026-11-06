@@ -1429,24 +1429,7 @@ Il badge di stato di ogni riga è anche un **select** — scegli uno stadio e vi
 
 **Bacheca a schede di stadio (v1.131.0).** Sopra la tabella una **striscia di schede di stadio** permette di percorrere il funnel: una scheda **Tutti** più una scheda per ogni stato canonico, ciascuna con un conteggio live sull'intera cronologia — **incluse le fasi a conteggio zero**, così l'intera pipeline è sempre visibile a colpo d'occhio. Clicca su uno stadio per filtrare la tabella su di esso; clicca di nuovo per tornare a **Tutti**. Le schede (e la fusione degli alias di stato localizzati/legacy nei conteggi) provengono da `GET /api/tracker/stages`, che legge lo stesso `templates/states.yml` usato dal server — così l'insieme delle schede resta automaticamente sincronizzato col vocabolario di stato del padre, senza alcuna lista hardcoded nella pagina. La ricerca, il filtro per punteggio, le colonne ordinabili e le funzioni per riga di report/PDF/legittimità restano invariate; con i loghi abilitati, l'azienda di ogni riga mostra un marchio del brand.
 
-**Vista kanban (v2).** La stessa bacheca si legge anche come un
-**kanban** trascina-e-rilascia: una colonna per stato canonico (titolo
-della bacheca annunciato come *{{t:track.kanbanBoardAria}}*,
-`track.kanbanBoardAria`), una card per candidatura. Trascina una card
-su un'altra colonna — o focalizzala e premi **Sposta** — e il
-cambiamento viene
-**anteprimato prima che qualsiasi cosa venga scritta** (`track.kanbanMoveHint`); uno spostamento confermato registra
-una voce nel diario degli outcome e riscrive `data/applications.md`, e
-la card te lo dice (`track.moveJournal`) — per riportare uno stato
-indietro, usa il pulsante **Outcome** della riga. Le colonne che il
-pipeline gestisce da sé (e `Discarded`, la cui semantica scelghi solo
-tu) si renderizzano in sola lettura (`track.kanbanReadOnly`) e
-rifiutano i drop. Se il registratore di outcome del padre manca, gli
-spostamenti si disabilitano con una nota onesta
-(`track.kanbanMovesOff`). Mentre la bacheca carica mostra le stesse
-righe con shimmer del resto dell'app, e una bacheca vuota dice
-**Nessuna candidatura** (`track.kanbanEmpty`) con un puntatore al pipeline
-(`track.emptyBody`).
+**Vista kanban (ricostruita nella v1.269.0).** La bacheca a trascinamento è diventata un'unica vista a imbuto — vedi sotto **Bacheca kanban a imbuto**. Il vecchio kanban con anteprima (bacheca annunciata come *{{t:track.kanbanBoardAria}}*, spostamenti mostrati in anteprima prima di essere scritti, colonne della pipeline di sola lettura) non viene più montato.
 
 La whitelist degli stati è imposta lato server; inviare qualcos'altro in
 un `POST /api/tracker` fa il default a `Evaluated`. La transizione canonica
@@ -1466,6 +1449,18 @@ un `POST /api/tracker` fa il default a `Evaluated`. La transizione canonica
 | `PDF` | ✅ una volta che `generate-pdf.mjs` è riuscito per questa riga. |
 | `Report` | Link markdown al `reports/*.md` corrispondente. |
 | `Notes` | Testo libero, limitato a 200 caratteri. |
+
+### Bacheca kanban a imbuto (v1.269.0)
+
+La vista bacheca del tracker è stata ricostruita come un unico **imbuto kanban**: cambia con l'interruttore **{{t:track.viewTable}} | {{t:kanban.tab}}** sopra la tabella — la tabella resta la modalità predefinita e la scelta viene ricordata per browser. Invece delle righe ottieni una colonna per ogni fase canonica, **comprese quelle vuote**, ciascuna con un contatore in tempo reale, così che tutto l'imbuto sia visibile a colpo d'occhio.
+
+**Spostare una card.** Trascinala in un'altra colonna — lo spostamento viene salvato subito dallo scrittore canonico del tracker (`set-status.mjs` sotto il lock di applications); se il salvataggio fallisce, la card torna nella sua colonna con un avviso onesto. Ogni colonna canonica accetta card, anche vuota; le card della colonna finale **{{t:track.kanbanOther}}** (uno status che il vocabolario canonico non conosce) possono essere trascinate verso qualunque fase canonica, ma quella colonna non è una destinazione di rilascio.
+
+**Tastiera e screen reader.** Una card è focalizzabile: **←** / **→** la spostano alla fase precedente / successiva, **Invio** apre il suo menu. I contatori di colonna vengono annunciati a ogni cambiamento, e ogni card porta un'etichetta parlata (`#{num} {company}, {role} — {stage}`).
+
+**Note e ora del colloquio.** **Invio** (o il pulsante ⋯) apre la finestra **{{t:kanban.modalTitle}}**: **{{t:kanban.notes}}** in testo libero e un **{{t:kanban.interviewAt}}** (data e ora). Il salvataggio li scrive nella cella Notes della riga tramite lo scrittore canonico delle note — lo status in sé non cambia — e la finestra precompila sempre gli ultimi valori registrati, perché le note sono un diario a sola aggiunta.
+
+**Sul telefono.** Sotto i 900 px la bacheca diventa una striscia a scorrimento orizzontale. Il trascinamento funziona dove la piattaforma lo consente e nulla lo richiede: il selettore **{{t:kanban.status}}** nel menu della card sposta qualsiasi card senza trascinare.
 
 ### Filtri
 
@@ -2412,6 +2407,22 @@ La scheda **La mia pipeline** rappresenta graficamente il tuo tracker delle cand
 ### Tendenza dei ruoli target
 
 La scheda **Tendenza dei ruoli target** è la vista originale: numero di annunci e retribuzione mediana per paese per i tuoi ruoli target, aggregati dalla tua ultima scansione, con un selettore di valuta e una panoramica **Annunci per ruolo target**. **Salva snapshot** registra l'aggregato attuale così puoi osservare come si muove il numero di annunci nel tempo, e la linea di tendenza rilegge quegli snapshot. Dati scarsi sono attesi e vengono etichettati come indicativi — non vengono mai riempiti con numeri inventati.
+
+### Statistiche dettagliate (v1.269.0)
+
+La scheda **{{t:statsd.tab}}** trasforma ogni candidatura e ogni annuncio scansionato in un unico set di dati filtrabile — stipendi nella valuta che scegli, quattro grafici e una tabella ordinabile con link diretti a `#/reports`.
+
+- **{{t:statsd.currency}}** — conversione USD→EUR/RUB/GBP/CNY a tassi approssimativi documentati; ogni cifra, asse e colonna la segue (una valuta sconosciuta ripiega su USD invece di tirare a indovinare).
+
+- **{{t:statsd.period}}** — ultimo mese / ultimo trimestre / ultimo anno / tutto il tempo. Le voci senza una data utilizzabile restano fuori dai periodi delimitati (onesto, non inventato) e contano solo in «tutto il tempo».
+
+- **{{t:statsd.search}}** e chip a facette — ricerca per sottostringa su azienda e ruolo, più chip **{{t:statsd.facet.country}}** / **{{t:statsd.facet.status}}** / **{{t:statsd.facet.source}}** con contatori in tempo reale. I chip si combinano: dentro un gruppo basta uno, tra gruppi devono combaciare tutti; **{{t:statsd.reset}}** ripulisce tutto.
+
+- **Quattro grafici** — {{t:statsd.chart.salary}} (minimo / mediana / massimo per paese), {{t:statsd.chart.funnel}}, {{t:statsd.chart.monthly}} e {{t:statsd.chart.companies}}.
+
+- **Drill-down** — una tabella ordinabile per annuncio sotto le card KPI (voci, voci con salario riconosciuto, paesi, aziende); la cella azienda è un vero link a `#/reports/{slug}` quando la riga ha un report.
+
+La valuta di visualizzazione e il periodo persistono tra i ricaricamenti (`career-ops-ui:statsCurrency` / `career-ops-ui:statsPeriod` nel localStorage).
 
 ### Totale e retribuzione
 

@@ -1415,22 +1415,7 @@ Hver rækkes status-badge er også en **select** — vælg et stadie, og det gem
 
 **Fanebladstavle for stadier (v1.131.0).** Over tabellen lader en **fanebladsstrimmel** dig gå gennem tragten: en **Alle**-fane plus én fane pr. kanonisk status, hver med et live optalt tal for hele historikken — **inklusive nul-tælling-stadier**, så hele pipelinen altid er synlig på et øjekast. Klik på et stadie for at filtrere tabellen til det; klik på det igen for at vende tilbage til **Alle**. Fanerne (og tællingernes foldning af lokaliserede/legacy statusaliasser) kommer fra `GET /api/tracker/stages`, som læser den samme `templates/states.yml`, som serveren bruger — så fanesættet automatisk holder sig synkront med forælderens statusordforråd, uden en hardkodet liste på siden. Søgning, score-filtret, sorterbare kolonner og de rækkevise rapport-/PDF-/legitimitets-muligheder er uændret; med logoer aktiveret viser hver rækkes firma et brandmærke.
 
-**Kanban-visning (v2).** Det samme board kan også læses som et
-træk-og-slip-**kanban**: én kolonne pr. kanonisk status (boardtitlen
-annonceret som *Ansøgninger efter status*, `track.kanbanBoardAria`), ét
-kort per ansøgning. Træk et kort til en anden kolonne — eller fokusér det
-og tryk **Flyt** — og ændringen **forhåndsvises, før noget skrives**
-(`track.kanbanMoveHint`); et bekræftet flyt registrerer en post i
-resultatjournalen og omskriver `data/applications.md`, og kortet fortæller
-dig det (`track.moveJournal`) — for at skifte en status tilbage bruges
-rækkens **Resultat**-knap. Kolonner, som pipelinen selv styrer (og
-`Discarded`, hvis semantik kun du kan vælge), renderes skrivebeskyttede
-(`track.kanbanReadOnly`) og afviser drops. Hvis forældreprojektets
-resultatoptager mangler, deaktiveres statusflyt med en ærlig note
-(`track.kanbanMovesOff`). Mens boardet indlæses, viser det de samme
-shimmer-rækker som resten af appen, og et tomt board siger
-**Ingen ansøgninger** (`track.kanbanEmpty`) med en henvisning til pipelinen
-(`track.emptyBody`).
+**Kanban-visning (genopbygget i v1.269.0).** Træk-og-slip-tavlen er blevet én tragtvisning — se **Kanban-tragt-tavle** nedenfor. Den tidligere kanban med forhåndsvisning (tavlen annonceret som *{{t:track.kanbanBoardAria}}*, flytninger forhåndsvist før de blev skrevet, pipeline-kolonner skrivebeskyttede) monteres ikke længere.
 
 Status-whitelisten håndhæves server-side; at sende noget andet i
 en `POST /api/tracker` defaulter til `Evaluated`. Den kanoniske
@@ -1450,6 +1435,18 @@ en `POST /api/tracker` defaulter til `Evaluated`. Den kanoniske
 | `PDF` | ✅ når `generate-pdf.mjs` lykkedes for denne række. |
 | `Report` | Markdown-link til det matchende `reports/*.md`. |
 | `Notes` | Fritekst, begrænset til 200 tegn. |
+
+### Kanban-tragt-tavle (v1.269.0)
+
+Trackers tavlevisning er genopbygget som én **kanban-tragt**: skift med kontakten **{{t:track.viewTable}} | {{t:kanban.tab}}** over tabellen — tabellen er stadig standardvalget, og dit valg huskes pr. browser. I stedet for rækker får du én kolonne per kanonisk fase, **inklusive tomme**, hver med en live-tæller, så hele tragten ses med ét blik.
+
+**Flyt et kort.** Træk det til en anden kolonne — flytningen gemmes med det samme af trackerens kanoniske skriver (`set-status.mjs` under application-låsen); lykkes gemningen ikke, vender kortet tilbage til sin kolonne med en ærlig besked. Enhver kanonisk kolonne modtager kort, også en tom; kort i den afsluttende kolonne **{{t:track.kanbanOther}}** (en status, som det kanoniske ordforråd ikke kender) kan trækkes ud til enhver kanonisk fase, men kolonnen selv er ikke et slip-mål.
+
+**Tastatur og skærmlæsere.** Et kort kan fokuseres: **←** / **→** flytter det til forrige / næste fase, **Enter** åbner dets menu. Kolonnetællere annonceres ved hver ændring, og hvert kort har en oplæst etiket (`#{num} {company}, {role} — {stage}`).
+
+**Noter og interviewtid.** **Enter** (eller ⋯-knappen) åbner dialogen **{{t:kanban.modalTitle}}**: fri tekst-**{{t:kanban.notes}}** og et **{{t:kanban.interviewAt}}** (dato og klokkeslæt). Gemning skriver dem i rækkens Notes-celle via den kanoniske noteskriver — selve statusen ændres ikke — og dialogen forudfylder altid de sidst gemte værdier, for noter er en kun-tilføjende journal.
+
+**På telefonen.** Under 900 px bliver tavlen til en vandret rullebjælke. Træk virker, hvor platformen understøtter det, og intet kræver det: **{{t:kanban.status}}**-vælgeren i kortmenuen flytter ethvert kort uden træk.
 
 ### Filtre
 
@@ -2405,6 +2402,22 @@ Fanen **Min pipeline** tegner din egen ansøgningstracker — intet eksternt. De
 ### Tendens for målroller
 
 Fanen **Tendens for målroller** er den oprindelige visning: antal ledige stillinger og medianløn pr. land for dine målroller, samlet fra din seneste scanning, med en valutavælger og et overblik over **Opslag efter målrolle**. **Gem snapshot** registrerer den aktuelle aggregering, så du kan følge, hvordan antallet af ledige stillinger bevæger sig over tid, og tendenslinjen læser disse snapshots tilbage. Sparsomme data er forventet og mærkes som vejledende — de bliver aldrig fyldt ud med opdigtede tal.
+
+### Detaljeret statistik (v1.269.0)
+
+Fanen **{{t:statsd.tab}}** gør hver ansøgning og hvert scannet opslag til ét filtrerbart datasæt — løn i den valuta, du vælger, fire diagrammer og en sorterbar tabel med dybe links til `#/reports`.
+
+- **{{t:statsd.currency}}** — omregning USD→EUR/RUB/GBP/CNY til dokumenterede omtrentlige kurser; alle tal, diagramakser og tabelkolonner følger den (en ukendt valuta falder tilbage til USD i stedet for at gætte).
+
+- **{{t:statsd.period}}** — seneste måned / seneste kvartal / seneste år / hele perioden. Poster uden en brugbar dato holdes uden for afgrænsede perioder (ærligt, ikke gættet) og tæller kun i „hele perioden“.
+
+- **{{t:statsd.search}}** og faset-chips — substring-søgning over firma og rolle plus chips **{{t:statsd.facet.country}}** / **{{t:statsd.facet.status}}** / **{{t:statsd.facet.source}}** med live-tællere. Chips kombineres: inden for en gruppe er én nok, på tværs af grupper skal alle passe; **{{t:statsd.reset}}** rydder alt.
+
+- **Fire diagrammer** — {{t:statsd.chart.salary}} (minimum / median / maksimum per land), {{t:statsd.chart.funnel}}, {{t:statsd.chart.monthly}} og {{t:statsd.chart.companies}}.
+
+- **Boring ned** — en sorterbar tabel per opslag under KPI-kort (poster, poster med genkendt løn, lande, firmaer); firmacellen er et rigtigt link til `#/reports/{slug}`, når rækken har en rapport.
+
+Visningsvaluta og periode gemmes på tværs af genindlæsninger (`career-ops-ui:statsCurrency` / `career-ops-ui:statsPeriod` i localStorage).
 
 ### Samlet og løn
 
