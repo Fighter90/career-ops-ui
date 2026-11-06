@@ -1,4 +1,4 @@
-/* global Router, API, UI, I18n, RoleStats, ReportExport, window, document */
+/* global Router, API, UI, I18n, RoleStats, ReportExport, TrackerRows, window, document */
 /**
  * #/stats — Statistics (v1.94.0 rework of the v1.86.0 target-role page;
  * CAR-120 reshuffled the tabs and added a real-data Overview first).
@@ -27,6 +27,14 @@ Router.register('stats', async () => {
   const c = UI.el;
   const t = (k, f) => I18n.t(k, f);
   const SVGNS = 'http://www.w3.org/2000/svg';
+
+  // CAR-236 — the view declares its mount first, so a navigation to #/stats
+  // costs ONE whole-table /api/tracker read, shared by every tab render that
+  // needs the rows (Overview / My pipeline / Details each read the same
+  // per-mount promise instead of re-fetching). Guarded like every
+  // cross-view global: a harness without the loader (a synthetic-window
+  // sandbox) skips the mount and falls back to the direct read below.
+  if (window.TrackerRows) TrackerRows.mount();
 
   const root = c('div');
   root.appendChild(c('h1', { className: 'page-title' }, t('stats.title', 'Statistics by target roles')));
@@ -322,7 +330,8 @@ Router.register('stats', async () => {
   async function renderOverview() {
     const wrap = c('div');
     const [trackerRes, stagesRes, scanRes, profileRes, funnelRes] = await Promise.all([
-      API.get('/api/tracker').catch(() => ({})),
+      // CAR-236 — the shared per-mount read (one fetch per navigation).
+      (window.TrackerRows ? TrackerRows.all() : API.get('/api/tracker')).catch(() => ({})),
       API.get('/api/tracker/stages').catch(() => ({})),
       API.get('/api/scan-results').catch(() => ({})),
       API.get('/api/profile').catch(() => ({})),
@@ -583,7 +592,8 @@ Router.register('stats', async () => {
     // helper the #/tracker board uses): '**Applied**' and 'aplicado' now
     // land in 'Applied' instead of splitting off into dead buckets.
     const [trackerRes, stagesRes] = await Promise.all([
-      API.get('/api/tracker').catch(() => ({})),
+      // CAR-236 — the shared per-mount read (one fetch per navigation).
+      (window.TrackerRows ? TrackerRows.all() : API.get('/api/tracker')).catch(() => ({})),
       API.get('/api/tracker/stages').catch(() => ({})),
     ]);
     let rows = Array.isArray(trackerRes && trackerRes.rows) ? trackerRes.rows : [];
@@ -881,7 +891,8 @@ Router.register('stats', async () => {
   async function renderDetails() {
     const wrap = c('div');
     const [trackerRes, stagesRes, scanRes] = await Promise.all([
-      API.get('/api/tracker').catch(() => ({})),
+      // CAR-236 — the shared per-mount read (one fetch per navigation).
+      (window.TrackerRows ? TrackerRows.all() : API.get('/api/tracker')).catch(() => ({})),
       API.get('/api/tracker/stages').catch(() => ({})),
       API.get('/api/scan-results').catch(() => ({})),
     ]);
