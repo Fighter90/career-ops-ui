@@ -229,7 +229,10 @@ export function registerHealthRoutes(app) {
   app.get('/api/dashboard', (_req, res) => {
     const apps = safeReadApps();
     const pipeline = safeReadPipeline();
-    const reports = safeListReports();
+    // CAR-236 (P1 perf) — the dashboard reads only reports.length and
+    // reports[0]; the slim projection drops the evidence/gaps/file weight
+    // it never used (lastReport keeps slug/title/date/legitimacy/score/scoreNum).
+    const reports = safeListReports({ slim: true });
 
     const byStatus = {};
     let totalScore = 0;

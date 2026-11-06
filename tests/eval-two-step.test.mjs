@@ -18,11 +18,18 @@ import { twoShapeAnswers, scoringFixture, renderBodyFixture, isScoringCall } fro
 
 let runTwoStepEvaluation, evalScoreSeed, evalScoreSamples, medianScoring, providerAcceptsSeed;
 let stub, lastPrompt = '', lastMaxTokens = null;
+let rootDir; // the suite's CAREER_OPS_ROOT — the route-level CAR-245 test reads saved reports from it
 // CAR-239 — every stub call is recorded so a test can pin what the SCORING
 // step put on the wire (temperature, seed) separately from the render step.
 let calls = [];
 let setAnswers = (v) => { current = v; };
 let current = twoShapeAnswers({ scoring: scoringFixture(), body: renderBodyFixture({}) });
+
+// CAR-245 — the render depth floor: a well-formed body is ≥ 2500 chars, so
+// suites that pin "no warnings" answer with a body AT the floor. The default
+// one-line fixture (~1.1 k chars) is the THIN case the new warning exists for.
+const LONG_LINE = 'The candidate meets the requirement with direct platform evidence: owned the service end to end, ran on-call for it, and migrated the stack to the posted tooling. '.repeat(4);
+const longBody = () => renderBodyFixture({ line: LONG_LINE });
 
 before(async () => {
   stub = http.createServer((req, res) => {
@@ -54,6 +61,7 @@ before(async () => {
   });
   await new Promise((r) => stub.listen(0, '127.0.0.1', r));
   const dir = mkdtempSync(resolve(tmpdir(), 'eval-two-step-'));
+  rootDir = dir;
   for (const d of ['config', 'data', 'modes', 'reports']) mkdirSync(resolve(dir, d), { recursive: true });
   writeFileSync(resolve(dir, 'cv.md'), '# CV\n');
   writeFileSync(resolve(dir, 'config', 'profile.yml'), 'candidate:\n  full_name: Test\n');
@@ -75,7 +83,7 @@ after(() => {
 });
 
 test('the happy two-step run: complete machine surface, aggregated usage, stages fired', async () => {
-  setAnswers(twoShapeAnswers({ scoring: scoringFixture({ company: 'Acme', role: 'Engineer', score: 4.1 }), body: renderBodyFixture({}) }));
+  setAnswers(twoShapeAnswers({ scoring: scoringFixture({ company: 'Acme', role: 'Engineer', score: 4.1 }), body: longBody() }));
   const stages = [];
   const r = await runTwoStepEvaluation('Senior Platform Engineer at Acme. Kubernetes, Go, on-call. '.repeat(3), 'en', {
     url: 'https://jobs.example/1',
@@ -93,7 +101,9 @@ test('the happy two-step run: complete machine surface, aggregated usage, stages
   assert.equal(r.usage.out, 10, 'two calls × 5 completion tokens');
   assert.equal(r.steps, 2);
   assert.equal(r.fallbackUsed, false);
-  assert.deepEqual(r.warnings, []);
+  assert.deepEqual(r.warnings, [], 'a deep, complete run carries no warnings');
+  // CAR-245 — the run's own JD is archived server-side into the saved markdown.
+  assert.match(r.markdown, /```yaml\n[\s\S]*?\n```\n\n## Job Description \(archived verbatim\)\n\nSenior Platform Engineer at Acme\./);
 });
 
 test('the scoring step retries garbage then succeeds; the warning is carried', async () => {
@@ -284,5 +294,107 @@ test('CAR-239 pure helper: providerAcceptsSeed truth table', () => {
   }
   for (const m of ['hermes', 'openai', 'deepseek', 'ollama', 'qwen', 'glm', 'kimi']) {
     assert.equal(providerAcceptsSeed(m), true, `${m} (OpenAI-compatible) takes a seed`);
+  }
+});
+
+// ── CAR-245 — render depth guard + the server-side JD archive ──────────────
+
+test('CAR-245: a render body under the 2500-char floor fires the depth warning; a deep body does not', async () => {
+  // THIN — the one-line fixture (~1.1 k chars) is exactly the v1.268.0 shape
+  // the analysis doc blamed: warning, never a rejection.
+  setAnswers(twoShapeAnswers({ scoring: scoringFixture({ score: 3.6 }), body: renderBodyFixture({}) }));
+  const thin = await runTwoStepEvaluation(JD_R, 'en', { today: '2026-11-05' });
+  assert.ok(thin.warnings.includes('report depth below target — blocks too thin'),
+    `depth warning must fire on a thin body: ${thin.warnings.join(' | ')}`);
+  // The warning rides the same channel the UI/API already surface (warnings array).
+  assert.equal(thin.fallbackUsed, false, 'the thin run is still a complete A–G run — warn only');
+
+  // DEEP — at/above the floor the warning must NOT fire.
+  setAnswers(twoShapeAnswers({ scoring: scoringFixture({ score: 3.6 }), body: longBody() }));
+  const deep = await runTwoStepEvaluation(JD_R, 'en', { today: '2026-11-05' });
+  assert.ok(!deep.warnings.some((w) => /blocks too thin/.test(w)),
+    `no depth warning at target depth: ${deep.warnings.join(' | ')}`);
+});
+
+test('CAR-245: the fallback body (structurally thin) also warns — but never rejects', async () => {
+  setAnswers((prompt) => {
+    if (prompt.includes('Output ONLY a JSON object')) return JSON.stringify(scoringFixture({ score: 3.0 }));
+    return { __stubError: true };
+  });
+  const r = await runTwoStepEvaluation(JD_R, 'en', { today: '2026-11-05' });
+  assert.equal(r.fallbackUsed, true);
+  assert.ok(r.warnings.some((w) => /server fallback body used/.test(w)));
+  assert.ok(r.warnings.includes('report depth below target — blocks too thin'),
+    'the fallback body is thin by construction — the depth warning is honest about it');
+  // The archive still lands on the degraded report: the JD is server knowledge.
+  assert.match(r.markdown, /## Job Description \(archived verbatim\)\n\n/);
+});
+
+test('CAR-245: the archived JD is the SANITIZED input JD, byte-faithful, bounded at 60k', async () => {
+  setAnswers(twoShapeAnswers({ scoring: scoringFixture({ score: 3.6 }), body: longBody() }));
+  const marker = 'CAR245-UNIQUE-MARKER quantum flux capacitor duties. '.repeat(2);
+  const r = await runTwoStepEvaluation(marker + 'Go, Kubernetes.', 'en', { today: '2026-11-05' });
+  const at = r.markdown.indexOf('## Job Description (archived verbatim)');
+  assert.ok(at !== -1);
+  const archived = r.markdown.slice(at + '## Job Description (archived verbatim)\n\n'.length);
+  assert.ok(archived.startsWith('CAR245-UNIQUE-MARKER'), 'the JD rides verbatim from the first byte');
+  assert.ok(archived.includes('Go, Kubernetes.'), 'the whole JD is in the section');
+  // The section is the tail of the report.
+  assert.ok(r.markdown.trimEnd().endsWith('Go, Kubernetes.'));
+});
+
+// ── CAR-245 — route level: the auto-pipeline SAVED report carries the archive
+// (the parent's check-jd-archive.mjs contract, #2789). ──────────────────────
+
+test('CAR-245: /api/auto-pipeline saves a report whose file carries the JD-verbatim archive', async () => {
+  const { readdirSync, readFileSync } = await import('node:fs');
+  const dns = (await import('node:dns')).promises;
+  const realLookup = dns.lookup;
+  const { _setTransport } = await import('../server/lib/safe-fetch.mjs');
+  const { createApp } = await import('../server/index.mjs');
+
+  const page = '<html><body><div class="tgme_widget_message_text js-message_text" dir="auto">'
+    + '<p>Senior Platform Engineer в платформенной команде. Компания : ArchiveCo</p><br>'
+    + 'Полностью удалённо, Европа. Опыт Go от 4 лет, Kubernetes, Postgres, Prometheus, on-call. '
+    + 'CAR245-ARCHIVE-MARKER unique posting sentence for the saved-file assertion. '
+    + 'Оформление по контракту, опционы, ежегодные бонусы, обучение за счёт компании. Пишите в личку.</div></body></html>';
+  const restoreLookup = () => { dns.lookup = realLookup; };
+  dns.lookup = async () => ({ address: '93.184.216.34', family: 4 });
+  const restoreTransport = _setTransport(async () => ({
+    status: 200, headers: { 'content-type': 'text/html' }, body: Buffer.from(page),
+  }));
+  setAnswers(twoShapeAnswers({ scoring: scoringFixture({ company: 'ArchiveCo', role: 'Senior Platform Engineer', score: 4 }), body: longBody() }));
+  const appServer = await new Promise((r) => { const s = createApp().listen(0, '127.0.0.1', () => r(s)); });
+  try {
+    const res = await fetch(`http://127.0.0.1:${appServer.address().port}/api/auto-pipeline`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ url: 'https://t.me/jobsfeed/245' }),
+    });
+    const text = await res.text();
+    const events = text.split('\n\n').filter(Boolean).map((b) => ({
+      event: (b.match(/^event: (.+)$/m) || [])[1],
+      data: JSON.parse((b.match(/^data: (.+)$/m) || [, 'null'])[1]),
+    }));
+    const done = events.find((e) => e.event === 'done');
+    assert.ok(done, `the pipeline completes: ${JSON.stringify(events.map((e) => [e.event, e.data?.message || e.data?.detail || ''])).slice(-400)}`);
+
+    // THE saved file — the artifact the parent's check-jd-archive.mjs reads —
+    // carries the archive with the posting text, even though the route's save
+    // path strips the SCORE_SUMMARY machine block.
+    const reports = readdirSync(resolve(rootDir, 'reports'));
+    assert.equal(reports.length, 1, `exactly one report saved: ${reports.join(', ')}`);
+    const saved = readFileSync(resolve(rootDir, 'reports', reports[0]), 'utf8');
+    assert.match(saved, /^# Evaluation: ArchiveCo — Senior Platform Engineer$/m);
+    assert.match(saved, /```yaml\n[\s\S]*?\n```\n\n## Job Description \(archived verbatim\)\n\n/);
+    assert.ok(saved.includes('CAR245-ARCHIVE-MARKER'), 'the posting text is archived in the saved file');
+    assert.ok(!saved.includes('---SCORE_SUMMARY---'), 'the summary block stays stripped from the saved file');
+    // The archive is the file's tail — the JD closes the report.
+    assert.ok(saved.trimEnd().includes('CAR245-ARCHIVE-MARKER unique posting sentence'));
+  } finally {
+    restoreTransport();
+    restoreLookup();
+    appServer.closeAllConnections?.();
+    await new Promise((r) => appServer.close(r));
   }
 });

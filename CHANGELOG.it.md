@@ -2,6 +2,29 @@
 
 > Questo changelog contiene ora la cronologia completa delle versioni. Le voci pubblicate prima della localizzazione italiana (v1.85.0) compaiono sotto nell'originale inglese — traduzione in attesa; il riferimento resta [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.269.0] — 2026-11-06
+
+### Aggiunto
+
+- **Board kanban a funnel (CAR-237)** — `#/tracker` guadagna una vista «Воронка»: colonne = status canonici, le card si trascinano tra le colonne (HTML5 DnD + tastiera ←/→ + select di stato su mobile), ogni spostamento è un `POST /api/tracker/status` canonico; una modale per card conserva note e orario del colloquio (scritti nella cella Notes). Meccanismo studiato da Fighter90/flow (spostamento ottimista + revert, contorno al drop, keyboard-first). La vista tabella resta come seconda scheda.
+- **Statistiche dettagliate (CAR-247)** — scheda «Детали» su `#/stats`: selettore della valuta di visualizzazione (la conversione USD→EUR/RUB/GBP/CNY è rispettata da ogni cifra e da ogni asse dei grafici), selettore del periodo (mese/trimestre/anno/tutto), ricerca testuale + chip di facet componibili con AND (paese/status/fonte con conteggi), quattro grafici (stipendio min–med–max per paese, funnel degli status, dinamica mensile, top aziende), drill-down ordinabile nei report.
+- **Profondità dei report ripristinata (CAR-245)** — il tetto di ≤5 frasi sostituito da un pavimento ancorato (≥3 punti sostanziali per blocco, 1500–2500 parole); il server aggiunge la sezione `## Job Description (archived verbatim)` a ogni report salvato (contratto del parent); un avviso di corpo sottile scatta sotto i 2500 caratteri.
+- **Video hero su cvstart.org** — l'hero del landing porta un underlay video muto in loop (sciame in stile aixle), fuso da un overlay scuro nella palette esistente (nessuna tinta nuova), animazioni fade-in + scroll-reveal, poster statico di riserva su mobile/reduced-motion.
+- **Sonda perf** — `scripts/remote-qa/perf-probe.mjs` (TTFB/total/bytes × 8 percorsi caldi, verdetto per endpoint).
+
+### Corretto
+
+- **Latenza delle pagine in prod (CAR-236)** — cache con chiave mtime sui percorsi di lettura caldi: l'indice map/jobs non legge più ogni capture JD per intero (teste da 1.5 KB, memo dello stat di directory), il parse del tracker è in cache per versione di file (2–4× per navigazione → 1), la risoluzione dei file report è memoizzata, `/api/dashboard` legge la forma slim dei report; disponibile `/api/reports?fields=slim`.
+- **check-dist 2×h1** — l'H1 `# Changelog` del master EN sta sotto il lead in stile README e finiva nella pagina 1 dello specchio del sito (un secondo `<h1>` accanto al proprio da quando il lead è stato anteposto); la riga di titolo duplicata viene scartata alla composizione dello specchio.
+- **Creazione report senza gare (CodeQL #752)** — il salvataggio dei report dell'auto-pipeline usa il flag esclusivo `wx`: un pipeline concorrente non può più far passare un TOCTOU existsSync-then-write; EEXIST cade nel percorso di dedup con suffisso di epoca.
+- **Coda dello sweep CodeQL** — le scritture in jds/ e nei report documentate come il design di archiviazione REQUIRED del parent (contenuto sanificato + limitato in dimensione, percorsi deterministici con suffisso di epoca); variabili inutilizzate di livello nota ripulite.
+
+### Note
+
+- Il funnel kanban viene rilasciato con la vista tabella intatta come alternativa predefinita — si cambia col nuovo toggle «Воронка | Таблица» (persistito).
+- Le statistiche dettagliate aggregano lato client sui endpoints esistenti (nessuna nuova route); le valute di visualizzazione sconosciute ripiegano su USD.
+- I runner di migrazione (v1.268.1) restano con dry-run come predefinito — apply rimane un'azione del proprietario.
+
 ## [1.268.1] — 2026-11-06
 
 ### Corretto

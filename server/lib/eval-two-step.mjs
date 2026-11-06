@@ -23,6 +23,11 @@
  *      scoring input (header + JD + CV + profile + model) skips the
  *      provider entirely — stage name 'scoring (cached)'. Disable with
  *      EVAL_SCORE_CACHE=0.
+ *
+ * CAR-245 (2026-11-05 report-length analysis): the render prompt carries an
+ * anchored depth floor (≥3 bullets/block, 1500–2500 words) instead of the
+ * v1.268.0 ≤5-sentence cap; the sanitized JD is archived server-side into
+ * every report (#2789); a render body under EVAL_MIN_BODY_CHARS warns.
  */
 
 import { runActiveProvider, resolveProvider, providerAcceptsSeed } from './llm-dispatch.mjs';
@@ -38,6 +43,7 @@ import {
   missingBlocks,
   serverToday,
   EVAL_BLOCK_LETTERS,
+  EVAL_MIN_BODY_CHARS,
   EVAL_SCORING_STABLE_HEADER,
 } from './eval-scoring.mjs';
 import { scoringCacheKey, readScoringCache, writeScoringCache, scoringModelIdentity } from './scoring-cache.mjs';
@@ -286,7 +292,17 @@ export async function runTwoStepEvaluation(jd, lang, opts = {}) {
     pdf: opts.saved ? '✅' : undefined,
     salary: opts.salary,
     location: opts.location,
+    // CAR-245 — the parent's #2789 JD-archival contract: the sanitized JD the
+    // two-step already holds is archived server-side (deterministic, bounded,
+    // model-independent), so every web-ui report carries the posting verbatim.
+    jdArchive: jd,
   });
+  // CAR-245 — the depth guard: the rendered A–G body (before the archive)
+  // under the floor is a WARNING on the same channel as truncation, never a
+  // rejection — a structurally complete but thin report still saves.
+  if (body.trim().length < EVAL_MIN_BODY_CHARS) {
+    warnings.push('report depth below target — blocks too thin');
+  }
   if (lang && lang !== 'en' && !languageOk(body, lang)) {
     warnings.push(`report not in ${lang}`);
   }

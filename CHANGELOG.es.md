@@ -13,6 +13,29 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.269.0] — 2026-11-06
+
+### Añadido
+
+- **Tablero kanban de embudo (CAR-237)** — `#/tracker` gana una vista «Воронка»: columnas = estados canónicos, las tarjetas se arrastran entre columnas (HTML5 DnD + teclado ←/→ + selector de estado en móvil), cada movimiento es un `POST /api/tracker/status` canónico; un modal por tarjeta conserva las notas y la hora de la entrevista (se escriben en la celda Notes). Mecanismo investigado a partir de Fighter90/flow (movimiento optimista + reversión, contorno al soltar, keyboard-first). La vista de tabla sigue como la segunda pestaña.
+- **Estadísticas detalladas (CAR-247)** — pestaña «Детали» en `#/stats`: selector de divisa de visualización (la conversión USD→EUR/RUB/GBP/CNY se respeta en cada cifra y en el eje de cada gráfico), selector de periodo (mes/trimestre/año/todo), búsqueda de texto + chips de facetas componibles con AND (país/estado/fuente con recuentos), cuatro gráficos (salario min–med–max por país, embudo de estados, dinámica mensual, top de empresas), drill-down ordenable hacia los informes.
+- **Profundidad de informes restaurada (CAR-245)** — el tope de ≤5 frases se sustituye por un suelo anclado (≥3 viñetas sustanciales por bloque, 1500–2500 palabras); el servidor añade la sección `## Job Description (archived verbatim)` a cada informe guardado (contrato del padre); un aviso de cuerpo escueto se dispara por debajo de 2500 caracteres.
+- **Vídeo hero en cvstart.org** — el hero del landing lleva como underlay un vídeo en bucle silenciado (enjambre estilo aixle), fundido con overlay oscuro en la paleta existente (sin tonos nuevos), animaciones fade-in + scroll-reveal, poster estático de reserva en móvil/reduced-motion.
+- **Sonda de rendimiento** — `scripts/remote-qa/perf-probe.mjs` (TTFB/total/bytes × 8 rutas calientes, veredicto por endpoint).
+
+### Corregido
+
+- **Latencia de páginas en prod (CAR-236)** — cachés con clave mtime en las rutas calientes de lectura: el índice map/jobs ya no lee cada captura de JD completa (cabeceras de 1.5 KB, memo del stat de directorio), el parseo del tracker se cachea por versión de archivo (2–4× por navegación → 1), la resolución de archivos de informe se memoiza, `/api/dashboard` lee la forma slim de los informes; disponible `/api/reports?fields=slim`.
+- **check-dist 2×h1** — el H1 `# Changelog` del máster EN queda bajo el lead estilo README y se colaba en la página 1 del espejo del sitio (un segundo `<h1>` junto al propio desde que se antepuso el lead); la línea de título duplicada se descarta al componer el espejo.
+- **Creación de informes sin carreras (CodeQL #752)** — el guardado de informes del auto-pipeline usa el flag exclusivo `wx`: un pipeline concurrente ya no puede colar un TOCTOU existsSync-then-write; EEXIST cae en la ruta de dedup con sufijo de época.
+- **Cola del barrido CodeQL** — las escrituras en jds/ e informes quedan documentadas como el diseño de archivado REQUIRED del padre (contenido sanitizado + acotado por tamaño, rutas deterministas con sufijo de época); variables sin usar de nivel nota limpiadas.
+
+### Notas
+
+- El embudo kanban se envía con la vista de tabla intacta como alternativa predeterminada — se cambia con el nuevo toggle «Воронка | Таблица» (persistente).
+- Las estadísticas detalladas agregan en el cliente sobre los endpoints existentes (sin rutas nuevas); las divisas de visualización desconocidas caen a USD.
+- Los runners de migración (v1.268.1) siguen con dry-run por defecto — apply sigue siendo una acción del propietario.
+
 ## [1.268.1] — 2026-11-06
 
 ### Corregido

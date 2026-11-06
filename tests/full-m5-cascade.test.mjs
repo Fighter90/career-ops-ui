@@ -65,7 +65,11 @@ const saved = {};
 // through to its generic brief.
 const evalAnswers = twoShapeAnswers({
   scoring: scoringFixture({ company: 'Acme', role: 'Engineer', archetype: 'backend', legitimacy: 'High Confidence', score: 4.0 }),
-  body: renderBodyFixture({}),
+  // CAR-245 — the render fixture answers AT the depth floor (2500 chars): a
+  // thin stub would trip the honest 'blocks too thin' warning the well-formed
+  // run's "no warnings" pin forbids. Only the /api/evaluate leg consumes the
+  // render body; the /api/mode + /api/deep legs keep their generic brief.
+  body: renderBodyFixture({ line: 'The candidate meets the requirement with direct platform evidence: owned the service end to end, ran on-call for it, and migrated the stack to the posted tooling. '.repeat(4) }),
 });
 
 before(async () => {

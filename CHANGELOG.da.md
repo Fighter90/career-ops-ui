@@ -9,6 +9,29 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 ---
 
 
+## [1.269.0] — 2026-11-06
+
+### Tilføjet
+
+- **Kanban-tragtbord (CAR-237)** — `#/tracker` får en «Воронка»-visning: kolonner = kanoniske statusser, kort trækkes mellem kolonnerne (HTML5 DnD + tastatur ←/→ + mobil status-select), hvert flyt er en kanonisk `POST /api/tracker/status`; en modal pr. kort gemmer noter og interviewtidspunkt (skrevet i Notes-cellen). Mekanismen er undersøgt fra Fighter90/flow (optimistisk flyt + revert, drop-kontur, keyboard-first). Tabelvisningen forbliver som det andet faneblad.
+- **Detaljerede statistikker (CAR-247)** — fanebladet «Детали» på `#/stats`: visningsvaluta-vælger (USD→EUR/RUB/GBP/CNY-konvertering overholdes af hvert tal og hver diagramakse), periodevælger (måned/kvartal/år/alt), tekstsøgning + AND-kombinbare facet-chips (land/status/kilde med optællinger), fire diagrammer (løn min–med–max pr. land, status-tragt, månedlig dynamik, topvirksomheder), sorterbar drill-down ind i rapporterne.
+- **Rapportdybde genoprettet (CAR-245)** — loftet på ≤5 sætninger i render erstattet af et forankret gulv (≥3 substansielle punkter pr. blok, 1500–2500 ord); serveren føjer `## Job Description (archived verbatim)`-sektionen til hvert gemt rapport (forældrekontrakt); en advarsel om tynd brødtekst udløses under 2500 tegn.
+- **cvstart.org hero-video** — landingens hero bærer et dæmpet loopende video-underlag (sværm i aixle-stil), smeltet ind i den eksisterende palette med et mørkt overlay (ingen nye nuancer), fade-in + scroll-reveal-animationer, statisk poster som fallback på mobil/reduced-motion.
+- **Perf-probe** — `scripts/remote-qa/perf-probe.mjs` (TTFB/total/bytes × 8 varme stier, dom pr. endpoint).
+
+### Rettet
+
+- **Prod-sideforsinkelse (CAR-236)** — mtime-nøglede caches på de varme læsestier: map/jobs-indekset læser ikke længere hvert JD-capture i fuld længde (1.5 KB-hoveder, dir-stat-memo), tracker-parsen caches pr. filversion (2–4× pr. navigation → 1), rapportfil-opslag er memoiseret, `/api/dashboard` læser den slanke rapportform; `/api/reports?fields=slim` tilgængelig.
+- **check-dist 2×h1** — EN-masterens `# Changelog` H1 sidder under README-stil-ledet og smuttede ind på side 1 af spejlet af webstedet (et andet `<h1>` ved siden af sit eget, siden leadet blev sat foran); den duplikerede titellinje droppes ved spejl-sammensætning.
+- **Rapportoprettelse uden løb (CodeQL #752)** — rapport-gemningen i auto-pipeline bruger det eksklusive `wx`-flag: en samtidig pipeline kan ikke længere smugle en existsSync-then-write-TOCTOU ind; EEXIST falder videre til dedup-stien med epoch-suffiks.
+- **CodeQL-svejsens hale** — jds/- og rapport-skrivninger dokumenteret som forældreprojektets REQUIRED-arkiveringsdesign (saniteret + størrelsesbegrænset indhold, deterministiske stier med epoch-suffiks); noteniveau ubrugte variabler ryddet op.
+
+### Noter
+
+- Kanban-tragten udkommer med tabelvisningen intakt som den standard-første alternativ — skift via den nye «Воронка | Таблица»-knap (gemt).
+- Detaljerede statistikker aggregerer klient-side over de eksisterende endpoints (ingen nye ruter); ukendte visningsvalutaer falder tilbage til USD.
+- Migrationsrunnerne (v1.268.1) forbliver med dry-run som standard — apply forbliver ejerens handling.
+
 ## [1.268.1] — 2026-11-06
 
 ### Rettet

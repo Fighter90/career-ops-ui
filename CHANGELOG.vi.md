@@ -6,6 +6,29 @@ Bản dịch: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.269.0] — 2026-11-06
+
+### Đã thêm
+
+- **Bảng kanban phễu (CAR-237)** — `#/tracker` có thêm chế độ xem «Воронка»: cột = các trạng thái chính tắc, thẻ được kéo giữa các cột (HTML5 DnD + bàn phím ←/→ + select trạng thái trên di động), mỗi lần di chuyển là một `POST /api/tracker/status` chính tắc; modal theo từng thẻ giữ ghi chú và giờ phỏng vấn (ghi vào ô Notes). Cơ chế được nghiên cứu từ Fighter90/flow (di chuyển lạc quan + hoàn tác, viền khi thả, keyboard-first). Chế độ xem bảng vẫn là tab thứ hai.
+- **Thống kê chi tiết (CAR-247)** — tab «Детали» trên `#/stats`: bộ chọn tiền tệ hiển thị (quy đổi USD→EUR/RUB/GBP/CNY được mọi con số và trục biểu đồ tôn trọng), bộ chọn kỳ (tháng/quý/năm/tất cả), tìm kiếm văn bản + chip facet kết hợp được bằng AND (quốc gia/trạng thái/nguồn với số đếm), bốn biểu đồ (lương min–med–max theo quốc gia, phễu trạng thái, động lực theo tháng, công ty hàng đầu), drill-down sắp xếp được vào các báo cáo.
+- **Khôi phục chiều sâu báo cáo (CAR-245)** — trần ≤5 câu trong render được thay bằng sàn neo (≥3 đầu mũi có nội dung mỗi khối, 1500–2500 từ); máy chủ thêm mục `## Job Description (archived verbatim)` vào mọi báo cáo đã lưu (hợp đồng của cha); cảnh báo thân mảnh kích hoạt dưới 2500 ký tự.
+- **Video hero trên cvstart.org** — hero của landing mang lớp đệm video lặp im lặng (bầy theo kiểu aixle), tan vào bảng màu hiện có qua overlay tối (không thêm tông mới), hoạt ảnh fade-in + scroll-reveal, poster tĩnh dự phòng trên di động/reduced-motion.
+- **Đầu dò perf** — `scripts/remote-qa/perf-probe.mjs` (TTFB/total/bytes × 8 đường nóng, phán quyết theo endpoint).
+
+### Đã sửa
+
+- **Độ trễ trang trên prod (CAR-236)** — các cache khóa theo mtime trên đường đọc nóng: chỉ mục map/jobs không còn đọc trọn từng capture JD (đầu 1.5 KB, memo stat thư mục), parse tracker được cache theo phiên bản tệp (2–4× mỗi lần điều hướng → 1), việc dò tệp báo cáo được memoize, `/api/dashboard` đọc dạng báo cáo slim; có `/api/reports?fields=slim`.
+- **check-dist 2×h1** — H1 `# Changelog` của master EN nằm dưới lead kiểu README và lọt vào trang 1 của mirror trang web (một `<h1>` thứ hai cạnh h1 của trang kể từ khi lead được đặt trước); dòng tiêu đề trùng bị bỏ lúc lắp mirror.
+- **Tạo báo cáo không đua (CodeQL #752)** — việc lưu báo cáo của auto-pipeline dùng cờ độc quyền `wx`: một pipeline chạy song song không còn chèn được TOCTOU existsSync-then-write; EEXIST rơi vào đường dedup với hậu kỳ epoch.
+- **Đuôi càn quét CodeQL** — các ghi vào jds/ và báo cáo được tài liệu hóa là thiết kế lưu trữ REQUIRED của cha (nội dung đã làm sạch + chặn kích thước, đường tất định với hậu kỳ epoch); các biến không dùng cấp ghi chú được dọn.
+
+### Ghi chú
+
+- Phễu kanban ra mắt với chế độ xem bảng nguyên vẹn như phương án mặc định-ưu tiên — chuyển qua toggle mới «Воронка | Таблица» (được lưu).
+- Thống kê chi tiết tổng hợp phía client trên các endpoint hiện có (không có route mới); tiền tệ hiển thị không rõ sẽ rơi về USD.
+- Các migration runner (v1.268.1) vẫn giữ dry-run làm mặc định — apply vẫn là hành động của chủ sở hữu.
+
 ## [1.268.1] — 2026-11-06
 
 ### Đã sửa

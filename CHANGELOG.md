@@ -1,3 +1,22 @@
+## [1.269.0] — 2026-11-06
+
+### Added
+- **Kanban funnel board (CAR-237)** — #/tracker gains a «Воронка» view: columns = canonical statuses, cards drag between columns (HTML5 DnD + keyboard ←/→ + mobile status select), every move is a canonical `POST /api/tracker/status`; a per-card modal keeps notes and the interview time (written into the Notes cell). Researched from Fighter90/flow's mechanism (optimistic move + revert, drop outline, keyboard-first). The table view stays as the second tab.
+- **Detailed statistics (CAR-247)** — #/stats «Детали» tab: display-currency selector (USD→EUR/RUB/GBP/CNY conversion honored by every figure and chart axis), period selector (month/quarter/year/all), text search + AND-composable facet chips (country/status/source with counts), four charts (salary min–med–max by country, status funnel, monthly dynamics, top companies), sortable drill-down into the reports.
+- **Report depth restored (CAR-245)** — the ≤5-sentence render cap replaced by an anchored floor (≥3 substantive bullets per block, 1500–2500 words); the server appends the `## Job Description (archived verbatim)` section to every saved report (parent contract); a thin-body warning fires below 2500 chars.
+- **cvstart.org hero video** — the landing hero carries a muted looping video underlay (aixle-style swarm), dark-overlay melt into the existing palette (no new hues), fade-in + scroll-reveal animations, static poster fallback on mobile/reduced-motion.
+- **Perf probe** — `scripts/remote-qa/perf-probe.mjs` (TTFB/total/bytes × 8 hot paths, verdict per endpoint).
+
+### Fixed
+- **Prod page latency (CAR-236)** — mtime-keyed caches on the hot read paths: the map/jobs index no longer reads every JD capture in full (1.5 KB heads, dir-stat memo), the tracker parse is cached per file version (2–4× per navigation → 1), report-file resolution is memoized, `/api/dashboard` reads the slim reports shape; `/api/reports?fields=slim` available.
+- **check-dist 2×h1** — the EN master's `# Changelog` H1 sits below the README-style lead and rode into page 1 of the site mirror (second `<h1>` next to the page's own since the lead was prepended); the duplicate title line is dropped at mirror-composition time.
+- **Race-free report create (CodeQL #752)** — the auto-pipeline report save uses the exclusive `wx` flag: a concurrent pipeline can no longer slip an existsSync-then-write TOCTOU; EEXIST falls through to the epoch-suffix dedup path.
+- **CodeQL sweep tail** — jds/ and report writes documented as the parent's REQUIRED archival design (sanitized + size-bounded content, deterministic epoch-suffixed paths); note-level unused vars cleaned.
+
+### Notes
+- The kanban funnel does NOT replace the table view — both ship, switched via the new «Воронка | Таблица» toggle (persisted).
+- Stats detail aggregates client-side over existing endpoints (no new routes were added); an unknown display currency does NOT convert — it falls back to USD.
+- Migration runners (v1.268.1) remain dry-run default — apply is NOT run automatically; it stays an owner action after reviewing the preview.
 ## [1.268.1] — 2026-11-06
 
 ### Fixed

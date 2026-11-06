@@ -7,21 +7,21 @@
 
 _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von diesen unterstützt._
 
-[![tests](https://img.shields.io/badge/tests-7602%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-7627%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.268.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.268.1)
+[![release](https://img.shields.io/badge/release-v1.269.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.269.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Neueste Version — v1.268.1** — deterministisches, serverseitig berechnetes Scoring (CAR-239): der Evaluate-Score ist über alle 19 Locales identisch; Prompt-Cache-Observability (CAR-240), lokalisierte Migrations-Runner (CAR-241/242/243), verstellbare Sidebar (CAR-235), CodeQL-Welle 21 und Dialog-Überlappungs-Fixes. Tests 7510.
+> **🆕 Neueste Version — v1.269.0** — Kanban-Funnel-Board auf #/tracker (CAR-237, mit «Воронка | Таблица»-Toggle), «Детали»-Tab auf #/stats (CAR-247), wiederhergestellte Report-Tiefe (CAR-245), Hero-Video auf cvstart.org, dazu mtime-Caches gegen die Prod-Seiten-Latenz (CAR-236) und der Nachlauf der CodeQL-Säuberung.
 
 
 >
-> **Vorherige Version — v1.268.0** — vier neue Scan-Quellen — GermanTechJobs, Darwinbox, Keka, ApplicantPro/isolved (Register 129 = 124 EN + 5 RU) — ETag-Wiederverwendung von Board-Antworten, Daten auf vier Boards, ein falsch geschriebener portals.yml-Schlüssel fällt laut auf, der getro geht über alte Featured-Pins hinweg (Parent-Sync @ 7d8feb6d). Tests 7096 → 7243.
+> **Vorherige Version — v1.268.1** — deterministisches, serverseitig berechnetes Scoring (CAR-239): der Evaluate-Score ist über alle 19 Locales identisch; Prompt-Cache-Observability (CAR-240), lokalisierte Migrations-Runner (CAR-241/242/243), verstellbare Sidebar (CAR-235), CodeQL-Welle 21 und Dialog-Überlappungs-Fixes. Tests 7510.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

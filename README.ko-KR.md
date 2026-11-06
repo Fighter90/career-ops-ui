@@ -7,21 +7,21 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-7602%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-7627%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.268.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.268.1)
+[![release](https://img.shields.io/badge/release-v1.269.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.269.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.268.1** — 결정론적 스코어링(CAR-239): SERVER가 앵커된 정수 하위 점수로 점수를 계산하고 temperature 0 + 고정 시드 — 동일한 JD가 19개 로캘 모두에서 0.0 이내로 수렴; 프롬프트 캐시 관측 가능성(CAR-240), 데이터 마이그레이션 러너 ×19(CAR-241/242/243), 크기 조절 가능한 사이드바(CAR-235). Tests 7510.
+> **🆕 최신 릴리스 — v1.269.0** — #/tracker의 칸반 퍼널 보드(CAR-237, «Воронка | Таблица» 토글), #/stats의 «Детали» 탭(CAR-247), 복원된 리포트 깊이(CAR-245), cvstart.org 히어로 비디오, 여기에 프로드 페이지 지연을 잡는 mtime 캐시(CAR-236)와 CodeQL 스윙 꼬리.
 
 
 >
-> **이전 버전 — v1.268.0** — 네 개의 새 스캔 소스 — GermanTechJobs, Darwinbox, Keka, ApplicantPro/isolved(레지스트리 129 = 124 EN + 5 RU) — ETag 보드 응답 재사용, 네 보드의 날짜, portals.yml 오타 키는 이제 크게 실패, getro는 오래된 고정 핀을 지나갑니다(parent-sync @ 7d8feb6d). Tests 7096 → 7243.
+> **이전 버전 — v1.268.1** — 결정론적 스코어링(CAR-239): SERVER가 앵커된 정수 하위 점수로 점수를 계산하고 temperature 0 + 고정 시드 — 동일한 JD가 19개 로캘 모두에서 0.0 이내로 수렴; 프롬프트 캐시 관측 가능성(CAR-240), 데이터 마이그레이션 러너 ×19(CAR-241/242/243), 크기 조절 가능한 사이드바(CAR-235). Tests 7510.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

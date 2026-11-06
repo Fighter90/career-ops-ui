@@ -7,19 +7,19 @@
 
 _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
 
-[![tests](https://img.shields.io/badge/tests-7602%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-7627%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.268.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.268.1)
+[![release](https://img.shields.io/badge/release-v1.269.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.269.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新リリース — v1.268.1** — 決定論的スコアリング(CAR-239):SERVER がアンカー付き整数サブスコアからスコアを計算、temperature 0 + 固定シード — 同一 JD が全 19 ロケールで 0.0 以内に収束;プロンプトキャッシュの可観測性(CAR-240)、データ移行ランナー ×19(CAR-241/242/243)、リサイズ可能なサイドバー(CAR-235)。テスト 7510。
+> **🆕 最新リリース — v1.269.0** — #/tracker にカンバン・ファネルボード(CAR-237、«Воронка | Таблица» トグル)、#/stats に「Детали」タブ(CAR-247)、復元されたレポートの深さ(CAR-245)、cvstart.org のヒーロー動画、さらに本番ページのレイテンシを抑える mtime キャッシュ(CAR-236)と CodeQL 掃討の尾。
 >
-> **前バージョン — v1.268.0** — 新スキャンソース 4 つ — GermanTechJobs、Darwinbox、Keka、ApplicantPro/isolved(レジストリ 129 = 124 EN + 5 RU)— ETag によるボード応答の再利用、4 ボードの日付、portals.yml の誤記キーは音を立てて失敗、getro は古いピンを越えて歩きます(parent-sync @ 7d8feb6d)。テスト 7096 → 7243。
+> **前バージョン — v1.268.1** — 決定論的スコアリング(CAR-239):SERVER がアンカー付き整数サブスコアからスコアを計算、temperature 0 + 固定シード — 同一 JD が全 19 ロケールで 0.0 以内に収束;プロンプトキャッシュの可観測性(CAR-240)、データ移行ランナー ×19(CAR-241/242/243)、リサイズ可能なサイドバー(CAR-235)。テスト 7510。
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

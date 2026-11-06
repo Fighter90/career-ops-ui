@@ -1,6 +1,6 @@
 /**
  * eval-scoring.mjs — the v1.268.0 two-step evaluation contract (CAR-229/231),
- * made DETERMINISTIC in v1.268.1 (CAR-239).
+ * made DETERMINISTIC in v1.268.1 (CAR-239), re-DEEPENED by CAR-245.
  *
  * The 2026-11-05 prod acceptance gate failed the two-step contract's promise:
  * one synthetic JD × 19 locales scored 2.5–4.0 (spread 1.5; gate ≤ 0.5), and
@@ -26,6 +26,14 @@
  *      fence tag is derived from sha256(jd) (was Math.random, which also
  *      made the scoring input non-reproducible byte-for-byte), so the cache
  *      key in scoring-cache.mjs can be locale-independent.
+ *
+ * CAR-245 (2026-11-05 report-length analysis, this file implements (c)):
+ * the render prompt's ≤5-sentence cap (the root cause of the 1.6–4 k-char
+ * prod reports) is replaced by an anchored depth floor; assembleReport
+ * appends the sanitized JD as the `## Job Description (archived verbatim)`
+ * section (#2789); EVAL_MIN_BODY_CHARS drives the thin-body warning in
+ * eval-two-step.mjs. The scoring rubric and the scoring stable header are
+ * UNTOUCHED — CAR-239 determinism and the scoring cache keys are unaffected.
  *
  * Cache parity (CAR-111): the shared instruction header is byte-identical
  * across locales AND across both steps, so the provider's prefix cache pays
@@ -113,15 +121,44 @@ Output ONLY a JSON object — no markdown fence, no prose before or after, no tr
  */
 export const EVAL_SCORING_STABLE_HEADER = EVAL_SHARED_INSTRUCTIONS + SCORING_INSTRUCTIONS;
 
-/** The render step's EN instructions (after the shared header). Locale-neutral bytes. */
+/** The render step's EN instructions (after the shared header). Locale-neutral bytes.
+ *
+ * CAR-245 — the v1.268.0 contract capped every block at ≤5 sentences, which
+ * compressed prod reports to 1.6–4 k chars (the 2026-11-05 analysis doc). The
+ * cap is replaced by an anchored FLOOR: at least 3 substantive bullets per
+ * block covering different aspects of the JD evidence, 1500–2500 words for
+ * the whole body. The floor is anchored («name the requirement, the CV
+ * evidence, the risk») so the model cannot satisfy it with padding — and the
+ * 'seven sections only' framing stays, because it is what keeps the machine
+ * surface locale-stable (the JD archive is the server's job, not the render's).
+ */
 const RENDER_INSTRUCTIONS = `You will now RENDER an evaluation report body in a target language from a structured scoring you are given. This is translation and elaboration only — it is NOT a re-judgement:
   • Write EXACTLY seven sections, one per block, in the order A)–G) given in the scoring JSON. Each heading is \`## X) <translated title>\` with the LATIN capital — never your alphabet's numbering.
   • Copy every number from the scoring JSON VERBATIM — never invent, round, average or "adjust" a score.
-  • Elaborate each block to at most 5 sentences of grounded prose in the target language, based on the block's summary and the documents.
+  • Elaborate EVERY block to AT LEAST 3 substantive bullets of grounded prose in the target language (markdown \`-\` items or short grounded paragraphs), each covering a DIFFERENT aspect of the JD evidence: the concrete requirement, the CV evidence that meets or misses it, and the risk. Ground every claim in the documents; never pad, never fabricate.
+  • Depth target: 1500–2500 words across the seven blocks — a thorough senior recruiter's read, not a summary. Block B (Match with CV) and Block E (Customization Plan) each name specific cv.md bullets by content.
   • Do NOT write a report title, do NOT write Date/Score/URL/Legitimacy header lines, do NOT write any SCORE_SUMMARY block or yaml block — the server adds those.
   • Output only the seven \`## \` sections, nothing before or after.
 
 `;
+
+/**
+ * CAR-245 — the render-depth floor. A rendered A–G body under this many
+ * characters is a WARNING ('report depth below target — blocks too thin'),
+ * never a rejection — the same channel as the truncation warnings.
+ */
+export const EVAL_MIN_BODY_CHARS = 2500;
+
+/**
+ * CAR-245 — the parent's #2789 JD-archival contract (AGENTS.md: every report
+ * MUST carry the JD verbatim or a jds/ capture). assembleReport appends the
+ * sanitized JD it already holds as a deterministic server-side section — the
+ * model cannot truncate, paraphrase or forget it. Heading + bound mirror the
+ * parent's lib/jd-archive-section.mjs writer, so its check-jd-archive.mjs
+ * reader validates web-ui reports unchanged.
+ */
+export const JD_ARCHIVE_HEADING = '## Job Description (archived verbatim)';
+export const JD_ARCHIVE_MAX_CHARS = 60_000;
 
 /**
  * Deterministic JD fence tag (CAR-239): sha256-derived, so the same JD
@@ -295,8 +332,14 @@ export function missingBlocks(body) {
  * different number in prose cannot move the canonical values — they are not
  * in its control (CAR-229 acceptance), and the header score itself is now a
  * server-side derivation from the sub-scores (CAR-239).
+ *
+ * CAR-245 — `jdArchive` (the sanitized posting text the caller already
+ * holds) is appended as the `## Job Description (archived verbatim)` section
+ * AFTER the yaml block: the parent's #2789 contract restored with zero model
+ * variance. Omitting the opt (or passing an empty/whitespace JD) appends
+ * nothing — direct assemble callers keep the pre-CAR-245 byte shape.
  */
-export function assembleReport({ scoring, body, today, url, pdf, salary, location }) {
+export function assembleReport({ scoring, body, today, url, pdf, salary, location, jdArchive }) {
   const s = scoring;
   const header = [
     `# Evaluation: ${s.company} — ${s.role}`,
@@ -330,7 +373,13 @@ export function assembleReport({ scoring, body, today, url, pdf, salary, locatio
     `blocks: {${EVAL_BLOCK_LETTERS.map((L) => `${L}: ${s.blocks[L].score}`).join(', ')}}`,
     '```',
   ].join('\n');
-  return `${header}${String(body ?? '').trim()}\n\n${summary}\n\n${yaml}\n`;
+  // CAR-245 — the deterministic JD archive (#2789): verbatim, bounded, last.
+  // An empty/whitespace JD appends nothing (an empty section would only hide
+  // the absence from the parent's check-jd-archive reader).
+  const archive = typeof jdArchive === 'string' && jdArchive.trim()
+    ? `\n${JD_ARCHIVE_HEADING}\n\n${jdArchive.slice(0, JD_ARCHIVE_MAX_CHARS)}\n`
+    : '';
+  return `${header}${String(body ?? '').trim()}\n\n${summary}\n\n${yaml}\n${archive}`;
 }
 
 /**
