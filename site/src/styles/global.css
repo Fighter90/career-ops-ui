@@ -421,6 +421,112 @@ html.js .hero-seq-3 { animation-delay: 160ms; }
   }
 }
 
+/* ---------------------------------------------------- hero video underlay
+ * aixle-style ambient motion behind the landing hero. Layering (bottom →
+ * top): .hero-media (poster background + <video> + paper wash overlay) →
+ * .hero-blob* brand glows → hero content.
+ *
+ * Motion contract (same as the block above): the DEFAULT rendering is the
+ * static end-state — the media layer shows the poster and the wash; the
+ * <video> only displays on wide viewports with motion allowed, and
+ * cross-fades in over the poster. Mobile (<640px), reduced-motion and
+ * JS-off visitors all get the identical static poster + wash, never the
+ * video. The layer is pointer-events:none and aria-hidden — purely
+ * decorative.
+ *
+ * Palette: the wash is the site's own paper white at varying alphas —
+ * the video reads as faint texture under cvstart's light theme while ink
+ * text keeps AA (worst case ≈ ink-soft #6a6a6a over the 0.94 wash ≈
+ * 4.7:1). No new hues are introduced.
+ * ---------------------------------------------------------------------- */
+.hero-media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url('/assets/hero-poster.jpg');
+  background-size: cover;
+  background-position: center;
+}
+.hero-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* static end-state: hidden unless the gate below allows it */
+  display: none;
+}
+/* The wash: a near-opaque paper field across the text column (left, all
+   heights), opening toward the lower right so the swarm motion reads
+   clearly around the demo card, then a bottom melt into solid paper so
+   the hero hands off seamlessly into the next section. */
+.hero-video-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0) 68%,
+      rgba(255, 255, 255, 0.55) 90%,
+      var(--color-paper) 100%
+    ),
+    linear-gradient(
+      100deg,
+      rgba(255, 255, 255, 0.96) 0%,
+      rgba(255, 255, 255, 0.94) 48%,
+      rgba(255, 255, 255, 0.78) 64%,
+      rgba(255, 255, 255, 0.38) 86%,
+      rgba(255, 255, 255, 0.38) 100%
+    );
+}
+[dir='rtl'] .hero-video-overlay {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0) 68%,
+      rgba(255, 255, 255, 0.55) 90%,
+      var(--color-paper) 100%
+    ),
+    linear-gradient(
+      260deg,
+      rgba(255, 255, 255, 0.96) 0%,
+      rgba(255, 255, 255, 0.94) 48%,
+      rgba(255, 255, 255, 0.78) 64%,
+      rgba(255, 255, 255, 0.38) 86%,
+      rgba(255, 255, 255, 0.38) 100%
+    );
+}
+/* Below the lg breakpoint the hero is single-column: text spans the FULL
+   width, so the diagonal's open right edge would leave ink-soft words over
+   raw poster/video texture (~2.2:1 worst case). A uniform strong paper wash
+   keeps ≥4.5:1 everywhere text lives; the swarm reads as a faint shimmer.
+   Both selectors keep the [dir='rtl'] rule from outranking the override. */
+@media (max-width: 1023px) {
+  .hero-video-overlay,
+  [dir='rtl'] .hero-video-overlay {
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.96) 0%,
+      rgba(255, 255, 255, 0.95) 55%,
+      rgba(255, 255, 255, 0.88) 75%,
+      var(--color-paper) 100%
+    );
+  }
+}
+@media (min-width: 640px) and (prefers-reduced-motion: no-preference) {
+  .hero-video {
+    display: block;
+    opacity: 0;
+    animation: hero-video-in 0.9s ease-out 0.15s forwards;
+  }
+}
+@keyframes hero-video-in {
+  to {
+    opacity: 1;
+  }
+}
+
 /* ---------------------------------------------------- simulated demo panel */
 .demo {
   position: relative;
