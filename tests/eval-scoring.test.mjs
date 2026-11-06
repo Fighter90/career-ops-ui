@@ -218,7 +218,7 @@ test('LOCALE-NEUTRAL SCORING INPUT (CAR-239): the full scoring prompt hashes to 
   const LOCALES = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr', 'hi', 'ta', 'vi'];
   const jd = 'Backend Engineer at ExampleCorp. Go, Kubernetes, 450000 RUB/mo.';
   const hashes = new Set();
-  for (const lang of LOCALES) {
+  for (const _lang of LOCALES) {
     // The locale exists only on the render step; the scoring parts are the
     // bytes the provider sees for EVERY locale (ctx is EN-pinned upstream).
     const { stable, volatile } = buildScoringPromptParts(jd);

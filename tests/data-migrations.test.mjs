@@ -333,7 +333,7 @@ test('branch tails: string resolvers, same-company resolutions, default columns,
   const ru = [
     '| № | Дата | Компания | Роль | Оценка | Статус | PDF | Отчёт | Заметки |',
     '|---|------|----------|------|--------|--------|-----|-------|---------|',
-    headerless.replace('| 9 |', '| 9 |'),
+    headerless, // the RU fixture already carries the padded '| 9 |' num cell
   ].join('\n');
   assert.equal(scanTrackerCompanyIssues(ru, () => ({ company: 'Netwrk', source: 'report' }))[0].fixed, 'Netwrk');
   // An unreadable "report file" (a directory wearing a .md name) is skipped.

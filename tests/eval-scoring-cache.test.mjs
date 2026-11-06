@@ -99,7 +99,6 @@ after(() => {
   stub?.close();
 });
 
-const scoreOf = (md) => Number((md.match(/\*\*Score:\*\* ([\d.]+)\/5/) || [])[1]);
 
 test('key ingredients: deterministic, whitespace-normalized, sensitive to every input', () => {
   const { scoringCacheKey } = scoringCache;

@@ -28,7 +28,6 @@
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { BENIGN_CONSOLE } from './helpers/console-noise.mjs';
 import { realConsoleErrors } from './helpers/console-noise.mjs';
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';

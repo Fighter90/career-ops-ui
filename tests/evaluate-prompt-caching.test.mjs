@@ -239,7 +239,7 @@ test('two /api/evaluate calls with different JDs send byte-identical cached pref
     // byte-identical across different JDs for BOTH steps — so the provider
     // cache covers every locale and every posting after the first call.
     // Call order: [scoreA ×3 samples, renderA, scoreB ×3, renderB].
-    const [scoreA, scoreA2, scoreA3, renderA, scoreB, scoreB2, scoreB3, renderB] = sent.map((b2) => b2.messages[0].content[0].text);
+    const [scoreA, scoreA2, scoreA3, renderA, scoreB, , , renderB] = sent.map((b2) => b2.messages[0].content[0].text);
     assert.equal(scoreA, scoreA2, 'the sample batch shares one prefix (parallel samples, one cached prefix)');
     assert.equal(scoreA, scoreA3);
     assert.equal(scoreA, scoreB, 'scoring prefix byte-identical across JDs');
