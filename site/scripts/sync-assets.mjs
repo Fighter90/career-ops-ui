@@ -243,7 +243,13 @@ for (const [lang, { file, entries }] of clSources) {
   const chunks = chunkByWeight(releases);
   clIndex[lang] = { pages: chunks.length, months: buildMonthIndex(chunks) };
   chunks.forEach((chunk, p) => {
-    const body = chunk.map((r) => r.lines.join('\n')).join('\n');
+    let body = chunk.map((r) => r.lines.join('\n')).join('\n');
+    // Review v1.269 — the EN master's `# Changelog` H1 sits BELOW the README-style
+    // lead (line ~21), so the anchored stripLeadingH1 never sees it; it rode into
+    // page 1 and rendered a SECOND <h1> next to the page's own (check-dist red on
+    // every build since the lead was prepended). The Astro page owns the h1 —
+    // drop any duplicate top-level title line wherever it sits in the chunk.
+    body = body.replace(/^#\s+Changelog\s*\n+/m, '');
     const footer = `\n\n---\n\n*career-ops-ui v${SITE_VERSION} · page ${p + 1}/${chunks.length} · mirror of the project changelog for cvstart.org*`;
     writeFileSync(join(clDst, `${lang}-p${String(p + 1).padStart(2, '0')}.md`), rewriteRootLinks(`${body.trimStart()}\n${footer}\n`));
   });
