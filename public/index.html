@@ -21,6 +21,9 @@
          is byte-for-byte identical to the pre-split single file. -->
     <link rel="stylesheet" href="/css/app.css" />
     <link rel="stylesheet" href="/css/components.css" />
+    <!-- CAR-237 — #/tracker «Воронка» board (after the base components; the
+         funnel-* namespace only). -->
+    <link rel="stylesheet" href="/css/kanban.css" />
     <link rel="stylesheet" href="/css/overlays.css" />
     <!-- CAR-116 — #/pipeline v2 (enriched cards, groups, bulk + undo) -->
     <link rel="stylesheet" href="/css/v2-pipeline.css" />
@@ -466,6 +469,8 @@
     <script src="/js/lib/url-key.js"></script>
     <script src="/js/lib/job-facets.js"></script>
     <script src="/js/lib/tracker-stages.js"></script>
+    <!-- CAR-237 — the «Воронка» board engine; tracker.js wires it below. -->
+    <script src="/js/lib/tracker-kanban.js"></script>
     <script src="/js/lib/tracker-import.js"></script>
     <script src="/js/lib/focus-preserve.js"></script>
     <script src="/js/lib/status-class.js"></script>
