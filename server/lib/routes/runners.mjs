@@ -22,8 +22,20 @@ import { PATHS, PROJECT_ROOT, path as projPath } from '../paths.mjs';
 import { runTrackedScript, streamNodeScript } from '../runner.mjs';
 import { withFileLock } from '../file-lock.mjs';
 import { sanitizePathName } from '../security.mjs';
-import { scanReportDateMismatches, fixReportHeaderDate, scanTrackerCompanyIssues, applyTrackerCompanyFix } from '../data-migrations.mjs';
-import { extractCellUrl } from '../parsers.mjs';
+import {
+  scanReportDateMismatches,
+  fixReportHeaderDate,
+  scanTrackerCompanyIssues,
+  applyTrackerCompanyFix,
+  companyFromReportH1,
+  atsCompanyFromUrl,
+} from '../data-migrations.mjs';
+import { extractCellUrl, parseMarkdownLinks } from '../parsers.mjs';
+import {
+  extractReportScore,
+  scanTrackerScoreGaps,
+  applyTrackerScoreFix,
+} from '../score-backfill.mjs';
 import { writeRateLimit } from '../rate-limit.mjs';
 import { parseJsonStdout, sanitizeDetail } from '../parent-relay.mjs';
 
@@ -375,46 +387,65 @@ export function registerRunnerRoutes(app) {
     });
   });
 
-  // ─── Data migrations (CAR-232/233) — dry-run default, apply with backup ──
+  // ─── Data migrations (CAR-232/233 + CAR-241/242/243) — dry-run default ──
   // These are in-process (no parent script exists): the surfaces are the
-  // user's reports/ headers and the tracker Company cells. `mode` follows
-  // the report-links contract; `apply` always leaves a timestamped .bak
-  // beside the file it touched.
+  // user's reports/ headers and the tracker Company/Score cells. `mode`
+  // follows the report-links contract; `apply` always leaves a timestamped
+  // .bak beside the file it touched.
 
   const REPORTS_DIR = PATHS.reportsDir;
   const backupName = (file) => `${file}.bak-${new Date().toISOString().replace(/[:.]/g, '-')}`;
 
-  function resolveReportCompany(cellValue) {
-    // Review v1.268.1 — the tracker's canonical link form is a RELATIVE
-    // repo link (`[7](reports/007-…)` / `[7](../reports/007-…)`); for those
-    // extractCellUrl returns the whole cell (it only unwraps http(s) hrefs),
-    // so the basename check below always failed and company-fix could never
-    // resolve a company on real data. Parse the markdown link first, then
-    // fall back to extractCellUrl for the absolute-URL forms.
-    const md = String(cellValue ?? '').match(/\[[^\]]*\]\(([^)]+)\)/);
-    const href = (md ? md[1] : extractCellUrl(cellValue)) || '';
-    const base = String(href).split('/').pop();
-    if (!/^\w[\w.-]*\.md$/.test(base)) return null;
+  /**
+   * CAR-242 — read the report a tracker Report cell points at. The cell's
+   * markdown link is parsed with the shared link parser (relative repo
+   * links `../reports/…`, nested parens in slugs, non-ASCII basenames —
+   * the old ASCII-only gate and the naive `[^)]+` capture both failed real
+   * prod rows). Returns { text } or { reason }: 'no-report' | 'report-missing'
+   * | 'report-unreadable'. Only basenames inside reports/ resolve — a cell
+   * pointing elsewhere never escapes the directory.
+   */
+  function readReportCell(cellValue) {
+    const links = parseMarkdownLinks(String(cellValue ?? ''));
+    const link = links.find((l) => /\.md$/i.test(String(l.target).split(/[?#]/)[0]));
+    if (!link) return { reason: 'no-report' };
+    const base = String(link.target).split(/[?#]/)[0].split('/').pop();
+    if (!/\.md$/i.test(base) || /[\\/]/.test(base) || base.startsWith('.')) return { reason: 'no-report' };
     const file = resolve(REPORTS_DIR, base);
-    if (!existsSync(file)) return null;
-    const text = readFileSync(file, 'utf8');
-    const h1 = text.split('\n').find((l) => /^#\s+(?:Evaluation|Оценка вакансии)?[:\s]/.test(l) || /^#\s+Evaluation/.test(l));
-    if (!h1) return null;
-    // The header convention: `# Evaluation: {Company} — {Role}` (a localized
-    // prose label was already stripped when the report was saved). The
-    // company is the LEFT side of the em dash; a one-part header names the
-    // company only when the report's own header says so (fixReportDate-era
-    // files carry the full two-part shape).
-    const body = h1.replace(/^#\s+/, '').replace(/^Evaluation:\s*/i, '').replace(/^Оценка вакансии:\s*/i, '').trim();
-    if (!body) return null;
-    // Review v1.268.1 — prefer the em dash; a bare `-` splits only when the
-    // left side is the longer half (a one-part "ACME-Global" header must not
-    // truncate to "ACME").
-    const emDash = body.indexOf('—');
-    if (emDash > 0) return body.slice(0, emDash).replace(/\*\*/g, '').trim();
-    const hyphen = body.indexOf('-');
-    if (hyphen > 0 && hyphen * 2 > body.length) return body.slice(0, hyphen).replace(/\*\*/g, '').trim();
-    return body.replace(/\*\*/g, '').trim();
+    if (!existsSync(file)) return { reason: 'report-missing' };
+    try {
+      return { text: readFileSync(file, 'utf8') };
+    } catch {
+      return { reason: 'report-unreadable' };
+    }
+  }
+
+  /**
+   * The employer for a tracker row: the report H1 first (localized labels,
+   * any dash variant), then the ATS tenant slug of the row's posting URL.
+   * Returns { company, source: 'report' | 'ats' } or { reason }.
+   */
+  function resolveCompany(reportCell, urlCell) {
+    const rep = readReportCell(reportCell);
+    if (rep.text) {
+      const fromReport = companyFromReportH1(rep.text);
+      if (fromReport) return { company: fromReport, source: 'report' };
+    }
+    const fromAts = atsCompanyFromUrl(extractCellUrl(urlCell));
+    if (fromAts) return { company: fromAts, source: 'ats' };
+    return {
+      reason: rep.reason === 'report-missing' || rep.reason === 'report-unreadable'
+        ? rep.reason
+        : (rep.text ? 'no-company-in-report' : 'no-report'),
+    };
+  }
+
+  /** The report's global score for a Score-cell backfill ({ score } | { reason }). */
+  function resolveScore(reportCell) {
+    const rep = readReportCell(reportCell);
+    if (!rep.text) return { score: null, reason: rep.reason };
+    const score = extractReportScore(rep.text);
+    return score != null ? { score } : { score: null, reason: 'no-score-in-report' };
   }
 
   app.post('/api/runners/report-dates', writeRateLimit(), async (req, res) => {
@@ -423,21 +454,29 @@ export function registerRunnerRoutes(app) {
     if (mode !== 'dry-run' && mode !== 'apply') {
       return res.status(400).json({ error: "mode must be 'dry-run' or 'apply'" });
     }
-    const mismatches = scanReportDateMismatches(REPORTS_DIR);
+    // CAR-241 — the scan reads the header date line in every UI locale
+    // (reportDateLine) and reports the files it could not reconcile in
+    // `skipped` instead of silently dropping them.
+    const { rows: mismatches, skipped } = scanReportDateMismatches(REPORTS_DIR);
     if (mode === 'dry-run' || !mismatches.length) {
-      return res.json({ mode, count: mismatches.length, rows: mismatches });
+      return res.json({ mode, count: mismatches.length, rows: mismatches, skipped });
     }
+    const stamp = new Date().toISOString().replace(/[:.]/g, '-');
     const applied = [];
     for (const m of mismatches) {
       const file = resolve(REPORTS_DIR, m.file);
       try {
         const text = readFileSync(file, 'utf8');
         const fixed = fixReportHeaderDate(text, m.fileDate);
-        if (!fixed) continue;
-        // Review v1.268.1 — one timestamped backup per run (not per file) and
+        if (!fixed) {
+          applied.push({ ...m, applied: false, error: 'date line vanished' });
+          continue;
+        }
+        // Review v1.268.1 — a timestamped backup BESIDE the touched file and
         // an atomic temp-then-rename write (the CAR-173 convention): a crash
-        // mid-write must never leave a half-written report.
-        writeFileSync(backupName(REPORTS_DIR), JSON.stringify({ [m.file]: text }), 'utf8');
+        // mid-write must never leave a half-written report. (The v1.268.0
+        // run wrote one JSON blob named after the whole directory — fixed.)
+        writeFileSync(`${file}.bak-${stamp}`, text);
         const tmp = `${file}.tmp`;
         writeFileSync(tmp, fixed);
         renameSync(tmp, file);
@@ -446,7 +485,7 @@ export function registerRunnerRoutes(app) {
         applied.push({ ...m, applied: false, error: e.message });
       }
     }
-    res.json({ mode, count: applied.filter((a) => a.applied).length, rows: applied });
+    res.json({ mode, count: applied.filter((a) => a.applied).length, rows: applied, skipped });
   });
 
   app.post('/api/runners/company-fix', writeRateLimit(), async (req, res) => {
@@ -457,20 +496,54 @@ export function registerRunnerRoutes(app) {
     }
     const run = () => {
       let text = '';
-      try { text = readFileSync(PATHS.applications, 'utf8'); } catch { return { mode, count: 0, rows: [] }; }
-      const issues = scanTrackerCompanyIssues(text, resolveReportCompany);
-      if (mode === 'dry-run') return { mode, count: issues.length, rows: issues };
+      try { text = readFileSync(PATHS.applications, 'utf8'); } catch { return { mode, count: 0, rows: [], unresolved: [] }; }
+      const issues = scanTrackerCompanyIssues(text, resolveCompany);
+      // CAR-242 — rows the resolver could not name are reported with their
+      // reason, never guessed and never silently dropped.
+      const unresolved = issues.filter((i) => !i.fixed)
+        .map((i) => ({ num: i.num, line: i.line, reason: i.unresolvedReason || i.reason }));
+      if (mode === 'dry-run') return { mode, count: issues.length, rows: issues, unresolved };
       const { text: fixedText, changed } = applyTrackerCompanyFix(text, issues);
-      if (!changed) return { mode, count: issues.length, rows: issues };
+      if (!changed) return { mode, count: issues.length, rows: issues, unresolved };
       // Review v1.268.1 — timestamped backup + atomic temp-then-rename
       // (a crash mid-write must never leave a half-written tracker).
       writeFileSync(backupName(PATHS.applications), text);
       const tmpTracker = `${PATHS.applications}.tmp`;
       writeFileSync(tmpTracker, fixedText);
       renameSync(tmpTracker, PATHS.applications);
-      return { mode, count: issues.length, changed, rows: issues };
+      return { mode, count: issues.length, changed, rows: issues, unresolved };
     };
     // apply rewrites data/applications.md — under the tracker's own lock.
+    const payload = mode === 'apply' ? await withFileLock(PATHS.applications, run) : run();
+    res.json(payload);
+  });
+
+  // ─── CAR-243 — score-backfill: sentinel Score cells whose report carries
+  // the number. The machine surfaces (SCORE_SUMMARY block, Machine-Summary
+  // yaml, localized bold score labels) are the only sources — a score is
+  // never invented. Same contract as company-fix: dry-run default, apply
+  // rewrites ONLY the Score cell under the tracker lock with a .bak.
+  app.post('/api/runners/score-backfill', writeRateLimit(), async (req, res) => {
+    const body = (req.body && typeof req.body === 'object') ? req.body : {};
+    const mode = body.mode === undefined ? 'dry-run' : body.mode;
+    if (mode !== 'dry-run' && mode !== 'apply') {
+      return res.status(400).json({ error: "mode must be 'dry-run' or 'apply'" });
+    }
+    const run = () => {
+      let text = '';
+      try { text = readFileSync(PATHS.applications, 'utf8'); } catch { return { mode, count: 0, rows: [], unresolved: [] }; }
+      const gaps = scanTrackerScoreGaps(text, resolveScore);
+      const unresolved = gaps.filter((g) => !g.fixed)
+        .map((g) => ({ num: g.num, line: g.line, reason: g.unresolvedReason || 'no-report' }));
+      if (mode === 'dry-run') return { mode, count: gaps.length, rows: gaps, unresolved };
+      const { text: fixedText, changed } = applyTrackerScoreFix(text, gaps);
+      if (!changed) return { mode, count: gaps.length, rows: gaps, unresolved };
+      writeFileSync(backupName(PATHS.applications), text);
+      const tmpTracker = `${PATHS.applications}.tmp`;
+      writeFileSync(tmpTracker, fixedText);
+      renameSync(tmpTracker, PATHS.applications);
+      return { mode, count: gaps.length, changed, rows: gaps, unresolved };
+    };
     const payload = mode === 'apply' ? await withFileLock(PATHS.applications, run) : run();
     res.json(payload);
   });

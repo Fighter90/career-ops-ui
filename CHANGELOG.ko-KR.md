@@ -10,6 +10,30 @@
 
 ---
 
+## [1.268.1] — 2026-11-06
+
+### 수정
+
+- **결정론적 스코어링 (CAR-239)** — evaluate 점수는 SERVER가 앵커된 정수 하위 점수로부터 계산합니다(모델 자신의 총점은 무시됨); 시딩을 지원하는 프로바이더에는 temperature 0 + 고정 시드(EVAL_SCORE_SEED), 그 외에는 중앙값 자기일관성(EVAL_SCORE_SAMPLES=3); header+JD+CV+profile+model을 키로 하는 스코어링 캐시가 반복 실행을 정확하게 만듭니다. 동일한 JD × 19개 로캘은 이제 0.0 이내로 채점됩니다(게이트 ≤ 0.5); 캐시를 사용한 반복은 정확히 일치합니다.
+- **프롬프트 캐시 관측 가능성 (CAR-240)** — evaluate usage가 단계별 `steps[]`(in/out/cached/cost/durationMs)를 실어 나릅니다; `/api/usage`가 윈도별 `cachedIn` + `cacheHitRate`를 추가하고; `#/usage`가 캐시 열과 적중률을 보여줍니다.
+- **마이그레이션 러너 (CAR-241/242/243)** — report-dates는 이제 로컬라이즈된 헤더 날짜 ×19를 읽습니다(이전 스캔은 영어 `**Date:**` 라벨만 매칭했으므로 프로덕션에서 368건 중 0건이었습니다); company-fix는 로컬라이즈된 보고서 H1(×19 라벨, 두 대시 변형 모두)과 ATS URL 슬러그에서 고용주를 해석하고 `source` + `unresolved`를 사유와 함께 보고합니다; 새로운 score-backfill 러너는 보고서의 머신 표면에서 누락된 트래커 점수를 채웁니다(세 러너 모두 dry-run 기본, `.bak`, 원자적 이름 변경).
+- **CodeQL 경고 웨이브 (21)** — 다항식 정규식 발견 15건: 모든 SCORE_SUMMARY 소비자를 위한 하나의 선형 `scoreSummaryBlock()` 헬퍼; parseReportHeader/boldScoreValueForm/compactScore의 경계가 잡힌 스캔 표면; buildSlug과 헤더 대시 분할의 입력 상한. 파일 쓰기 상한 3곳(jds/ 캡처 256 KB, 보고서 파일 512 KB). 미사용 변수 노트 4건.
+- **대화 상자 겹침 (CAR-238)** — 닫기 ✕가 대화 상자 헤더에 절대 위치로 배치됩니다; 제목은 모서리를 예약하고 줄바꿈됩니다. 스캔 빠른 보기와 모든 UI.modal 대화 상자를 커버합니다(RTL 미러 포함).
+- **SPA 위생 (CAR-244)** — 실시간 p50/p90 ETA가 낡은 «⏱ ~2–4 мин»을 대체합니다(`eval.eta`는 ×19에서 제거); `#/stats`의 트래커 상태 라벨이 ×19 키로 전환되고; pipeline의 «Группами» 토글이 저장되며 동작하고; «서버 다운» 배너는 헬스 체크 실패 또는 ≥2회 연속 실패에서만 뜹니다(단일 실패는 토스트).
+- **node-18 호환성 게이트** — `tests/node18-compat.test.mjs`가 테스트에서 `import.meta.dirname`을 금지합니다(node-18 CI 크래시 두 번이 모두 여기서 비롯되었습니다).
+
+### 추가
+
+- **크기 조절 가능한 사이드바 (CAR-235)** — 사이드바의 inline-end 쪽 경계를 드래그하세요(200–420 px, 저장됨, RTL 인식, 키보드 접근 가능한 분할선, 더블클릭으로 초기화).
+- **성능 프로브 (CAR-236 도구)** — `scripts/remote-qa/perf-probe.mjs`가 가장 뜨거운 프로덕션 엔드포인트의 TTFB/total/bytes를 측정합니다; findings 문서가 느린 경로의 순위를 매깁니다(map/jobs 전체 re-parse, reports cold-miss 폭풍, 트래커 re-parse).
+- **Evals** — `evaluate-locale-parity`와 `evaluate-repeatability` 그레이더(오프라인 스텁은 PASS; 라이브 구간은 배포 후 실행).
+
+### 참고
+
+- 프로덕션의 마이그레이션 데이터는 수정되지 않았습니다 — 러너는 기본적으로 dry-run입니다; apply는 미리보기를 검토한 뒤 수행하는 소유자 작업입니다.
+- 기본 LLM 프로바이더는 변경되지 않았습니다(OpenRouter deepseek 유지; 듀얼 프로바이더 QA 게이트는 비교를 위해 Hermes를 실행합니다).
+- 보고서 길이: v1.268.0은 보고서를 의도적으로 더 간결하게 만들었습니다(블록별 문장 상한); 분석 문서는 render 프롬프트 + 서버 측 JD 아카이브를 통해 깊이를 복원할 것을 권장합니다 — 다음 릴리스에서 추적되며, 여기서 조용히 변경되지는 않았습니다.
+
 ## [1.268.0] — 2026-11-05
 
 ### 변경

@@ -71,8 +71,9 @@ Router.register('usage', async () => {
       panel.appendChild(c('p', { style: { color: 'var(--foggy)' } }, t('usage.emptyWindow', 'No generations in this window.')));
       return;
     }
-    const head = c('tr', null, [t('usage.colProvider', 'Provider'), t('usage.colCalls', 'Calls'), t('usage.colIn', 'Input tokens'), t('usage.colOut', 'Output tokens'), t('usage.colCost', 'Est. cost')]
+    const head = c('tr', null, [t('usage.colProvider', 'Provider'), t('usage.colCalls', 'Calls'), t('usage.colIn', 'Input tokens'), t('usage.colOut', 'Output tokens'), t('usage.cacheIn', 'From cache'), t('usage.cacheRate', 'Cache hit'), t('usage.colCost', 'Est. cost')]
       .map((h, i) => c('th', { style: i ? { textAlign: 'end' } : null }, h)));
+    const pct = (cached, input) => (input > 0 ? Math.round((100 * (Number(cached) || 0)) / input) + '%' : '—');
     const rows = w.providers.map((p) => c('tr', null, [
       // v1.216.0 — brand monogram + friendly label beside each provider.
       c('td', null, c('span', { style: { display: 'inline-flex', alignItems: 'center', gap: '7px' } }, [
@@ -82,6 +83,9 @@ Router.register('usage', async () => {
       c('td', { style: { textAlign: 'end', fontVariantNumeric: 'tabular-nums' } }, nf.format(p.calls)),
       c('td', { style: { textAlign: 'end', fontVariantNumeric: 'tabular-nums' } }, nf.format(p.in)),
       c('td', { style: { textAlign: 'end', fontVariantNumeric: 'tabular-nums' } }, nf.format(p.out)),
+      // CAR-240 — cached-prompt tokens + the per-provider hit rate.
+      c('td', { style: { textAlign: 'end', fontVariantNumeric: 'tabular-nums' } }, nf.format(Number(p.cached) || 0)),
+      c('td', { style: { textAlign: 'end', fontVariantNumeric: 'tabular-nums' } }, pct(p.cached, p.in)),
       c('td', { style: { textAlign: 'end', fontVariantNumeric: 'tabular-nums', fontWeight: '600' } }, money(p.usd)),
     ]));
     const total = c('tr', { style: { borderTop: '2px solid var(--line, #e5e8ef)', fontWeight: '700' } }, [
@@ -89,6 +93,9 @@ Router.register('usage', async () => {
       c('td', { style: { textAlign: 'end', fontVariantNumeric: 'tabular-nums' } }, nf.format(w.calls)),
       c('td', { style: { textAlign: 'end', fontVariantNumeric: 'tabular-nums' } }, nf.format(w.totalIn)),
       c('td', { style: { textAlign: 'end', fontVariantNumeric: 'tabular-nums' } }, nf.format(w.totalOut)),
+      c('td', { style: { textAlign: 'end', fontVariantNumeric: 'tabular-nums' } }, nf.format(Number(w.cachedIn) || 0)),
+      c('td', { style: { textAlign: 'end', fontVariantNumeric: 'tabular-nums' } },
+        Number.isFinite(w.cacheHitRate) ? Math.round(w.cacheHitRate * 100) + '%' : '—'),
       c('td', { style: { textAlign: 'end', fontVariantNumeric: 'tabular-nums' } }, money(w.totalUsd)),
     ]);
     panel.appendChild(c('div', { className: 'table-wrap' }, c('table', { className: 'tbl' }, [c('thead', null, head), c('tbody', null, [...rows, total])])));

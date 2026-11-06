@@ -7,21 +7,21 @@
 
 _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-7510%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-7602%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.268.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.268.0)
+[![release](https://img.shields.io/badge/release-v1.268.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.268.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versión — v1.268.0** — cuatro nuevas fuentes de escaneo — GermanTechJobs, Darwinbox, Keka, ApplicantPro/isolved (registro 129 = 124 EN + 5 RU) — reutilización de respuestas por ETag, fechas en cuatro tableros, una clave mal escrita de portals.yml ahora falla alto, getro pasa junto a los pines viejos (parent-sync @ 7d8feb6d). Tests 7096 → 7243.
+> **🆕 Última versión — v1.268.1** — puntuación determinista (CAR-239): la nota la calcula el SERVIDOR a partir de subpuntuaciones enteras ancladas con temperature 0 + semilla fija — el mismo JD converge dentro de 0.0 en las 19 locales; observabilidad de la caché de prompt (CAR-240), runners de migración de datos ×19 (CAR-241/242/243), barra lateral redimensionable (CAR-235). Tests 7510.
 
 
 >
-> **Anterior — v1.267.2** — personio language-dedup (CAR-223): las versiones de idioma de una oferta sobreviven al dedup tras scan_history.dedup_include_language, orden por preferred_languages, filas por idioma en personio/recruitee. Tests 7096 → 7203.
+> **Anterior — v1.268.0** — cuatro nuevas fuentes de escaneo — GermanTechJobs, Darwinbox, Keka, ApplicantPro/isolved (registro 129 = 124 EN + 5 RU) — reutilización de respuestas por ETag, fechas en cuatro tableros, una clave mal escrita de portals.yml ahora falla alto, getro pasa junto a los pines viejos (parent-sync @ 7d8feb6d). Tests 7096 → 7243.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

@@ -9,6 +9,31 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 ---
 
 
+## [1.268.1] — 2026-11-06
+
+### Rettet
+
+- **Deterministisk scoring (CAR-239)** — evaluate-scoren beregnes af SERVEREN ud fra ankrede heltals-subscores (modellens egen total ignoreres); temperature 0 + fast seed (EVAL_SCORE_SEED) for providers med seeding, ellers median selv-konsistens (EVAL_SCORE_SAMPLES=3); en scoring-cache nøglet på header+JD+CV+profile+model gør gentagelser eksakte. Én JD × 19 locales scorer nu inden for 0.0 (gate ≤ 0.5); gentagelser er eksakte med cachen.
+- **Prompt-cache-observerbarhed (CAR-240)** — evaluate-usage bærer per-trin `steps[]` (in/out/cached/cost/durationMs); `/api/usage` tilføjer `cachedIn` + `cacheHitRate` pr. vindue; `#/usage` viser cache-kolonnen og hit-%.
+- **Migrations-runners (CAR-241/242/243)** — report-dates læser nu LOKALISEREDE header-datoer ×19 (det gamle scan matchede kun den engelske `**Date:**`-etiket, derfor 0 af 368 på prod); company-fix opløser arbejdsgiveren fra lokaliserede rapport-H1'er (×19-etiketter, begge streg-varianter) og fra ATS-URL-slug'en, og rapporterer `source` + `unresolved` med begrundelser; NY score-backfill-runner fylder manglende tracker-scores fra rapportens maskinflade (dry-run som standard, `.bak`, atomar rename på alle tre).
+- **CodeQL-alarmbølge (21)** — 15 fund af polynomielle regexes: ÉN lineær `scoreSummaryBlock()`-hjælper for hver SCORE_SUMMARY-forbruger; afgrænsede scan-flader i parseReportHeader/boldScoreValueForm/compactScore; afgrænsede inputs i buildSlug og headerens streg-split. 3 afgrænsede filskrivninger (jds/-capture 256 KB, rapportfiler 512 KB). 4 unused-var-noter.
+- **Dialog-overlap (CAR-238)** — lukke-✕'en er absolut positioneret i dialog-headeren; titler reserverer hjørnet og ombrydes. Dækker scan-quick-view og hver UI.modal-dialog (RTL-spejlinger).
+- **SPA-hygiejne (CAR-244)** — den levende p50/p90-ETA erstatter den forældede «⏱ ~2–4 мин» (`eval.eta` fjernet ×19); tracker-statusetiketterne på `#/stats` er nøglede ×19; pipeline-«Группами»-toggle gemmes og virker; «server nede»-banneret rejser sig kun ved en fejlet health check eller ≥2 sammenhængende fejl (en enkelt fejl er en toast).
+- **Node-18-kompatibilitets-gate** — `tests/node18-compat.test.mjs` forbyder `import.meta.dirname` i tests (to node-18-CI-crashes kom fra den).
+
+### Tilføjet
+
+- **Resizable sidebar (CAR-235)** — træk sidebarrens inline-end-kant (200–420 px, persistert, RTL-bevidst, tastaturtilgængelig separator, dobbeltklik nulstiller).
+- **Perf-probe (CAR-236-værktøj)** — `scripts/remote-qa/perf-probe.mjs` måler TTFB/total/bytes for de varmeste prod-endpoints; fund-dokumentet rangerer de langsomme stier (fuld re-parse på map/jobs, cold-miss-storme på reports, tracker re-parse).
+- **Evals** — `evaluate-locale-parity`- og `evaluate-repeatability`-graderne (offline stub PASS; live-benene kører efter deploy).
+
+### Noter
+
+- Migrationsdata på prod blev IKKE ændret — runnerne er dry-run som standard; apply er en ejerhandling efter gennemgang af previewet.
+- Standard-LLM-provideren blev IKKE ændret (OpenRouter deepseek forbliver; dual-provider-QA-gaten kører Hermes til sammenligning).
+- Rapportlængde: v1.268.0 gjorde rapporterne bevidst magrere (per-blok sætningslofter); analysedokumentet anbefaler at genskabe dybden via render-prompten + server-side JD-arkiv — taget til næste udgivelse, ikke lydløst ændret her.
+
+
 ## [1.268.0] — 2026-11-05
 
 ### Ændret

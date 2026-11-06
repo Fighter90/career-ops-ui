@@ -1,3 +1,23 @@
+## [1.268.1] — 2026-11-06
+
+### Fixed
+- **Deterministic scoring (CAR-239)** — the evaluate score is computed by the SERVER from anchored integer sub-scores (the model's own total is ignored); temperature 0 + fixed seed (EVAL_SCORE_SEED) for seeding providers, median self-consistency (EVAL_SCORE_SAMPLES=3) otherwise; a scoring cache keyed by header+JD+CV+profile+model makes repeats exact. One JD × 19 locales now scores within 0.0 (gate ≤ 0.5); repeats are exact with the cache.
+- **Prompt-cache observability (CAR-240)** — evaluate usage carries per-step `steps[]` (in/out/cached/cost/durationMs); `/api/usage` adds `cachedIn` + `cacheHitRate` per window; `#/usage` shows the cache column and hit %.
+- **Migration runners (CAR-241/242/243)** — report-dates now reads LOCALIZED header dates ×19 (the old scan matched only the English `**Date:**` label, hence 0 of 368 on prod); company-fix resolves the employer from localized report H1s (×19 labels, both dash variants), from the ATS URL slug, and reports `source` + `unresolved` with reasons; NEW score-backfill runner fills missing tracker scores from the report's machine surface (dry-run default, `.bak`, atomic rename on all three).
+- **CodeQL alert wave (21)** — 15 polynomial-regex findings: ONE linear `scoreSummaryBlock()` helper for every SCORE_SUMMARY consumer; bounded scan surfaces in parseReportHeader/boldScoreValueForm/compactScore; capped inputs in buildSlug and the header dash-split. 3 bounded file writes (jds/ capture 256 KB, report files 512 KB). 4 unused-var notes.
+- **Dialog overlap (CAR-238)** — the close ✕ is absolutely positioned in the dialog header; titles reserve the corner and wrap. Covers the scan quick-view and every UI.modal dialog (RTL mirrors).
+- **SPA hygiene (CAR-244)** — the live p50/p90 ETA replaces the stale «⏱ ~2–4 мин» (`eval.eta` removed ×19); the tracker status labels on `#/stats` are keyed ×19; the pipeline «Группами» toggle persists and works; the «server down» banner rises only on a failed health check or ≥2 consecutive failures (a single failure is a toast).
+- **Node-18 compat gate** — `tests/node18-compat.test.mjs` forbids `import.meta.dirname` in tests (two node-18 CI crashes came from it).
+
+### Added
+- **Resizable sidebar (CAR-235)** — drag the sidebar's inline-end border (200–420 px, persisted, RTL-aware, keyboard-accessible separator, double-click resets).
+- **Perf probe (CAR-236 tooling)** — `scripts/remote-qa/perf-probe.mjs` measures TTFB/total/bytes for the hottest prod endpoints; findings doc ranks the slow paths (map/jobs full re-parse, reports cold-miss storms, tracker re-parse).
+- **Evals** — `evaluate-locale-parity` and `evaluate-repeatability` graders (offline stub PASS; live legs run post-deploy).
+
+### Notes
+- Migration data on prod was NOT modified — the runners are dry-run by default; apply is an owner action after reviewing the preview.
+- The default LLM provider was NOT changed (OpenRouter deepseek remains; the dual-provider QA gate runs Hermes for comparison).
+- Report length: v1.268.0 made reports deliberately leaner (per-block sentence caps); the analysis doc recommends restoring depth via the render prompt + server-side JD archive — tracked for the next release, not silently changed here.
 # Changelog
 
 All notable changes to **career-ops-ui** are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project adheres to [Semantic Versioning](https://semver.org/).

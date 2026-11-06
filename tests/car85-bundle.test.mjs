@@ -227,7 +227,7 @@ test('CLI: a missing script file fails loudly (exit 1, ENOENT on stderr)', async
 
 const REAL_HTML = readFileSync(join(REPO_ROOT, 'public', 'index.html'), 'utf8');
 
-test('real index.html: 101 script tags, 98 bundlable /js/ body scripts (regenerate when the shell changes)', () => {
+test('real index.html: 102 script tags, 99 bundlable /js/ body scripts (regenerate when the shell changes)', () => {
   const all = mod.scanScriptTags(REAL_HTML);
   // CAR-119 — +1: /js/lib/llm-page-kit.js (the shared AI-page template lib).
   // CAR-118 — +1: /js/lib/report-ops.js (the #/reports pure-helper lib).
@@ -237,9 +237,10 @@ test('real index.html: 101 script tags, 98 bundlable /js/ body scripts (regenera
   // FULL-M6 — +3: lib/focus-preserve.js, lib/status-class.js and
   //           lib/report-labels.js (the consolidated client helpers).
   // CAR-181 — +1: /js/lib/tracker-import.js (the #/tracker CSV-import lib).
-  assert.equal(all.length, 101, 'total classic <script src> tags (98 /js/ body + 2 head + 1 leaflet)');
+  // CAR-235 — +1: /js/lib/sidebar-resize.js (the resizable-sidebar lib).
+  assert.equal(all.length, 102, 'total classic <script src> tags (99 /js/ body + 2 head + 1 leaflet)');
   const srcs = mod.extractBundleScripts(REAL_HTML);
-  assert.equal(srcs.length, 98);
+  assert.equal(srcs.length, 99);
   assert.equal(srcs[0], '/js/lib/locales/i18n-dict.en.js');
   assert.equal(srcs[srcs.length - 1], '/js/app.js');
   assert.ok(srcs.includes('/js/lib/i18n.js'));

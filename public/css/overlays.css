@@ -268,15 +268,27 @@
   flex-direction: column;
   box-shadow: var(--shadow-lg);
 }
+/* CAR-238 — the ✕ is absolutely positioned out of the title's flow; the header reserves its room via logical padding (RTL mirrors); titles wrap. */
 .modal-header {
   padding: var(--space-4) var(--space-5);
+  padding-inline-end: calc(var(--space-5) + 52px);
   border-bottom: 1px solid var(--slate);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
 }
-.modal-header h3 { margin: 0; font-size: var(--font-size-lg); font-weight: 700; }
-.modal-close { font-size: var(--font-size-2xl); color: var(--foggy); padding: 0 6px; line-height: 1; }
+.modal-header h3 { margin: 0; font-size: var(--font-size-lg); font-weight: 700; min-width: 0; overflow-wrap: anywhere; }
+.modal-close {
+  font-size: var(--font-size-2xl);
+  color: var(--foggy);
+  padding: 0 6px;
+  line-height: 1;
+  position: absolute;
+  top: 50%;
+  inset-inline-end: var(--space-4);
+  transform: translateY(-50%);
+}
 .modal-close:hover { color: var(--hof); }
 .modal-body {
   padding: var(--space-5);
@@ -676,6 +688,18 @@
   background: linear-gradient(to bottom, transparent, var(--paper));
   pointer-events: none;
 }
+
+/* CAR-235 — drag handle on the sidebar's INLINE-END border (inset-inline-end mirrors under [dir="rtl"]); width rides --sidebar-w; math/persistence in js/lib/sidebar-resize.js. */
+.sidebar-resize {
+  position: fixed; top: 0; bottom: 0;
+  inset-inline-end: calc(100% - var(--sidebar-w) - 3px);
+  width: 6px; z-index: calc(var(--z-sidebar) + 1);
+  cursor: col-resize; touch-action: none; background: transparent;
+}
+.sidebar-resize:hover, .sidebar-resize:focus-visible { background: var(--slate); }
+.sidebar-resize:focus-visible { outline: 2px solid var(--slate); outline-offset: 1px; }
+@media (max-width: 900px) { .sidebar-resize { display: none; } } /* mobile drawer is fixed-width */
+
 .usage-hud {
   position: fixed; inset-inline-start: 0; bottom: 0; z-index: var(--z-hud);
   width: var(--sidebar-w); max-width: 100%;

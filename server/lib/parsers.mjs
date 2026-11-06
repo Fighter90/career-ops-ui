@@ -835,7 +835,10 @@ function boldLabelValue(text, words) {
 // `5/5/2026` can't either (the negative lookahead rejects a denominator followed
 // by another `/` or digit).
 function boldScoreValueForm(text) {
-  const m = String(text).match(
+  // Review v1.268.1 — bound uncontrolled input before the lazy scan
+  // (CodeQL #734): real report headers live in the first lines; 8KB is
+  // far past any legitimate header block.
+  const m = String(text ?? '').slice(0, 8192).match(
     /\*\*[^*\n]+?\*\*[ \t]*[:：]?[ \t]*(\d+(?:[.,]\d+)?[ \t]*\/[ \t]*5(?:[.,]0)?)(?![\d/])/,
   );
   return m ? m[1].replace(/[ \t]+/g, ' ').trim() : '';
@@ -848,6 +851,9 @@ function boldScoreValueForm(text) {
 // fraction, or `<num> / 5` when only a bare number survives.
 function compactScore(raw, num) {
   if (!raw) return raw;
+  // Review v1.268.1 — bound the extracted cell (CodeQL #735/#736); a score
+  // cell beyond 200 chars is not a score cell.
+  raw = String(raw).slice(0, 200);
   if (/^\s*\d+(?:[.,]\d+)?\s*(?:\/\s*\d+(?:[.,]\d+)?)?\s*$/.test(raw)) return raw.trim();
   const frac = String(raw).match(/\d+(?:[.,]\d+)?\s*\/\s*\d+(?:[.,]\d+)?/);
   if (frac) return frac[0].replace(/\s+/g, ' ').trim();
@@ -899,6 +905,11 @@ function toIsoDate(d) {
  * a card never loses its chronological anchor.
  */
 export function parseReportHeader(text, opts = {}) {
+  // Review v1.268.1 — the header (title + **Label:** block) lives in the
+  // report's first lines; bounding the scan surface to the first 64KB is
+  // lossless and clears the CodeQL polynomial-regex cluster on the per-field
+  // matches below (#733/#737) for pathological multi-MB model output.
+  text = String(text ?? '').slice(0, 64 * 1024);
   const out = {
     title: '',
     date: '',
@@ -1024,4 +1035,75 @@ export function slugify(s) {
 export function today() {
   const d = new Date();
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+// ── CAR-241 — the report header's date line, locale-tolerant ────────────────
+// The **Date:** header convention is localized by the model's output language
+// (368 prod reports carry **Дата:** / **Datum:** / **日付:** …), so every
+// consumer of the header date — the report-dates migration above all — must
+// recognize the same fact /api/reports does, for every UI locale. Two passes
+// over the first 15 lines of the report:
+//   1. a known label (REPORT_DATE_LABELS — optional bold, bullet prefix and
+//      fullwidth colon) followed by an ISO date;
+//   2. the generic bold-label shape `**Anything:** YYYY-MM-DD` — the header
+//      convention survives even a label this table doesn't enumerate.
+// Returns { date, lineIndex, lineText, valueStart, valueEnd } — the 0-based
+// line and the value offsets WITHIN the line, so a fixer can rewrite the date
+// value surgically and keep the localized label byte-for-byte. null when the
+// report carries no recognizable header date (nothing to reconcile).
+
+export const REPORT_DATE_LABELS = {
+  en: ['Date'],
+  ru: ['Дата'],
+  uk: ['Дата'],
+  es: ['Fecha'],
+  'pt-BR': ['Data'],
+  fr: ['Date'],
+  de: ['Datum'],
+  it: ['Data'],
+  pl: ['Data'],
+  da: ['Dato'],
+  tr: ['Tarih'],
+  ja: ['日付'],
+  ko: ['날짜'],
+  'zh-CN': ['日期'],
+  'zh-TW': ['日期'],
+  ar: ['التاريخ'],
+  hi: ['दिनांक', 'तारीख'],
+  ta: ['தேதி'],
+  vi: ['Ngày'],
+};
+
+const REPORT_DATE_WINDOW = 15;
+const ISO_DATE = '\\d{4}-\\d{2}-\\d{2}';
+
+// Longest-first so a shorter label can never shadow a longer one.
+const DATE_LABEL_WORDS = [...new Set(Object.values(REPORT_DATE_LABELS).flat())]
+  .sort((a, b) => b.length - a.length);
+
+const KNOWN_LABEL_DATE_RE = new RegExp(
+  '^[ \\t]*(?:[-*][ \\t]*)?\\*{0,2}[ \\t]*(?:'
+  + DATE_LABEL_WORDS.map(escapeReMeta).join('|')
+  + ')[ \\t]*\\*{0,2}[ \\t]*[:：][ \\t]*\\*{0,2}[ \\t]*(' + ISO_DATE + ')',
+  'i',
+);
+const GENERIC_BOLD_DATE_RE = new RegExp('^\\*\\*[^*\\n]+:\\*\\*[ \\t]*(' + ISO_DATE + ')');
+
+function dateLineMatch(lineIndex, lineText, match) {
+  const valueEnd = match.index + match[0].length;
+  return { date: match[1], lineIndex, lineText, valueStart: valueEnd - match[1].length, valueEnd };
+}
+
+export function reportDateLine(text) {
+  const lines = String(text ?? '').split('\n').slice(0, REPORT_DATE_WINDOW);
+  let fallback = null;
+  for (let i = 0; i < lines.length; i += 1) {
+    const known = lines[i].match(KNOWN_LABEL_DATE_RE);
+    if (known) return dateLineMatch(i, lines[i], known);
+    if (!fallback) {
+      const generic = lines[i].match(GENERIC_BOLD_DATE_RE);
+      if (generic) fallback = dateLineMatch(i, lines[i], generic);
+    }
+  }
+  return fallback;
 }

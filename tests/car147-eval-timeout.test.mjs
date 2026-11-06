@@ -81,10 +81,14 @@ test('evalTimeoutMs is a pure function of the lang string', () => {
 
 test('source-static: the two-step evaluate carries per-step ceilings and a ≤300 s render clock (CAR-229/230)', () => {
   const two = readFileSync(resolve('server/lib/eval-two-step.mjs'), 'utf8');
-  // Scoring is a bounded JSON answer: ≤120 s, small budget, pinned temperature.
+  // Scoring is a bounded JSON answer: ≤120 s, small budget, temperature 0
+  // (CAR-239 — a measurement, not a creative step; was 0.1 in v1.268.0).
   assert.match(two, /SCORING_TIMEOUT_MS = 120_000/);
   assert.match(two, /SCORING_MAX_TOKENS = 2000/);
-  assert.match(two, /SCORING_TEMPERATURE = 0\.1/);
+  assert.match(two, /SCORING_TEMPERATURE = 0;/);
+  // CAR-239 determinism knobs exist: the seed + self-consistency helpers.
+  assert.match(two, /export function evalScoreSeed/);
+  assert.match(two, /export function evalScoreSamples/);
   // Render keeps a hard ≤300 s clock — no "eternal" request. The output
   // budget is locale-aware again (review v1.268.1 restored CAR-174):
   // the caller threads evalMaxTokens(lang) (16384 EN / 32768 token-dense);

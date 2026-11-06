@@ -41,6 +41,14 @@ Router.register('pipeline', async () => {
   let entryIndex = new Map();   // url → entry (O(1) row lookup at 30k)
   let trackedKeys = new Set();
   let viewMode = 'flat';        // flipped to 'grouped' at mount when PV loaded
+  // CAR-244.3 — the list/grouped choice persists across visits
+  // (localStorage 'career-ops-ui:pipeView'); setViewMode writes it, the
+  // mount call below reads it back. try/catch: private-mode / blocked
+  // storage must never break the view.
+  const PIPE_VIEW_KEY = 'career-ops-ui:pipeView';
+  const savedPipeView = (() => {
+    try { return window.localStorage.getItem(PIPE_VIEW_KEY); } catch { return null; }
+  })();
   const expanded = new Set();   // group keys currently expanded
   const groupBudget = new Map(); // group key → rendered-row budget
   const selected = new Set();   // URLs picked for bulk actions
@@ -148,8 +156,11 @@ Router.register('pipeline', async () => {
     const grouped = viewMode === 'grouped';
     btnGrouped.className = 'btn btn-sm v2-viewbtn' + (grouped ? '' : ' btn-ghost');
     btnFlat.className = 'btn btn-sm v2-viewbtn' + (grouped ? ' btn-ghost' : '');
+    // CAR-244.3 — mutually exclusive aria-pressed (segmented control) ...
     btnGrouped.setAttribute('aria-pressed', grouped ? 'true' : 'false');
     btnFlat.setAttribute('aria-pressed', grouped ? 'false' : 'true');
+    // ... and the choice persists for the next visit.
+    try { window.localStorage.setItem(PIPE_VIEW_KEY, viewMode); } catch { /* storage blocked */ }
     renderAll();
   }
 
@@ -1097,7 +1108,10 @@ Router.register('pipeline', async () => {
   mountReports = (rep0 && Array.isArray(rep0.reports)) ? rep0.reports : [];
   mountMapRows = (map0 && Array.isArray(map0.pipeline)) ? map0.pipeline : [];
   rebuildEntries();
-  setViewMode(PV ? 'grouped' : 'flat');
+  // CAR-244.3 — the saved view choice wins ('flat' persisted); the default
+  // stays grouped when PipelineView is loaded (unchanged behaviour for a
+  // first visit or a storage-blocked browser).
+  setViewMode(PV ? (savedPipeView === 'flat' ? 'flat' : 'grouped') : 'flat');
   renderPreview();
   paintOverview();
 

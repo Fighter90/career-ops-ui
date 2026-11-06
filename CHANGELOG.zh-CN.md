@@ -8,6 +8,29 @@
 
 ---
 
+## [1.268.1] — 2026-11-06
+
+### 修复
+
+- **确定性评分(CAR-239)** — evaluate 的分数由 SERVER 从锚定的整数子分数计算(模型自己的总分被忽略);支持种子的供应商使用 temperature 0 + 固定种子(EVAL_SCORE_SEED),其余采用中位数自一致性(EVAL_SCORE_SAMPLES=3);以 header+JD+CV+profile+model 为键的评分缓存让重复运行完全精确。同一 JD × 19 个语言现在的评分差距在 0.0 以内(门槛 ≤ 0.5);带缓存的重复运行精确一致。
+- **Prompt 缓存可观测性(CAR-240)** — evaluate 的用量携带逐步的 `steps[]`(in/out/cached/cost/durationMs);`/api/usage` 按窗口新增 `cachedIn` + `cacheHitRate`;`#/usage` 显示缓存列与命中率。
+- **数据迁移运行器(CAR-241/242/243)** — report-dates 现在读取本地化的标题日期 ×19(旧扫描只匹配英文 `**Date:**` 标签,因此在生产上是 368 条中的 0 条);company-fix 从本地化的报告 H1(×19 标签、两种破折号变体)和 ATS URL slug 解析雇主,并报告 `source` + `unresolved` 及原因;新的 score-backfill 运行器从报告的机器表面回填缺失的跟踪器分数(三者均为默认 dry-run、`.bak`、原子重命名)。
+- **CodeQL 告警浪潮(21)** — 15 条多项式正则表达式发现:一个线性 `scoreSummaryBlock()` 辅助函数服务所有 SCORE_SUMMARY 消费者;parseReportHeader/boldScoreValueForm/compactScore 的扫描表面加界;buildSlug 与标题破折号拆分的输入封顶。3 处加上限的文件写入(jds/ 捕获 256 KB、报告文件 512 KB)。4 条未使用变量备注。
+- **对话框重叠(CAR-238)** — 关闭 ✕ 绝对定位于对话框头部;标题预留角落并换行。覆盖扫描快速查看与每个 UI.modal 对话框(含 RTL 镜像)。
+- **SPA 卫生(CAR-244)** — 实时 p50/p90 ETA 取代陈旧的 «⏱ ~2–4 мин»(`eval.eta` ×19 移除);`#/stats` 的跟踪器状态标签改为 ×19 键控;pipeline 的 «Группами» 开关可持久化且正常工作;「服务器不可用」横幅只在健康检查失败或连续 ≥2 次失败时升起(单次失败只是 toast)。
+- **node-18 兼容性门禁** — `tests/node18-compat.test.mjs` 禁止在测试中使用 `import.meta.dirname`(node-18 CI 的两次崩溃皆源于此)。
+
+### 新增
+
+- **可调宽侧边栏(CAR-235)** — 拖动侧边栏 inline-end 一侧的边界(200–420 px、持久化、RTL 感知、键盘可访问的分隔条、双击重置)。
+- **性能探针(CAR-236 工具)** — `scripts/remote-qa/perf-probe.mjs` 测量最热门生产端点的 TTFB/total/bytes;findings 文档为慢路径排序(map/jobs 全量重新解析、reports 冷未命中风暴、跟踪器重新解析)。
+- **Evals** — `evaluate-locale-parity` 与 `evaluate-repeatability` 评分器(离线桩为 PASS;在线环节于部署后运行)。
+
+### 备注
+
+- 生产上的迁移数据未被改动 — 运行器默认 dry-run;apply 是审阅预览后的所有者操作。
+- 默认 LLM 供应商未变更(仍为 OpenRouter deepseek;双供应商 QA 门控会运行 Hermes 作对比)。
+- 报告长度:v1.268.0 刻意让报告更精简(逐块句子上限);分析文档建议通过 render 提示词 + 服务器端 JD 归档恢复深度 — 已列入下一版本跟踪,此处未悄然改动。
 
 ## [1.268.0] — 2026-11-05
 

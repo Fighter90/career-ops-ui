@@ -7,21 +7,21 @@
 
 _Неофициальный интерфейс — не аффилирован с career-ops / santifer и не одобрен ими._
 
-[![tests](https://img.shields.io/badge/tests-7510%20passed-brightgreen)](#тесты)
+[![tests](https://img.shields.io/badge/tests-7602%20passed-brightgreen)](#тесты)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.268.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.268.0)
+[![release](https://img.shields.io/badge/release-v1.268.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.268.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Последний релиз — v1.268.0** — четыре новых источника сканирования — GermanTechJobs, Darwinbox, Keka, ApplicantPro/isolved (реестр 129 = 124 EN + 5 RU) — переиспользование ответов борд по ETag, даты на четырёх досках, опечатанный ключ portals.yml теперь падает громко, getro идёт мимо старых закреплённых пинов (parent-sync @ 7d8feb6d). Tests 7096 → 7243.
+> **🆕 Последний релиз — v1.268.1** — детерминированный скоринг (CAR-239): оценку считает СЕРВЕР из якорных целых под-оценок при temperature 0 + фиксированном сиде — один и тот же JD во всех 19 локалях сходится в пределах 0.0; наблюдаемость prompt-кэша (CAR-240), раннеры миграции данных ×19 (CAR-241/242/243), изменяемый сайдбар (CAR-235). Tests 7510.
 
 
 >
-> **Предыдущий релиз — v1.267.2** — personio language-dedup (CAR-223): языковые версии одной вакансии переживают дедуп за scan_history.dedup_include_language, упорядочивание preferred_languages, построчный вывод personio/recruitee. Tests 7096 → 7203.
+> **Предыдущий релиз — v1.268.0** — четыре новых источника сканирования — GermanTechJobs, Darwinbox, Keka, ApplicantPro/isolved (реестр 129 = 124 EN + 5 RU) — переиспользование ответов борд по ETag, даты на четырёх досках, опечатанный ключ portals.yml теперь падает громко, getro идёт мимо старых закреплённых пинов (parent-sync @ 7d8feb6d). Tests 7096 → 7243.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

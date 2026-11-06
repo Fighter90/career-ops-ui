@@ -49,8 +49,8 @@ test('the view never invents payloads — the join lives in the pure lib', () =>
 // ── grouped view: cards, collapse, volume ────────────────────────────
 
 test('grouped view is the default and renders enriched entry cards', () => {
-  assert.match(PIPE, /setViewMode\(PV \? 'grouped' : 'flat'\)/,
-    'grouped cards are the default view when the lib loaded');
+  assert.match(PIPE, /setViewMode\(PV \? \(savedPipeView === 'flat' \? 'flat' : 'grouped'\) : 'flat'\)/,
+    'grouped cards are the default view when the lib loaded (a persisted flat choice wins — CAR-244.3)');
   assert.match(PIPE, /function entryCard\(url\)/);
   // role/company title, URL link, score chip, evaluated chip
   assert.match(PIPE, /className: 'v2-row-title'/);

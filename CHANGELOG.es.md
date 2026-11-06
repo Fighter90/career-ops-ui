@@ -13,6 +13,30 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.268.1] — 2026-11-06
+
+### Corregido
+
+- **Puntuación determinista (CAR-239)** — la nota de evaluate la calcula el SERVIDOR a partir de subpuntuaciones enteras ancladas (el total del propio modelo se ignora); temperature 0 + semilla fija (EVAL_SCORE_SEED) para los proveedores con semilla, autoconsistencia por mediana (EVAL_SCORE_SAMPLES=3) en los demás casos; una caché de scoring con clave header+JD+CV+profile+model hace que las repeticiones sean exactas. Un mismo JD × 19 locales ahora puntúa dentro de 0.0 (puerta ≤ 0.5); las repeticiones son exactas con la caché.
+- **Observabilidad de la caché de prompt (CAR-240)** — el usage de evaluate lleva `steps[]` por paso (in/out/cached/cost/durationMs); `/api/usage` añade `cachedIn` + `cacheHitRate` por ventana; `#/usage` muestra la columna de caché y el porcentaje de aciertos.
+- **Runners de migración (CAR-241/242/243)** — report-dates ahora lee fechas de encabezado LOCALIZADAS ×19 (el escaneo antiguo solo casaba con la etiqueta inglesa `**Date:**`, de ahí 0 de 368 en producción); company-fix resuelve el empleador desde los H1 localizados de los informes (etiquetas ×19, ambas variantes de guion) y desde el slug ATS de la URL, e informa `source` + `unresolved` con sus motivos; el NUEVO runner score-backfill rellena las puntuaciones que faltan en el tracker desde la superficie de máquina del informe (dry-run por defecto, `.bak`, renombrado atómico en los tres).
+- **Ola de alertas de CodeQL (21)** — 15 hallazgos de expresiones regulares polinómicas: UN único helper lineal `scoreSummaryBlock()` para cada consumidor de SCORE_SUMMARY; superficies de escaneo acotadas en parseReportHeader/boldScoreValueForm/compactScore; entradas limitadas en buildSlug y en la división del encabezado por guion. 3 escrituras de archivo acotadas (captura de jds/ 256 KB, archivos de informe 512 KB). 4 notas de variables sin usar.
+- **Solape del diálogo (CAR-238)** — la ✕ de cierre se posiciona de forma absoluta en la cabecera del diálogo; los títulos reservan la esquina y parten en varias líneas. Cubre la vista rápida del scan y todos los diálogos de UI.modal (espejos RTL).
+- **Higiene del SPA (CAR-244)** — la ETA en vivo p50/p90 sustituye al «⏱ ~2–4 мин» caducado (`eval.eta` eliminado ×19); las etiquetas de estado del tracker en `#/stats` pasan a claves ×19; el interruptor «Группами» del pipeline persiste y funciona; el banner de «servidor caído» solo aparece si falla el chequeo de salud o tras ≥2 fallos consecutivos (un único fallo es un toast).
+- **Puerta de compatibilidad con node-18** — `tests/node18-compat.test.mjs` prohíbe `import.meta.dirname` en los tests (dos caídas de CI en node-18 vinieron de él).
+
+### Añadido
+
+- **Barra lateral redimensionable (CAR-235)** — arrastra el borde inline-end de la barra lateral (200–420 px, persistente, consciente de RTL, separador accesible por teclado, doble clic para restaurar).
+- **Sonda de rendimiento (CAR-236, tooling)** — `scripts/remote-qa/perf-probe.mjs` mide TTFB/total/bytes en los endpoints de producción más calientes; el documento de hallazgos clasifica los caminos lentos (re-parse completo en map/jobs, tormentas de cold-miss en reports, re-parse del tracker).
+- **Evals** — los graders `evaluate-locale-parity` y `evaluate-repeatability` (stub offline PASS; las patas en vivo se ejecutan tras el despliegue).
+
+### Notas
+
+- Los datos de migración en producción NO se modificaron — los runners son dry-run por defecto; aplicar es una acción del propietario tras revisar la vista previa.
+- El proveedor LLM por defecto NO cambió (sigue OpenRouter deepseek; la puerta QA de doble proveedor ejecuta Hermes para comparar).
+- Longitud del informe: v1.268.0 dejó los informes deliberadamente más ligeros (topes de frases por bloque); el documento de análisis recomienda recuperar profundidad vía el prompt de render + el archivo JD del servidor — en seguimiento para la próxima versión, sin cambios silenciosos aquí.
+
 ## [1.268.0] — 2026-11-05
 
 ### Cambiado

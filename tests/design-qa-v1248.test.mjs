@@ -6,7 +6,8 @@
  *
  *   1. blocker  tracker statuses translate (tabs + badges) — display only;
  *               canonical value stays canonical in data/filters/URL
- *   2. text     evaluate ETA is honest ("~2–4 min", real runs 86–285 s) ×18
+ *   2. text     evaluate ETA is LIVE (eval.etaHint p50/p90 — CAR-244.1;
+ *               the static eval.eta key was deleted)
  *   3. text     market-report ETA ditto (stats.marketEta) ×18
  *   4. text     evaluate subtitle + scan fit tooltip say A–G (not A–F) ×18
  *   5. a11y     .api-keys__count and the #/pipeline counter chip clear
@@ -129,20 +130,23 @@ test('tracker: labels render through t(); comparisons and tab values stay canoni
 });
 
 // ── 2/3 · honest ETA ────────────────────────────────────────────────────────
-test('ETA: eval.eta and stats.marketEta say ~2–4 min in every locale and never ~30s', () => {
-  for (const key of ['eval.eta', 'stats.marketEta']) {
-    const row = DICT[key];
-    assert.ok(row, `missing dict key ${key}`);
-    for (const lang of I18N_LANGS) {
-      const v = row[lang];
-      assert.ok(v.includes('2–4'), `${lang}: ${key} = "${v}" lacks the 2–4 range`);
-      assert.ok(!/30/.test(v), `${lang}: ${key} = "${v}" still says 30`);
-    }
+// CAR-244.1: the STATIC evaluate ETA (eval.eta) was replaced by the live
+// p50/p90 hint (eval.etaHint); the market report keeps its honest static
+// range (stats.marketEta).
+test('ETA: stats.marketEta says ~2–4 min in every locale and never ~30s; eval.eta is gone', () => {
+  const row = DICT['stats.marketEta'];
+  assert.ok(row, 'missing dict key stats.marketEta');
+  for (const lang of I18N_LANGS) {
+    const v = row[lang];
+    assert.ok(v.includes('2–4'), `${lang}: stats.marketEta = "${v}" lacks the 2–4 range`);
+    assert.ok(!/30/.test(v), `${lang}: stats.marketEta = "${v}" still says 30`);
   }
+  assert.equal(DICT['eval.eta'], undefined, 'CAR-244.1 — the static eval.eta key is deleted ×19');
 });
 
-test('ETA: evaluate renders eval.eta; the market report renders stats.marketEta', () => {
-  assert.match(EVALUATE, /t\('eval\.eta', '~2–4 min'\)/);
+test('ETA: evaluate renders the live eval.etaHint; the market report renders stats.marketEta', () => {
+  assert.match(EVALUATE, /eval\.etaHint/, 'evaluate quotes the REAL p50/p90 hint (CAR-244.1)');
+  assert.ok(!/\beval\.eta\b/.test(EVALUATE), 'the static eval.eta render is gone');
   assert.doesNotMatch(EVALUATE, /advisor\.eta/);
   assert.match(STATS, /t\('stats\.marketEta', '~2–4 min'\)/);
   assert.ok(!STATS.includes("t('common.eta', '~{n}s').replace('{n}', '30')"), 'market report no longer derives ~30s from common.eta');

@@ -160,7 +160,11 @@ test('CAR-92.5: with LLM_PROVIDER=auto the anthropic cascade serves both steps (
   const done = ev.find((e) => e.event === 'done');
   assert.ok(done, 'the run completes');
   assert.equal(done.data.evalMode, 'anthropic');
-  assert.deepEqual(hosts, ['anthropic', 'anthropic'], 'both steps hit anthropic; openai is never called');
+  // CAR-239: anthropic takes no sampling seed, so the scoring step runs
+  // self-consistency — 3 parallel samples (EVAL_SCORE_SAMPLES default) plus
+  // the render call. The cascade still picks ONLY anthropic: 4 hits, 0 openai.
+  assert.equal(hosts.filter((h) => h === 'anthropic').length, 4, '3 scoring samples + 1 render, all anthropic');
+  assert.ok(!hosts.includes('openai'), 'openai is never called');
 });
 
 test('CAR-92.5: mode:"manual" stays always available regardless of the server tier', async () => {
@@ -182,7 +186,9 @@ test('CAR-92.6: closing the connection aborts the upstream provider call (no fur
   // guarantee is "nothing is SENT after the disconnect".
   const providerCalls = [];
   globalThis.fetch = async (u, o = {}) => {
-    if (String(u).includes('api.anthropic.com')) {
+    let host = '';
+    try { host = new URL(String(u)).host; } catch { /* not a URL */ }
+    if (host === 'api.anthropic.com') {
       const sig = o && o.signal;
       const preAborted = Boolean(sig && sig.aborted);
       providerCalls.push({ preAborted });
@@ -221,14 +227,18 @@ test('CAR-92.6: closing the connection aborts the upstream provider call (no fur
   for (let i = 0; i < 40 && !sawAbort; i++) await new Promise((r) => setTimeout(r, 50));
   assert.ok(sawAbort, 'the provider fetch must observe the abort when the client disconnects');
   reader.cancel().catch(() => {});
-  // CAR-229 — the abort reaches the two-step eval: the in-flight scoring call
-  // is the only request ever SENT; any later invocation (the scoring retry,
-  // the render step) observes the route's aborted signal and never reaches
-  // the wire — no further spend after the client hung up.
+  // CAR-229/CAR-239 — the abort reaches the two-step eval: the only requests
+  // ever SENT are the in-flight scoring SAMPLE batch (≤ 3 parallel samples —
+  // anthropic takes no seed, so self-consistency fires them together); every
+  // later invocation (the scoring retry, the render step) observes the
+  // route's aborted signal and never reaches the wire — no further spend
+  // after the client hung up.
   await new Promise((r) => setTimeout(r, 400));
-  assert.ok(providerCalls.length >= 1, 'the in-flight scoring call reached the provider');
-  assert.ok(providerCalls.slice(1).every((c) => c.preAborted),
-    `no provider request may be SENT after the disconnect — got: ${JSON.stringify(providerCalls)}`);
+  const sentCount = providerCalls.filter((c) => !c.preAborted).length;
+  assert.ok(sentCount >= 1 && sentCount <= 3,
+    `only the sample batch (1–3) may be SENT — got ${sentCount}: ${JSON.stringify(providerCalls)}`);
+  assert.ok(providerCalls.some((c) => c.preAborted),
+    'every later invocation observed the abort without sending');
   // No report may be filed for the aborted run (only files from earlier
   // tests in this file may exist).
   await new Promise((r) => setTimeout(r, 200));

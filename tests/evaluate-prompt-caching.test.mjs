@@ -218,7 +218,10 @@ test('two /api/evaluate calls with different JDs send byte-identical cached pref
   try {
     const b1 = await drainDone(JD_A);
     await drainDone(JD_B); // result asserted through `sent` below
-    assert.equal(sent.length, 4, 'two evaluate runs × two steps');
+    // CAR-239: anthropic takes no sampling seed → the scoring step runs
+    // self-consistency with the default 3 parallel samples; each evaluate
+    // run is 3 scoring + 1 render = 4 provider calls, two runs = 8.
+    assert.equal(sent.length, 8, 'two evaluate runs × (3 scoring samples + 1 render)');
 
     // The Anthropic request shape: [cached prefix block, uncached tail block].
     for (const [i, body] of sent.entries()) {
@@ -227,7 +230,7 @@ test('two /api/evaluate calls with different JDs send byte-identical cached pref
       assert.deepEqual(blocks[0].cache_control, { type: 'ephemeral' });
       assert.ok(blocks[0].text.includes('<project_context>'), 'the cached prefix carries the inlined project context');
       assert.ok(blocks[0].text.includes('modes/oferta.md'), '…and the mode files');
-      const jdText = i < 2 ? JD_A.trim() : JD_B.trim();
+      const jdText = i < 4 ? JD_A.trim() : JD_B.trim();
       assert.ok(!blocks[0].text.includes(jdText), `request ${i + 1}: this JD is not inside the cached block`);
       assert.ok(blocks[1].text.includes(jdText), `request ${i + 1}: this JD rides the uncached tail`);
     }
@@ -235,16 +238,19 @@ test('two /api/evaluate calls with different JDs send byte-identical cached pref
     // CAR-111's whole point, now STRONGER: the stable prefixes are
     // byte-identical across different JDs for BOTH steps — so the provider
     // cache covers every locale and every posting after the first call.
-    const [scoreA, renderA, scoreB, renderB] = sent.map((b2) => b2.messages[0].content[0].text);
+    // Call order: [scoreA ×3 samples, renderA, scoreB ×3, renderB].
+    const [scoreA, scoreA2, scoreA3, renderA, scoreB, , , renderB] = sent.map((b2) => b2.messages[0].content[0].text);
+    assert.equal(scoreA, scoreA2, 'the sample batch shares one prefix (parallel samples, one cached prefix)');
+    assert.equal(scoreA, scoreA3);
     assert.equal(scoreA, scoreB, 'scoring prefix byte-identical across JDs');
     assert.equal(renderA, renderB, 'render prefix byte-identical across JDs');
-    assert.notEqual(sent[0].messages[0].content[1].text, sent[1].messages[0].content[1].text, 'the JD tails differ');
+    assert.notEqual(sent[0].messages[0].content[1].text, sent[4].messages[0].content[1].text, 'the JD tails differ across runs (scoreA sample vs scoreB sample)');
     // Cross-step: the shared EN instruction header opens both prefixes.
     assert.equal(scoreA.split('\n\n')[0], renderA.split('\n\n')[0].slice(0, scoreA.split('\n\n')[0].length), 'both steps open with the shared instruction header');
 
-    // Usage fields pass through aggregated: both steps' cache reads sum up.
-    assert.equal(b1.usage.cached, 73998, '36999 × 2 steps');
-    assert.equal(b1.usage.in, 74000);
+    // Usage fields pass through aggregated: every sample's cache read sums up.
+    assert.equal(b1.usage.cached, 36999 * 4, '36999 × (3 scoring samples + 1 render)');
+    assert.equal(b1.usage.in, 37000 * 4);
   } finally {
     server.closeAllConnections?.();
     await new Promise((r) => server.close(r));

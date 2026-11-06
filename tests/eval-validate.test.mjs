@@ -241,3 +241,23 @@ test('eval-validate: a partial uk ordinal sequence is still rejected', () => {
   const partial = ['## А) Один', '## Б) Два'].join('\n');
   assert.ok(validateEvaluationReport(partial).length > 0);
 });
+
+test('scoreSummaryBlock (v1.268.1 linear rewrite) — adversarial inputs match the old regex contract', async () => {
+  const { scoreSummaryBlock, extractSummaryScore } = await import('../server/lib/eval-validate.mjs');
+  // No marker / no END marker → null (the old regex returned null too).
+  assert.equal(scoreSummaryBlock('no block'), null);
+  assert.equal(scoreSummaryBlock('---SCORE_SUMMARY---\nscore: 4.0\nno end'), null);
+  // Inner text between the markers; whitespace is PRESERVED (the regex's
+  // `\s*` consumed leading whitespace only OUTSIDE the capture — the inner
+  // slice keeps it, and summaryScoreValue is anchored so behavior is equal).
+  const inner = scoreSummaryBlock('lead\n---SCORE_SUMMARY---\nscore: 4.0\n---END_SUMMARY---\ntail');
+  assert.equal(inner, '\nscore: 4.0\n');
+  assert.equal(extractSummaryScore('lead\n---SCORE_SUMMARY---\nscore: 4.0\n---END_SUMMARY---\ntail'), 4.0);
+  assert.equal(extractSummaryScore('---SCORE_SUMMARY---\nROLE: Eng\nSCORE: 3,5\n---END_SUMMARY---'), 3.5);
+  // 50k newlines WITHOUT the marker: no rescan, content preserved.
+  const manyNl = '\n'.repeat(50_000) + 'body';
+  assert.equal(scoreSummaryBlock(manyNl), null);
+  // First block wins (no /g in the old regex either).
+  const two = scoreSummaryBlock('---SCORE_SUMMARY---A---END_SUMMARY---' + '---SCORE_SUMMARY---B---END_SUMMARY---');
+  assert.equal(two, 'A');
+});

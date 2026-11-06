@@ -8,6 +8,30 @@
 
 ---
 
+## [1.268.1] — 2026-11-06
+
+### 修復
+
+- **確定性評分(CAR-239)** — evaluate 的分數由 SERVER 從錨定的整數子分數計算(模型自己的總分被忽略);支援種子的供應商使用 temperature 0 + 固定種子(EVAL_SCORE_SEED),其餘採用中位數自一致性(EVAL_SCORE_SAMPLES=3);以 header+JD+CV+profile+model 為鍵的評分快取讓重複執行完全精確。同一 JD × 19 個語言現在的評分差距在 0.0 以內(門檻 ≤ 0.5);帶快取的重複執行精確一致。
+- **Prompt 快取可觀測性(CAR-240)** — evaluate 的用量攜帶逐步的 `steps[]`(in/out/cached/cost/durationMs);`/api/usage` 按視窗新增 `cachedIn` + `cacheHitRate`;`#/usage` 顯示快取欄與命中率。
+- **資料遷移執行器(CAR-241/242/243)** — report-dates 現在讀取在地化的標頭日期 ×19(舊掃描只比對英文 `**Date:**` 標籤,因此在生產上是 368 列中的 0 列);company-fix 從在地化的報告 H1(×19 標籤、兩種破折號變體)和 ATS URL slug 解析雇主,並報告 `source` + `unresolved` 及原因;新的 score-backfill 執行器從報告的機器表面回填缺失的追蹤器分數(三者均為預設 dry-run、`.bak`、原子重新命名)。
+- **CodeQL 警示浪潮(21)** — 15 項多項式正規表示式發現:一個線性 `scoreSummaryBlock()` 輔助函式服務所有 SCORE_SUMMARY 消費者;parseReportHeader/boldScoreValueForm/compactScore 的掃描表面加界;buildSlug 與標頭破折號拆分的輸入封頂。3 處加上限的檔案寫入(jds/ 擷取 256 KB、報告檔案 512 KB)。4 條未使用變數備註。
+- **對話框重疊(CAR-238)** — 關閉 ✕ 絕對定位於對話框標頭;標題預留角落並換行。涵蓋掃描快速檢視與每個 UI.modal 對話框(含 RTL 鏡像)。
+- **SPA 衛生(CAR-244)** — 即時 p50/p90 ETA 取代陳舊的 «⏱ ~2–4 мин»(`eval.eta` ×19 移除);`#/stats` 的追蹤器狀態標籤改為 ×19 鍵控;pipeline 的 «Группами» 開關可持久化且正常運作;「伺服器無法連線」橫幅只在健康檢查失敗或連續 ≥2 次失敗時升起(單次失敗只是 toast)。
+- **node-18 相容性門禁** — `tests/node18-compat.test.mjs` 禁止在測試中使用 `import.meta.dirname`(node-18 CI 的兩次崩潰皆源於此)。
+
+### 新增
+
+- **可調寬側邊欄(CAR-235)** — 拖曳側邊欄 inline-end 一側的邊界(200–420 px、持久化、RTL 感知、鍵盤可存取的分隔條、雙擊重置)。
+- **效能探針(CAR-236 工具)** — `scripts/remote-qa/perf-probe.mjs` 測量最熱門生產端點的 TTFB/total/bytes;findings 文件為慢路徑排序(map/jobs 全量重新解析、reports 冷未命中風暴、追蹤器重新解析)。
+- **Evals** — `evaluate-locale-parity` 與 `evaluate-repeatability` 評分器(離線存根為 PASS;線上環節於部署後執行)。
+
+### 備註
+
+- 生產上的遷移資料未被改動 — 執行器預設 dry-run;apply 是審閱預覽後的所有者操作。
+- 預設 LLM 供應商未變更(仍為 OpenRouter deepseek;雙供應商 QA 閘門會執行 Hermes 作對比)。
+- 報告長度:v1.268.0 刻意讓報告更精簡(逐區塊句子上限);分析文件建議透過 render 提示詞 + 伺服器端 JD 封存恢復深度 — 已列入下一版本追蹤,此處未悄然改動。
+
 ## [1.268.0] — 2026-11-05
 
 ### 變更

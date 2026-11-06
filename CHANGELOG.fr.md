@@ -12,6 +12,30 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.268.1] — 2026-11-06
+
+### Corrigé
+
+- **Score déterministe (CAR-239)** — le score d'evaluate est calculé par le SERVEUR à partir de sous-scores entiers ancrés (le total du modèle lui-même est ignoré) ; temperature 0 + graine fixe (EVAL_SCORE_SEED) pour les fournisseurs à graine, auto-cohérence par médiane (EVAL_SCORE_SAMPLES=3) sinon ; un cache de scoring à clé header+JD+CV+profile+model rend les répétitions exactes. Un même JD × 19 locales se note désormais à 0.0 près (gate ≤ 0.5) ; les répétitions sont exactes grâce au cache.
+- **Observabilité du cache de prompt (CAR-240)** — l'usage d'evaluate transporte des `steps[]` par étape (in/out/cached/cost/durationMs) ; `/api/usage` ajoute `cachedIn` + `cacheHitRate` par fenêtre ; `#/usage` affiche la colonne de cache et le taux d'atteinte.
+- **Runners de migration (CAR-241/242/243)** — report-dates lit désormais les dates d'en-tête LOCALISÉES ×19 (l'ancien scan ne matchait que le libellé anglais `**Date:**`, d'où 0 sur 368 en prod) ; company-fix résout l'employeur depuis les H1 localisés des rapports (libellés ×19, les deux variantes de tiret) et depuis le slug ATS de l'URL, et rapporte `source` + `unresolved` avec leurs motifs ; le NOUVEAU runner score-backfill remplit les scores manquants du tracker depuis la surface machine du rapport (dry-run par défaut, `.bak`, renommage atomique sur les trois).
+- **Vague d'alertes CodeQL (21)** — 15 constats d'expressions régulières polynomiales : UN SEUL helper linéaire `scoreSummaryBlock()` pour chaque consommateur de SCORE_SUMMARY ; surfaces de scan bornées dans parseReportHeader/boldScoreValueForm/compactScore ; entrées plafonnées dans buildSlug et la découpe du tiret d'en-tête. 3 écritures de fichiers bornées (capture jds/ 256 Ko, fichiers de rapport 512 Ko). 4 notes de variables inutilisées.
+- **Chevauchement du dialogue (CAR-238)** — la ✕ de fermeture est positionnée en absolu dans l'en-tête du dialogue ; les titres réservent le coin et reviennent à la ligne. Couvre la vue rapide du scan et chaque dialogue UI.modal (miroirs RTL).
+- **Hygiène du SPA (CAR-244)** — l'ETA en direct p50/p90 remplace le «⏱ ~2–4 мин» périmé (`eval.eta` supprimé ×19) ; les libellés de statut du tracker sur `#/stats` passent aux clés ×19 ; l'interrupteur «Группами» du pipeline persiste et fonctionne ; le bandeau «serveur hors service» ne se lève que sur un échec du health check ou après ≥2 échecs consécutifs (un échec isolé reste un toast).
+- **Garde de compatibilité node-18** — `tests/node18-compat.test.mjs` interdit `import.meta.dirname` dans les tests (deux crashs CI en node-18 venaient de là).
+
+### Ajouté
+
+- **Barre latérale redimensionnable (CAR-235)** — faites glisser la bordure inline-end de la barre latérale (200–420 px, persistée, consciente du RTL, séparateur accessible au clavier, double-clic pour réinitialiser).
+- **Sonde de perf (CAR-236 outillage)** — `scripts/remote-qa/perf-probe.mjs` mesure TTFB/total/bytes pour les endpoints de prod les plus chauds ; le doc de constats classe les chemins lents (re-parse complet de map/jobs, tempêtes de cold-miss sur reports, re-parse du tracker).
+- **Evals** — les graders `evaluate-locale-parity` et `evaluate-repeatability` (stub hors ligne PASS ; les passes live s'exécutent après le déploiement).
+
+### Notes
+
+- Les données de migration en prod n'ont PAS été modifiées — les runners sont dry-run par défaut ; l'apply est une action du propriétaire après relecture de l'aperçu.
+- Le fournisseur LLM par défaut n'a PAS changé (OpenRouter deepseek reste en place ; le gate QA à double fournisseur lance Hermes pour comparaison).
+- Longueur des rapports : la v1.268.0 a rendu les rapports délibérément plus maigres (plafonds de phrases par bloc) ; le doc d'analyse recommande de restaurer la profondeur via le prompt de rendu + l'archive JD côté serveur — suivi pour la prochaine version, aucun changement silencieux ici.
+
 ## [1.268.0] — 2026-11-05
 
 ### Modifié

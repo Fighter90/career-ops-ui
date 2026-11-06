@@ -206,11 +206,14 @@ test('the two-step evaluate streams stages and the server writes the machine sur
   // The SERVER writes the header + the yaml machine block from the scoring
   // JSON; the display markdown strips the SCORE_SUMMARY (saved-file contract).
   assert.match(done.markdown, /^# Evaluation: Acme — Engineer/m);
-  assert.match(done.markdown, /\*\*Score:\*\* 4\.1\/5/);
-  assert.match(done.markdown, /```yaml\ncompany: Acme\nrole: Engineer\nscore: 4\.1/);
+  // CAR-239: the fixture solves INTEGER sub-scores; 4.1 snaps to 4.2 on the
+  // six-block mean grid (A=5, B–F=4 → 25/6 → 4.2) and the pins assert the
+  // achieved values.
+  assert.match(done.markdown, /\*\*Score:\*\* 4\.2\/5/);
+  assert.match(done.markdown, /```yaml\ncompany: Acme\nrole: Engineer\nscore: 4\.2/);
   assert.ok(!done.markdown.includes('---SCORE_SUMMARY---'), 'display markdown strips the summary block');
   assert.equal(lastMaxTokens, 16384, 'the render call keeps the 16384 ceiling');
-  assert.equal(done.scoring.score, 4.1);
+  assert.equal(done.scoring.score, 4.2);
 });
 
 test('the machine surface is locale-independent (CAR-102): ru and ta carry the same header + yaml', async () => {
@@ -219,9 +222,11 @@ test('the machine surface is locale-independent (CAR-102): ru and ta carry the s
     const events = await drainEvaluate(lang);
     const done = events.find((e) => e.ev === 'done').data;
     assert.match(done.markdown, /^# Evaluation: Acme — Engineer/m, `${lang}: header`);
-    assert.match(done.markdown, /\*\*Score:\*\* 4\.1\/5/, `${lang}: pinned score line`);
+    assert.match(done.markdown, /\*\*Score:\*\* 4\.2\/5/, `${lang}: pinned score line`);
     assert.match(done.markdown, /```yaml\ncompany: Acme/, `${lang}: yaml machine block`);
-    assert.match(done.markdown, /```yaml\n[\s\S]*\nblocks: \{A: 3\.5/, `${lang}: per-block map`);
+    // CAR-239: integer sub-scores from the solver (A=5, B–F=4, G=4) — the
+    // per-block map is the actual sub-score shape, not a fractional one.
+    assert.match(done.markdown, /```yaml\n[\s\S]*\nblocks: \{A: 5, B: 4/, `${lang}: per-block map`);
   }
 });
 

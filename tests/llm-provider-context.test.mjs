@@ -91,7 +91,7 @@ const PROVIDERS = {
   github: { key: 'GITHUB_MODELS_API_KEY', val: 'github_pat_fake0123456789abcdefghijklmnop', host: 'models.github.ai', resp: RESP.openaiLike, lp: 'github' },
 };
 
-import { scoringFixture, renderBodyFixture } from './helpers/eval-two-step-stub.mjs';
+import { scoringFixture } from './helpers/eval-two-step-stub.mjs';
 
 async function postJSON(path, body) {
   const res = await fetch(baseUrl + path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
