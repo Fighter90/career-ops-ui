@@ -12,6 +12,29 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.269.0] — 2026-11-06
+
+### Ajouté
+
+- **Tableau kanban en entonnoir (CAR-237)** — `#/tracker` gagne une vue «Воронка» : colonnes = statuts canoniques, les cartes se déplacent par glisser-déposer entre les colonnes (HTML5 DnD + clavier ←/→ + select de statut sur mobile), chaque déplacement est un `POST /api/tracker/status` canonique ; une modale par carte conserve les notes et l'heure d'entretien (écrites dans la cellule Notes). Mécanisme étudié à partir de Fighter90/flow (déplacement optimiste + revert, contour au dépôt, keyboard-first). La vue tableau reste en second onglet.
+- **Statistiques détaillées (CAR-247)** — onglet «Детали» de `#/stats` : sélecteur de devise d'affichage (la conversion USD→EUR/RUB/GBP/CNY est respectée par chaque chiffre et chaque axe de graphique), sélecteur de période (mois/trimestre/année/tout), recherche texte + chips de facettes composables en AND (pays/statut/source avec compteurs), quatre graphiques (salaire min–med–max par pays, entonnoir des statuts, dynamique mensuelle, top entreprises), drill-down triable vers les rapports.
+- **Profondeur des rapports restaurée (CAR-245)** — le plafond de ≤5 phrases remplacé par un plancher ancré (≥3 puces substantielles par bloc, 1500–2500 mots) ; le serveur ajoute la section `## Job Description (archived verbatim)` à chaque rapport sauvegardé (contrat du parent) ; une alerte de corps maigre se déclenche sous 2500 caractères.
+- **Vidéo hero sur cvstart.org** — le hero du landing embarque un fond vidéo muet en boucle (essaaim façon aixle), fondu par un overlay sombre dans la palette existante (aucune teinte nouvelle), animations fade-in + scroll-reveal, poster statique en repli sur mobile/reduced-motion.
+- **Sonde de perf** — `scripts/remote-qa/perf-probe.mjs` (TTFB/total/bytes × 8 chemins chauds, verdict par endpoint).
+
+### Corrigé
+
+- **Latence des pages en prod (CAR-236)** — caches à clé mtime sur les chemins de lecture chauds : l'index map/jobs ne lit plus chaque capture de JD en entier (têtes de 1.5 KB, mémo du stat de répertoire), le parse du tracker est mis en cache par version de fichier (2–4× par navigation → 1), la résolution des fichiers de rapport est mémoïsée, `/api/dashboard` lit la forme slim des rapports ; `/api/reports?fields=slim` disponible.
+- **check-dist 2×h1** — le H1 `# Changelog` du master EN se trouve sous le lead façon README et se glissait dans la page 1 du miroir du site (un second `<h1>` à côté du sien depuis que le lead a été préposé) ; la ligne de titre dupliquée est abandonnée à la composition du miroir.
+- **Création de rapports sans course (CodeQL #752)** — la sauvegarde des rapports de l'auto-pipeline utilise le flag exclusif `wx` : un pipeline concurrent ne peut plus se faufiler un TOCTOU existsSync-then-write ; EEXIST bascule vers le chemin de dédup à suffixe d'époque.
+- **Queue du balayage CodeQL** — les écritures dans jds/ et les rapports sont documentées comme le design d'archivage REQUIRED du parent (contenu assaini + borné en taille, chemins déterministes à suffixe d'époque) ; variables inutilisées de niveau note nettoyées.
+
+### Notes
+
+- L'entonnoir kanban est livré avec la vue tableau intacte comme alternative prioritaire par défaut — on bascule via le nouveau toggle «Воронка | Таблица» (persisté).
+- Les statistiques détaillées agrègent côté client sur les endpoints existants (aucune nouvelle route) ; les devises d'affichage inconnues retombent sur USD.
+- Les runners de migration (v1.268.1) restent en dry-run par défaut — apply demeure une action du propriétaire.
+
 ## [1.268.1] — 2026-11-06
 
 ### Corrigé

@@ -14,9 +14,9 @@
 - **CodeQL sweep tail** — jds/ and report writes documented as the parent's REQUIRED archival design (sanitized + size-bounded content, deterministic epoch-suffixed paths); note-level unused vars cleaned.
 
 ### Notes
-- The kanban funnel ships with the table view intact as the default-first alternative — switch via the new «Воронка | Таблица» toggle (persisted).
-- Stats detail aggregates client-side over existing endpoints (no new routes); unknown display currencies fall back to USD.
-- Migration runners (v1.268.1) remain dry-run default — apply stays an owner action.
+- The kanban funnel does NOT replace the table view — both ship, switched via the new «Воронка | Таблица» toggle (persisted).
+- Stats detail aggregates client-side over existing endpoints (no new routes were added); an unknown display currency does NOT convert — it falls back to USD.
+- Migration runners (v1.268.1) remain dry-run default — apply is NOT run automatically; it stays an owner action after reviewing the preview.
 ## [1.268.1] — 2026-11-06
 
 ### Fixed

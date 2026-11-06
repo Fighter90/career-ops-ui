@@ -10,21 +10,21 @@
 
 _واجهة غير رسمية — لا علاقة لها بـ career-ops / santifer ولا تحظى بموافقتهما._
 
-[![tests](https://img.shields.io/badge/tests-7602%20passed-brightgreen)](#الاختبارات)
+[![tests](https://img.shields.io/badge/tests-7627%20passed-brightgreen)](#الاختبارات)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#الاختبارات)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.268.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.268.1)
+[![release](https://img.shields.io/badge/release-v1.269.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.269.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 أحدث إصدار — v1.268.1** — تنقيط حتمي (CAR-239): الدرجة يحسبها الخادم من درجات فرعية صحيحة مُرسَّاة عند temperature 0 + بذرة ثابتة — الـ JD نفسه يتقارب ضمن 0.0 عبر الـ 19 لغة؛ رؤية ذاكرة الـ prompt (CAR-240)، منفّذو ترحيل البيانات ×19 (CAR-241/242/243)، شريط جانبي قابل لتغيير الحجم (CAR-235). الاختبارات 7510.
+> **🆕 أحدث إصدار — v1.269.0** — لوحة كانبان على شكل قُمع في #/tracker (CAR-237 مع مفتاح «Воронка | Таблица»)، وتبويب «Детали» في #/stats (CAR-247)، واستعادة عمق التقارير (CAR-245)، وفيديو البطل في cvstart.org، مع ذاكرات mtime ضد زمن استجابة صفحات الإنتاج (CAR-236) وذيل مسح CodeQL.
 
 
 >
-> **السابق — v1.268.0** — أربعة مصادر مسح جديدة — GermanTechJobs و Darwinbox و Keka و ApplicantPro/isolved (السجل 129 = 124 EN + 5 RU) — إعادة استخدام استجابات اللوحات عبر ETag، تواريخ على أربعة لوحات، مفتاح portals.yml الخاطئ الإملاء يفشل بصوت عالٍ، وgetro يتجاوز الدبابيس المميزة القديمة (parent-sync @ 7d8feb6d). الاختبارات 7096 → 7243.
+> **السابق — v1.268.1** — تنقيط حتمي (CAR-239): الدرجة يحسبها الخادم من درجات فرعية صحيحة مُرسَّاة عند temperature 0 + بذرة ثابتة — الـ JD نفسه يتقارب ضمن 0.0 عبر الـ 19 لغة؛ رؤية ذاكرة الـ prompt (CAR-240)، منفّذو ترحيل البيانات ×19 (CAR-241/242/243)، شريط جانبي قابل لتغيير الحجم (CAR-235). الاختبارات 7510.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

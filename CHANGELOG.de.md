@@ -2,6 +2,29 @@
 
 > Dieses Changelog enthält die vollständige Versionsgeschichte. Einträge, die vor der deutschen Lokalisierung (v1.85.0) veröffentlicht wurden, stehen unten im englischen Original — Übersetzung ausstehend; maßgeblich bleibt [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.269.0] — 2026-11-06
+
+### Neu
+
+- **Kanban-Funnel-Board (CAR-237)** — `#/tracker` bekommt eine «Воронка»-Ansicht: Spalten = kanonische Status, Karten lassen sich zwischen den Spalten ziehen (HTML5 DnD + Tastatur ←/→ + mobiler Status-Select), jeder Zug ist ein kanonisches `POST /api/tracker/status`; ein Modal pro Karte bewahrt Notizen und Interview-Zeitpunkt (geschrieben in die Notes-Zelle). Der Mechanismus wurde von Fighter90/flow abgeschaut (optimistischer Zug + Revert, Drop-Umriss, keyboard-first). Die Tabellenansicht bleibt als zweiter Tab.
+- **Detaillierte Statistiken (CAR-247)** — «Детали»-Tab auf `#/stats`: Anzeige-Währungsselektor (USD→EUR/RUB/GBP/CNY-Umrechnung wird von jeder Zahl und jeder Chart-Achse respektiert), Periodenselektor (Monat/Quartal/Jahr/alles), Textsuche + AND-kombinierbare Facetten-Chips (Land/Status/Quelle mit Zählern), vier Charts (Gehalt min–med–max nach Land, Status-Funnel, Monatsdynamik, Top-Unternehmen), sortierbarer Drill-down in die Reports.
+- **Report-Tiefe wiederhergestellt (CAR-245)** — die ≤5-Sätze-Render-Deckelung ersetzt durch einen verankerten Boden (≥3 substanzielle Bullets pro Block, 1500–2500 Wörter); der Server hängt jedem gespeicherten Report die Sektion `## Job Description (archived verbatim)` an (Parent-Kontrakt); eine Thin-Body-Warnung feuert unter 2500 Zeichen.
+- **cvstart.org Hero-Video** — der Landing-Hero trägt ein stummes, gelooptes Video-Underlay (Schwarm im aixle-Stil), dunkles Overlay schmilzt in die bestehende Palette (keine neuen Farbtöne), Fade-in + Scroll-Reveal-Animationen, statisches Poster als Fallback auf Mobile/reduced-motion.
+- **Perf-Sonde** — `scripts/remote-qa/perf-probe.mjs` (TTFB/total/bytes × 8 Hot Paths, Verdict pro Endpoint).
+
+### Behoben
+
+- **Prod-Seiten-Latenz (CAR-236)** — mtime-basierte Caches auf den heißen Lesepfaden: der map/jobs-Index liest keinen JD-Capture mehr komplett (1.5-KB-Köpfe, Dir-Stat-Memo), das Tracker-Parsing wird pro Dateiversion gecacht (2–4× pro Navigation → 1), die Report-Datei-Auflösung ist memoisiert, `/api/dashboard` liest die Slim-Form der Reports; `/api/reports?fields=slim` verfügbar.
+- **check-dist 2×h1** — das `# Changelog`-H1 des EN-Masters sitzt unter dem README-artigen Lead und rutschte auf Seite 1 des Site-Spiegels (ein zweites `<h1>` neben dem eigenen, seitdem der Lead vorangestellt wurde); die doppelte Titelzeile fällt beim Spiegel-Zusammensetzen weg.
+- **Rennfreie Report-Erstellung (CodeQL #752)** — das Report-Speichern des Auto-Pipelines nutzt das exklusive `wx`-Flag: ein paralleler Pipeline kann kein existsSync-then-write-TOCTOU mehr einschleusen; EEXIST fällt in den Dedup-Pfad mit Epoch-Suffix.
+- **Nachlauf der CodeQL-Säuberung** — jds/- und Report-Schreibvorgänge als die REQUIRED-Archivierungskonstruktion des Parents dokumentiert (sanitisierter + größenbegrenzter Inhalt, deterministische Pfade mit Epoch-Suffix); Notiz-Level-unbenutzte Variablen aufgeräumt.
+
+### Hinweise
+
+- Der Kanban-Funnel kommt mit der Tabellenansicht unangetastet als voreingestellte Alternative — umschalten über den neuen «Воронка | Таблица»-Toggle (persistiert).
+- Statistik-Details aggregieren clientseitig über die bestehenden Endpoints (keine neuen Routen); unbekannte Anzeige-Währungen fallen auf USD zurück.
+- Migrations-Runner (v1.268.1) bleiben mit dry-run als Default — apply bleibt eine Owner-Aktion.
+
 ## [1.268.1] — 2026-11-06
 
 ### Behoben

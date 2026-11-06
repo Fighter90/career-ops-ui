@@ -6,6 +6,29 @@
 
 ---
 
+## [1.269.0] — 2026-11-06
+
+### சேர்க்கப்பட்டது
+
+- **Kanban funnel board (CAR-237)** — `#/tracker` «Воронка» view-ஐப் பெறுகிறது: columns = canonical statuses, cards column-களுக்கு இடையில் drag செய்யப்படும் (HTML5 DnD + keyboard ←/→ + mobile status select), ஒவ்வொரு நகர்வும் canonical `POST /api/tracker/status`; ஒரு card-க்கு modal notes மற்றும் interview நேரத்தை வைத்திருக்கும் (Notes cell-இல் எழுதப்படும்). மெக்கானிசம் Fighter90/flow-இலிருந்து ஆராயப்பட்டது (optimistic move + revert, drop outline, keyboard-first). Table view இரண்டாவது tab-ஆக இருக்கிறது.
+- **விரிவான புள்ளிவிவரங்கள் (CAR-247)** — `#/stats`-இன் «Детали» tab: display-currency selector (USD→EUR/RUB/GBP/CNY மாற்றத்தை ஒவ்வொரு எண்ணும் chart axis-உம் மதிக்கிறது), period selector (மாதம்/காலாண்டு/ஆண்டு/எல்லாம்), text search + AND-இணைக்கக்கூடிய facet chips (நாடு/status/மூலம், எண்ணிக்கைகளுடன்), நான்கு charts (நாடுவாரி சம்பளம் min–med–max, status funnel, மாத இயக்கம், முதன்மை நிறுவனங்கள்), reports-க்கு sort செய்யக்கூடிய drill-down.
+- **அறிக்கை ஆழம் மீட்டெடுக்கப்பட்டது (CAR-245)** — ≤5 வாக்கிய render cap-க்கு பதிலாக நங்கூரமிட்ட floor (ஒரு block-க்கு ≥3 உள்ளடக்கமுள்ள bullets, 1500–2500 சொற்கள்); server சேமிக்கப்படும் ஒவ்வொரு அறிக்கையிலும் `## Job Description (archived verbatim)` பகுதியை இணைக்கிறது (parent ஒப்பந்தம்); 2500 எழுத்துகளுக்குக் கீழ் ஒல்லியான-உடல் எச்சரிக்கை இயங்கும்.
+- **cvstart.org hero video** — landing hero ஒலியற்ற looping video underlay சுமக்கிறது (aixle-பாணி கூட்டம்), dark overlay மூலம் தற்போதைய palette-இல் உருகுகிறது (புதிய hues இல்லை), fade-in + scroll-reveal animations, mobile/reduced-motion-இல் static poster fallback.
+- **Perf probe** — `scripts/remote-qa/perf-probe.mjs` (TTFB/total/bytes × 8 hot paths, ஒவ்வொரு endpoint-க்கும் தீர்ப்பு).
+
+### சரி செய்யப்பட்டது
+
+- **Prod page latency (CAR-236)** — சூடான read paths-இல் mtime-கீ காச்கள்: map/jobs index ஒவ்வொரு JD capture-ஐயும் முழுமையாக இனி படிக்காது (1.5 KB heads, dir-stat memo), tracker parse கோப்பு பதிப்புக்கு காச் ஆகிறது (ஒரு navigation-க்கு 2–4× → 1), report-கோப்பு முடிவு memoize செய்யப்பட்டது, `/api/dashboard` reports-இன் slim வடிவத்தைப் படிக்கிறது; `/api/reports?fields=slim` கிடைக்கிறது.
+- **check-dist 2×h1** — EN master-இன் `# Changelog` H1 README-பாணி lead-க்குக் கீழ் அமர்ந்திருந்து site mirror-இன் பக்கம் 1-க்குள் நுழைந்தது (lead முன்னே சேர்க்கப்பட்டதிலிருந்து சொந்த h1-க்கு அடுத்ததாக இரண்டாவது `<h1>`); இரட்டிப்பான title வரி mirror-இயற்றும்போது கைவிடப்படுகிறது.
+- **Race-இல்லாத report உருவாக்கம் (CodeQL #752)** — auto-pipeline-இன் report சேமிப்பு exclusive `wx` flag-ஐப் பயன்படுத்துகிறது: இணையான pipeline இனி existsSync-then-write TOCTOU-ஐ ஊடுருவ முடியாது; EEXIST epoch-suffix dedup path-ஆக விழுகிறது.
+- **CodeQL sweep வால்** — jds/ மற்றும் report எழுத்துகள் parent-இன் REQUIRED archival design ஆக ஆவணப்படுத்தப்பட்டன (sanitize செய்யப்பட்ட + size-bounded உள்ளடக்கம், நிலையான epoch-suffix paths); note-நிலை பயன்படுத்தாத மாறிகள் சுத்தம் செய்யப்பட்டன.
+
+### குறிப்புகள்
+
+- Kanban funnel table view இயல்பான முதன்மை மாற்று-வழியாக அப்படியே வழங்கப்படுகிறது — புதிய «Воронка | Таблица» toggle-இல் மாறலாம் (persist ஆகும்).
+- விரிவான புள்ளிவிவரங்கள் தற்போதைய endpoints-இன் மேல் client-side திரட்டுகின்றன (புதிய routes இல்லை); தெரியாத display currencies USD-க்கு விழுகின்றன.
+- Migration runner-கள் (v1.268.1) dry-run default-இல் தொடர்கின்றன — apply உரிமையாளரின் செயலாகவே இருக்கிறது.
+
 ## [1.268.1] — 2026-11-06
 
 ### சரி செய்யப்பட்டது

@@ -2,6 +2,29 @@
 
 > Bu changelog artık tüm sürüm geçmişini içerir. Türkçe yerelleştirmenin eklenmesinden (v1.85.0) önce yayınlanan girdiler aşağıda İngilizce özgün hâliyle yer alır — çeviri bekliyor; asıl kaynak [🇬🇧 CHANGELOG.md](CHANGELOG.md)'dir.
 
+## [1.269.0] — 2026-11-06
+
+### Eklendi
+
+- **Kanban huni panosu (CAR-237)** — `#/tracker` bir «Воронка» görünümü kazanır: sütunlar = kanonik durumlar, kartlar sütunlar arasında sürüklenir (HTML5 DnD + klavye ←/→ + mobilde durum select'i), her hamle kanonik bir `POST /api/tracker/status`'tır; kart başına modal notları ve mülakat saatini saklar (Notes hücresine yazılır). Mekanizma Fighter90/flow'dan araştırıldı (iyimser hamle + revert, drop çerçevesi, keyboard-first). Tablo görünümü ikinci sekme olarak kalır.
+- **Ayrıntılı istatistikler (CAR-247)** — `#/stats` üzerindeki «Детали» sekmesi: görüntüleme para birimi seçici (USD→EUR/RUB/GBP/CNY dönüşümü her sayı ve grafik ekseni tarafından dikkate alınır), dönem seçici (ay/çeyrek/yıl/tümü), metin arama + AND ile birleştirilebilir facet çipleri (ülke/durum/kaynak, sayaçlarla), dört grafik (ülkeye göre maaş min–med–max, durum hunisi, aylık dinamikler, en çok yer alan şirketler), raporlara sıralanabilir drill-down.
+- **Rapor derinliği geri getirildi (CAR-245)** — ≤5 cümlelik render tavanı çapalı bir tabanla değiştirildi (blok başına ≥3 maddi bullet, 1500–2500 kelime); sunucu her kaydedilen rapora `## Job Description (archived verbatim)` bölümünü ekler (ebeveyn sözleşmesi); 2500 karakterin altında ince-gövde uyarısı tetiklenir.
+- **cvstart.org hero videosu** — landing'in hero'su sessize alınmış döngüsel bir video alt katmanı taşır (aixle tarzı sürü), karanlık katman mevcut paletin içine eriyerek karışır (yeni ton yok), fade-in + scroll-reveal animasyonları, mobil/reduced-motion'da statik poster'e düşüş.
+- **Perf sondası** — `scripts/remote-qa/perf-probe.mjs` (TTFB/total/bytes × 8 sıcak yol, endpoint başına karar).
+
+### Düzeltildi
+
+- **Prod sayfa gecikmesi (CAR-236)** — sıcak okuma yollarında mtime anahtarlı önbellekler: map/jobs indeksi artık her JD yakalamasını bütünüyle okumuyor (1.5 KB başlar, dizin stat memo'su), tracker parse'ı dosya sürümüne göre önbellekleniyor (navigasyon başına 2–4× → 1), rapor dosyası çözümlemesi memoize edildi, `/api/dashboard` slim rapor biçimini okuyor; `/api/reports?fields=slim` kullanılabilir.
+- **check-dist 2×h1** — EN master'ın `# Changelog` H1'i README tarzı lead'in altında duruyor ve site aynasının 1. sayfasına sızdı (lead öne eklendiğinden beri kendi h1'inin yanında ikinci bir `<h1>`); çiftlenen başlık satırı ayna bileşimi sırasında atılıyor.
+- **Yarışsız rapor oluşturma (CodeQL #752)** — auto-pipeline'ın rapor kaydı münhasır `wx` bayrağını kullanıyor: koşut bir pipeline artık existsSync-then-write TOCTOU'sunu sokamaz; EEXIST epoch-sonekli dedup yoluna düşer.
+- **CodeQL süpürme kuyruğu** — jds/ ve rapor yazımları ebeveynin REQUIRED arşivleme tasarımı olarak belgelendi (sanitleştirilmiş + boyutla sınırlı içerik, deterministik epoch-sonekli yollar); not düzeyindeki kullanılmayan değişkenler temizlendi.
+
+### Notlar
+
+- Kanban hunisi, tablo görünümü varsayılan-öncelikli alternatif olarak bozulmadan çıkıyor — yeni «Воронка | Таблица» düğmesiyle geçilir (kalıcı).
+- Ayrıntılı istatistikler mevcut uç noktaların üzerinde istemci tarafında toplanır (yeni rota yok); bilinmeyen görüntüleme para birimleri USD'ye düşer.
+- Geçiş runner'ları (v1.268.1) dry-run varsayılanı olarak kalıyor — apply sahibin eylemi olarak kalır.
+
 ## [1.268.1] — 2026-11-06
 
 ### Düzeltildi
