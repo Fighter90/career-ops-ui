@@ -2,6 +2,30 @@
 
 > Bu changelog artık tüm sürüm geçmişini içerir. Türkçe yerelleştirmenin eklenmesinden (v1.85.0) önce yayınlanan girdiler aşağıda İngilizce özgün hâliyle yer alır — çeviri bekliyor; asıl kaynak [🇬🇧 CHANGELOG.md](CHANGELOG.md)'dir.
 
+## [1.268.1] — 2026-11-06
+
+### Düzeltildi
+
+- **Deterministik puanlama (CAR-239)** — evaluate puanı, çapalanmış tam sayı alt puanlarından SUNUCU tarafından hesaplanır (modelin kendi toplamı yok sayılır); tohumlama sağlayıcıları için temperature 0 + sabit seed (EVAL_SCORE_SEED), aksi hâlde medyan öz-tutarlılık (EVAL_SCORE_SAMPLES=3); header+JD+CV+profile+model ile anahtarlanan bir puanlama önbelleği tekrarları birebir yapar. Bir JD × 19 locale artık 0.0 içinde puan alır (gate ≤ 0.5); önbellekle tekrarlar birebirdir.
+- **Prompt önbelleği gözlemlenebilirliği (CAR-240)** — evaluate kullanımı adım başına `steps[]` taşır (in/out/cached/cost/durationMs); `/api/usage` pencere başına `cachedIn` + `cacheHitRate` ekler; `#/usage` önbellek sütununu ve isabet yüzdesini gösterir.
+- **Göç koşucuları (CAR-241/242/243)** — report-dates artık YERELLEŞTİRİLMİŞ başlık tarihlerini okur ×19 (eski tarama yalnızca İngilizce `**Date:**` etiketiyle eşleşiyordu, bu yüzden prod'da 368'in 0'ı); company-fix işvereni yerelleştirilmiş rapor H1'lerinden (×19 etiket, her iki tire varyantı) ve ATS URL kısaltmasından çözer ve `source` + `unresolved` bilgilerini gerekçeleriyle raporlar; YENİ score-backfill koşucusu eksik izleyici puanlarını raporun makine yüzeyinden doldurur (üçünde de varsayılan dry-run, `.bak`, atomik yeniden adlandırma).
+- **CodeQL uyarı dalgası (21)** — 15 polinom-regex bulgusu: her SCORE_SUMMARY tüketicisi için TEK doğrusal `scoreSummaryBlock()` yardımcısı; parseReportHeader/boldScoreValueForm/compactScore içinde sınırlı tarama yüzeyleri; buildSlug ve başlık tire-bölmesinde sınırlı girdiler. 3 sınırlı dosya yazımı (jds/ yakalama 256 KB, rapor dosyaları 512 KB). 4 kullanılmayan değişken notu.
+- **Diyalog üst üste binmesi (CAR-238)** — kapatma ✕'si diyalog başlığında mutlak konumlanır; başlıklar köşeyi ayırır ve sarar. Tarama hızlı görünümünü ve her UI.modal diyaloğunu kapsar (RTL aynalanır).
+- **SPA hijyeni (CAR-244)** — canlı p50/p90 ETA'sı bayat «⏱ ~2–4 мин» metninin yerini alır (`eval.eta` ×19 kaldırıldı); `#/stats` üzerindeki izleyici durum etiketleri ×19 anahtarlı; pipeline «Группами» anahtarı kalıcıdır ve çalışır; «server down» banner'ı yalnızca başarısız bir sağlık kontrolünde veya ≥2 art arda başarısızlıkta görülür (tek bir başarısızlık bir tosttur).
+- **Node-18 uyumluluk kapısı** — `tests/node18-compat.test.mjs` testlerde `import.meta.dirname` yasaklar (node 18 CI çökmelerinin ikisi buradan geldi).
+
+### Eklendi
+
+- **Yeniden boyutlandırılabilir kenar çubuğu (CAR-235)** — kenar çubuğunun inline-end kenarını sürükle (200–420 px, kalıcı, RTL duyarlı, klavye erişilebilir ayraç, çift tık sıfırlar).
+- **Perf probu (CAR-236 araç seti)** — `scripts/remote-qa/perf-probe.mjs` en sıcak prod uç noktaları için TTFB/total/bytes ölçer; bulgu belgesi yavaş yolları sıralar (map/jobs tam yeniden ayrıştırma, raporlar soğuk-ıska fırtınaları, izleyici yeniden ayrıştırma).
+- **Evals** — `evaluate-locale-parity` ve `evaluate-repeatability` derecelendiricileri (çevrimdışı stub PASS; canlı bacaklar deploy sonrası çalışır).
+
+### Notlar
+
+- Prod'daki göç verisi DEĞİŞTİRİLMEDİ — koşucular varsayılan olarak dry-run'dır; apply, önizlemeyi gözden geçirdikten sonra bir sahip eylemidir.
+- Varsayılan LLM sağlayıcısı DEĞİŞTİRİLMEDİ (OpenRouter deepseek kalıyor; ikili sağlayıcılı QA kapısı karşılaştırma için Hermes çalıştırır).
+- Rapor uzunluğu: v1.268.0 raporları bilerek daha yalın yaptı (blok başına cümle sınırları); analiz belgesi derinliğin render prompt'u + sunucu tarafı JD arşiviyle geri getirilmesini önerir — sonraki sürüm için takip ediliyor, burada sessizce değiştirilmedi.
+
 ## [1.268.0] — 2026-11-05
 
 ### Değiştirildi

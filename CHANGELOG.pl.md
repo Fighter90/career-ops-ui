@@ -10,6 +10,30 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.268.1] — 2026-11-06
+
+### Naprawiono
+
+- **Deterministyczny scoring (CAR-239)** — ocenę evaluate liczy SERWER z zakotwiczonych całkowitych pod-ocen (całkowity wynik z modelu jest ignorowany); temperature 0 + stały seed (EVAL_SCORE_SEED) dla providerów z seedowaniem, w pozostałych przypadkach mediana samozgodności (EVAL_SCORE_SAMPLES=3); cache scoringu z kluczem header+JD+CV+profile+model czyni powtórzenia dokładnymi. Ten sam JD × 19 locale zdobywa teraz ocenę w granicach 0.0 (gate ≤ 0.5); powtórzenia z cache są dokładne.
+- **Obserwowalność cache promptu (CAR-240)** — usage evaluate niesie per-etapowe `steps[]` (in/out/cached/cost/durationMs); `/api/usage` dodaje `cachedIn` + `cacheHitRate` na okno; `#/usage` pokazuje kolumnę cache i procent trafień.
+- **Runnery migracji (CAR-241/242/243)** — report-dates czyta teraz LOKALIZOWANE daty nagłówków ×19 (stary skan matchował tylko angielską etykietę `**Date:**`, stąd 0 z 368 na prodzie); company-fix rozwiązuje pracodawcę z lokalizowanych H1 raportów (etykiety ×19, oba warianty myślnika) i ze sluga ATS w URL-u, oraz raportuje `source` + `unresolved` z przyczynami; NOWY runner score-backfill uzupełnia brakujące oceny trackera z maszynowej powierzchni raportu (dry-run domyślnie, `.bak`, atomowa zmiana nazwy we wszystkich trzech).
+- **Fala alertów CodeQL (21)** — 15 znalezisk wielomianowych regexów: JEDEN liniowy helper `scoreSummaryBlock()` dla każdego konsumenta SCORE_SUMMARY; ograniczone powierzchnie skanowania w parseReportHeader/boldScoreValueForm/compactScore; limitowane wejścia w buildSlug i w dzieleniu nagłówka po myślniku. 3 ograniczone zapisy plików (capture jds/ 256 KB, pliki raportów 512 KB). 4 notki o nieużywanych zmiennych.
+- **Nakładanie się dialogu (CAR-238)** — krzyżyk zamykania ✕ jest pozycjonowany absolutnie w nagłówku dialogu; tytuły rezerwują róg i zawijają się. Obejmuje szybki podgląd skanu i każdy dialog UI.modal (lustrzane odbicia RTL).
+- **Higiena SPA (CAR-244)** — żywy ETA p50/p90 zastępuje przestarzałe «⏱ ~2–4 мин» (`eval.eta` usunięty ×19); etykiety statusów trackera na `#/stats` mają klucze ×19; przełącznik «Группами» w pipeline się utrzymuje i działa; baner „serwer niedostępny" wstaje tylko przy nieudanym health checku albo przy ≥2 niepowodzeniach z rzędu (pojedyncze niepowodzenie to toast).
+- **Gate kompatybilności z node-18** — `tests/node18-compat.test.mjs` zakazuje `import.meta.dirname` w testach (dwa crashe CI na node-18 wyszły stąd).
+
+### Dodano
+
+- **Zmienny rozmiar sidebaru (CAR-235)** — przeciągnij granicę sidebaru od strony inline-end (200–420 px, zapamiętywana, świadoma RTL, klawiaturowo-dostępny separator, dwuklik przywraca domyślny).
+- **Perf-probe (narzędzia CAR-236)** — `scripts/remote-qa/perf-probe.mjs` mierzy TTFB/total/bytes dla najgorętszych endpointów produkcji; dokument wniosków ranguje wolne ścieżki (pełny re-parse na map/jobs, burze cold-miss na reports, re-parse trackera).
+- **Evals** — gradery `evaluate-locale-parity` i `evaluate-repeatability` (offline stub PASS; żywe nogi biegną po deploju).
+
+### Uwagi
+
+- Dane migracji na prodzie NIE zostały zmodyfikowane — runnery domyślnie działają w dry-run; apply to akcja właściciela po przeglądzie podglądu.
+- Domyślny provider LLM NIE został zmieniony (OpenRouter deepseek zostaje; dual-provider QA gate puszcza Hermes dla porównania).
+- Długość raportów: v1.268.0 celowo zrobiła raporty chudsze (limity zdań na blok); dokument analizy rekomenduje przywrócenie głębi przez render-prompt + serwerowe archiwum JD — zapisane na kolejny release, tutaj niezmienione po cichu.
+
 ## [1.268.0] — 2026-11-05
 
 ### Zmieniono

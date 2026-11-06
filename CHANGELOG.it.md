@@ -2,6 +2,30 @@
 
 > Questo changelog contiene ora la cronologia completa delle versioni. Le voci pubblicate prima della localizzazione italiana (v1.85.0) compaiono sotto nell'originale inglese — traduzione in attesa; il riferimento resta [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.268.1] — 2026-11-06
+
+### Corretto
+
+- **Scoring deterministico (CAR-239)** — il punteggio di evaluate è calcolato dal SERVER da sotto-punteggi interi ancorati (il totale del modello stesso è ignorato); temperature 0 + seed fisso (EVAL_SCORE_SEED) per i provider di seeding, auto-consistenza mediana (EVAL_SCORE_SAMPLES=3) altrimenti; una cache di scoring con chiave header+JD+CV+profile+model rende le ripetizioni esatte. Un JD × 19 locale ora punteggia entro 0.0 (gate ≤ 0.5); le ripetizioni sono esatte con la cache.
+- **Osservabilità della cache dei prompt (CAR-240)** — l'usage di evaluate porta `steps[]` per passo (in/out/cached/cost/durationMs); `/api/usage` aggiunge `cachedIn` + `cacheHitRate` per finestra; `#/usage` mostra la colonna cache e la percentuale di hit.
+- **Runner di migrazione (CAR-241/242/243)** — report-dates ora legge le date degli header LOCALIZZATE ×19 (il vecchio scan riconosceva solo l'etichetta inglese `**Date:**`, quindi 0 su 368 in produzione); company-fix risolve il datore di lavoro dagli H1 dei report localizzati (×19 etichette, entrambe le varianti di trattino), dallo slug URL dell'ATS, e riporta `source` + `unresolved` con i motivi; NUOVO runner di score-backfill riempie i punteggi del tracker mancanti dalla superficie macchina del report (dry-run di default, `.bak`, rinomina atomica su tutti e tre).
+- **Ondata di alert CodeQL (21)** — 15 risultati di regex polinomiale: UN helper lineare `scoreSummaryBlock()` per ogni consumatore di SCORE_SUMMARY; superfici di scan delimitate in parseReportHeader/boldScoreValueForm/compactScore; input con cap in buildSlug e nella divisione per trattino dell'header. 3 scritture di file delimitate (capture jds/ 256 KB, file dei report 512 KB). 4 note di variabili inutilizzate.
+- **Sovrapposizione dei dialoghi (CAR-238)** — la ✕ di chiusura è posizionata in modo assoluto nell'header del dialogo; i titoli riservano l'angolo e vanno a capo. Copre la visualizzazione rapida dello scan e ogni dialogo UI.modal (specchiato in RTL).
+- **Igiene SPA (CAR-244)** — l'ETA live p50/p90 sostituisce il «⏱ ~2–4 мин» superato (`eval.eta` rimosso ×19); le etichette di stato del tracker su `#/stats` sono con chiave ×19; l'interruttore «Группами» della pipeline persiste e funziona; il banner «server down» si alza solo su un controllo di salute fallito o su ≥2 fallimenti consecutivi (un singolo fallimento è un toast).
+- **Gate di compatibilità Node-18** — `tests/node18-compat.test.mjs` vieta `import.meta.dirname` nei test (due crash CI su node 18 venivano da lì).
+
+### Aggiunto
+
+- **Sidebar ridimensionabile (CAR-235)** — trascinare il bordo inline-end della sidebar (200–420 px, persistito, consapevole dell'RTL, separatore accessibile da tastiera, doppio clic riporta al valore predefinito).
+- **Perf probe (strumentazione CAR-236)** — `scripts/remote-qa/perf-probe.mjs` misura TTFB/total/bytes per gli endpoint di produzione più caldi; il documento dei risultati ordina i percorsi lenti (ri-parse completo di map/jobs, tempeste di cold-miss dei report, re-parse del tracker).
+- **Evals** — i grader `evaluate-locale-parity` e `evaluate-repeatability` (stub offline PASS; i segmenti live girano dopo il deploy).
+
+### Note
+
+- I dati di migrazione in produzione NON sono stati modificati — i runner sono dry-run di default; l'apply è un'azione del proprietario dopo la revisione dell'anteprima.
+- Il provider LLM predefinito NON è stato cambiato (OpenRouter deepseek resta; il gate QA dual-provider esegue Hermes a confronto).
+- Lunghezza dei report: v1.268.0 ha reso i report deliberatamente più snelli (limiti di frasi per blocco); il documento di analisi raccomanda di ripristinare la profondità via prompt di render + archivio JD lato server — tracciato per la prossima versione, non cambiato silenziosamente qui.
+
 ## [1.268.0] — 2026-11-05
 
 ### Modificato

@@ -6,6 +6,30 @@
 
 ---
 
+## [1.268.1] — 2026-11-06
+
+### சரி செய்யப்பட்டது
+
+- **நிலையான scoring (CAR-239)** — evaluate மதிப்பெண் இப்போது கூறு-மதிப்பெண்களிலிருந்து SERVER-ஆல் கணக்கிடப்படுகிறது (மாதிரியின் சொந்த மொத்த மதிப்பெண் புறக்கணிக்கப்படுகிறது); seeding provider-களுக்கு temperature 0 + நிலையான seed (EVAL_SCORE_SEED), இல்லையெனில் மத்தியப் பதிவு சுய-ஒத்திசைவு (EVAL_SCORE_SAMPLES=3); header+JD+CV+profile+model கீயில் காச் செய்யப்படும் scoring cache திரும்பத் திரும்ப அதே மதிப்பெண்ணைத் தருகிறது. ஒரு JD × 19 லோக்கேல்கள் இப்போது 0.0-க்குள் மதிப்பிடுகிறது (gate ≤ 0.5); cache-உடன் மறு-ஓட்டங்கள் சரியாக அதே மதிப்பெண்.
+- **Prompt-cache கண்காணிப்பு (CAR-240)** — evaluate usage படிவாரியாக `steps[]` சுமக்கிறது (in/out/cached/cost/durationMs); `/api/usage` ஒவ்வொரு ஜன்னலுக்கும் `cachedIn` + `cacheHitRate` சேர்க்கிறது; `#/usage` cache column-ஐயும் hit % ஐயும் காட்டுகிறது.
+- **இடம்பெயர்வு runner-கள் (CAR-241/242/243)** — report-dates இப்போது மொழியாக்கப்பட்ட header தேதிகளை ×19 படிக்கிறது (பழைய ஸ்கேன் ஆங்கில `**Date:**` லேபிளுக்கு மட்டுமே பொருந்தியது, அதனால் prod இல் 368-இல் 0); company-fix முதலாளியை மொழியாக்கப்பட்ட அறிக்கை H1-களிலிருந்து (×19 லேபிள்கள், இரு dash வகைகள்) மற்றும் ATS URL slug-இலிருந்து முடிவு செய்கிறது, `source` + `unresolved` காரணங்களுடன் அறிவிக்கிறது; புதிய score-backfill runner அறிக்கையின் machine surface-இலிருந்து விடுபட்ட tracker மதிப்பெண்களை நிரப்புகிறது (மூன்றிலும் இயல்பான dry-run, `.bak`, atomic rename).
+- **CodeQL எச்சரிக்கை அலை (21)** — 15 polynomial-regex கண்டுபிடிப்புகள்: ஒவ்வொரு SCORE_SUMMARY பயனீட்டாளருக்கும் ஒரே நேரியல் `scoreSummaryBlock()` helper; parseReportHeader/boldScoreValueForm/compactScore-இல் வரம்பிடப்பட்ட ஸ்கேன் மேற்பரப்புகள்; buildSlug மற்றும் header dash-பிரிப்பில் வரம்பிடப்பட்ட உள்ளீடுகள். 3 வரம்பிடப்பட்ட கோப்பு-எழுத்துகள் (jds/ capture 256 KB, அறிக்கை கோப்புகள் 512 KB). 4 பயன்படுத்தாத-மாறி குறிப்புகள்.
+- **Dialog overlap (CAR-238)** — மூடும் ✕ dialog header-இல் முழுமையாக (absolute) வைக்கப்படுகிறது; தலைப்புகள் மூலையை ஒதுக்கி வைத்து wrap ஆகும். ஸ்கேன் quick-view மற்றும் ஒவ்வொரு UI.modal dialog-ஐயும் உள்ளடக்குகிறது (RTL mirror).
+- **SPA சுகாதாரம் (CAR-244)** — நேரடி p50/p90 ETA காலாவதியான «⏱ ~2–4 мин»-க்குப் பதிலாக வருகிறது (`eval.eta` ×19 நீக்கப்பட்டது); `#/stats`-இல் tracker status லேபிள்கள் ×19 கீ செய்யப்பட்டவை; pipeline «Группами» toggle நிலைத்து நிற்கிறது, வேலை செய்கிறது; «server down» banner தோல்வியுற்ற health check அல்லது ≥2 தொடர் தோல்விகளில் மட்டுமே எழுகிறது (ஒற்றை தோல்வி ஒரு toast).
+- **Node-18 இசைவு gate** — `tests/node18-compat.test.mjs` சோதனைகளில் `import.meta.dirname` தடை செய்கிறது (இரு node-18 CI வீழ்ச்சிகள் இதிலிருந்தே வந்தன).
+
+### சேர்க்கப்பட்டது
+
+- **அளவு மாற்றக்கூடிய sidebar (CAR-235)** — sidebar-இன் inline-end எல்லையை இழுக்கவும் (200–420 px, நிலைப்பதிவு, RTL விழிப்பு, விசைப்பலகை-அணுகக்கூடிய பிரிப்பான், double-click reset).
+- **Perf probe (CAR-236 tooling)** — `scripts/remote-qa/perf-probe.mjs` வெப்பமான prod endpoint-களுக்கு TTFB/total/bytes அளக்கிறது; findings ஆவணம் மந்தமான பாதைகளை வரிசைப்படுத்துகிறது (map/jobs முழு re-parse, reports cold-miss புயல்கள், tracker re-parse).
+- **Evals** — `evaluate-locale-parity` மற்றும் `evaluate-repeatability` graders (offline stub PASS; நேரடிப் பகுதிகள் deploy-க்குப் பின் இயங்கும்).
+
+### குறிப்புகள்
+
+- Prod தரவு மாற்றப்படவில்லை — runner-கள் இயல்பாக dry-run; preview-ஐ ஆய்வு செய்த பின் apply உரிமையாளரின் செயல்.
+- இயல்பான LLM provider மாறவில்லை (OpenRouter deepseek தொடர்கிறது; இரட்டை-provider QA gate ஒப்பிட Hermes-ஐ இயக்குகிறது).
+- அறிக்கை நீளம்: v1.268.0 அறிக்கைகளை வேண்டுமென்றே சிலவாக்கியது (ஒவ்வொரு block-க்கும் வாக்கிய வரம்புகள்); பகுப்பாய்வு ஆவணம் render prompt + server-side JD archive வழியாக ஆழத்தை மீட்டெடுக்க பரிந்துரைக்கிறது — அடுத்த ரிலீஸுக்கு பின்தங்கியது, இங்கே அமைதியாக மாற்றப்படவில்லை.
+
 ## [1.268.0] — 2026-11-05
 
 ### மாற்றப்பட்டது

@@ -6,6 +6,30 @@ Bản dịch: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.268.1] — 2026-11-06
+
+### Đã sửa
+
+- **Chấm điểm xác định (CAR-239)** — điểm evaluate được SERVER tính từ các điểm thành phần nguyên đã neo (tổng do chính mô hình đưa ra bị bỏ qua); temperature 0 + seed cố định (EVAL_SCORE_SEED) cho các provider seeding, tự-đồng thuận trung vị (EVAL_SCORE_SAMPLES=3) trong các trường hợp còn lại; một cache chấm điểm khóa theo header+JD+CV+profile+model khiến các lần lặp chính xác từng li. Một JD qua 19 locale nay chấm lệch nhau trong 0.0 (gate ≤ 0.5); các lần lặp chính xác tuyệt đối khi có cache.
+- **Khả năng quan sát prompt cache (CAR-240)** — usage của evaluate mang `steps[]` theo từng bước (in/out/cached/cost/durationMs); `/api/usage` thêm `cachedIn` + `cacheHitRate` theo cửa sổ; `#/usage` hiện cột cache và phần trăm hit.
+- **Các runner di trú (CAR-241/242/243)** — report-dates nay đọc ngày header đã bản địa hóa ×19 (bản scan cũ chỉ khớp nhãn tiếng Anh `**Date:**`, vì thế 0 trên 368 ở production); company-fix giải nhà tuyển dụng từ H1 của báo cáo đã bản địa hóa (×19 nhãn, cả hai biến thể gạch ngang), từ slug URL của ATS, và báo cáo `source` + `unresolved` kèm lý do; runner score-backfill MỚI điền các điểm tracker còn thiếu từ bề mặt máy của báo cáo (mặc định dry-run trên cả ba, `.bak`, đổi tên nguyên tử).
+- **Đợt cảnh báo CodeQL (21)** — 15 phát hiện regex đa thức: MỘT helper tuyến tính `scoreSummaryBlock()` cho mọi chỗ tiêu thụ SCORE_SUMMARY; các bề mặt quét có chặn biên trong parseReportHeader/boldScoreValueForm/compactScore; đầu vào bị chặn biên trong buildSlug và phép tách gạch ngang của header. 3 lượt ghi tệp có chặn biên (capture jds/ 256 KB, tệp báo cáo 512 KB). 4 ghi chú biến không dùng.
+- **Dialog chồng lấn (CAR-238)** — nút đóng ✕ được định vị tuyệt đối trong header của dialog; tiêu đề dành góc và xuống dòng. Bao gồm chế độ xem nhanh của scan và mọi dialog UI.modal (phản chiếu RTL).
+- **Vệ sinh SPA (CAR-244)** — ETA live p50/p90 thay thế bản sao lỗi thời «⏱ ~2–4 мин» (`eval.eta` được bỏ ×19); nhãn trạng thái tracker trên `#/stats` được khóa ×19; nút bật/tắt «Группами» của pipeline được ghi nhớ và hoạt động; banner «server down» chỉ hiện khi health check thất bại hoặc ≥2 lần thất bại liên tiếp (một lần thất bại là một toast).
+- **Cổng tương thích Node-18** — `tests/node18-compat.test.mjs` cấm `import.meta.dirname` trong test (hai vụ CI sập trên node 18 đến từ đây).
+
+### Đã thêm
+
+- **Sidebar co giãn được (CAR-235)** — kéo biên inline-end của sidebar (200–420 px, ghi nhớ, nhận biết RTL, dải phân cách dùng được bằng bàn phím, nhấp đúp đặt lại).
+- **Perf probe (công cụ CAR-236)** — `scripts/remote-qa/perf-probe.mjs` đo TTFB/total/bytes cho các endpoint production nóng nhất; tài liệu kết quả xếp hạng các đường chậm (re-parse toàn bộ map/jobs, cơn bão cold-miss của reports, re-parse tracker).
+- **Evals** — các grader `evaluate-locale-parity` và `evaluate-repeatability` (stub ngoại tuyến PASS; phần live chạy sau khi deploy).
+
+### Ghi chú
+
+- Dữ liệu di trú trên production KHÔNG bị sửa đổi — các runner mặc định dry-run; apply là việc của chủ sở hữu sau khi xem lại bản xem trước.
+- Provider LLM mặc định KHÔNG đổi (OpenRouter deepseek vẫn giữ; cổng QA hai provider chạy Hermes để đối chiếu).
+- Độ dài báo cáo: v1.268.0 cố ý làm báo cáo gọn hơn (chặn số câu theo khối); tài liệu phân tích khuyến nghị khôi phục chiều sâu qua render prompt + kho JD phía server — đã ghi lại cho bản phát hành kế tiếp, không đổi lặng lẽ tại đây.
+
 ## [1.268.0] — 2026-11-05
 
 ### Đã thay đổi

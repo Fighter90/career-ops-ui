@@ -7,21 +7,21 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-7510%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-7602%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.268.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.268.0)
+[![release](https://img.shields.io/badge/release-v1.268.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.268.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.268.0** — 四个新的扫描来源 — GermanTechJobs、Darwinbox、Keka、ApplicantPro/isolved(注册表 129 = 124 EN + 5 RU)— ETag 看板响应复用、四个看板的日期、portals.yml 拼错的键现在会大声失败、getro 走过旧的置顶钉(parent-sync @ 7d8feb6d)。测试 7096 → 7243.
+> **🆕 最新版本 — v1.268.1** — 确定性评分(CAR-239):SERVER 从锚定的整数子分数计算分数,temperature 0 + 固定种子 — 同一 JD 在全部 19 个语言中收敛于 0.0 以内;Prompt 缓存可观测性(CAR-240)、数据迁移运行器 ×19(CAR-241/242/243)、可调宽侧边栏(CAR-235)。测试 7510.
 
 
 >
-> **上一版本 — v1.267.2** — personio language-dedup(CAR-223):同一职位的语言版本在 scan_history.dedup_include_language 之后躲过去重、preferred_languages 排序、personio/recruitee 按语言的行。测试 7096 → 7203。
+> **上一版本 — v1.268.0** — 四个新的扫描来源 — GermanTechJobs、Darwinbox、Keka、ApplicantPro/isolved(注册表 129 = 124 EN + 5 RU)— ETag 看板响应复用、四个看板的日期、portals.yml 拼错的键现在会大声失败、getro 走过旧的置顶钉(parent-sync @ 7d8feb6d)。测试 7096 → 7243。
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
