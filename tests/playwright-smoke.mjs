@@ -290,6 +290,33 @@ test('Playwright smoke: reports view handles empty state', { skip: SKIP }, async
   await page.close();
 });
 
+test('Playwright smoke: report schema renders current A–G with H and historical A–F unchanged', { skip: SKIP }, async () => {
+  const page = await context.newPage();
+  const shapes = [
+    { slug: 'schema-current', headings: [
+      'A) Role Summary', 'B) Match with CV', 'C) Level and Strategy',
+      'D) Comp and Demand', 'E) Customization Plan', 'F) Interview Plan',
+      'G) Posting Legitimacy', 'H) Draft Application Answers',
+    ] },
+    { slug: 'schema-legacy', headings: [
+      'A) Role Summary', 'B) CV Match', 'C) Strategy',
+      'D) Compensation', 'E) Personalization', 'F) STAR stories',
+    ] },
+  ];
+  for (const shape of shapes) {
+    const markdown = '# Evaluation: Example — Engineer\n\n'
+      + shape.headings.map((heading) => `## ${heading}\n\nContent for ${heading}`).join('\n\n');
+    await page.route(`**/api/reports/${shape.slug}`, (route) => route.fulfill({
+      json: { title: 'Evaluation: Example — Engineer', markdown, date: '2026-11-06', legitimacy: 'High Confidence' },
+    }));
+    await page.goto(`${baseUrl}/#/reports/${shape.slug}`);
+    await page.locator('.card.md h2').first().waitFor();
+    const rendered = await page.locator('.card.md h2').allTextContents();
+    assert.deepEqual(rendered, shape.headings, `${shape.slug}: report headings changed or disappeared`);
+  }
+  await page.close();
+});
+
 test('Playwright smoke: evaluate view returns a manual prompt without API key', { skip: SKIP }, async () => {
   const page = await context.newPage();
   await page.goto(baseUrl + '/#/evaluate');

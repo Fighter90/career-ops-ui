@@ -79,7 +79,7 @@
 | **Archetype** | `config/profile.yml` 中的目標角色畫像。評分量表會依目前作用中的 archetype 對技能匹配加權 — **整份設定中最重要的單一欄位**。 |
 | **Pipeline** | `data/pipeline.md` — 等待評估的 JD URL 收件匣。 |
 | **Tracker** | `data/applications.md` — 所有評估與申請狀態的歷史 GFM 表格。 |
-| **Report** | `reports/<NNN>-<company>-<DATE>.md` — 每個 JD 的完整 A–F 評估,標頭內含 score 與合法性。 |
+| **Report** | `reports/<NNN>-<company>-<DATE>.md` — 每個 JD 的完整 A–G 評估,標頭內含 score 與合法性。 |
 | **Scan history** | `data/scan-history.tsv` — 僅追加日誌;防止跨次掃描重複。 |
 | **Proof points** | 由 `cv.md` 抽出的 STAR+R 證據區塊,重複用於評估、申請答覆、面試準備。 |
 | **JD store** | `jds/jd-<date>-<ts>.txt` — 評估期間原樣保存的職缺描述,供稽核軌跡使用。 |
@@ -1093,7 +1093,7 @@ markup 之外,所以重新渲染(導覽、快速加入流程)不會吞掉一個�
 ## 9. 評估(`#/evaluate`)
 
 針對單一職缺描述,以 `cv.md` 與 `config/profile.yml` 作為依據
-進行評分。回傳按 `modes/oferta.md` 結構化的 A–F 評估與 0–5 score。
+進行評分。回傳按 `modes/oferta.md` 結構化的 A–G 評估與 0–5 score。
 
 ### 輸入
 
@@ -1117,28 +1117,18 @@ markup 之外,所以重新渲染(導覽、快速加入流程)不會吞掉一個�
 3. **手動** — 完全沒有金鑰。頁面會給你一段完整成形的提示,你可以
    貼到 Claude Code、ChatGPT 或任何其他 LLM。
 
-### 輸出段落(正式 career-ops.org A–F)
+### 輸出段落 (A–G — `modes/oferta.md`)
 
-> **v1.15.0 重新對齊。** 區塊字母現在對應到
-> [正式 career-ops.org schema](https://career-ops.org/docs)。
-> v1.15 之前的報告用 A–G(`C=Risks`、`F=Verdict`、`G=Legitimacy`);
-> 我們仍會原樣呈現以維持向後相容,但新報告會以下面的正式語意
-> 輸出 A–F。Score 與 Legitimacy 現在改寫在報告標頭
-> (`score: 4.2/5`、`legitimacy: High|Medium|Low`)。
+> 目前的 `modes/oferta.md` 範本輸出 A–G 七個段落。0–5 分及簡短的職缺真實性狀態在報告標頭，詳細核查在 G。只有評分至少 4.5 時，H 才包含申請表答覆草稿。段落字母不是五個評分維度。舊報告照原樣顯示。
 
-A. **Role Summary** — 3 個項目符號的摘要(風險直接在行內標出)。
-B. **CV Match** — 命中的前 3 個技能 + 缺少的前 3 個。
-C. **Strategy** — 建議:立刻申請 / 先 contacto / 先 deep / 跳過。
-v1.15 之前叫 `Risks`。
-D. **Compensation** — 相對於你的
-`target.comp_total_min_usd`(legacy)或 `compensation.target_range`
-(正式)。
-E. **Personalization** — 應該主打的角度、依 archetype 的框架、
-求職信 / 外聯中應提到的鉤子。v1.15 之前叫 `Application
-Strategy`。
-F. **STAR stories** — 1–3 段可直接貼上的 S-T-A-R 區塊,針對該
-角色客製。v1.15 之前叫 `Verdict`(原始 score);score 現在會
-與 `legitimacy` 一起出現在報告標頭。
+A. **Role Summary**
+B. **Match with CV**
+C. **Level and Strategy**
+D. **Comp and Demand**
+E. **Customization Plan**
+F. **Interview Plan**
+G. **Posting Legitimacy**
+H. **Draft Application Answers**
 
 ### 儲存報告
 
@@ -1482,7 +1472,7 @@ SPA 的檢查清單是給偏好手動填表、不想啟動 Playwright 的使用�
 **在 `Submitted.` 時的自動更新:**
 
 - 在 `data/applications.md` 中狀態從 `Evaluated → Applied`。
-- 填好的答覆會持續保存在報告的 Section G 供日後參考。
+- 填好的答覆會持續保存在報告的 `## Application Answers` 供日後參考。
 
 **交接給 tracker:**
 

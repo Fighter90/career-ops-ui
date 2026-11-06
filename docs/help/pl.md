@@ -90,7 +90,7 @@ działający jako polecenia slash w dowolnym CLI do kodowania AI (Claude Code, C
 | **Archetype** | Profil docelowej roli w `config/profile.yml`. Skala ocen waży dopasowanie umiejętności do aktywnego archetypu — **najważniejsze pole**. |
 | **Pipeline** | `data/pipeline.md` — skrzynka odbiorcza adresów URL JD oczekujących na ocenę. |
 | **Tracker** | `data/applications.md` — historyczna tabela GFM każdej oceny i statusu aplikacji. |
-| **Report** | `reports/<NNN>-<company>-<DATE>.md` — pełna ocena A–F dla każdego JD, z wynikiem i wiarygodnością w nagłówku. |
+| **Report** | `reports/<NNN>-<company>-<DATE>.md` — pełna ocena A–G dla każdego JD, z wynikiem i wiarygodnością w nagłówku. |
 | **Scan history** | `data/scan-history.tsv` — dziennik tylko do dopisywania; zapobiega duplikatom między skanowaniami. |
 | **Proof points** | Bloki dowodów STAR+R wyekstrahowane z `cv.md`, ponownie używane przy ocenianiu, odpowiedziach przy aplikowaniu i przygotowaniu do rozmów. |
 | **JD store** | `jds/jd-<date>-<ts>.txt` — dosłowne opisy stanowisk zapisywane podczas oceniania dla celów audytu. |
@@ -1248,29 +1248,18 @@ efekt).
 3. **Ręczny** — brak klucza. Strona zwraca w pełni uformowany prompt,
    który możesz wkleić do Claude Code, ChatGPT lub dowolnego innego LLM.
 
-### Sekcje wyjściowe (kanoniczne career-ops.org A-F)
+### Sekcje wyjściowe (A–G — `modes/oferta.md`)
 
-> **Realignment v1.15.0.** Litery bloków teraz pasują do
-> [kanonicznego schematu career-ops.org](https://career-ops.org/docs).
-> Raporty sprzed v1.15 używały A–G (z `C=Risks`, `F=Verdict`,
-> `G=Legitimacy`); nadal renderujemy je tak jak są dla wstecznej
-> kompatybilności, ale nowe raporty emitują A–F z kanonicznymi
-> znaczeniami poniżej. Wynik i Wiarygodność teraz mieszkają w nagłówku raportu
-> (`score: 4.2/5`, `legitimacy: High|Medium|Low`).
+> Aktualny szablon `modes/oferta.md` tworzy siedem sekcji A–G. Wynik 0–5 i krótki status wiarygodności są w nagłówku, a szczegółowa weryfikacja ogłoszenia w G. H zawiera szkice odpowiedzi do formularza tylko przy wyniku co najmniej 4,5. Litery sekcji nie są pięcioma wymiarami oceny. Starsze raporty wyświetlamy bez zmian.
 
-A. **Role Summary** — podsumowanie w 3 punktach (ryzyka wymienione inline).
-B. **CV Match** — top 3 trafione umiejętności + top 3 brakujące.
-C. **Strategy** — rekomendacja: aplikuj teraz / najpierw contacto /
-najpierw deep / pomiń. Było `Risks` przed v1.15.
-D. **Compensation** — względem Twojego
-`target.comp_total_min_usd` (legacy) lub `compensation.target_range`
-(kanoniczne).
-E. **Personalization** — kąt wiodący, framing per archetype,
-haczyki do wspomnienia w liście motywacyjnym / outreachu. Było `Application
-Strategy` przed v1.15.
-F. **STAR stories** — 1–3 gotowe do wklejenia bloki S-T-A-R dopasowane
-do roli. Było `Verdict` (surowy wynik) przed v1.15; wynik teraz
-pojawia się w nagłówku raportu obok `legitimacy`.
+A. **Role Summary**
+B. **Match with CV**
+C. **Level and Strategy**
+D. **Comp and Demand**
+E. **Customization Plan**
+F. **Interview Plan**
+G. **Posting Legitimacy**
+H. **Draft Application Answers**
 
 ### Zapisywanie raportu
 

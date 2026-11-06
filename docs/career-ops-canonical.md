@@ -1,6 +1,6 @@
 # career-ops — canonical reference
 
-> **Synthesized from <https://career-ops.org/docs> (fetched 2026-05-12).** This file is the single source of truth that the help bundles and READMEs translate into 8 languages. When career-ops.org/docs changes, **regenerate this file first**, then re-sync the bundles.
+> **Historical synthesis from <https://career-ops.org/docs> (fetched 2026-05-12).** For report sections, the current parent `modes/oferta.md` and `modes/apply.md` take precedence over this snapshot. Review the live source before syncing help translations.
 
 ## 1. What career-ops is
 
@@ -25,7 +25,7 @@ Eliminates the manual tracking-via-spreadsheets / cover-letters-from-scratch loo
 | **Archetype** | A target-role profile in `config/profile.yml` that the JD matcher uses. Most-important field; the rubric weights skill matches against the active archetype. |
 | **Pipeline** | The inbox of pending JD URLs (`data/pipeline.md`). Each line is one URL waiting to be evaluated. |
 | **Tracker** | The historical log of every evaluation + application status (`data/applications.md`, GFM markdown table). |
-| **Report** | A full A–G scored evaluation per JD, saved to `reports/<NNN>-<company>-<DATE>.md`. |
+| **Report** | An A–G evaluation with score 0–5 and brief legitimacy status in the header; G holds the detailed posting check. `modes/oferta.md` optionally drafts application answers in H for scores ≥ 4.5. The apply workflow persists filled/submitted answers separately under `## Application Answers`. Saved to `reports/<NNN>-<company>-<DATE>.md`. |
 | **Scan history** | Append-only log of every scanned URL (`data/scan-history.tsv`); used for dedup across future scans. |
 | **Scoring rubric** | Five-dimension 0.0–5.0 score plus a holistic global fit with explicit action thresholds (see §5 below). |
 
@@ -105,7 +105,7 @@ career-ops-ui's `#/dashboard` and `#/tracker` highlight every row at or above 4.
 4. The CLI flags items that need user attention — salary anchor, missing résumé fields, optional questions.
 5. **The user reviews every answer and clicks Submit themselves**. career-ops never clicks Submit.
 6. User types `Submitted.` back in chat.
-7. Tracker status flips `Evaluated → Applied` in `data/applications.md`; answers persist in the report's Section G.
+7. Tracker status flips `Evaluated → Applied` in `data/applications.md`; filled/submitted answers persist in the report's `## Application Answers` section (not G, which checks posting legitimacy). Optional H holds pre-application drafts.
 8. View pipeline status: `/career-ops tracker`.
 
 In career-ops-ui: `#/apply` generates the same checklist text. The Playwright form-fill itself stays inside the CLI — the SPA's role is to surface the checklist for review.

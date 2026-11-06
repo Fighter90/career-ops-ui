@@ -96,7 +96,7 @@
 | **Archetype** | `config/profile.yml` में एक टारगेट-रोल प्रोफ़ाइल। रूब्रिक स्किल मैचों को सक्रिय आर्किटाइप के मुकाबले भार देता है — **सबसे महत्वपूर्ण एकल फ़ील्ड**। |
 | **Pipeline** | `data/pipeline.md` — मूल्यांकन की प्रतीक्षा कर रहे JD URL का इनबॉक्स। |
 | **Tracker** | `data/applications.md` — हर मूल्यांकन + आवेदन स्थिति की ऐतिहासिक GFM तालिका। |
-| **Report** | `reports/<NNN>-<company>-<DATE>.md` — प्रति JD पूरा A–F मूल्यांकन, हेडर में स्कोर + वैधता (legitimacy) के साथ। |
+| **Report** | `reports/<NNN>-<company>-<DATE>.md` — प्रति JD पूरा A–G मूल्यांकन, हेडर में स्कोर + वैधता (legitimacy) के साथ। |
 | **Scan history** | `data/scan-history.tsv` — केवल-जोड़ने योग्य लॉग; स्कैन के बीच डुप्लिकेट रोकता है। |
 | **Proof points** | `cv.md` से निकाले गए STAR+R प्रमाण ब्लॉक, मूल्यांकन, अप्लाई उत्तर, इंटरव्यू प्रेप में दोबारा उपयोग होते हैं। |
 | **JD store** | `jds/jd-<date>-<ts>.txt` — मूल्यांकन के दौरान ऑडिट ट्रेल के लिए सहेजी गई शब्दशः जॉब डिस्क्रिप्शन। |
@@ -1483,28 +1483,18 @@ JD को ऑडिट ट्रेल के लिए `jds/jd-<date>-<ts>.txt`
    लौटाता है जिसे आप Claude Code, ChatGPT, या किसी भी और LLM में पेस्ट
    कर सकते हैं।
 
-### आउटपुट सेक्शन (कैननिकल career-ops.org A-F)
+### आउटपुट सेक्शन (A–G — `modes/oferta.md`)
 
-> **v1.15.0 रीअलाइनमेंट।** ब्लॉक लेटर अब
-> [कैननिकल career-ops.org स्कीमा](https://career-ops.org/docs) से मेल खाते हैं।
-> Pre-v1.15 रिपोर्ट A–G इस्तेमाल करती थीं (`C=Risks`, `F=Verdict`,
-> `G=Legitimacy` के साथ); हम उन्हें बैकवर्ड कम्पैटिबिलिटी के लिए अब भी
-> वैसे ही रेंडर करते हैं, लेकिन नई रिपोर्ट नीचे दिए कैननिकल अर्थों के
-> साथ A–F जारी करती हैं। Score और Legitimacy अब रिपोर्ट हेडर में रहते
-> हैं (`score: 4.2/5`, `legitimacy: High|Medium|Low`)।
+> वर्तमान `modes/oferta.md` टेम्पलेट सात A–G सेक्शन बनाता है। 0–5 स्कोर और वैधता का संक्षिप्त दर्जा रिपोर्ट हेडर में है; G में नौकरी की विस्तृत जाँच है। H में आवेदन के जवाबों का मसौदा तभी आता है जब स्कोर कम से कम 4.5 हो। सेक्शन के अक्षर पाँच स्कोरिंग आयाम नहीं हैं। पुराने रिपोर्ट बिना बदलाव दिखते हैं।
 
-A. **Role Summary** — 3-बुलेट रीकैप (जोखिमों का इशारा इनलाइन में)।
-B. **CV Match** — टॉप 3 मैच होने वाले स्किल्स + टॉप 3 गुम स्किल्स।
-C. **Strategy** — सिफ़ारिश: अभी अप्लाई करें / पहले contacto / पहले
-deep / छोड़ दें। v1.15 से पहले यह `Risks` था।
-D. **Compensation** — आपके `target.comp_total_min_usd` (legacy) या
-`compensation.target_range` (canonical) के सापेक्ष।
-E. **Personalization** — किस एंगल से शुरुआत करें, आर्केटाइप के हिसाब
-से फ़्रेमिंग, कवर लेटर / आउटरीच में ज़िक्र करने लायक़ हुक्स। v1.15 से
-पहले यह `Application Strategy` था।
-F. **STAR stories** — भूमिका के हिसाब से तैयार 1–3 पेस्ट-रेडी
-S-T-A-R ब्लॉक। v1.15 से पहले यह `Verdict` (कच्चा स्कोर) था; स्कोर अब
-रिपोर्ट हेडर में `legitimacy` के साथ दिखता है।
+A. **Role Summary**
+B. **Match with CV**
+C. **Level and Strategy**
+D. **Comp and Demand**
+E. **Customization Plan**
+F. **Interview Plan**
+G. **Posting Legitimacy**
+H. **Draft Application Answers**
 
 ### रिपोर्ट सेव करना
 

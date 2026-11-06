@@ -186,7 +186,7 @@ npm start        # http://127.0.0.1:4317
 | **#/dashboard** | Đơn-ứng-tuyển, pipeline, điểm-trung-bình, luồng-trạng-thái, hành-động-nhanh |
 | **#/scan** | ATS + nguồn-khu-vực trong-một-lượt-quét; bộ-lọc, truy-vấn-đã-lưu, yêu-thích |
 | **#/pipeline** | Hàng-đợi-URL; xem-trước-ngay-tại-chỗ; đánh-giá-một-cú-bấm |
-| **#/evaluate** | Chấm-JD 0–5 theo-A–F; trực-tiếp hay-thủ-công |
+| **#/evaluate** | Chấm-JD 0–5 theo-A–G; trực-tiếp hay-thủ-công |
 | **#/reports** | Các-đánh-giá-đã-lưu; xuất-PDF; bảng điểm → bước-tiếp-theo |
 | **#/tracker** | Bảng-CRM; phễu-trạng-thái; kiểm-tra-"Still live?"; ghi-kết-quả |
 | **#/deep** | Bản-tóm-tắt-công-ty 7 mục |

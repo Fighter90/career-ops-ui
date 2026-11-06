@@ -80,16 +80,16 @@ releases ago and are regression-locked by a `tests/*.test.mjs`.
 
 | ID | Severity | Title |
 |---|---|---|
-| G-005 | Minor (cross-repo) | `oferta.md` report blocks A–G vs canonical career-ops.org A–F |
+| G-005 | Minor (cross-repo) | Align current help and parent application guidance with the A–G report (+ optional H drafts) |
 
-The single open item across the project, unchanged since v1.27 and blocked on a
-cross-repo parent commit (CLAUDE.md hard rule #1 forbids editing the parent from
-here). The ready-to-apply plan is in
-[`archive/superseded-prompts/G-005-closure-kit.md`](./archive/superseded-prompts/G-005-closure-kit.md):
-a parent commit rewriting `modes/oferta.md` A–G → A–F must land **first**, or
-`prompts.mjs` and the parent mode file contradict each other — strictly worse
-drift. The renderer is schema-tolerant, so this is nomenclature drift, not a
-functional break.
+The current `modes/oferta.md` and UI prompt both emit A–G; G is the detailed
+posting-legitimacy check. Optional H contains initial application-answer drafts.
+The apply workflow saves filled/submitted answers in a separate
+`## Application Answers` section. The old A–F proposal in
+[`archive/superseded-prompts/G-005-closure-kit.md`](./archive/superseded-prompts/G-005-closure-kit.md)
+predates the current prompts and validators and is superseded. The remaining
+cross-repo task is to correct stale parent documentation without changing
+candidate data or editing parent files from this checkout.
 
 ---
 

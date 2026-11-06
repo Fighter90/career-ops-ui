@@ -95,7 +95,7 @@ verfolgt jede Bewerbung lokal auf Ihrem Rechner.
 | **Archetype** | Ein Zielrollen-Profil in `config/profile.yml`. Das Bewertungsschema gewichtet Skill-Übereinstimmungen gegen den aktiven Archetyp — **das einzelne wichtigste Feld**. |
 | **Pipeline** | `data/pipeline.md` — Posteingang von JD-URLs, die auf ihre Bewertung warten. |
 | **Tracker** | `data/applications.md` — historische GFM-Tabelle jeder Bewertung + jedes Bewerbungsstatus. |
-| **Report** | `reports/<NNN>-<company>-<DATE>.md` — vollständige A–F-Bewertung pro JD, mit Score + Legitimität im Header. |
+| **Report** | `reports/<NNN>-<company>-<DATE>.md` — vollständige A–G-Bewertung pro JD, mit Score + Legitimität im Header. |
 | **Scan-Historie** | `data/scan-history.tsv` — reines Anhängen-Log; verhindert Duplikate über Scans hinweg. |
 | **Proof Points** | STAR+R-Nachweisblöcke, extrahiert aus `cv.md`, wiederverwendet über Bewertung, Bewerbungsantworten, Interview-Vorbereitung. |
 | **JD-Store** | `jds/jd-<date>-<ts>.txt` — wortgetreue Stellenbeschreibungen, die während der Bewertung für die Prüfspur gespeichert werden. |
@@ -1420,31 +1420,18 @@ Sie `save: true` im API-Aufruf — gleicher Effekt).
    vollständig ausformulierten Prompt zurück, den Sie in Claude Code,
    ChatGPT oder ein anderes LLM einfügen können.
 
-### Ausgabeabschnitte (kanonisch career-ops.org A-F)
+### Ausgabeabschnitte (A–G — `modes/oferta.md`)
 
-> **v1.15.0-Neuausrichtung.** Die Blockbuchstaben entsprechen jetzt dem
-> [kanonischen career-ops.org-Schema](https://career-ops.org/docs).
-> Reports vor v1.15 verwendeten A–G (mit `C=Risks`, `F=Verdict`,
-> `G=Legitimacy`); wir rendern sie zur Abwärtskompatibilität weiterhin
-> unverändert, aber neue Reports emittieren A–F mit der kanonischen
-> Semantik unten. Score und Legitimität leben jetzt im Report-Header
-> (`score: 4.2/5`, `legitimacy: High|Medium|Low`).
+> Die aktuelle Vorlage `modes/oferta.md` erzeugt sieben Abschnitte A–G. Die Bewertung von 0–5 und der kurze Status der Seriosität stehen im Report-Header; G enthält die ausführliche Prüfung der Stellenanzeige. H enthält Entwürfe für Bewerbungsantworten nur bei einer Bewertung von mindestens 4,5. Die Abschnittsbuchstaben sind nicht die fünf Bewertungsdimensionen. Ältere Reports bleiben unverändert lesbar.
 
-A. **Role Summary** — 3-Punkt-Zusammenfassung (Risiken inline
-benannt).
-B. **CV Match** — die 3 wichtigsten getroffenen Skills + die 3
-wichtigsten fehlenden.
-C. **Strategy** — Empfehlung: apply now / contacto first /
-deep first / skip. War `Risks` vor v1.15.
-D. **Compensation** — relativ zu Ihrem
-`target.comp_total_min_usd` (Legacy) oder `compensation.target_range`
-(kanonisch).
-E. **Personalization** — Ansatz, mit dem zu führen ist, Framing pro
-Archetyp, Anknüpfungspunkte für Anschreiben / Outreach. War `Application
-Strategy` vor v1.15.
-F. **STAR stories** — 1–3 einfügefertige S-T-A-R-Blöcke, zugeschnitten
-auf die Rolle. War `Verdict` (Rohscore) vor v1.15; der Score erscheint
-jetzt im Report-Header neben `legitimacy`.
+A. **Role Summary**
+B. **Match with CV**
+C. **Level and Strategy**
+D. **Comp and Demand**
+E. **Customization Plan**
+F. **Interview Plan**
+G. **Posting Legitimacy**
+H. **Draft Application Answers**
 
 ### Den Report speichern
 

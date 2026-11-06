@@ -95,7 +95,7 @@ career-ops toca):
 | **Arquetipo** | Un perfil de rol objetivo en `config/profile.yml`. La rúbrica pondera coincidencias de skills contra el arquetipo activo — **el campo más importante**. |
 | **Pipeline** | `data/pipeline.md` — inbox de URLs de JD pendientes de evaluación. |
 | **Tracker** | `data/applications.md` — tabla GFM histórica de cada evaluación + estado de candidatura. |
-| **Report** | `reports/<NNN>-<company>-<DATE>.md` — evaluación A–F completa por JD, con puntuación + legitimidad en el header. |
+| **Report** | `reports/<NNN>-<company>-<DATE>.md` — evaluación A–G completa por JD, con puntuación + legitimidad en el header. |
 | **Scan history** | `data/scan-history.tsv` — log append-only; previene duplicados entre scans. |
 | **Proof points** | Bloques de evidencia STAR+R extraídos de `cv.md`, reutilizados a través de evaluación, respuestas de apply y preparación de entrevistas. |
 | **JD store** | `jds/jd-<date>-<ts>.txt` — descripciones de empleo verbatim guardadas durante la evaluación para el audit trail. |
@@ -1222,30 +1222,18 @@ la llamada API — mismo efecto).
    completamente formado que puedes pegar en Claude Code, ChatGPT, o
    cualquier otro LLM.
 
-### Secciones de salida (A-F canónicas de career-ops.org)
+### Secciones de salida (A–G — `modes/oferta.md`)
 
-> **Realineación v1.15.0.** Las letras de bloque ahora coinciden con
-> el [schema canónico de career-ops.org](https://career-ops.org/docs).
-> Los reportes pre-v1.15 usaban A–G (con `C=Risks`, `F=Verdict`,
-> `G=Legitimacy`); seguimos renderizándolos tal cual por
-> compatibilidad hacia atrás, pero los reportes nuevos emiten A–F con
-> la semántica canónica de abajo. Score y Legitimacy ahora viven en
-> el header del reporte (`score: 4.2/5`, `legitimacy: High|Medium|Low`).
+> La plantilla actual `modes/oferta.md` produce siete secciones A–G. El resultado 0–5 y el estado breve de legitimidad figuran en la cabecera; G contiene la comprobación detallada de la oferta. H incluye borradores de respuestas solo si la puntuación es al menos 4,5. Las letras no son las cinco dimensiones de puntuación. Los informes anteriores se muestran sin modificarlos.
 
-A. **Role Summary** — recapitulación de 3 bullets (riesgos
-mencionados inline).
-B. **CV Match** — top 3 skills coincidentes + top 3 ausentes.
-C. **Strategy** — recomendación: apply now / contacto first / deep
-first / skip. Antes de v1.15 era `Risks`.
-D. **Compensation** — relativa a tu `target.comp_total_min_usd`
-(legacy) o `compensation.target_range` (canónico).
-E. **Personalization** — ángulo para liderar, framing por arquetipo,
-ganchos a mencionar en cover letter / outreach. Antes de v1.15 era
-`Application Strategy`.
-F. **STAR stories** — 1–3 bloques S-T-A-R listos-para-pegar adaptados
-al rol. Antes de v1.15 era `Verdict` (puntuación cruda); la
-puntuación ahora aparece en el header del reporte junto a
-`legitimacy`.
+A. **Role Summary**
+B. **Match with CV**
+C. **Level and Strategy**
+D. **Comp and Demand**
+E. **Customization Plan**
+F. **Interview Plan**
+G. **Posting Legitimacy**
+H. **Draft Application Answers**
 
 ### Guardar el reporte
 
@@ -1624,7 +1612,7 @@ Dos rutas para el envío real:
 **Actualizaciones automáticas al confirmar `Submitted.`:**
 
 - El estado cambia `Evaluated → Applied` en `data/applications.md`.
-- Las respuestas rellenadas persisten en la Section G del reporte
+- Las respuestas rellenadas persisten en la `## Application Answers` del reporte
   para referencia futura.
 
 **Handoff al tracker:**

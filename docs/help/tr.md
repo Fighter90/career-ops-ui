@@ -93,7 +93,7 @@ her başvuruyu makinenizde yerel olarak takip eder.
 | **Archetype** | `config/profile.yml` içindeki bir hedef-rol profili. Rubrik, beceri eşleşmelerini aktif archetype'a göre ağırlıklandırır — **en önemli tek alan**. |
 | **Pipeline** | `data/pipeline.md` — değerlendirilmeyi bekleyen iş tanımı URL'lerinin gelen kutusu. |
 | **Tracker** | `data/applications.md` — her değerlendirmenin + başvuru durumunun geçmişini tutan GFM tablosu. |
-| **Report** | `reports/<NNN>-<company>-<DATE>.md` — her iş tanımı için tam A–F değerlendirmesi, başlıkta puan + meşruiyet ile birlikte. |
+| **Report** | `reports/<NNN>-<company>-<DATE>.md` — her iş tanımı için tam A–G değerlendirmesi, başlıkta puan + meşruiyet ile birlikte. |
 | **Scan history** | `data/scan-history.tsv` — yalnızca-ekleme günlüğü; taramalar arası çiftlenmeyi önler. |
 | **Proof points** | `cv.md`'den çıkarılan STAR+R kanıt blokları; değerlendirme, başvuru yanıtları ve mülakat hazırlığında yeniden kullanılır. |
 | **JD store** | `jds/jd-<date>-<ts>.txt` — denetim izi için değerlendirme sırasında kaydedilen birebir iş tanımları. |
@@ -1378,28 +1378,18 @@ için **💾 Save JD**'ye tıklayın (veya API çağrısında `save: true` geçi
    başka herhangi bir LLM'e yapıştırabileceğiniz tamamen biçimlendirilmiş
    bir prompt döndürür.
 
-### Çıktı bölümleri (kanonik career-ops.org A-F)
+### Çıktı bölümleri (A–G — `modes/oferta.md`)
 
-> **v1.15.0 yeniden hizalaması.** Blok harfleri artık
-> [kanonik career-ops.org şemasıyla](https://career-ops.org/docs)
-> eşleşir. v1.15 öncesi raporlar A–G kullanırdı (`C=Risks`, `F=Verdict`,
-> `G=Legitimacy` ile); bunları geriye dönük uyumluluk için hâlâ olduğu
-> gibi işleriz, ancak yeni raporlar aşağıdaki kanonik semantikle A–F
-> yayar. Puan ve Legitimacy artık rapor başlığında yaşar
-> (`score: 4.2/5`, `legitimacy: High|Medium|Low`).
+> Güncel `modes/oferta.md` şablonu yedi A–G bölümü üretir. 0–5 puan ve kısa ilan güvenilirliği durumu rapor başlığındadır; G ayrıntılı ilan incelemesini içerir. H yalnızca puan en az 4,5 ise başvuru formu yanıt taslaklarını içerir. Bölüm harfleri beş puanlama boyutu değildir. Eski raporlar değiştirilmeden gösterilir.
 
-A. **Role Summary** — 3 maddelik özet (riskler satır içi belirtilir).
-B. **CV Match** — vurulan ilk 3 beceri + eksik ilk 3.
-C. **Strategy** — öneri: şimdi başvur / önce contacto / önce deep /
-atla. v1.15 öncesi `Risks`'ti.
-D. **Compensation** — `target.comp_total_min_usd`'nize (eski) veya
-`compensation.target_range`'e (kanonik) göre.
-E. **Personalization** — öne çıkarılacak açı, archetype başına
-çerçeveleme, ön yazı / ulaşımda bahsedilecek kancalar. v1.15 öncesi
-`Application Strategy`'ydi.
-F. **STAR stories** — role uyarlanmış, yapıştırmaya hazır 1–3 S-T-A-R
-bloğu. v1.15 öncesi `Verdict`'ti (ham puan); puan artık `legitimacy` ile
-birlikte rapor başlığında görünür.
+A. **Role Summary**
+B. **Match with CV**
+C. **Level and Strategy**
+D. **Comp and Demand**
+E. **Customization Plan**
+F. **Interview Plan**
+G. **Posting Legitimacy**
+H. **Draft Application Answers**
 
 ### Raporu kaydetme
 

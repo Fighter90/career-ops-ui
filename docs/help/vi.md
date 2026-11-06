@@ -90,7 +90,7 @@ ngay trên máy của bạn.
 | **Archetype** | Hồ sơ vị-trí-mục-têu trong `config/profile.yml`. Thang điểm lấy khớp kỹ năng so với archetype đang hoạt động — **trường quan trọng nhất**. |
 | **Pipeline** | `data/pipeline.md` — hộp vào chứa các URL JD chờ đánh giá. |
 | **Tracker** | `data/applications.md` — bảng GFM lịch sử của mọi lần đánh giá + trạng thái ứng tuyển. |
-| **Báo cáo** | `reports/<NNN>-<company>-<DATE>.md` — đánh giá A–F đầy đủ cho từng JD, kèm điểm + độ chính đáng ở phần đầu. |
+| **Báo cáo** | `reports/<NNN>-<company>-<DATE>.md` — đánh giá A–G đầy đủ cho từng JD, kèm điểm + độ chính đáng ở phần đầu. |
 | **Lịch sử quét** | `data/scan-history.tsv` — nhật ký chỉ-ghi-thêm; chống trùng lặp qua các lần quét. |
 | **Điểm chứng minh** | Các khối bằng chứng STAR+R rút ra từ `cv.md`, dùng lại trong đánh giá, câu trả lời ứng tuyển, chuẩn bị phỏng vấn. |
 | **Kho JD** | `jds/jd-<date>-<ts>.txt` — mô tả công việc nguyên văn được lưu trong lúc đánh giá cho dấu vết kiểm toán. |
@@ -1308,28 +1308,18 @@ hiệu quả).
 3. **Thủ công** — chưa đặt khóa nào. Trang trả một prompt dạng đầy đủ
    bạn có thể dán vào Claude Code, ChatGPT, hay bất kỳ LLM nào khác.
 
-### Các phần đầu ra (career-ops.org A-F chính thức)
+### Các phần đầu ra (A–G — `modes/oferta.md`)
 
-> **Tái căn chỉnh v1.15.0.** Các chữ khối giờ khớp
-> [schema chính thức career-ops.org](https://career-ops.org/docs).
-> Các báo cáo trước v1.15 dùng A–G (với `C=Risks`, `F=Verdict`,
-> `G=Legitimacy`); chúng ta vẫn render nguyên trạng cho khả năng tương thích
-> ngược, nhưng báo cáo mới phát A–F với ngữ nghĩa chính thức
-> bên dưới. Điểm và Legitimacy giờ nằm ở phần đầu báo cáo
-> (`score: 4.2/5`, `legitimacy: High|Medium|Low`).
+> Mẫu `modes/oferta.md` hiện tại tạo bảy phần A–G. Điểm 0–5 và trạng thái xác thực ngắn gọn nằm ở đầu báo cáo; G chứa phần kiểm tra tin tuyển dụng chi tiết. H chỉ có bản nháp câu trả lời cho đơn ứng tuyển khi điểm đạt ít nhất 4,5. Chữ cái các phần không phải năm chiều chấm điểm. Báo cáo cũ vẫn hiển thị nguyên trạng.
 
-A. **Role Summary** — tóm tắt 3 gạch đầu dòng (rủi ro được nêu ngay tại chỗ).
-B. **CV Match** — top 3 kỹ năng trúng + top 3 còn thiếu.
-C. **Strategy** — khuyến nghị: nộp ngay / contacto trước /
-deep trước / bỏ qua. Trước đây là `Risks` trước v1.15.
-D. **Compensation** — so với
-`target.comp_total_min_usd` (legacy) hay `compensation.target_range`
-(chính thức).
-E. **Personalization** — góc cần dẫn dắt, định vị theo archetype,
-điểm móc cần nhắc trong thư xin việc / tiếp cận. Trước đây là `Application
-Strategy` trước v1.15.
-F. **STAR stories** — 1–3 khối S T A R sẵn sàn dán được điều chỉnh theo vị trí. Trước đây là `Verdict` (điểm thô) trước v1.15; điểm giờ
-xuất hiện ở phần đầu báo cáo cạnh `legitimacy`.
+A. **Role Summary**
+B. **Match with CV**
+C. **Level and Strategy**
+D. **Comp and Demand**
+E. **Customization Plan**
+F. **Interview Plan**
+G. **Posting Legitimacy**
+H. **Draft Application Answers**
 
 ### Lưu báo cáo
 

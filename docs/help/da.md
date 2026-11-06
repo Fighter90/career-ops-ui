@@ -93,7 +93,7 @@ lokalt på din maskine.
 | **Archetype** | En målrolle-profil i `config/profile.yml`. Rubrikken vægter færdighedsmatch mod den aktive arketype — **det enkeltvis vigtigste felt**. |
 | **Pipeline** | `data/pipeline.md` — indbakke af JD-URL'er, der venter på at blive evalueret. |
 | **Tracker** | `data/applications.md` — historisk GFM-tabel over hver evaluering + ansøgningsstatus. |
-| **Report** | `reports/<NNN>-<company>-<DATE>.md` — fuld A–F-evaluering per JD, med score + legitimitet i headeren. |
+| **Report** | `reports/<NNN>-<company>-<DATE>.md` — fuld A–G-evaluering per JD, med score + legitimitet i headeren. |
 | **Scan history** | `data/scan-history.tsv` — append-only log; forhindrer dubletter på tværs af scanninger. |
 | **Proof points** | STAR+R-evidensblokke udtrukket fra `cv.md`, genbrugt på tværs af evaluering, ansøgningssvar og samtaleforberedelse. |
 | **JD store** | `jds/jd-<date>-<ts>.txt` — ordrette jobopslag gemt under evaluering til revisionssporet. |
@@ -1307,29 +1307,18 @@ effekt).
 3. **Manuel** — ingen nøgle sat. Siden returnerer en fuldt formet prompt,
    du kan indsætte i Claude Code, ChatGPT eller en hvilken som helst anden LLM.
 
-### Output-sektioner (kanoniske career-ops.org A-F)
+### Output-sektioner (A–G — `modes/oferta.md`)
 
-> **v1.15.0-omjustering.** Block-bogstaver matcher nu det
-> [kanoniske career-ops.org-skema](https://career-ops.org/docs).
-> Pre-v1.15-rapporter brugte A–G (med `C=Risks`, `F=Verdict`,
-> `G=Legitimacy`); vi gengiver dem stadig som de er for baglæns
-> kompatibilitet, men nye rapporter udsender A–F med den kanoniske
-> semantik nedenfor. Score og Legitimacy lever nu i rapport-
-> headeren (`score: 4.2/5`, `legitimacy: High|Medium|Low`).
+> Den nuværende `modes/oferta.md`-skabelon udsender syv afsnit A–G. Scoren 0–5 og en kort status for opslagets troværdighed står i rapportens header; G indeholder den detaljerede kontrol. H indeholder udkast til ansøgningssvar kun ved en score på mindst 4,5. Afsnitsbogstaverne er ikke de fem scoringsdimensioner. Ældre rapporter vises uændret.
 
-A. **Role Summary** — 3-punkts genopsummering (risici nævnt inline).
-B. **CV Match** — top 3 færdigheds-hits + top 3 manglende.
-C. **Strategy** — anbefaling: ansøg nu / contacto først /
-deep først / spring over. Var `Risks` før v1.15.
-D. **Compensation** — relativt til dit
-`target.comp_total_min_usd` (legacy) eller `compensation.target_range`
-(kanonisk).
-E. **Personalization** — vinkel at lede med, framing per arketype,
-hooks at nævne i ansøgningsbrev / outreach. Var `Application
-Strategy` før v1.15.
-F. **STAR stories** — 1–3 klar-til-indsæt S-T-A-R-blokke skræddersyet
-til rollen. Var `Verdict` (rå score) før v1.15; score vises nu
-i rapportheaderen sammen med `legitimacy`.
+A. **Role Summary**
+B. **Match with CV**
+C. **Level and Strategy**
+D. **Comp and Demand**
+E. **Customization Plan**
+F. **Interview Plan**
+G. **Posting Legitimacy**
+H. **Draft Application Answers**
 
 ### Gemning af rapporten
 
@@ -1701,7 +1690,7 @@ To veje til den faktiske indsendelse:
 **Automatiske opdateringer ved `Submitted.`:**
 
 - Status skifter `Evaluated → Applied` i `data/applications.md`.
-- De udfyldte svar persisterer i Section G af rapporten til fremtidig
+- De udfyldte svar persisterer i `## Application Answers` af rapporten til fremtidig
   reference.
 
 **Overdragelse til tracker:**
