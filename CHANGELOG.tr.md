@@ -2,6 +2,14 @@
 
 > Bu changelog artık tüm sürüm geçmişini içerir. Türkçe yerelleştirmenin eklenmesinden (v1.85.0) önce yayınlanan girdiler aşağıda İngilizce özgün hâliyle yer alır — çeviri bekliyor; asıl kaynak [🇬🇧 CHANGELOG.md](CHANGELOG.md)'dir.
 
+## [1.271.1] — 2026-11-07
+
+### Düzeltildi
+- **/api/map/jobs varsayılan olarak slim (CAR-249)** — bu uç nokta prod'daki en ağır sayfa yüklemeydi (perf probe'un ölçtüğü 4.6 MB): ayrıştırılan tracker satırları, harita görünümünün hiç okumadığı uzun Notes hücreleri ve ham markdown Report/PDF sütunları taşıyordu. Payload artık her tracker satırını haritanın tükettiği 11 alana projekte ediyor (num/company/role/status/score/scoreNum/url/href/location/workplace/reportPath — notlar, projeksiyondan önce sunucu tarafında `workplace` içine katlanıyor); `?full=1`, ihtiyaç duyan her tüketici için ayrıştırılmış tüm sütunları geri getiriyor. Pipeline satırları zaten slimdi ve değişmedi.
+
+### Notlar
+- Bilinçli olarak DEĞİŞTİRİLMEDİ: /api/pipeline (1.2 MB) — satırları pipeline gelen kutusu görünümünün çalışma kümesidir ve eksiksiz tüketilir; orada slim projeksiyon ayrı bir karardır.
+
 ## [1.271.0] — 2026-11-07
 
 ### Eklendi

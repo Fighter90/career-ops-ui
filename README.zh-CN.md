@@ -17,9 +17,9 @@ _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.271.0** — 职业任务看板(`#/tasks`,成长分组):支持拖拽的个人看板 —— 列为待办/进行中/已完成,经 `PUT /api/tasks/:id` 的乐观移动,键盘 + 移动端下拉,每列 «+» 快速创建,详情弹窗;持久化到 `data/career-tasks.json`;CodeQL 第 22 波清理;remote-qa `perf` 派发(TTFB/total 中位数,SLOW >2000 ms 时 exit 1)。测试 7874 → 7918。
+> **🆕 最新版本 — v1.271.1** — /api/map/jobs 默认瘦身 (CAR-249):生产环境最重的页面加载(4.6 MB)现在只发送地图消费的 11 个字段;`?full=1` 恢复全部列;/api/pipeline 特意保持不变。测试 7918 → 7920。
 >
-> **上一版本 — v1.270.0** — 六个新扫描源 — ALDI Nord、HiBob、HireHive、Factorial、Polymer、Remote(注册表 **135 = 130 EN + 5 RU · 130 adapters**);扫描器读取整个看板:Consider 沿看板自身的 `meta.sequence` 走完整个目录,带逐页重试和硬上限警告,接受全球性国家标签,支持条目级 `timeout_ms`、按请求的 `CAREER_OPS_HTTP_TIMEOUT_MS` 以及可配置的扫描并发(`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`,默认值不变 32/10)。
+> **上一版本 — v1.271.0** — 职业任务看板(`#/tasks`,成长分组):支持拖拽的个人看板 —— 列为待办/进行中/已完成,经 `PUT /api/tasks/:id` 的乐观移动,键盘 + 移动端下拉,每列 «+» 快速创建,详情弹窗;持久化到 `data/career-tasks.json`;CodeQL 第 22 波清理;remote-qa `perf` 派发(TTFB/total 中位数,SLOW >2000 ms 时 exit 1)。测试 7874 → 7918。
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

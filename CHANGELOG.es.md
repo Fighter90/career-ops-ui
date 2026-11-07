@@ -13,6 +13,14 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.271.1] — 2026-11-07
+
+### Corregido
+- **/api/map/jobs ligero por defecto (CAR-249)** — el endpoint era la carga de página más pesada en producción (4.6 MB medidos por el perf probe): las filas parseadas del tracker incluían celdas de Notes largas y columnas Report/PDF en markdown crudo que la vista del mapa nunca lee. El payload ahora proyecta cada fila del tracker a los 11 campos que consume el mapa (num/company/role/status/score/scoreNum/url/href/location/workplace/reportPath — las notas se pliegan en el servidor dentro de `workplace` antes de la proyección); `?full=1` restaura todas las columnas parseadas para cualquier consumidor que las necesite. Las filas de pipeline ya eran ligeras y siguen sin cambios.
+
+### Notas
+- Deliberadamente NO se cambió: /api/pipeline (1.2 MB) — sus filas son el conjunto de trabajo de la vista de bandeja de pipeline y se consumen por completo; una proyección ligera allí es una decisión aparte.
+
 ## [1.271.0] — 2026-11-07
 
 ### Añadido

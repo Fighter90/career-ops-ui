@@ -12,6 +12,14 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.271.1] — 2026-11-07
+
+### Corrigé
+- **/api/map/jobs allégé par défaut (CAR-249)** — l'endpoint était le chargement de page le plus lourd en production (4.6 MB mesurés par la sonde perf) : les lignes du tracker analysées embarquaient de longues cellules Notes et des colonnes Report/PDF en markdown brut que la vue carte ne lit jamais. Le payload projette désormais chaque ligne du tracker vers les 11 champs que la carte consomme (num/company/role/status/score/scoreNum/url/href/location/workplace/reportPath — les notes sont repliées côté serveur dans `workplace` avant la projection) ; `?full=1` restaure toutes les colonnes analysées pour tout consommateur qui en a besoin. Les lignes du pipeline étaient déjà légères et restent inchangées.
+
+### Notes
+- Délibérément NON modifié : /api/pipeline (1.2 MB) — ses lignes sont l'ensemble de travail de la vue boîte de réception du pipeline et sont consommées intégralement ; une projection allégée là-bas est une décision à part.
+
 ## [1.271.0] — 2026-11-07
 
 ### Ajouté

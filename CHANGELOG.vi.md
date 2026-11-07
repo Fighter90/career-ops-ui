@@ -6,6 +6,14 @@ Bản dịch: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.271.1] — 2026-11-07
+
+### Đã sửa
+- **/api/map/jobs slim theo mặc định (CAR-249)** — endpoint này từng là lần nạp trang nặng nhất trên prod (4.6 MB do perf probe đo): các dòng tracker đã parse mang theo ô Notes dài và cột Report/PDF markdown thô mà bản đồ không bao giờ đọc. Payload giờ chiếu mỗi dòng tracker xuống 11 trường mà bản đồ tiêu thụ (num/company/role/status/score/scoreNum/url/href/location/workplace/reportPath — ghi chú được gộp phía server vào `workplace` trước khi chiếu); `?full=1` khôi phục mọi cột đã parse cho bất kỳ consumer nào cần. Các dòng pipeline vốn đã slim và không đổi.
+
+### Ghi chú
+- Cố ý KHÔNG thay đổi: /api/pipeline (1.2 MB) — các dòng của nó là tập làm việc của view hộp thư pipeline và được tiêu thụ trọn vẹn; chiếu slim ở đó là một quyết định riêng.
+
 ## [1.271.0] — 2026-11-07
 
 ### Đã thêm

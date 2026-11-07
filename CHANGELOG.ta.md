@@ -6,6 +6,14 @@
 
 ---
 
+## [1.271.1] — 2026-11-07
+
+### சரி செய்யப்பட்டது
+- **/api/map/jobs default-ஆக slim (CAR-249)** — இந்த endpoint தான் prod-இல் மிகக் கனமான page load (perf probe அளந்த 4.6 MB): parsed tracker rows map view படிக்காத நீளமான Notes cells + raw markdown Report/PDF columns-ஐ சுமந்து வந்தன. Payload இப்போது ஒவ்வொரு tracker row-ஐயும் map consume செய்யும் 11 fields-ஆக project செய்கிறது (num/company/role/status/score/scoreNum/url/href/location/workplace/reportPath — projection-க்கு முன் notes server-side-இல் `workplace`-உள் fold ஆகும்); `?full=1` தேவைப்படும் எந்த consumer-க்கும் parsed columns அனைத்தையும் மீட்டுத் தரும். Pipeline rows ஏற்கனவே slim, மாறவில்லை.
+
+### குறிப்புகள்
+- வேண்டுமென்றே மாற்றவில்லை: /api/pipeline (1.2 MB) — அதன் rows pipeline inbox view-இன் working set, முழுமையாக consume ஆகின்றன; அங்கே slim projection தனித் தீர்மானம்.
+
 ## [1.271.0] — 2026-11-07
 
 ### சேர்க்கப்பட்டது

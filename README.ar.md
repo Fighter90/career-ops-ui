@@ -20,9 +20,9 @@ _واجهة غير رسمية — لا علاقة لها بـ career-ops / santi
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 أحدث إصدار — v1.271.0** — كانبان مهام المسار الوظيفي (`#/tasks`, مجموعة التطوّر): لوحة شخصية بالسحب والإفلات — أعمدة قائمة الانتظار/قيد التنفيذ/منجزة، نقل تفاؤلي عبر `PUT /api/tasks/:id`، لوحة مفاتيح + قائمة الجوال، «+» لكل عمود، نافذة التفاصيل؛ يُحفظ في `data/career-tasks.json`؛ تنظيفات موجة CodeQL 22؛ توجيه `perf` لـ remote-qa (وسيط TTFB/total، exit 1 عند SLOW >2000 ms). الاختبارات 7874 → 7918.
+> **🆕 أحدث إصدار — v1.271.1** — /api/map/jobs نحيف افتراضيًا (CAR-249): أخفّ تحميل صفحة على الإنتاج (4.6 MB) يرسل الآن الحقول الـ 11 التي تستهلكها الخريطة فقط؛ `?full=1` يعيد كل الأعمدة؛ /api/pipeline تُركت سليمة عن قصد. الاختبارات 7918 → 7920.
 >
-> **السابق — v1.270.0** — ستة مصادر مسح جديدة — ALDI Nord، HiBob، HireHive، Factorial، Polymer، Remote (السجل **135 = 130 EN + 5 RU · 130 adapters**)؛ الماسح يقرأ اللوحات كاملة: Consider يجتاز كامل فهرسه عبر `meta.sequence` الخاص باللوحة مع إعادة محاولة لكل صفحة وتحذير حدّ أقصى صارم، يقبل عناوين الدول العالمية، `timeout_ms` لكل مدخل، `CAREER_OPS_HTTP_TIMEOUT_MS` لكل طلب، وتزامن مسح قابل للضبط (`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`، الافتراضات دون تغيير 32/10).
+> **السابق — v1.271.0** — كانبان مهام المسار الوظيفي (`#/tasks`, مجموعة التطوّر): لوحة شخصية بالسحب والإفلات — أعمدة قائمة الانتظار/قيد التنفيذ/منجزة، نقل تفاؤلي عبر `PUT /api/tasks/:id`، لوحة مفاتيح + قائمة الجوال، «+» لكل عمود، نافذة التفاصيل؛ يُحفظ في `data/career-tasks.json`؛ تنظيفات موجة CodeQL 22؛ توجيه `perf` لـ remote-qa (وسيط TTFB/total، exit 1 عند SLOW >2000 ms). الاختبارات 7874 → 7918.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

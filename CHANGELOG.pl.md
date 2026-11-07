@@ -10,6 +10,14 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.271.1] — 2026-11-07
+
+### Naprawiono
+- **/api/map/jobs slim domyślnie (CAR-249)** — endpoint był najcięższym ładowaniem strony na produkcji (4.6 MB zmierzone przez perf probe): sparsowane wiersze trackera dźwigały długie komórki Notes oraz surowe kolumny markdown Report/PDF, których widok mapy nigdy nie czyta. Payload teraz rzutuje każdy wiersz trackera do 11 pól, które konsumuje mapa (num/company/role/status/score/scoreNum/url/href/location/workplace/reportPath — notatki są składane po stronie serwera w `workplace` przed projekcją); `?full=1` przywraca wszystkie sparsowane kolumny dla każdego konsumenta, który ich potrzebuje. Wiersze pipeline były już slim i pozostają bez zmian.
+
+### Uwagi
+- Świadomie NIE zmieniono: /api/pipeline (1.2 MB) — jego wiersze to zestaw roboczy widoku skrzynki pipeline i są konsumowane w całości; slim projekcja tam to osobna decyzja.
+
 ## [1.271.0] — 2026-11-07
 
 ### Dodano
