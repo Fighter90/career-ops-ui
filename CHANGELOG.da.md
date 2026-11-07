@@ -9,6 +9,26 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 ---
 
 
+## [1.270.0] — 2026-11-07
+
+### Tilføjet
+
+- **Seks nye kilder til scan (registret 135 = 130 EN + 5 RU · 130 adapters)** — **ALDI Nord** (enkeltvirksomhedsudbyder, detaljesider pr. tenant, komplet stop-årsags-mekanik), **HiBob** (tenant-boards `<tenant>.careers.hibob.com`, ét jobopslag-API-kald), **HireHive** (job-API v2 fra `<tenant>.hirehive.com`; fejl på senere sider bevarer delresultater efter husets kontrakt), **Factorial** (karrieresider for tenanter på factorial-domænefamilien, CSP-afledt tilladelsesliste, tenant-matching på tværs af domæner), **Polymer** (careers-API-gennemgang; RAW-længde-stop + en dækkende tælle-sikring, så en demo-tenants løgn `total` ikke kan afslutte et rigtigt board), **Remote** (apply.remote.coms eget ATS; `closed`/tager-ikke-imod-ansøgninger-rækker falder, mens aldrig-sete statusser aldrig falder — og regionskoder beholdes OG staves ud, så begge ordforråd matcher et lokalitetsfilter).
+- **Scanneren læser hele boards**: Consider går gennem hele sit katalog via boardets eget `meta.sequence`, med retry pr. side og en hård loft-advarsel (førstesiden med ~10 jobopslag var hele scannet); et kun-land-lokalitetsfilter accepterer nu verdensomspændende labels (`worldwide`, `remote (worldwide)`) uden at udvide en byliste; en portals.yml-post kan hæve sin anmodnings-timeout med `timeout_ms`; `CAREER_OPS_HTTP_TIMEOUT_MS` læses pr. anmodning, så det virker at sætte den i `.env` efter opstart; scan-konkurrence er konfigurerbar (`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`, standarder uændrede 32/10).
+- **Telegram strict-kilden lærer parsing af den virkelige verden** — Habr Career-vacancy-links (kun `/vacancies/<id>` er en vacancy; profiler, lister og søgninger nægter), fire positionelle arbejdsgiver-former (`Employer ищет …`, `Title в Employer`, `Employer is a …` på anden linje, arbejdsgiver efter lønnen) med nægtelsesregler for rolle/sektor/afdeling/format/person/sted-fangster, og agenturfrasningen der skjuler opdragsgiveren («название компании-заказчика не раскрыто») kasserer opslaget.
+- **Jobbeskrivelser når indholdsfiltret på seks boards mere** — RemoteOK, Remotive, We Work Remotely, Working Nomads, Jobspresso (hele opslaget, ikke WordPress-uddraget) og Arbeitnow bærer nu en beskrivelse; NoDesk-titler afkoder den dobbelt-escapade ampersand; Jobicy afkoder HTML-enheder, før en række erklæres tom.
+
+### Rettet
+
+- **Avature** accepterer forespørgselsstil-links `/JobDetail?jobId=` og kort, hvis `article`-klasse ikke er den første (Deloitte USI); **Arbeitsagentur** holder referencenumre med skråstreg virksomme fra ende til anden (den udgående URL dobbeltkoder, liveness-leddet afkoder én gang og sammenligner den rigtige refnr); **Getro** advarer, når `getro_max_pages` skærer et board kort — og tier, når boardet virkelig sluttede.
+- **Bidragyderliste** — goldbillka tilsluttede sig de ×19 README'er, ta/vi fik avatar-kortene, release-badges opdateret.
+
+### Noter
+
+- Board-body-loft-fallbacks, som parent tilføjede, har ingen web-ui-modstykke: denne scanners transport har ingen body-størrelses-grænse (læsninger afgrænses af anmodningsbudgettet, aldrig af en størrelsesfejl) — dokumenteret no-port.
+- verify-portals-sonde-timeout-fixet er en no-port: health-overfladen sonderer `careers_url`-sider, ikke ATS-board-API'er.
+- Telegram strict beholder sin Unicode-grænse-`LOCATIONISH_RE` — fork-afvigelsen er intakt.
+
 ## [1.269.2] — 2026-11-07
 
 ### Rettet

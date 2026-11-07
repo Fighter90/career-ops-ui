@@ -17,9 +17,9 @@ _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.269.2** — 两条路径的报告保存均无竞态(首次尝试 + epoch 后缀去重,均经 `server/lib/report-save.mjs::saveReportExclusive` 独占 `wx`),竞态契约以行为方式证明;不带 `overwrite` 的 `POST /api/reports` 独占写入(`wx`,同样 409)。测试 7699 → 7704。
+> **🆕 最新版本 — v1.270.0** — 六个新扫描源 — ALDI Nord、HiBob、HireHive、Factorial、Polymer、Remote(注册表 **135 = 130 EN + 5 RU · 130 adapters**);扫描器读取整个看板:Consider 沿看板自身的 `meta.sequence` 走完整个目录,带逐页重试和硬上限警告,接受全球性国家标签,支持条目级 `timeout_ms`、按请求的 `CAREER_OPS_HTTP_TIMEOUT_MS` 以及可配置的扫描并发(`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`,默认值不变 32/10)。
 >
-> **上一版本 — v1.269.1** — Help ×19 记录看板漏斗 + 详细统计(H3 门槛 129 → 131),evaluate 一致性实况验证(CAR-239:19 个语言离散度 0.0、重复 0.0 ×3、评分缓存 27/28、热态 ≈$0.006/eval),以及 CAR-236 生产延迟收尾 — 每次挂载共享一次 tracker 读取,表格服务器端分页(`?page&pageSize=200`)。
+> **上一版本 — v1.269.2** — 两条路径的报告保存均无竞态(首次尝试 + epoch 后缀去重,均经 `server/lib/report-save.mjs::saveReportExclusive` 独占 `wx`),竞态契约以行为方式证明;不带 `overwrite` 的 `POST /api/reports` 独占写入(`wx`,同样 409)。测试 7699 → 7704。
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

@@ -19,9 +19,9 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.269.2** — दोनों पाथों पर रेस-फ़्री रिपोर्ट सेव (पहली कोशिश + epoch-सफ़िक्स डीडुप, दोनों `server/lib/report-save.mjs::saveReportExclusive` में एक्सक्लूसिव `wx` से), रेस कॉन्ट्रैक्ट बिहेवियरली साबित; `overwrite` के बिना `POST /api/reports` एक्सक्लूसिव लिखता है (`wx`, वही 409)। टेस्ट 7699 → 7704।
+> **🆕 नवीनतम रिलीज़ — v1.270.0** — छह नए स्कैन सोर्स — ALDI Nord, HiBob, HireHive, Factorial, Polymer, Remote (रजिस्ट्री **135 = 130 EN + 5 RU · 130 adapters**); स्कैनर पूरे बोर्ड पढ़ता है: Consider बोर्ड के अपने `meta.sequence` से अपना पूरा कैटलॉग प्रति पेज रीट्राई और हार्ड कैप वॉर्निंग के साथ चलता है, वर्ल्डवाइड देश लेबल स्वीकार करता है, एंट्री-वार `timeout_ms`, रिक्वेस्ट-वार `CAREER_OPS_HTTP_TIMEOUT_MS` और कॉन्फ़िगर करने योग्य स्कैन कंकरेंसी (`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`, डिफ़ॉल्ट अपरिवर्तित 32/10) देता है।
 >
-> **पिछला — v1.269.1** — Help ×19 कानबन फ़नल + विस्तृत आंकड़े डॉक्यूमेंट करता है (H3 गेट 129 → 131); लाइव वेरिफिकेशन (CAR-239): 19 लोकेल का फैलाव 0.0, रिपीट 0.0 ×3, स्कोरिंग कैश 27/28 कॉल, गर्म अवस्था पर ≈$0.006/eval; प्रोड लेटेंसी की पूंछ (CAR-236) — प्रति माउंट एक साझा ट्रैकर रीड, सर्वर-साइड टेबल पेजिनेशन (`?page&pageSize=200`)।
+> **पिछला — v1.269.2** — दोनों पाथों पर रेस-फ़्री रिपोर्ट सेव (पहली कोशिश + epoch-सफ़िक्स डीडुप, दोनों `server/lib/report-save.mjs::saveReportExclusive` में एक्सक्लूसिव `wx` से), रेस कॉन्ट्रैक्ट बिहेवियरली साबित; `overwrite` के बिना `POST /api/reports` एक्सक्लूसिव लिखता है (`wx`, वही 409)। टेस्ट 7699 → 7704।
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

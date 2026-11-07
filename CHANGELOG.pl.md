@@ -10,6 +10,26 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.270.0] — 2026-11-07
+
+### Dodano
+
+- **Sześć nowych źródeł skanowania (rejestr 135 = 130 EN + 5 RU · 130 adapters)** — **ALDI Nord** (dostawca jednej firmy, strony szczegółów per tenant, pełna mechanika przyczyn zatrzymania), **HiBob** (boardy tenantów `<tenant>.careers.hibob.com`, jedno zapytanie API o oferty), **HireHive** (API ofert v2 `<tenant>.hirehive.com`; awarie późniejszych stron zachowują częściowe wyniki zgodnie z domowym kontraktem), **Factorial** (strony karier tenantów na rodzinie domen factorial, allowlist wyprowadzony z CSP, dopasowywanie tenantów między domenami), **Polymer** (przejście careers-API; stop po długości RAW + zabezpieczenie licznikiem pokrywającym, aby kłamiące `total` dzierżawy demo nie zakończyło prawdziwego boarda), **Remote** (własny ATS apply.remote.com; wiersze `closed`/nieprzyjmujące aplikacji wypadają, a nigdy niewidziane statusy nigdy nie wypadają — a kody regionów są zachowywane I rozpisane słownie, żeby każdy z dwóch słowników pasował do filtra lokalizacji).
+- **Skaner czyta boardy w całości**: Consider przechodzi przez cały swój katalog po własnym `meta.sequence` boarda, z retryem per strona i twardym ostrzeżeniem o limicie (pierwsza strona ~10 ofert była całym skanem); filtr lokalizacji wyłącznie-krajowy przyjmuje teraz etykiety światowe (`worldwide`, `remote (worldwide)`), nie poszerzając listy miast; wpis portals.yml może podnieść swój timeout zapytania przez `timeout_ms`; `CAREER_OPS_HTTP_TIMEOUT_MS` jest czytane przy każdym zapytaniu, więc ustawienie w `.env` po starcie działa; współbieżność skana jest konfigurowalna (`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`, domyślne bez zmian 32/10).
+- **Źródło Telegram strict uczy się parsowania realnego świata** — linki ofert Habr Career (ofertą jest tylko `/vacancies/<id>`; profile, listy i wyszukiwania odmawiają), cztery pozycyjne formy pracodawcy (`Employer ищет …`, `Title в Employer`, `Employer is a …` w drugiej linii, pracodawca po pensji) z regułami odmowy dla przechwyceń rola/sektor/dział/format/osoba/miejsce, a fraza agencji ukrywającej zleceniodawcę («название компании-заказчика не раскрыто») wyrzuca post.
+- **Opisy ofert docierają do filtra treści na sześciu kolejnych boardach** — RemoteOK, Remotive, We Work Remotely, Working Nomads, Jobspresso (pełny post, a nie wycinek WordPressa) i Arbeitnow niosą teraz opis; tytuły NoDesk dekodują dwukrotnie escapowany ampersand; Jobicy dekoduje encje HTML, zanim uzna wiersz za pusty.
+
+### Naprawiono
+
+- **Avature** akceptuje linki w stylu zapytania `/JobDetail?jobId=` i karty, których klasa `article` nie jest pierwsza (Deloitte USI); **Arbeitsagentur** utrzymuje numery referencyjne ze slashem sprawne od początku do końca (wychodzący URL koduje dwukrotnie, ogniwo liveness dekoduje raz i porównuje prawdziwy refnr); **Getro** ostrzega, gdy `getro_max_pages` ściąga board — i milczy, gdy board naprawdę się skończył.
+- **Lista kontrybutorów** — goldbillka dołączył do ×19 README, ta/vi zyskały karty awatarów, odznaki wydań zaktualizowane.
+
+### Uwagi
+
+- Fallbacki limitu treści boarda dodane przez parenta nie mają odpowiednika w web-ui: transport tego skanera nie ma limitu rozmiaru treści (odczyty są ograniczane budżetem zapytań, nigdy awarią rozmiaru) — udokumentowany no-port.
+- Poprawka timeoutu sondy verify-portals to no-port: powierzchnia health odpytuje strony `careers_url`, nie API boardów ATS.
+- Telegram strict zachowuje swój `LOCATIONISH_RE` z granicami Unicode — rozbieżność forka pozostaje nienaruszona.
+
 ## [1.269.2] — 2026-11-07
 
 ### Naprawiono

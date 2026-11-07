@@ -10,6 +10,26 @@
 
 ---
 
+## [1.270.0] — 2026-11-07
+
+### 추가
+
+- **스캔 소스 6개 신규(레지스트리 135 = 130 EN + 5 RU · 130 adapters)** — **ALDI Nord**(단일 회사 프로바이더, 테넌트별 상세 페이지, 완전한 중단 사유 메커니즘), **HiBob**(테넌트 보드 `<tenant>.careers.hibob.com`, 구인 API 요청 한 번), **HireHive**(`<tenant>.hirehive.com` v2 구인 API; 이후 페이지 실패는 하우스 계약대로 부분 결과를 유지), **Factorial**(factorial 도메인 계열의 테넌트 커리어 사이트, CSP에서 유도된 허용 목록, 도메인 간 테넌트 매칭), **Polymer**(careers-API 워크; RAW 길이 정지 + 커버링 카운트 가드로 데모 테넌트의 거짓 `total`이 실제 보드를 끝내지 못함), **Remote**(apply.remote.com의 자체 ATS; `closed`/접수-중단 행은 떨어지고 본 적 없는 상태는 절대 떨어지지 않음 — 그리고 지역 코드는 보존되면서 동시에 풀네임으로도 쓰여 어느 쪽 어휘든 로케이션 필터와 일치).
+- **스캐너가 보드 전체를 읽습니다**: Consider는 보드 자체의 `meta.sequence`를 통해 카탈로그 전체를 순회하며 페이지별 재시도와 하드 캡 경고를 갖춥니다(~10개 구인의 첫 페이지가 스캔 전부였습니다); 국가 전용 로케이션 필터가 도시 목록을 넓히지 않고 전 세계 레이블(`worldwide`, `remote (worldwide)`)을 수용합니다; portals.yml 항목은 `timeout_ms`로 요청 타임아웃을 올릴 수 있습니다; `CAREER_OPS_HTTP_TIMEOUT_MS`는 요청마다 읽히므로 부팅 후 `.env` 설정이 동작합니다; 스캔 동시성은 구성 가능합니다(`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`, 기본값은 기존대로 32/10).
+- **Telegram strict 소스가 실세계 파싱을 익힙니다** — Habr Career 구인 링크(구인은 `/vacancies/<id>`뿐; 프로필·목록·검색은 거부), 네 가지 위치 기반 고용주 형태(`Employer ищет …`, `Title в Employer`, 두 번째 줄의 `Employer is a …`, 급여 뒤의 고용주)와 역할/부문/부서/형식/인물/장소 캡처 거부 규칙, 그리고 발주처를 숨기는 대리점 표현(«название компании-заказчика не раскрыто»)은 게시물을 탈락시킵니다.
+- **구인 설명이 6개 보드에서 더 콘텐츠 필터에 도달합니다** — RemoteOK, Remotive, We Work Remotely, Working Nomads, Jobspresso(WordPress 발췌가 아닌 게시물 전문)와 Arbeitnow가 이제 설명을 실어 나릅니다; NoDesk 제목은 이중 이스케이프된 앰퍼샌드를 디코딩하고, Jobicy는 행을 빈 것으로 판정하기 전에 HTML 엔티티를 디코딩합니다.
+
+### 수정
+
+- **Avature**가 쿼리 스타일 `/JobDetail?jobId=` 링크와 `article` 클래스가 첫 번째가 아닌 카드를 수용합니다(Deloitte USI); **Arbeitsagentur**가 슬래시를 포함한 참조 번호를 끝까지 작동하게 유지합니다(나가는 URL은 이중 인코딩하고, liveness 단계는 한 번 디코딩해 실제 refnr와 비교합니다); **Getro**는 `getro_max_pages`가 보드를 잘라냈을 때 경고하고 보드가 실제로 끝났을 때는 침묵합니다.
+- **기여자 목록** — goldbillka가 ×19 README에 합류, ta/vi에 아바타 카드 추가, 릴리스 배지 갱신.
+
+### 참고
+
+- 부모가 추가한 보드-본문-캡 폴백에는 web-ui 대응물이 없습니다: 이 스캐너의 트랜스포트에는 본문 크기 캡이 없습니다(읽기는 요청 예산으로 한정되며 크기 실패로는 결코 아님) — 문서화된 no-port.
+- verify-portals 프로브 타임아웃 수정은 no-port입니다: 헬스 표면은 ATS 보드 API가 아니라 `careers_url` 페이지를 프로브합니다.
+- Telegram strict는 유니코드 경계 `LOCATIONISH_RE`를 유지합니다 — 포크 분기는 그대로입니다.
+
 ## [1.269.2] — 2026-11-07
 
 ### 수정

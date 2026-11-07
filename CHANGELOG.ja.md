@@ -8,6 +8,26 @@
 
 ---
 
+## [1.270.0] — 2026-11-07
+
+### 追加
+
+- **スキャンソース6件追加(レジストリ 135 = 130 EN + 5 RU · 130 adapters)** — **ALDI Nord**(単一企業プロバイダー、テナント別詳細ページ、完全な停止理由メカニズム)、**HiBob**(テナントボード `<tenant>.careers.hibob.com`、求人APIリクエスト1回)、**HireHive**(`<tenant>.hirehive.com` の v2 求人API;後続ページの失敗はハウス契約どおり部分結果を保持)、**Factorial**(factorial ドメインファミリー上のテナント求人サイト、CSP由来の許可リスト、ドメイン横断のテナント照合)、**Polymer**(careers-API ウォーク;RAW 長による停止+カバリングカウントのガードにより、デモテナントの嘘の `total` が実ボードを終わらせない)、**Remote**(apply.remote.com 独自の ATS;`closed`/募集中止の行は落ち、未遭遇のステータスは決して落ちない — そして地域コードは保持かつ正式名称も併記され、どちらの語彙でもロケーションフィルターに一致)。
+- **スキャナはボード全体を読む**:Consider はボード固有の `meta.sequence` を通じてカタログ全体を巡回し、ページごとのリトライとハードキャップ警告を伴います(約10件の求人の最初のページがスキャン全体でした);国のみのロケーションフィルターは都市リストを広げずに世界規模のラベル(`worldwide`、`remote (worldwide)`)を受け入れる;portals.yml のエントリは `timeout_ms` でリクエストタイムアウトを引き上げられる;`CAREER_OPS_HTTP_TIMEOUT_MS` はリクエストごとに読まれ、起動後の `.env` 設定も機能する;スキャンの同時実行数は設定可能(`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`、デフォルトは従来どおり 32/10)。
+- **Telegram strict ソースが実世界のパースを習得** — Habr Career の求人リンク(求人は `/vacancies/<id>` のみ;プロフィール・一覧・検索は拒否)、4つの位置ベースの雇用主パターン(`Employer ищет …`、`Title в Employer`、2行目の `Employer is a …`、給与の後の雇用主)に役割/業種/部署/形式/人物/場所キャプチャの拒否ルール、そして得意先を隠す代理店の表現(«название компании-заказчика не раскрыто»)は投稿を除外。
+- **求人説明がさらに6ボードでコンテンツフィルターに届く** — RemoteOK、Remotive、We Work Remotely、Working Nomads、Jobspresso(WordPress の抜粋ではなく投稿全文)と Arbeitnow が説明を保持;NoDesk のタイトルは二重エスケープされたアンパサンドをデコード;Jobicy は行を空と判定する前に HTML エンティティをデコード。
+
+### 修正
+
+- **Avature** はクエリー形式の `/JobDetail?jobId=` リンクと、`article` クラスが先頭にないカードを受け入れる(Deloitte USI);**Arbeitsagentur** はスラッシュを含む参照番号をエンドツーエンドで機能させ続ける(送信 URL は二重エンコードし、liveness 段は一度デコードして実 refnr と比較);**Getro** は `getro_max_pages` がボードを途中で切ったときに警告し、ボードが本当に終わったときは沈黙する。
+- **コントリビューターリスト** — goldbillka が ×19 README に加わり、ta/vi にアバターカードが付き、リリースバッジを更新。
+
+### メモ
+
+- 親が追加したボード本文キャップのフォールバックには web-ui 側の相当物がありません:このスキャナーのトランスポートには本文サイズのキャップがないためです(読み取りはリクエスト予算で制限され、サイズ障害では決してありません)— 文書化済み no-port。
+- verify-portals のプローブタイムアウト修正は no-port:ヘルス面は ATS ボード API ではなく `careers_url` ページをプローブします。
+- Telegram strict は Unicode 境界の `LOCATIONISH_RE` を保持 — フォークの分岐はそのまま。
+
 ## [1.269.2] — 2026-11-07
 
 ### 修正

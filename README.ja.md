@@ -17,9 +17,9 @@ _非公式 UI — career-ops / santifer とは提携しておらず、承認も�
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新リリース — v1.269.2** — 両パスでレースフリーのリポート保存(最初の試行 + エポックサフィックス重複排除、どちらも `server/lib/report-save.mjs::saveReportExclusive` の排他的 `wx`)、レース契約は振る舞いとして証明;`overwrite` なしの `POST /api/reports` も排他的に(`wx`、同じ 409)書きます。テスト 7699 → 7704。
+> **🆕 最新リリース — v1.270.0** — スキャンソース6件追加 — ALDI Nord、HiBob、HireHive、Factorial、Polymer、Remote(レジストリ **135 = 130 EN + 5 RU · 130 adapters**);スキャナはボード全体を読みます:Consider がボード固有の `meta.sequence` を通じてカタログ全体をページごとのリトライとハードキャップ警告付きで巡回し、世界規模の国ラベルを受け入れ、エントリごとの `timeout_ms`、リクエストごとの `CAREER_OPS_HTTP_TIMEOUT_MS`、設定可能なスキャン同時実行数(`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`、デフォルトは従来どおり 32/10)を備えます。
 >
-> **前バージョン — v1.269.1** — Help ×19 にカンバン・ファネル + 詳細統計を文書化(H3 ゲート 129 → 131)、evaluate のライブ検証(CAR-239: 19 ロケールのスプレッド 0.0、リピート 0.0 ×3、スコアリングキャッシュ 27/28、ウォーム時 ≈$0.006/eval)、さらに CAR-236 の本番レイテンシの尾 — マウントごとに 1 つの共有トラッカー読み取り、サーバー側テーブルページング(`?page&pageSize=200`)。
+> **前バージョン — v1.269.2** — 両パスでレースフリーのリポート保存(最初の試行 + エポックサフィックス重複排除、どちらも `server/lib/report-save.mjs::saveReportExclusive` の排他的 `wx`)、レース契約は振る舞いとして証明;`overwrite` なしの `POST /api/reports` も排他的に(`wx`、同じ 409)書きます。テスト 7699 → 7704。
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

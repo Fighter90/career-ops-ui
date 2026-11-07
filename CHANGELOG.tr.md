@@ -2,6 +2,26 @@
 
 > Bu changelog artık tüm sürüm geçmişini içerir. Türkçe yerelleştirmenin eklenmesinden (v1.85.0) önce yayınlanan girdiler aşağıda İngilizce özgün hâliyle yer alır — çeviri bekliyor; asıl kaynak [🇬🇧 CHANGELOG.md](CHANGELOG.md)'dir.
 
+## [1.270.0] — 2026-11-07
+
+### Eklendi
+
+- **Altı yeni tarama kaynağı (kayıt 135 = 130 EN + 5 RU · 130 adapters)** — **ALDI Nord** (tek şirket sağlayıcısı, tenant başına detay sayfaları, eksiksiz durma-nedeni mekanizması), **HiBob** (tenant panoları `<tenant>.careers.hibob.com`, tek iş ilanı API isteği), **HireHive** (`<tenant>.hirehive.com` v2 iş API'si; sonraki sayfa hataları ev sözleşmesine göre kısmi sonuçları korur), **Factorial** (factorial alan adı ailesindeki tenant kariyer siteleri, CSP'den türetilen izin listesi, alan adları arası tenant eşleştirme), **Polymer** (careers-API yürüyüşü; RAW uzunlukta durma + kapsayan sayaç güvencesi — demo tenant'ın yalan söyleyen `total`'ı gerçek bir panoyu bitiremesin), **Remote** (apply.remote.com'un kendi ATS'i; `closed`/başvuru-almıyor satırları düşerken hiç görülmemiş durumlar asla düşmez — ve bölge kodları hem saklanır hem de açılarak yazılır ki iki sözcük dağarcığından herhangi biri konum filtresiyle eşleşsin).
+- **Tarayıcı panoları bütün olarak okuyor**: Consider, kataloğunun tamamını panonun kendi `meta.sequence`'i üzerinden sayfa başına yeniden deneme ve sert tavan uyarısıyla geziyor (~10 ilanlık ilk sayfa taramanın tamamıydı); yalnızca-ülke konum filtresi artık dünya çapında etiketleri kabul ediyor (`worldwide`, `remote (worldwide)`), şehir listesini genişletmeden; bir portals.yml girdisi `timeout_ms` ile istek zaman aşımını yükseltebilir; `CAREER_OPS_HTTP_TIMEOUT_MS` istek başına okunuyor, yani `.env`'de açılıştan sonra ayarlamak çalışıyor; tarama eşzamanlılığı yapılandırılabilir (`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`, varsayılanlar değişmedi 32/10).
+- **Telegram strict kaynağı gerçek dünya ayrıştırmayı öğreniyor** — Habr Career ilan bağlantıları (yalnızca `/vacancies/<id>` bir ilandır; profiller, listeler ve aramalar reddeder), dört konumsal işveren biçimi (`Employer ищет …`, `Title в Employer`, ikinci satırda `Employer is a …`, maaştan sonra işveren) rol/sektör/departman/biçim/kişi/yer yakalamaları için reddetme kurallarıyla ve müşteriyi gizleyen ajans ifadesi («название компании-заказчика не раскрыто») gönderiyi eler.
+- **İş tanımları altı panoda daha içerik filtresine ulaşıyor** — RemoteOK, Remotive, We Work Remotely, Working Nomads, Jobspresso (tam gönderi, WordPress alıntısı değil) ve Arbeitnow artık tanım taşıyor; NoDesk başlıkları iki kez kaçırılmış ampersand'ı çözüyor; Jobicy bir satırı boş ilan etmeden önce HTML varlıklarını çözüyor.
+
+### Düzeltildi
+
+- **Avature** sorgu-tarzı `/JobDetail?jobId=` bağlantılarını ve `article` sınıfı ilk olmayan kartları kabul ediyor (Deloitte USI); **Arbeitsagentur** eğik çizgi içeren referans numaralarını baştan sona çalışır tutuyor (giden URL iki kez kodluyor, liveness halkası bir kez çözüyor ve gerçek refnr ile karşılaştırıyor); **Getro**, `getro_max_pages` bir panoyu erken kestiğinde uyarıyor — pano gerçekten bittiğinde sessiz kalıyor.
+- **Katkı listesi** — goldbillka ×19 README'ye katıldı, ta/vi avatar kartlarını kazandı, sürüm rozetleri güncellendi.
+
+### Notlar
+
+- Parent'ın eklediği pano-gövde-tavan yedeklerinin web-ui karşılığı yok: bu tarayıcının taşıması gövde boyutu tavanına sahip değil (okumalar istek bütçesiyle sınırlı, asla boyut hatasıyla değil) — belgelenmiş no-port.
+- verify-portals sondaj zaman aşımı düzeltmesi bir no-port: health yüzeyi `careers_url` sayfalarını yokluyor, ATS pano API'lerini değil.
+- Telegram strict, Unicode sınır `LOCATIONISH_RE`'sini koruyor — fork sapması sağlam.
+
 ## [1.269.2] — 2026-11-07
 
 ### Düzeltildi

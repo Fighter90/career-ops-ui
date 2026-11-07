@@ -17,9 +17,9 @@ _Giao diện không chính thức — không liên kết với career-ops / sant
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Bản phát hành mới nhất — v1.269.2** — lưu báo cáo không race trên CẢ HAI đường (lần thử đầu tiên + loại trùng lặp hậu tố epoch, đều độc quyền qua `wx` trong `server/lib/report-save.mjs::saveReportExclusive`), hợp đồng race được chứng minh theo hành vi; `POST /api/reports` không có `overwrite` ghi độc quyền (`wx`, cùng 409). Test 7699 → 7704.
+> **🆕 Bản phát hành mới nhất — v1.270.0** — sáu nguồn scan mới — ALDI Nord, HiBob, HireHive, Factorial, Polymer, Remote (registry **135 = 130 EN + 5 RU · 130 adapters**); scanner đọc cả board: Consider đi qua toàn-bộ-catalog của nó theo `meta.sequence` riêng của board với retry-theo-trang và cảnh-báo-giới-hạn-cứng, chấp nhận nhãn-quốc-gia-toàn-cầu, `timeout_ms` theo-entry, `CAREER_OPS_HTTP_TIMEOUT_MS` theo-yêu-cầu và độ-concurrent-của-scan cấu-hình-được (`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`, mặc-định giữ-nguyên 32/10).
 >
-> **Bản trước — v1.269.1** — Help ×19 ghi lại phễu kanban + thống kê chi tiết (cổng H3 129 → 131); xác minh trực tiếp (CAR-239): độ lan tỏa 0.0 qua 19 locale, lặp 0.0 ×3, cache chấm điểm 27/28 lần gọi, ≈$0.006/eval khi nóng; đuôi độ trễ prod (CAR-236) — một lần đọc tracker chia sẻ mỗi mount, phân trang bảng phía máy chủ (`?page&pageSize=200`).
+> **Bản trước — v1.269.2** — lưu báo cáo không race trên CẢ HAI đường (lần thử đầu tiên + loại trùng lặp hậu tố epoch, đều độc quyền qua `wx` trong `server/lib/report-save.mjs::saveReportExclusive`), hợp đồng race được chứng minh theo hành vi; `POST /api/reports` không có `overwrite` ghi độc quyền (`wx`, cùng 409). Test 7699 → 7704.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

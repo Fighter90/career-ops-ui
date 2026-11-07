@@ -6,6 +6,26 @@ Bản dịch: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.270.0] — 2026-11-07
+
+### Đã thêm
+
+- **Sáu nguồn scan mới (registry 135 = 130 EN + 5 RU · 130 adapters)** — **ALDI Nord** (provider một-công-ty, trang chi tiết theo tenant, cơ-chế-lý-do-dừng đầy đủ), **HiBob** (board theo tenant `<tenant>.careers.hibob.com`, một-lần-gọi-API-job-ad), **HireHive** (API jobs v2 của `<tenant>.hirehive.com`; lỗi trang sau giữ kết quả-một-phần theo hợp-đồng-nhà), **Factorial** (site career của tenant trên họ-domain-factorial, allowlist suy-ra-từ-CSP, khớp-tenant-xuyên-domain), **Polymer** (đi-bộ-careers-API; dừng-theo-độ-dài-RAW + chặn-theo-số-đếm-che-kín để `total` nói-dối của tenant demo không kết thúc một board thật), **Remote** (ATS riêng của apply.remote.com; dòng `closed`/không-nhận-hồ-sơ bị bỏ, còn trạng thái chưa-từng-thấy thì không-bao-giờ-bị-bỏ — và mã-vùng vừa được giữ vừa được viết-ra-thành-từ, để cả hai vốn-từ nào cũng khớp bộ-lọc-địa-điểm).
+- **Scanner đọc cả board**: Consider đi qua toàn-bộ-catalog của nó theo `meta.sequence` riêng của board, với retry-theo-trang và cảnh-báo-giới-hạn-cứng (trang đầu ~10 posting trước đây là toàn-bộ-lượt-scan); bộ-lọc-địa-điểm chỉ-quốc-gia nay chấp nhận nhãn-toàn-cầu (`worldwide`, `remote (worldwide)`) mà không mở-rộng-danh-sách-thành-phố; một entry portals.yml có thể nâng thời-gian-chờ-yêu-cầu bằng `timeout_ms`; `CAREER_OPS_HTTP_TIMEOUT_MS` được đọc theo từng yêu cầu, nên đặt trong `.env` sau-khi-boot vẫn có-hiệu-lực; độ-concurrent-của-scan cấu-hình được (`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`, mặc-định giữ-nguyên 32/10).
+- **Nguồn Telegram strict học cách phân-tích thế-giới-thực** — link vacancy Habr Career (chỉ `/vacancies/<id>` là vacancy; profile, danh-sách và tìm-kiếm đều-từ-chối), bốn dạng employer theo-vị-trí (`Employer ищет …`, `Title в Employer`, `Employer is a …` ở dòng thứ-hai, employer sau-lương) kèm quy-tắc-từ-chối cho các-chép vai-trò/ngành/phòng/định-dạng/người/nơi, và câu-nói agency giấu-chủ-hàng («название компании-заказчика не раскрыто») loại-bỏ bài-post.
+- **Mô-tả-job chạm tới bộ-lọc-nội-dung ở sáu board nữa** — RemoteOK, Remotive, We Work Remotely, Working Nomads, Jobspresso (toàn-bộ-post, không-phải đoạn-trích-WordPress) và Arbeitnow giờ mang mô-tả; tiêu-đề NoDesk decode dấu-& bị-escape-hai-lần; Jobicy decode HTML-entity trước-khi-tuyên-bố-hàng-trống.
+
+### Đã sửa
+
+- **Avature** chấp-nhận link dạng-truy-vấn `/JobDetail?jobId=` và card có class `article` không-đứng-đầu (Deloitte USI); **Arbeitsagentur** giữ số-tham-chiếu chứa dấu-/-vẫn-chạy-suốt (URL đi-ra encode-hai-lần, mắt-xích liveness decode-một-lần rồi so-với refnr thật); **Getro** cảnh-báo khi `getro_max_pages` cắt-ngắn board — và im-lặng khi board thực-sự đã-kết-thúc.
+- **Danh-sách-contributor** — goldbillka gia-nhập ×19 README, ta/vi có-card-avatar, badge-release được cập-nhật.
+
+### Ghi chú
+
+- Các fallback giới-hạn-thân-board mà parent thêm vào không có-bản-đối-ứng-trong-web-ui: transport của scanner này không có giới-hạn-kích-thước-thân (việc-đọc bị chặn bởi ngân-sách-yêu-cầu, không-bao-giờ bởi lỗi-kích-thước) — no-port đã-ghi-chú.
+- Sửa-thời-gian-chờ-sonde của verify-portals là một no-port: mặt-health thăm-dò trang `careers_url`, không-phải API-board-ATS.
+- Telegram strict giữ `LOCATIONISH_RE` biên-Unicode của nó — sự-phân-kỳ-của-fork vẫn-nguyên-vẹn.
+
 ## [1.269.2] — 2026-11-07
 
 ### Đã sửa

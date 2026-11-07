@@ -2,6 +2,12 @@
 
 This is the operating manual. Read it, then `PLAN.md` (order) and `BACKLOG.md` (what is left).
 
+## State (2026-11-07, v1.270.0)
+
+- Released: **v1.270.0** (2026-11-07) — the parent-sync features wave: six new sources (ALDI Nord, HiBob, HireHive, Factorial, Polymer, Remote — registry **135 = 130 EN + 5 RU · 130 adapters**, count gates regenerated), Consider whole-board walk + worldwide country labels, per-entry `timeout_ms` + per-request `CAREER_OPS_HTTP_TIMEOUT_MS` + configurable scan concurrency (defaults 32/10 kept), telegram strict Habr links + positional employers + DISCLOSED_HIDDEN, description passthrough ×6 boards + nodesk/jobicy decode, avature/arbeitsagentur/getro fixes, contributors list fix. Fork synced `31a29b30` → **`b859214b`** (148 commits, ADR-0002 divergences defended).
+- Gates: test:ci **7874 tests / 7871 pass / 0 fail / 3 skip** · browser **201 pass / 0 fail / 1 opt-in skip** · coverage **98.59/90.55** (ratchet raised, +6 exempt new files) · changelog parity ✓ ×19 at 1.270.0, 491 releases each · /api/health **1.270.0 / parent 1.38.0**.
+- History: **v1.269.2** (2026-11-07) and earlier — see the state blocks below.
+
 ## State (2026-11-07, v1.269.2)
 
 - Released: **v1.269.2** (2026-11-07) — the review-fix patch on v1.269.1: `saveReportExclusive` (`server/lib/report-save.mjs`) — exclusive-create (`wx`) on BOTH the first attempt and the epoch-suffix dedup path, backed by a behavioral race suite (fresh write / concurrent second writer never clobbers / distinct slugs independent / 512KB round-trip); `POST /api/reports` saves through the exclusive path — duplicate slug → **409**, `overwrite: true` still replaces; EN README banner chain fixed (the lead was stale at v1.268.0).

@@ -17,9 +17,9 @@ _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았�
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.269.2** — 양쪽 경로 모두에서 레이스 없는 리포트 저장(첫 시도 + 에포크 서픽스 디듀프, `server/lib/report-save.mjs::saveReportExclusive`의 배타적 `wx` 사용), 레이스 계약은 행동적으로 증명; `overwrite` 없는 `POST /api/reports`도 배타적으로(`wx`, 동일 409) 씁니다. 테스트 7699 → 7704.
+> **🆕 최신 릴리스 — v1.270.0** — 스캔 소스 6개 신규 — ALDI Nord, HiBob, HireHive, Factorial, Polymer, Remote (레지스트리 **135 = 130 EN + 5 RU · 130 adapters**); 스캐너가 보드 전체를 읽습니다: Consider가 보드 자체의 `meta.sequence`를 통해 카탈로그 전체를 페이지별 재시도와 하드 캡 경고로 순회하고, 전 세계 국가 레이블을 수용하며, 항목별 `timeout_ms`, 요청별 `CAREER_OPS_HTTP_TIMEOUT_MS`, 구성 가능한 스캔 동시성(`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`, 기본값은 기존대로 32/10)을 갖춥니다.
 >
-> **이전 버전 — v1.269.1** — Help ×19에 칸반 퍼널 + 상세 통계를 문서화(H3 게이트 129 → 131), evaluate 패리티 라이브 검증(CAR-239: 19개 로캘 스프레드 0.0, 반복 0.0 ×3, 스코어링 캐시 27/28, 워밍 ≈$0.006/eval), 그리고 CAR-236 프로드 지연 꼬리 — 마운트당 하나의 공유 트래커 읽기, 서버 측 테이블 페이지네이션(`?page&pageSize=200`).
+> **이전 버전 — v1.269.2** — 양쪽 경로 모두에서 레이스 없는 리포트 저장(첫 시도 + 에포크 서픽스 디듀프, `server/lib/report-save.mjs::saveReportExclusive`의 배타적 `wx` 사용), 레이스 계약은 행동적으로 증명; `overwrite` 없는 `POST /api/reports`도 배타적으로(`wx`, 동일 409) 씁니다. 테스트 7699 → 7704.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

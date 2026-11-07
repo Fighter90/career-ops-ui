@@ -8,6 +8,26 @@
 
 ---
 
+## [1.270.0] — 2026-11-07
+
+### 新增
+
+- **六個新掃描來源(登錄表 135 = 130 EN + 5 RU · 130 adapters)** — **ALDI Nord**(單一公司提供方、按租戶的詳情頁、完整的停止原因機制)、**HiBob**(租戶看板 `<tenant>.careers.hibob.com`,一次職缺 API 請求)、**HireHive**(`<tenant>.hirehive.com` 的 v2 職缺 API;後頁失敗依家規保留部分結果)、**Factorial**(factorial 網域族上的租戶職缺站點、由 CSP 推導的允許清單、跨網域租戶比對)、**Polymer**(招募 API 走訪;RAW 長度即停 + 覆蓋計數護欄,讓展示租戶說謊的 `total` 無法終結真實看板)、**Remote**(apply.remote.com 自己的 ATS;`closed`/不再收件的列會丟棄,而從未見過的狀態永不丟棄——區域代碼既保留也展開拼出,兩種詞彙任一都能符合地點篩選器)。
+- **掃描器讀取整個看板**:Consider 沿看板自身的 `meta.sequence` 走完整個目錄,附逐頁重試與硬上限警告(原本約 10 筆職缺的首頁就是全部掃描);僅按國家的地點篩選器現在接受全球性標籤(`worldwide`、`remote (worldwide)`),不放宽城市清單;portals.yml 條目可用 `timeout_ms` 提高請求逾時;`CAREER_OPS_HTTP_TIMEOUT_MS` 依請求讀取,啟動後在 `.env` 設定同樣生效;掃描並行可設定(`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`,預設值不變 32/10)。
+- **Telegram strict 來源學會解析真實世界** — Habr Career 職缺連結(只有 `/vacancies/<id>` 是職缺;個人檔案、清單與搜尋一律拒絕)、四種位置式僱主形態(`Employer ищет …`、`Title в Employer`、第二行的 `Employer is a …`、薪資之後的僱主)並帶角色/產業/部門/形式/人物/地點擷取的拒絕規則,而隱去客戶的代理行文(«название компании-заказчика не раскрыто»)直接淘汰該貼文。
+- **職缺描述在另外六個看板上抵達內容篩選器** — RemoteOK、Remotive、We Work Remotely、Working Nomads、Jobspresso(完整貼文,而非 WordPress 摘錄)與 Arbeitnow 現在攜帶描述;NoDesk 標題解碼雙重轉義的 & 符號;Jobicy 在判定列是否為空前解碼 HTML 實體。
+
+### 修復
+
+- **Avature** 接受查詢風格的 `/JobDetail?jobId=` 連結以及 `article` 類別不在最前的卡片(Deloitte USI);**Arbeitsagentur** 讓含斜線的編號全程可用(出站 URL 雙重編碼,liveness 環節解碼一次並與真實 refnr 比較);**Getro** 在 `getro_max_pages` 截斷看板時發出警告——而在看板真正結束時不作聲。
+- **貢獻者清單** — goldbillka 加入 ×19 個 README,ta/vi 獲得大頭貼卡片,發布徽章更新。
+
+### 備註
+
+- 父專案加入的看板正文上限後備在 web-ui 沒有對應物:本掃描器的傳輸層沒有正文大小上限(讀取受請求預算約束,絕不因大小失敗)——已記錄的 no-port。
+- verify-portals 的探測逾時修復是 no-port:健康面探測的是 `careers_url` 頁面,不是 ATS 看板 API。
+- Telegram strict 保留其 Unicode 邊界的 `LOCATIONISH_RE`——fork 分歧保持原樣。
+
 ## [1.269.2] — 2026-11-07
 
 ### 修復

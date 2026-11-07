@@ -6,6 +6,26 @@
 
 ---
 
+## [1.270.0] — 2026-11-07
+
+### சேர்க்கப்பட்டது
+
+- **ஆறு புதிய scan source-கள் (registry 135 = 130 EN + 5 RU · 130 adapters)** — **ALDI Nord** (single-company provider, tenant-வாரி detail pages, முழுமையான stop-reason machinery), **HiBob** (tenant boards `<tenant>.careers.hibob.com`, ஒரே job-ad API request), **HireHive** (`<tenant>.hirehive.com`-இன் v2 jobs API; பிந்தைய page தோல்விகள் house contract-படி partial முடிவுகளைத் தக்க வைக்கின்றன), **Factorial** (factorial domain family-இல் tenant careers sites, CSP-இலிருந்து பெறப்பட்ட allowlist, domain-களுக்கு இடையிலான tenant matching), **Polymer** (careers-API walk; RAW-length stop + covering-count guard — demo tenant-இன் பொய் `total` ஒரு உண்மையான board-ஐ முடிக்க முடியாது), **Remote** (apply.remote.com-இன் சொந்த ATS; `closed`/apply-செய்யாத rows விழுகின்றன, ஆனால் எப்போதும் பார்க்காத statuses ஒருபோதும் விழாது — region codes வைத்தும் இருக்கின்றன மேலும் விரிவாகவும் எழுதப்படுகின்றன, இரு சொற்களஞ்சியத்தில் எதுவும் location filter-உடன் பொருந்தும்).
+- **Scanner board-களை முழுமையாகப் படிக்கிறது**: Consider board-இன் சொந்த `meta.sequence` வழியாக தன் முழு catalog-ஐயும் per-page retry + hard cap warning உடன் நடக்கிறது (~10 postings கொண்ட first page தான் scan முழுவதுமாக இருந்தது); country-only location filter இப்போது worldwide labels-ஐ (`worldwide`, `remote (worldwide)`) city list-ஐ விரிவாக்காமல் ஏற்கிறது; portals.yml entry `timeout_ms` மூலம் தன் request timeout-ஐ உயர்த்தலாம்; `CAREER_OPS_HTTP_TIMEOUT_MS` request ஒன்றுக்கு ஒருமுறை படிக்கப்படுகிறது, எனவே boot-க்குப் பிறகு `.env`-இல் அமைப்பதும் வேலை செய்யும்; scan concurrency configure செய்யக்கூடியது (`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`, defaults மாறவில்லை 32/10).
+- **Telegram strict source real-world parsing-ஐக் கற்கிறது** — Habr Career vacancy links (`/vacancies/<id>` மட்டுமே ஒரு vacancy; profiles, lists, searches மறுக்கின்றன), நான்கு positional employer shapes (`Employer ищет …`, `Title в Employer`, இரண்டாம் வரியில் `Employer is a …`, salary-க்குப் பிறகு employer) role/sector/department/format/person/place captures-க்கான refusal rules உடன், மேலும் client-ஐ மறைக்கும் agency phrasing («название компании-заказчика не раскрыто») post-ஐ drop செய்கிறது.
+- **Job descriptions மேலும் ஆறு board-களில் content filter-ஐ அடைகின்றன** — RemoteOK, Remotive, We Work Remotely, Working Nomads, Jobspresso (முழு post, WordPress excerpt அல்ல) மற்றும் Arbeitnow இப்போது description சுமக்கின்றன; NoDesk titles இரண்டு முறை escape செய்யப்பட்ட ampersand-ஐ decode செய்கின்றன; Jobicy ஒரு row-ஐ காலியாக அறிவிக்கும் முன் HTML entities-ஐ decode செய்கிறது.
+
+### சரி செய்யப்பட்டது
+
+- **Avature** query-style `/JobDetail?jobId=` links + `article` class முதலாக இல்லாத cards-ஐ ஏற்கிறது (Deloitte USI); **Arbeitsagentur** slash கொண்ட reference numbers-ஐ முழுவதும் வேலை செய்ய வைக்கிறது (outgoing URL இரண்டு முறை encode செய்கிறது, liveness rung ஒருமுறை decode செய்து உண்மையான refnr உடன் ஒப்பிடுகிறது); **Getro** `getro_max_pages` board-ஐ சுருக்கினால் எச்சரிக்கிறது — board உண்மையில் முடிந்தால் அமைதியாக இருக்கிறது.
+- **Contributors list** — goldbillka ×19 README-களில் சேர்ந்தார், ta/vi avatar cards பெற்றன, release badges update செய்யப்பட்டன.
+
+### குறிப்புகள்
+
+- Parent சேர்த்த board-body-cap fallback-களுக்கு web-ui-இல் எதுவும் இல்லை: இந்த scanner-இன் transport-இல் body-size cap இல்லை (reads request budget-ஆல் வரம்புப்படுத்தப்படுகின்றன, size failure-ஆல் ஒருபோதும் இல்லை) — documented no-port.
+- verify-portals probe-timeout fix ஒரு no-port: health surface `careers_url` pages-ஐ probe செய்கிறது, ATS board API-களை அல்ல.
+- Telegram strict தன் Unicode-boundary `LOCATIONISH_RE`-ஐ வைத்திருக்கிறது — fork divergence அப்படியே உள்ளது.
+
 ## [1.269.2] — 2026-11-07
 
 ### சரி செய்யப்பட்டது

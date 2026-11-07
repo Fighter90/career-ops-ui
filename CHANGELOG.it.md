@@ -2,6 +2,26 @@
 
 > Questo changelog contiene ora la cronologia completa delle versioni. Le voci pubblicate prima della localizzazione italiana (v1.85.0) compaiono sotto nell'originale inglese — traduzione in attesa; il riferimento resta [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.270.0] — 2026-11-07
+
+### Aggiunto
+
+- **Sei nuove fonti di scan (registro 135 = 130 EN + 5 RU · 130 adapters)** — **ALDI Nord** (provider mono-azienda, pagine di dettaglio per tenant, piena macchina delle cause di stop), **HiBob** (board dei tenant `<tenant>.careers.hibob.com`, una sola richiesta API degli annunci), **HireHive** (API offerte v2 di `<tenant>.hirehive.com`; i guasti delle pagine successive conservano i parziali secondo il contratto di casa), **Factorial** (siti carriera dei tenant sulla famiglia di domini factorial, allowlist derivata dalla CSP, matching dei tenant tra domini), **Polymer** (percorso della careers-API; stop sulla lunghezza RAW + una salvaguardia di contatore di copertura perché il `total` bugiardo di un tenant di demo non chiuda un board reale), **Remote** (l'ATS proprio di apply.remote.com; le righe `closed`/non-accetta-candidature cadono mentre gli stati mai visti non cadono mai — e i codici regione sono conservati E indicati per esteso così che uno o l'altro vocabolario combaci con un filtro di località).
+- **Lo scanner legge i board per intero**: Consider percorre l'intero catalogo attraverso il `meta.sequence` proprio del board, con retry per pagina e un avviso di tetto rigido (la prima pagina di ~10 offerte era tutto lo scan); un filtro di località solo-paese ora accetta etichette mondiali (`worldwide`, `remote (worldwide)`) senza allargare l'elenco delle città; una voce di portals.yml può alzare il proprio timeout di richiesta con `timeout_ms`; `CAREER_OPS_HTTP_TIMEOUT_MS` viene letto per ogni richiesta, quindi impostarlo in `.env` dopo l'avvio funziona; la concorrenza dello scan è configurabile (`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`, default invariati 32/10).
+- **La fonte Telegram strict impara il parsing del mondo reale** — link alle vacancy di Habr Career (solo `/vacancies/<id>` è una vacancy; profili, elenchi e ricerche rifiutano), quattro forme posizionali del datore di lavoro (`Employer ищет …`, `Title в Employer`, `Employer is a …` in seconda riga, datore di lavoro dopo lo stipendio) con regole di rifiuto per le catture ruolo/settore/dipartimento/formato/persona/luogo, e la formula dell'agenzia che nasconde il committente («название компании-заказчика не раскрыто») scarta il post.
+- **Le descrizioni degli annunci arrivano al filtro di contenuto su sei board in più** — RemoteOK, Remotive, We Work Remotely, Working Nomads, Jobspresso (il post completo, non l'estratto WordPress) e Arbeitnow ora portano una descrizione; i titoli di NoDesk decodificano la e commerciale doppemente escaped; Jobicy decodifica le entità HTML prima di dichiarare vuota una riga.
+
+### Corretto
+
+- **Avature** accetta link in stile query `/JobDetail?jobId=` e card la cui classe `article` non è la prima (Deloitte USI); **Arbeitsagentur** tiene i numeri di riferimento con la barra funzionanti dall'inizio alla fine (l'URL in uscita codifica due volte, l'anello liveness decodifica una volta e confronta il refnr reale); **Getro** avvisa quando `getro_max_pages` tronca un board — e tace quando il board è davvero finito.
+- **Elenco dei contributor** — goldbillka entra nei ×19 README, ta/vi hanno ottenuto le card avatar, badge di release aggiornati.
+
+### Note
+
+- I fallback di tetto del corpo dei board aggiunti dal parent non hanno controparte in web-ui: il trasporto di questo scanner non ha tetto sulla dimensione del corpo (le letture sono limitate dal budget di richieste, mai da un errore di dimensione) — no-port documentato.
+- La correzione del timeout di sonda di verify-portals è un no-port: la superficie health sonda pagine `careers_url`, non API di board ATS.
+- Telegram strict conserva il suo `LOCATIONISH_RE` a confini Unicode — la divergenza del fork resta intatta.
+
 ## [1.269.2] — 2026-11-07
 
 ### Corretto

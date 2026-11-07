@@ -8,6 +8,26 @@
 
 ---
 
+## [1.270.0] — 2026-11-07
+
+### 新增
+
+- **六个新扫描源(注册表 135 = 130 EN + 5 RU · 130 adapters)** — **ALDI Nord**(单一公司提供方、按租户的详情页、完整的停止原因机制)、**HiBob**(租户看板 `<tenant>.careers.hibob.com`,一次招聘 API 请求)、**HireHive**(`<tenant>.hirehive.com` 的 v2 招聘 API;后页失败按家规保留部分结果)、**Factorial**(factorial 域名族上的租户招聘站点、由 CSP 推导的允许列表、跨域租户匹配)、**Polymer**(招聘 API 走查;RAW 长度即停 + 覆盖计数护栏,让演示租户说谎的 `total` 无法终结真实看板)、**Remote**(apply.remote.com 自己的 ATS;`closed`/不再接收投递的行被丢弃,而从未见过的状态从不丢弃——区域代码既保留也展开拼出,两种词汇表任一都能匹配位置筛选器)。
+- **扫描器读取整个看板**:Consider 沿看板自身的 `meta.sequence` 走完整个目录,带逐页重试和硬上限警告(原先约 10 条职位的首页就是全部扫描);仅按国家的位置筛选器现在接受全球性标签(`worldwide`、`remote (worldwide)`),不放宽城市列表;portals.yml 条目可用 `timeout_ms` 提高请求超时;`CAREER_OPS_HTTP_TIMEOUT_MS` 按请求读取,启动后在 `.env` 里设置同样生效;扫描并发可配置(`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`,默认值不变 32/10)。
+- **Telegram strict 源学会解析真实世界** — Habr Career 职位链接(只有 `/vacancies/<id>` 是职位;档案、列表和搜索一律拒绝)、四种位置式雇主形态(`Employer ищет …`、`Title в Employer`、第二行的 `Employer is a …`、薪资之后的雇主)并带角色/行业/部门/形式/人物/地点捕获的拒绝规则,而隐去客户的代理行文(«название компании-заказчика не раскрыто»)直接淘汰该帖。
+- **职位描述在另外六个看板上抵达内容筛选器** — RemoteOK、Remotive、We Work Remotely、Working Nomads、Jobspresso(完整帖子,而非 WordPress 摘录)和 Arbeitnow 现在携带描述;NoDesk 标题解码双重转义的 & 符号;Jobicy 在判定行是否为空前解码 HTML 实体。
+
+### 修复
+
+- **Avature** 接受查询风格的 `/JobDetail?jobId=` 链接以及 `article` 类不在最前的卡片(Deloitte USI);**Arbeitsagentur** 让含斜杠的编号全程可用(出站 URL 双重编码,liveness 环节解码一次并与真实 refnr 比较);**Getro** 在 `getro_max_pages` 截断看板时发出警告——而在看板真正结束时不作声。
+- **贡献者列表** — goldbillka 加入 ×19 个 README,ta/vi 获得头像卡片,发布徽章更新。
+
+### 备注
+
+- 父项目添加的看板正文上限回退在 web-ui 没有对应物:本扫描器的传输层没有正文大小上限(读取受请求预算约束,绝不会因大小失败)——已记录的 no-port。
+- verify-portals 的探测超时修复是 no-port:健康面探测的是 `careers_url` 页面,不是 ATS 看板 API。
+- Telegram strict 保留其 Unicode 边界的 `LOCATIONISH_RE`——fork 分歧保持原样。
+
 ## [1.269.2] — 2026-11-07
 
 ### 修复

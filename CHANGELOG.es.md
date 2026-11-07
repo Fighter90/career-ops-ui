@@ -13,6 +13,26 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.270.0] — 2026-11-07
+
+### Añadido
+
+- **Seis nuevas fuentes de escaneo (registro 135 = 130 EN + 5 RU · 130 adapters)** — **ALDI Nord** (proveedor de empresa única, páginas de detalle por tenant, maquinaria completa de motivos de parada), **HiBob** (tableros de tenant `<tenant>.careers.hibob.com`, una sola petición a la API de ofertas), **HireHive** (API de empleos v2 de `<tenant>.hirehive.com`; los fallos de páginas posteriores conservan parciales según el contrato de la casa), **Factorial** (sitios de carrera de tenants en la familia de dominios factorial, lista permitida derivada de la CSP, emparejamiento de tenants entre dominios), **Polymer** (recorrido de la API de careers; parada por longitud RAW + salvaguarda de contador cubriente para que el `total` mentiroso de un tenant de demo no corte un tablero real), **Remote** (el ATS propio de apply.remote.com; las filas `closed`/sin aceptar solicitudes caen mientras los estados nunca vistos jamás lo hacen — y los códigos de región se conservan Y se escriben completos para que cualquiera de los dos vocabularios coincida con un filtro de ubicación).
+- **El escáner lee tableros completos**: Consider recorre todo su catálogo por el propio `meta.sequence` del tablero, con reintento por página y un aviso de tope duro (la primera página de ~10 ofertas era todo el escaneo); un filtro de ubicación de solo país acepta ahora etiquetas mundiales (`worldwide`, `remote (worldwide)`) sin ensanchar la lista de ciudades; una entrada de portals.yml puede elevar su timeout de petición con `timeout_ms`; `CAREER_OPS_HTTP_TIMEOUT_MS` se lee por petición, así que fijarlo en `.env` tras el arranque funciona; la concurrencia del escaneo es configurable (`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`, valores por defecto sin cambios 32/10).
+- **La fuente Telegram strict crece en parsing del mundo real** — enlaces de vacantes de Habr Career (solo `/vacancies/<id>` es una vacante; perfiles, listas y búsquedas se rechazan), cuatro formas posicionales de empleador (`Employer ищет …`, `Title в Employer`, `Employer is a …` en segunda línea, empleador tras el salario) con reglas de rechazo para las capturas de rol/sector/departamento/formato/persona/lugar, y la fórmula de agencia que oculta al cliente («название компании-заказчика не раскрыто») descarta el post.
+- **Las descripciones de empleos llegan al filtro de contenido en seis tableros más** — RemoteOK, Remotive, We Work Remotely, Working Nomads, Jobspresso (el post completo, no el excerpt de WordPress) y Arbeitnow llevan ahora descripción; los títulos de NoDesk decodifican el ampersand doblemente escapado; Jobicy decodifica entidades HTML antes de declarar vacía una fila.
+
+### Corregido
+
+- **Avature** acepta enlaces estilo consulta `/JobDetail?jobId=` y tarjetas cuya clase `article` no es la primera (Deloitte USI); **Arbeitsagentur** mantiene los números de referencia con barra funcionando de principio a fin (la URL saliente codifica dos veces, el eslabón de liveness decodifica una y compara el refnr real); **Getro** avisa cuando `getro_max_pages` corta un tablero — y calla cuando el tablero realmente terminó.
+- **Lista de colaboradores** — goldbillka se unió a los ×19 README, ta/vi ganaron las tarjetas de avatar, insignias de release actualizadas.
+
+### Notas
+
+- Los fallbacks de tope de cuerpo de tablero que añadió el padre no tienen equivalente en web-ui: el transporte de este escáner no tiene tope de tamaño de cuerpo (las lecturas están acotadas por el presupuesto de peticiones, nunca por un fallo de tamaño) — no-port documentado.
+- El arreglo del timeout de sonda de verify-portals es un no-port: la superficie de salud sondea páginas `careers_url`, no APIs de tableros ATS.
+- Telegram strict conserva su `LOCATIONISH_RE` de fronteras Unicode — la divergencia del fork sigue intacta.
+
 ## [1.269.2] — 2026-11-07
 
 ### Corregido

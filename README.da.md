@@ -17,9 +17,9 @@ _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santi
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Seneste udgivelse — v1.269.2** — rapport-gem uden race på BEGGE stier (første forsøg + epoch-suffiks dedup, begge eksklusive via `wx` i `server/lib/report-save.mjs::saveReportExclusive`), race-kontrakten bevist adfærdsmæssigt; `POST /api/reports` uden `overwrite` skriver eksklusivt (`wx`, samme 409). Test 7699 → 7704.
+> **🆕 Seneste udgivelse — v1.270.0** — seks nye kilder til scan — ALDI Nord, HiBob, HireHive, Factorial, Polymer, Remote (registret **135 = 130 EN + 5 RU · 130 adapters**); scanneren læser hele boards: Consider går gennem hele sit katalog via boardets eget `meta.sequence` med retry pr. side og hård loft-advarsel, accepterer verdensomspændende lande-labels, `timeout_ms` pr. post, `CAREER_OPS_HTTP_TIMEOUT_MS` pr. anmodning og konfigurerbar scan-konkurrence (`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`, standarder uændrede 32/10).
 >
-> **Tidligere — v1.269.1** — Help ×19 dokumenterer kanban-tragten + de detaljerede statistikker (H3-gate 129 → 131); live-verificering (CAR-239): spredning 0.0 over 19 locales, gentagelser 0.0 ×3, scoring-cache 27/28 kald, ≈$0.006/eval varmt; prod-forsinkelseshalen (CAR-236) — én delt tracker-læsning pr. mount, server-side tabel-paginering (`?page&pageSize=200`).
+> **Tidligere — v1.269.2** — rapport-gem uden race på BEGGE stier (første forsøg + epoch-suffiks dedup, begge eksklusive via `wx` i `server/lib/report-save.mjs::saveReportExclusive`), race-kontrakten bevist adfærdsmæssigt; `POST /api/reports` uden `overwrite` skriver eksklusivt (`wx`, samme 409). Test 7699 → 7704.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

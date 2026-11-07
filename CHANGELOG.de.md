@@ -2,6 +2,26 @@
 
 > Dieses Changelog enthält die vollständige Versionsgeschichte. Einträge, die vor der deutschen Lokalisierung (v1.85.0) veröffentlicht wurden, stehen unten im englischen Original — Übersetzung ausstehend; maßgeblich bleibt [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.270.0] — 2026-11-07
+
+### Neu
+
+- **Sechs neue Scan-Quellen (Registry 135 = 130 EN + 5 RU · 130 adapters)** — **ALDI Nord** (Einzel-Unternehmens-Provider, mandantenspezifische Detailseiten, vollständige Stopp-Grund-Mechanik), **HiBob** (Tenant-Boards `<tenant>.careers.hibob.com`, eine einzige Stellen-API-Anfrage), **HireHive** (Stellen-API v2 von `<tenant>.hirehive.com`; Ausfälle späterer Seiten behalten Teilergebnisse gemäß dem House-Vertrag), **Factorial** (Karriereseiten von Tenants auf der Factorial-Domänenfamilie, aus der CSP abgeleitete Allowlist, mandantenübergreifendes Domain-Matching), **Polymer** (Careers-API-Durchlauf; RAW-Längen-Stopp + eine deckende Zähler-Absicherung, damit das lügende `total` eines Demo-Tenants ein echtes Board nicht beendet), **Remote** (das eigene ATS von apply.remote.com; `closed`/keine-Bewerbungen-mehr-Zeilen fallen heraus, während nie gesehene Status niemals herausfallen — und Regionscodes werden beibehalten UND ausgeschrieben, sodass entweder Vokabular auf einen Standortfilter passt).
+- **Der Scanner liest ganze Boards**: Consider läuft durch seinen gesamten Katalog über das eigene `meta.sequence` des Boards, mit Retry pro Seite und einer harten Obergrenzen-Warnung (die erste Seite mit ~10 Stellen war der ganze Scan); ein rein länderbasierter Standortfilter akzeptiert jetzt weltweit-Labels (`worldwide`, `remote (worldwide)`), ohne eine Städte-Liste zu erweitern; ein portals.yml-Eintrag kann sein Anfrage-Timeout per `timeout_ms` anheben; `CAREER_OPS_HTTP_TIMEOUT_MS` wird pro Anfrage gelesen, also funktioniert das Setzen in `.env` nach dem Boot; die Scan-Concurrency ist konfigurierbar (`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`, Defaults unverändert 32/10).
+- **Die Telegram-strict-Quelle lernt Parsing der realen Welt** — Habr-Career-Vakanz-Links (nur `/vacancies/<id>` ist eine Vakanz; Profile, Listen und Suchen lehnen ab), vier positionale Arbeitgeber-Formen (`Employer ищет …`, `Title в Employer`, `Employer is a …` in der zweiten Zeile, Arbeitgeber nach dem Gehalt) mit Ablehnungsregeln für Rolle/Sektor/Abteilung/Format/Person/Ort-Erfassungen, und die Agentur-Formulierung, die den Auftraggeber verschweigt («название компании-заказчика не раскрыто»), wirft den Post weg.
+- **Stellenbeschreibungen erreichen den Inhaltsfilter auf sechs weiteren Boards** — RemoteOK, Remotive, We Work Remotely, Working Nomads, Jobspresso (der volle Post, nicht der WordPress-Auszug) und Arbeitnow tragen nun eine Beschreibung; NoDesk-Titel dekodieren das doppelt escapete Ampersand; Jobicy dekodiert HTML-Entities, bevor eine Zeile als leer gilt.
+
+### Behoben
+
+- **Avature** akzeptiert Query-Style-Links `/JobDetail?jobId=` und Karten, deren `article`-Klasse nicht die führende ist (Deloitte USI); **Arbeitsagentur** hält Referenznummern mit Schrägstrich von Anfang bis Ende funktionsfähig (die ausgehende URL encodiert doppelt, das Liveness-Glied dekodiert einmal und vergleicht die echte refnr); **Getro** warnt, wenn `getro_max_pages` ein Board vorzeitig abschneidet — und schweigt, wenn das Board tatsächlich endete.
+- **Beitragenden-Liste** — goldbillka stieß zu den ×19 READMEs, ta/vi erhielten die Avatar-Karten, Release-Badges aktualisiert.
+
+### Hinweise
+
+- Die Board-Body-Cap-Fallbacks, die der Parent hinzugefügt hat, haben kein web-ui-Gegenstück: Der Transport dieses Scanners hat keine Body-Größen-Obergrenze (Lesevorgänge sind durch das Anfragen-Budget begrenzt, nie durch einen Größenfehler) — dokumentierter No-Port.
+- Der Verify-Portals-Sonden-Timeout-Fix ist ein No-Port: Die Health-Oberfläche sondiert `careers_url`-Seiten, keine ATS-Board-APIs.
+- Telegram strict behält sein Unicode-Grenzen-`LOCATIONISH_RE` — die Fork-Divergenz bleibt intakt.
+
 ## [1.269.2] — 2026-11-07
 
 ### Behoben

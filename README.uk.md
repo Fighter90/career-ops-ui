@@ -20,9 +20,9 @@ _Неофіційний інтерфейс — не пов'язаний із car
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Останній реліз — v1.269.2** — збереження звітів без гонки на ОБОХ шляхах (перша спроба + дедуп з epoch-суфіксом — обидва ексклюзивні через `wx` у `server/lib/report-save.mjs::saveReportExclusive`), контракт гонки доведений поведінково; `POST /api/reports` без `overwrite` пише ексклюзивно (`wx`, той самий 409). Тести 7699 → 7704.
+> **🆕 Останній реліз — v1.270.0** — шість нових джерел сканування — ALDI Nord, HiBob, HireHive, Factorial, Polymer, Remote (реєстр **135 = 130 EN + 5 RU · 130 адаптерів**); сканер читає борди цілком: Consider проходить увесь свій каталог через власний `meta.sequence` борди з посторінковим ретраєм і жорстким попередженням про капу, приймає всесвітні мітки країн, `timeout_ms` на запис, `CAREER_OPS_HTTP_TIMEOUT_MS` на запит та налаштовувану конкурентність скана (`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`, дефолти незмінні 32/10).
 >
-> **Попередній реліз — v1.269.1** — Help ×19 документує канбан-воронку та детальну статистику (H3-гейт 129 → 131); жива верифікація (CAR-239): розкид 0.0 по 19 локалях, повтори 0.0 ×3, кеш скорингу 27/28 викликів, ≈$0.006/eval у теплому стані; хвіст прод-затримки (CAR-236) — одне спільне читання трекера на mount, серверна пагінація таблиці (`?page&pageSize=200`).
+> **Попередній реліз — v1.269.2** — збереження звітів без гонки на ОБОХ шляхах (перша спроба + дедуп з epoch-суфіксом — обидва ексклюзивні через `wx` у `server/lib/report-save.mjs::saveReportExclusive`), контракт гонки доведений поведінково; `POST /api/reports` без `overwrite` пише ексклюзивно (`wx`, той самий 409). Тести 7699 → 7704.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
