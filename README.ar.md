@@ -10,7 +10,7 @@
 
 _واجهة غير رسمية — لا علاقة لها بـ career-ops / santifer ولا تحظى بموافقتهما._
 
-[![tests](https://img.shields.io/badge/tests-7871%20passed-brightgreen)](#الاختبارات)
+[![tests](https://img.shields.io/badge/tests-7918%20passed-brightgreen)](#الاختبارات)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#الاختبارات)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
@@ -20,9 +20,9 @@ _واجهة غير رسمية — لا علاقة لها بـ career-ops / santi
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 أحدث إصدار — v1.270.0** — ستة مصادر مسح جديدة — ALDI Nord، HiBob، HireHive، Factorial، Polymer، Remote (السجل **135 = 130 EN + 5 RU · 130 adapters**)؛ الماسح يقرأ اللوحات كاملة: Consider يجتاز كامل فهرسه عبر `meta.sequence` الخاص باللوحة مع إعادة محاولة لكل صفحة وتحذير حدّ أقصى صارم، يقبل عناوين الدول العالمية، `timeout_ms` لكل مدخل، `CAREER_OPS_HTTP_TIMEOUT_MS` لكل طلب، وتزامن مسح قابل للضبط (`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`، الافتراضات دون تغيير 32/10).
+> **🆕 أحدث إصدار — v1.271.0** — كانبان مهام المسار الوظيفي (`#/tasks`, مجموعة التطوّر): لوحة شخصية بالسحب والإفلات — أعمدة قائمة الانتظار/قيد التنفيذ/منجزة، نقل تفاؤلي عبر `PUT /api/tasks/:id`، لوحة مفاتيح + قائمة الجوال، «+» لكل عمود، نافذة التفاصيل؛ يُحفظ في `data/career-tasks.json`؛ تنظيفات موجة CodeQL 22؛ توجيه `perf` لـ remote-qa (وسيط TTFB/total، exit 1 عند SLOW >2000 ms). الاختبارات 7874 → 7918.
 >
-> **السابق — v1.269.2** — حفظ تقارير بلا سباق على كلا المسارين (المحاولة الأولى + إزالة التكرار باللاحق الحقبي، كلاهما حصري عبر `wx` في `server/lib/report-save.mjs::saveReportExclusive`)، وعقد السباق مثبت سلوكيًّا؛ يكتب `POST /api/reports` دون `overwrite` حصريًّا (`wx`، والـ 409 ذاته). الاختبارات 7699 → 7704.
+> **السابق — v1.270.0** — ستة مصادر مسح جديدة — ALDI Nord، HiBob، HireHive، Factorial، Polymer، Remote (السجل **135 = 130 EN + 5 RU · 130 adapters**)؛ الماسح يقرأ اللوحات كاملة: Consider يجتاز كامل فهرسه عبر `meta.sequence` الخاص باللوحة مع إعادة محاولة لكل صفحة وتحذير حدّ أقصى صارم، يقبل عناوين الدول العالمية، `timeout_ms` لكل مدخل، `CAREER_OPS_HTTP_TIMEOUT_MS` لكل طلب، وتزامن مسح قابل للضبط (`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`، الافتراضات دون تغيير 32/10).
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -112,6 +112,7 @@ career-ops هو أول تطبيق مرجعي [لبيان CareerOps](https://care
 | **السيرة الذاتية (CV)** | محرر markdown مباشر مع معاينة جانبية وحماية XSS من جهة الخادم |
 | **صحة النظام** | شارات حالة الإعداد؛ تشغيل `doctor.mjs` بنقرة واحدة |
 | **المساعدة** | توثيق مدمج بـ 19 لغة (بما فيها العربية) |
+| **مهام المسار المهني** | `#/tasks` — لوحة كانبان شخصية في مجموعة النمو لعملك المهني الخاص (التحضير للمقابلات، التعلّم، التواصل المهني)، منفصلة عن متتبّع الطلبات: أعمدة **Backlog / In Progress / Done** يكون السحب بينها هو تغيير الحالة ذاته (استدعاء API قياسي واحد، متفائل مع تراجع)، ولوحة المفاتيح ←/→ + Enter، ومنتقي حالة لكل بطاقة على الهاتف، وإضافة سريعة في كل عمود، ونافذة تفاصيل (ملاحظات / أولوية / وسوم). تخزين محلي أولًا في `data/career-tasks.json`. |
 
 ## البداية السريعة
 

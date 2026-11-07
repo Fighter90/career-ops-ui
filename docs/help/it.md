@@ -2448,6 +2448,17 @@ Il piano compare in un'area di testo modificabile — ritocca qualsiasi cosa, po
 
 Usa **Scarica .md**, **Salva come PDF** o **Copia** per portare il piano fuori dall'app — gli stessi controlli di esportazione usati in tutti i report IA dell'app. Il PDF passa attraverso il generatore di PDF inline esistente; il Markdown è un download diretto.
 
+### Bacheca delle attività di carriera
+
+**{{t:nav.tasks}}** (`#/tasks`, nel gruppo di navigazione **Crescita**) è una kanban personale per il tuo stesso lavoro di carriera — preparazione ai colloqui, piani di apprendimento, follow-up di networking — separata dal tracker delle candidature, che continua a seguire gli annunci. La bacheca ha tre colonne — **{{t:tasks.col.backlog}}**, **{{t:tasks.col.inProgress}}** e **{{t:tasks.col.done}}**, ciascuna con un conteggio in tempo reale — e trascinare una scheda tra loro È il cambio di stato: lo spostamento viene salvato subito con una sola chiamata canonica all'API e, se il salvataggio fallisce, la scheda torna nella sua colonna con un avviso onesto. Il percorso da tastiera lo rispecchia — **←** / **→** spostano la scheda focalizzata, **Invio** apre la finestra dei dettagli — e sotto i 900 px un selettore di stato per scheda fa lo stesso senza trascinare.
+
+Crea un'attività con il pulsante **{{t:tasks.add}}** della colonna in cui deve stare. La finestra dei dettagli contiene **{{t:tasks.field.title}}**, **{{t:tasks.field.notes}}** in testo libero, una **{{t:tasks.field.priority}}** a tre livelli (alta / normale / bassa) e fino a otto **{{t:tasks.field.tags}}** separate da virgole; salva con **{{t:tasks.save}}** o elimina dietro conferma con **{{t:tasks.delete}}**. Tutto persiste in `data/career-tasks.json` nella cartella dati del tuo progetto padre — prima di tutto locale, senza cloud.
+
+- **Dove** — `#/tasks`, la voce **{{t:nav.tasks}}** sotto Crescita.
+- **Spostare** — trascinare tra le tre colonne (o **←** / **→** sulla scheda focalizzata) = un cambio di stato canonico, ottimistico con ripristino.
+- **Creare / modificare** — **{{t:tasks.add}}** per colonna; dettagli: titolo, note, priorità, tag (≤ 8, separati da virgole); **{{t:tasks.delete}}** chiede prima.
+- **Archiviazione** — `data/career-tasks.json` (livello utente, sopravvive agli aggiornamenti).
+
 ## 28. Orientamento professionale (`#/orientation`)
 
 La pagina **Orientamento professionale** risponde alla domanda «quali direzioni fanno davvero per me?» — il tipo di lettura che otterresti da un test di orientamento, ma dedotta dal tuo stesso CV e profilo anziché da un questionario.

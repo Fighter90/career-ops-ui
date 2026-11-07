@@ -7,7 +7,7 @@
 
 _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
 
-[![tests](https://img.shields.io/badge/tests-7871%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-7918%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
@@ -17,9 +17,9 @@ _非公式 UI — career-ops / santifer とは提携しておらず、承認も�
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新リリース — v1.270.0** — スキャンソース6件追加 — ALDI Nord、HiBob、HireHive、Factorial、Polymer、Remote(レジストリ **135 = 130 EN + 5 RU · 130 adapters**);スキャナはボード全体を読みます:Consider がボード固有の `meta.sequence` を通じてカタログ全体をページごとのリトライとハードキャップ警告付きで巡回し、世界規模の国ラベルを受け入れ、エントリごとの `timeout_ms`、リクエストごとの `CAREER_OPS_HTTP_TIMEOUT_MS`、設定可能なスキャン同時実行数(`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`、デフォルトは従来どおり 32/10)を備えます。
+> **🆕 最新リリース — v1.271.0** — キャリアタスクカンバン (`#/tasks`, 成長グループ):バックログ/進行中/完了の列を持つ個人ドラッグ&ドロップボード、`PUT /api/tasks/:id` の楽観的移動、キーボード + モバイルセレクト、列ごとの «+» クイック作成、詳細モーダル;`data/career-tasks.json` に永続化;CodeQL ウェーブ 22 の整理;remote-qa の `perf` ディスパッチ(TTFB/total の中央値、SLOW >2000 ms で exit 1)。テスト 7874 → 7918。
 >
-> **前バージョン — v1.269.2** — 両パスでレースフリーのリポート保存(最初の試行 + エポックサフィックス重複排除、どちらも `server/lib/report-save.mjs::saveReportExclusive` の排他的 `wx`)、レース契約は振る舞いとして証明;`overwrite` なしの `POST /api/reports` も排他的に(`wx`、同じ 409)書きます。テスト 7699 → 7704。
+> **前バージョン — v1.270.0** — スキャンソース6件追加 — ALDI Nord、HiBob、HireHive、Factorial、Polymer、Remote(レジストリ **135 = 130 EN + 5 RU · 130 adapters**);スキャナはボード全体を読みます:Consider がボード固有の `meta.sequence` を通じてカタログ全体をページごとのリトライとハードキャップ警告付きで巡回し、世界規模の国ラベルを受け入れ、エントリごとの `timeout_ms`、リクエストごとの `CAREER_OPS_HTTP_TIMEOUT_MS`、設定可能なスキャン同時実行数(`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`、デフォルトは従来どおり 32/10)を備えます。
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -264,6 +264,7 @@ http://127.0.0.1:4317 を開きます。Pipeline カウンタが `0 件待機中
 | **Help**         | アプリ内 Markdown ユーザーガイド(`/#/help`)。サポート対象の 19 言語すべてにローカライズ済みです(en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi / ta / vi)。 |
 | **Activity log** | すべての状態変更リクエスト(書き込み・実行・スキャン)の監査証跡。シークレットはマスク済みです。 |
 | **通知** 🔔 *(v1.58.34 / v1.58.35)* | トップバーのベル + 赤い未読バッジ。クリック → 右ドロワーが最新 50 件のトースト(タブ単位/セッション単位)を表示 — 成功 / エラー / 情報-進行、それぞれにローカル時刻・メッセージ・必要に応じて `(METHOD /path · HTTP NNN)` 末尾を `<details>` で表示。ヘルプ **§18** が各カテゴリを説明。ドロワーは **ベルのクリック時にのみ** 開く(キーボード Enter / Space 含む)。× / Esc / ベル再クリックで閉じる。|
+| **キャリアタスク** | `#/tasks` — 成長グループの個人カンバン。面接準備・学習・ネットワーキングといった自分のキャリア作業を応募トラッカーとは別に管理: **Backlog / In Progress / Done** の3列で、ドラッグがそのままステータス変更(正規API 1回の移動、楽観的保存 + 取り消し)、キーボード ←/→ + Enter、モバイルのカード別ステータス選択、列ごとのクイック追加、詳細モーダル(メモ / 優先度 / タグ)。`data/career-tasks.json` にローカル優先で保存。 |
 
 グローバルキーボードショートカット:
 

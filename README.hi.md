@@ -9,7 +9,7 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-7871%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-7918%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
@@ -19,9 +19,9 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.270.0** — छह नए स्कैन सोर्स — ALDI Nord, HiBob, HireHive, Factorial, Polymer, Remote (रजिस्ट्री **135 = 130 EN + 5 RU · 130 adapters**); स्कैनर पूरे बोर्ड पढ़ता है: Consider बोर्ड के अपने `meta.sequence` से अपना पूरा कैटलॉग प्रति पेज रीट्राई और हार्ड कैप वॉर्निंग के साथ चलता है, वर्ल्डवाइड देश लेबल स्वीकार करता है, एंट्री-वार `timeout_ms`, रिक्वेस्ट-वार `CAREER_OPS_HTTP_TIMEOUT_MS` और कॉन्फ़िगर करने योग्य स्कैन कंकरेंसी (`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`, डिफ़ॉल्ट अपरिवर्तित 32/10) देता है।
+> **🆕 नवीनतम रिलीज़ — v1.271.0** — करियर कार्य कानबन (`#/tasks`, विकास ग्रुप): व्यक्तिगत ड्रैग-एंड-ड्रॉप बोर्ड — कॉलम बैकलॉग/प्रगति में/पूर्ण, `PUT /api/tasks/:id` से ऑप्टिमिस्टिक मूव, कीबोर्ड + मोबाइल सेलेक्ट, हर कॉलम का «+», डिटेल्स मोडल; `data/career-tasks.json` में पर्सिस्ट; CodeQL वेव 22 की सफ़ाई; remote-qa `perf` डिस्पैच (TTFB/total मीडियन, >2000 ms SLOW पर exit 1)। टेस्ट 7874 → 7918।
 >
-> **पिछला — v1.269.2** — दोनों पाथों पर रेस-फ़्री रिपोर्ट सेव (पहली कोशिश + epoch-सफ़िक्स डीडुप, दोनों `server/lib/report-save.mjs::saveReportExclusive` में एक्सक्लूसिव `wx` से), रेस कॉन्ट्रैक्ट बिहेवियरली साबित; `overwrite` के बिना `POST /api/reports` एक्सक्लूसिव लिखता है (`wx`, वही 409)। टेस्ट 7699 → 7704।
+> **पिछला — v1.270.0** — छह नए स्कैन सोर्स — ALDI Nord, HiBob, HireHive, Factorial, Polymer, Remote (रजिस्ट्री **135 = 130 EN + 5 RU · 130 adapters**); स्कैनर पूरे बोर्ड पढ़ता है: Consider बोर्ड के अपने `meta.sequence` से अपना पूरा कैटलॉग प्रति पेज रीट्राई और हार्ड कैप वॉर्निंग के साथ चलता है, वर्ल्डवाइड देश लेबल स्वीकार करता है, एंट्री-वार `timeout_ms`, रिक्वेस्ट-वार `CAREER_OPS_HTTP_TIMEOUT_MS` और कॉन्फ़िगर करने योग्य स्कैन कंकरेंसी (`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`, डिफ़ॉल्ट अपरिवर्तित 32/10) देता है।
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -300,6 +300,7 @@ http://127.0.0.1:4317 खोलें। Pipeline काउंटर को अ�
 | **Help**         | इन-ऐप मार्कडाउन यूज़र गाइड (`/#/help`), सभी 19 समर्थित भाषाओं के लिए लोकलाइज़्ड (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi / ta / vi)। |
 | **Activity log** | हर स्टेट-बदलने वाले अनुरोध (writes, runs, scans) का ऑडिट ट्रेल। सीक्रेट्स रीडैक्टेड। |
 | **Notifications** 🔔 *(v1.58.34 / v1.58.35)* | लाल unread बैज के साथ टॉप-बार बेल। क्लिक करने पर पिछले 50 टोस्ट (प्रति टैब, प्रति सेशन) की सूची वाला ड्रॉअर स्लाइड-इन होता है — Success / Error / Info-progress, हर एक के साथ एक लोकलाइज़्ड टाइमस्टैंप, मानवीय संदेश, और किसी भी `(METHOD /path · HTTP NNN)` पोस्टफ़िक्स के साथ जो एक `<details>` में समेट दिया गया है। Help **§18** हर श्रेणी का दस्तावेज़ीकरण करता है। ड्रॉअर **केवल** बेल क्लिक (या कीबोर्ड Enter / Space) पर खुलता है; ×, Esc, या बेल पर फिर क्लिक करने से बंद होता है। |
+| **करियर कार्य** | `#/tasks` — Growth समूह में आपके अपने करियर काम (इंटरव्यू की तैयारी, सीखना, आउटरीच) के लिए व्यक्तिगत कानबन, एप्लिकेशन ट्रैकर से अलग: **Backlog / In Progress / Done** कॉलम जिनके बीच ड्रैग करना ही स्टेटस बदलाव है (एक कैनोनिकल API मूव, रिवर्ट के साथ ऑप्टिमिस्टिक), कीबोर्ड ←/→ + Enter, मोबाइल पर कार्ड-वार स्टेटस सेलेक्ट, हर कॉलम में क्विक-ऐड, और डिटेल्स मोडल (नोट्स / प्रायोरिटी / टैग्स)। लोकल-फ़र्स्ट स्टोरेज — `data/career-tasks.json`। |
 
 ग्लोबल कीबोर्ड शॉर्टकट्स:
 

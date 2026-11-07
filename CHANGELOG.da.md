@@ -9,6 +9,23 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 ---
 
 
+## [1.271.0] — 2026-11-07
+
+### Tilføjet
+
+- **Karriereopgave-kanban (`#/tasks`, Udvikling-gruppen)** — en personlig opgavetavle ved siden af ansøgningstrackeren, i kanban-form i flow-stil: tre kolonner (Backlog / I gang / Færdig) med live-tællinger, kortene bærer et prioritetspunkt (høj/normal/lav) og op til 8 tag-chips; TRÆK mellem kolonner er statusændringen (én kanonisk `PUT /api/tasks/:id`, optimistisk med revert + toast ved fejl); tastatur på et fokuseret kort (←/→ flytter, Enter åbner modalen); på mobil <900px flyttes via en status-select pr. kort; «+» ved hver kolonne opretter direkte i den; detalje-modalen redigerer titel/noter/prioritet/tags og sletter bag en bekræftelse; alt persisterer straks til `data/career-tasks.json` (brugerlag, `withFileLock` + atomisk skrivning, alle mutationer rate-begrænsede). 24 i18n-nøgler ×19; hjælpen §27 får et afsnit «Karriereopgave-tavle» ×19 (H3 131 → 132); README ×19 dokumenterer tavlen.
+
+### Rettet
+
+- **CodeQL-bølge 22** — det uforankrede assertion-regex i HireHive-suitten blev en simpel `includes`-tjek; Avatures døde `if (absolute)`-wrapper (enhver vej gennem den relative gren resolver eller fortsætter) pakket ud; den ubrugte `existsSync`-import (auto-pipeline) og den ubrugte `entryUrl`-helper (aldi-nord) fjernet; rapport-/jd-arkiverings-skrivningerne (#777/#778/#779/#755) dokumenteret som forælders PÅKRÆVEDE arkiveringsdesign — saniteret + størrelsesbegrænset indhold, deterministiske stier (afvist med begrundelse efter merge).
+- **README-banner-kæden** — EN-ledet stod fast på v1.269.2 (×18-spejlene var opdaterede); nu roteret til udgivelses-ledet med den rigtige forrige-kæde.
+- **Prod-latens-observabilitet** — remote-qa får en `perf`-dispatch: `scripts/remote-qa/perf-probe.mjs` (5 målte runder pr. hot endpoint, medianer for TTFB/total/bytes, exit 1 ved en SLOW-endpoint >2000 ms) kører fra produktionsmiljøet, hvor auth-hemmelighederne bor.
+
+### Noter
+
+- Opgavetavlen kommer med trackerens tragt urørt — to tavler, to datasæt: ansøgninger forbliver kanoniske (`data/applications.md`), personlige opgaver bor i `data/career-tasks.json`; ingen skriver til den anden.
+- Tavlen læser og skriver KUN i sit eget lager; ingen LLM-kald, ingen kobling til scannet.
+
 ## [1.270.0] — 2026-11-07
 
 ### Tilføjet

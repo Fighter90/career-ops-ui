@@ -10,7 +10,7 @@
 
 _Неофіційний інтерфейс — не пов'язаний із career-ops / santifer і не схвалений ними._
 
-[![tests](https://img.shields.io/badge/tests-7871%20passed-brightgreen)](#тести)
+[![tests](https://img.shields.io/badge/tests-7918%20passed-brightgreen)](#тести)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#тести)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
@@ -20,9 +20,9 @@ _Неофіційний інтерфейс — не пов'язаний із car
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Останній реліз — v1.270.0** — шість нових джерел сканування — ALDI Nord, HiBob, HireHive, Factorial, Polymer, Remote (реєстр **135 = 130 EN + 5 RU · 130 адаптерів**); сканер читає борди цілком: Consider проходить увесь свій каталог через власний `meta.sequence` борди з посторінковим ретраєм і жорстким попередженням про капу, приймає всесвітні мітки країн, `timeout_ms` на запис, `CAREER_OPS_HTTP_TIMEOUT_MS` на запит та налаштовувану конкурентність скана (`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`, дефолти незмінні 32/10).
+> **🆕 Останній реліз — v1.271.0** — канбан кар'єрних завдань (`#/tasks`, група «Розвиток»): особиста дошка з перетягуванням — колонки Беклог/У роботі/Готово, оптимістичні переміщення через `PUT /api/tasks/:id`, клавіатура + мобільний селект, «+» біля кожної колонки, модалка деталей; збереження в `data/career-tasks.json`; зачистки хвилі CodeQL 22; `perf`-диспетчеризація remote-qa (медіана TTFB/total, exit 1 при SLOW >2000 мс). Тести 7874 → 7918.
 >
-> **Попередній реліз — v1.269.2** — збереження звітів без гонки на ОБОХ шляхах (перша спроба + дедуп з epoch-суфіксом — обидва ексклюзивні через `wx` у `server/lib/report-save.mjs::saveReportExclusive`), контракт гонки доведений поведінково; `POST /api/reports` без `overwrite` пише ексклюзивно (`wx`, той самий 409). Тести 7699 → 7704.
+> **Попередній реліз — v1.270.0** — шість нових джерел сканування — ALDI Nord, HiBob, HireHive, Factorial, Polymer, Remote (реєстр **135 = 130 EN + 5 RU · 130 адаптерів**); сканер читає борди цілком: Consider проходить увесь свій каталог через власний `meta.sequence` борди з посторінковим ретраєм і жорстким попередженням про капу, приймає всесвітні мітки країн, `timeout_ms` на запис, `CAREER_OPS_HTTP_TIMEOUT_MS` на запит та налаштовувану конкурентність скана (`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`, дефолти незмінні 32/10).
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -115,6 +115,7 @@ career-ops працює як slash-команди **всередині** AI-ас
 | **Про-мене** | `#/memory` — нотатка про вас (`config/memory.md`), вбудована в кожен AI-запит |
 | **Кар'єрний план** | `#/career-plan` — AI-план розвитку (`config/career-plan.md`) за горизонтом і фокусом |
 | **Орієнтація** | `#/orientation` — AI-профіль кар'єрної орієнтації (вектори архетипів, ролі, сильні сторони) |
+| **Кар'єрні завдання** | `#/tasks` — особистий канбан у групі Зростання для вашої власної кар'єрної роботи (підготовка до співбесід, навчання, нетворкінг), окремо від трекера відгуків: колонки **Backlog / In Progress / Done**, де перетягування і є зміною статусу (один канонічний перенос через API, оптимістично з відкатом), клавіатура ←/→ + Enter, перемикач статусу на картці в мобільному, швидке додавання в кожній колонці та вікно деталей (нотатки / пріоритет / теги). Дані лежать локально, у `data/career-tasks.json`. |
 | **Використання** | `#/usage` — токени + оцінка в USD за провайдером за 24h / 7d / 30d / все; живий HUD витрат у бічній панелі |
 | **Портали** | `#/portals` — увімкнення / вимкнення відстежуваних бордів + SSRF-безпечні перевірки здоров'я кожного `careers_url` |
 | **Налаштування застосунку** | Вбудований редактор ключів `.env` батька: `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, перевизначення моделей, порт / хост. Секрети замасковані при читанні |

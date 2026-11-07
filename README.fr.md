@@ -7,7 +7,7 @@
 
 _Interface non officielle — sans affiliation ni approbation de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-7871%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-7918%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
@@ -17,9 +17,9 @@ _Interface non officielle — sans affiliation ni approbation de career-ops / sa
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Dernière version — v1.270.0** — six nouvelles sources de scan — ALDI Nord, HiBob, HireHive, Factorial, Polymer, Remote (registre **135 = 130 EN + 5 RU · 130 adapters**) ; le scanner lit les boards entiers : Consider parcourt tout son catalogue via le `meta.sequence` propre au board avec retry par page et avertissement de plafond dur, accepte les libellés de pays mondiaux, `timeout_ms` par entrée, `CAREER_OPS_HTTP_TIMEOUT_MS` par requête et une concurrence de scan configurable (`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`, défauts inchangés 32/10).
+> **🆕 Dernière version — v1.271.0** — kanban des tâches de carrière (`#/tasks`, groupe Développement) : tableau personnel en glisser-déposer — colonnes À faire/En cours/Terminé, déplacements optimistes via `PUT /api/tasks/:id`, clavier + select mobile, « + » par colonne, modal de détails ; persiste dans `data/career-tasks.json` ; nettoyages de la vague 22 CodeQL ; dispatch `perf` de remote-qa (médiane TTFB/total, exit 1 sur SLOW >2000 ms). Tests 7874 → 7918.
 >
-> **Précédente — v1.269.2** — sauvegardes de rapports sans course sur les DEUX chemins (première tentative + dédup à suffixe d'époque, tous deux exclusifs via `wx` dans `server/lib/report-save.mjs::saveReportExclusive`), contrat de course prouvé comportamentalement ; `POST /api/reports` sans `overwrite` écrit en exclusif (`wx`, même 409). Tests 7699 → 7704.
+> **Précédente — v1.270.0** — six nouvelles sources de scan — ALDI Nord, HiBob, HireHive, Factorial, Polymer, Remote (registre **135 = 130 EN + 5 RU · 130 adapters**) ; le scanner lit les boards entiers : Consider parcourt tout son catalogue via le `meta.sequence` propre au board avec retry par page et avertissement de plafond dur, accepte les libellés de pays mondiaux, `timeout_ms` par entrée, `CAREER_OPS_HTTP_TIMEOUT_MS` par requête et une concurrence de scan configurable (`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`, défauts inchangés 32/10).
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -263,6 +263,7 @@ Ouvrez http://127.0.0.1:4317. Le compteur du Pipeline doit maintenant indiquer `
 | **Help**         | Guide utilisateur Markdown dans l'app (`/#/help`), localisé pour les 19 langues prises en charge (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi / ta / vi). |
 | **Activity log** | Journal d'audit de chaque requête modifiant l'état (écritures, exécutions, scans). Secrets caviardés. |
 | **Notifications** 🔔 *(v1.58.34 / v1.58.35)* | Cloche dans la barre du haut avec badge rouge de non-lus. Cliquez pour faire glisser un tiroir listant les 50 derniers toasts (par onglet, par session) — Success / Error / Info-progress, chacun avec un horodatage localisé, le message humain, et tout postfixe `(METHOD /path · HTTP NNN)` rangé dans un `<details>`. L'aide **§18** documente chaque catégorie. Le tiroir s'ouvre **uniquement** au clic sur la cloche (ou clavier Entrée / Espace) ; se ferme via ×, Échap, ou re-clic sur la cloche. |
+| **Tâches de carrière** | `#/tasks` — un kanban personnel pour votre propre travail de carrière (préparation d'entretiens, apprentissage, réseau) sous Croissance, séparé du tracker de candidatures : colonnes **Backlog / In Progress / Done** où glisser EST le changement de statut (un seul appel d'API canonique, optimiste avec retour arrière), clavier ←/→ + Entrée, sélecteur de statut par carte sur mobile, ajout rapide par colonne et fenêtre de détails (notes / priorité / étiquettes). Stockage local d'abord dans `data/career-tasks.json`. |
 
 Raccourcis clavier globaux :
 

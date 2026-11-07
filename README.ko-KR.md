@@ -7,7 +7,7 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-7871%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-7918%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
@@ -17,9 +17,9 @@ _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았�
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.270.0** — 스캔 소스 6개 신규 — ALDI Nord, HiBob, HireHive, Factorial, Polymer, Remote (레지스트리 **135 = 130 EN + 5 RU · 130 adapters**); 스캐너가 보드 전체를 읽습니다: Consider가 보드 자체의 `meta.sequence`를 통해 카탈로그 전체를 페이지별 재시도와 하드 캡 경고로 순회하고, 전 세계 국가 레이블을 수용하며, 항목별 `timeout_ms`, 요청별 `CAREER_OPS_HTTP_TIMEOUT_MS`, 구성 가능한 스캔 동시성(`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`, 기본값은 기존대로 32/10)을 갖춥니다.
+> **🆕 최신 릴리스 — v1.271.0** — 커리어 작업 칸반 (`#/tasks`, 성장 그룹): 백로그/진행 중/완료 열을 갖춘 개인 드래그 앤 드롭 보드, `PUT /api/tasks/:id` 낙관적 이동, 키보드 + 모바일 셀렉트, 열별 «+» 빠른 생성, 상세 모달; `data/career-tasks.json`에 저장; CodeQL 22차 웨이브 정리; remote-qa `perf` 디스패치(TTFB/total 중앙값, 2000ms 초과 SLOW 시 exit 1). 테스트 7874 → 7918.
 >
-> **이전 버전 — v1.269.2** — 양쪽 경로 모두에서 레이스 없는 리포트 저장(첫 시도 + 에포크 서픽스 디듀프, `server/lib/report-save.mjs::saveReportExclusive`의 배타적 `wx` 사용), 레이스 계약은 행동적으로 증명; `overwrite` 없는 `POST /api/reports`도 배타적으로(`wx`, 동일 409) 씁니다. 테스트 7699 → 7704.
+> **이전 버전 — v1.270.0** — 스캔 소스 6개 신규 — ALDI Nord, HiBob, HireHive, Factorial, Polymer, Remote (레지스트리 **135 = 130 EN + 5 RU · 130 adapters**); 스캐너가 보드 전체를 읽습니다: Consider가 보드 자체의 `meta.sequence`를 통해 카탈로그 전체를 페이지별 재시도와 하드 캡 경고로 순회하고, 전 세계 국가 레이블을 수용하며, 항목별 `timeout_ms`, 요청별 `CAREER_OPS_HTTP_TIMEOUT_MS`, 구성 가능한 스캔 동시성(`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`, 기본값은 기존대로 32/10)을 갖춥니다.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -264,6 +264,7 @@ http://127.0.0.1:4317 를 엽니다. Pipeline 카운터가 `0 대기 중` 으로
 | **Help**         | 인앱 마크다운 사용자 가이드(`/#/help`). 지원되는 19개 언어(en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi / ta / vi)로 현지화되어 있습니다. |
 | **Activity log** | 상태를 변경하는 모든 요청(writes, runs, scans)에 대한 감사 추적. 시크릿은 redact 처리됩니다. |
 | **알림** 🔔 *(v1.58.34 / v1.58.35)* | 상단바 벨 + 빨간 안 읽음 배지. 클릭 → 우측 드로어가 최근 50 개의 토스트(탭별/세션별) 표시 — 성공 / 오류 / 정보-진행, 각 항목에 현지화된 시각·메시지·필요 시 `(METHOD /path · HTTP NNN)` 후미가 `<details>` 안에 포함. 도움말 **§18** 가 모든 카테고리 설명. 드로어는 **벨 클릭에서만** 열림(키보드 Enter / Space 포함); ×, Esc, 또는 벨 재클릭으로 닫힘. |
+| **커리어 작업** | `#/tasks` — 성장 그룹의 개인 칸반으로, 면접 준비·학습·네트워킹 같은 당신 자신의 커리어 작업을 지원 트래커와 별도로 관리: **Backlog / In Progress / Done** 열에서 드래그가 곧 상태 변경(단일 정식 API 이동, 낙관적 저장 + 되돌림), 키보드 ←/→ + Enter, 모바일의 카드별 상태 선택, 열별 빠른 추가, 상세 모달(메모 / 우선순위 / 태그). `data/career-tasks.json`에 로컬 우선 저장. |
 
 전역 키보드 단축키:
 

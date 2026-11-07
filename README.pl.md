@@ -10,7 +10,7 @@
 
 _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich nieautoryzowany._
 
-[![tests](https://img.shields.io/badge/tests-7871%20passed-brightgreen)](#testy)
+[![tests](https://img.shields.io/badge/tests-7918%20passed-brightgreen)](#testy)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#testy)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
@@ -20,9 +20,9 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Najnowsze wydanie — v1.270.0** — sześć nowych źródeł skanowania — ALDI Nord, HiBob, HireHive, Factorial, Polymer, Remote (rejestr **135 = 130 EN + 5 RU · 130 adapters**); skaner czyta boardy w całości: Consider przechodzi przez cały swój katalog po własnym `meta.sequence` boarda z retryem per strona i twardym ostrzeżeniem o limicie, przyjmuje światowe etykiety krajów, `timeout_ms` per wpis, `CAREER_OPS_HTTP_TIMEOUT_MS` per zapytanie oraz konfigurowalną współbieżność skana (`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`, domyślne bez zmian 32/10).
+> **🆕 Najnowsze wydanie — v1.271.0** — kanban zadań karierowych (`#/tasks`, grupa Rozwój): osobista tablica przeciągnij-i-upuść — kolumny Backlog/W trakcie/Gotowe, optymistyczne przenoszenia przez `PUT /api/tasks/:id`, klawiatura + select na mobile, «+» przy każdej kolumnie, modal szczegółów; trwa w `data/career-tasks.json`; porządki fali CodeQL 22; dispatch `perf` remote-qa (mediana TTFB/total, exit 1 przy SLOW >2000 ms). Testy 7874 → 7918.
 >
-> **Poprzednie wydanie — v1.269.2** — zapisy raportów bez wyścigu na OBU ścieżkach (pierwsza próba + dedup z sufiksem epoki, obie ekskluzywne przez `wx` w `server/lib/report-save.mjs::saveReportExclusive`), kontrakt wyścigu dowiedziony zachowaniowo; `POST /api/reports` bez `overwrite` zapisuje ekskluzywnie (`wx`, ten sam 409). Testy 7699 → 7704.
+> **Poprzednie wydanie — v1.270.0** — sześć nowych źródeł skanowania — ALDI Nord, HiBob, HireHive, Factorial, Polymer, Remote (rejestr **135 = 130 EN + 5 RU · 130 adapters**); skaner czyta boardy w całości: Consider przechodzi przez cały swój katalog po własnym `meta.sequence` boarda z retryem per strona i twardym ostrzeżeniem o limicie, przyjmuje światowe etykiety krajów, `timeout_ms` per wpis, `CAREER_OPS_HTTP_TIMEOUT_MS` per zapytanie oraz konfigurowalną współbieżność skana (`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`, domyślne bez zmian 32/10).
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -115,6 +115,7 @@ career-ops działa jako polecenia slash **wewnątrz** asystenta kodującego AI �
 | **O-mnie** | `#/memory` — notatka o Tobie (`config/memory.md`) wstawiana do każdego żądania AI |
 | **Plan kariery** | `#/career-plan` — plan rozwoju od AI (`config/career-plan.md`) wg horyzontu i fokusa |
 | **Orientacja** | `#/orientation` — profil orientacji kariery od AI (wektory archetypów, role, mocne strony) |
+| **Zadania kariery** | `#/tasks` — osobisty kanban w grupie Rozwój na Twoją własną pracę nad karierą (przygotowanie do rozmów, nauka, networking), oddzielony od trackera aplikacji: kolumny **Backlog / In Progress / Done**, w których przeciągnięcie TO zmiana statusu (jeden kanoniczny ruch przez API, optymistycznie z cofnięciem), klawiatura ←/→ + Enter, selektor statusu na karcie w wersji mobilnej, szybkie dodawanie w każdej kolumnie i okno szczegółów (notatki / priorytet / tagi). Dane leżą lokalnie, w `data/career-tasks.json`. |
 | **Użycie** | `#/usage` — tokeny + szacunek w USD per dostawca za 24h / 7d / 30d / wszystko; live HUD kosztów w pasku bocznym |
 | **Portale** | `#/portals` — włączanie / wyłączanie śledzonych tablic + bezpieczne-SSRF sondy zdrowia każdego `careers_url` |
 | **Ustawienia aplikacji** | Edytor kluczy `.env` rodzica w UI: `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, nadpisania modeli, port / host. Sekrety maskowane przy odczycie |

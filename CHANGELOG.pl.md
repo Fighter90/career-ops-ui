@@ -10,6 +10,23 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.271.0] — 2026-11-07
+
+### Dodano
+
+- **Kanban zadań karierowych (`#/tasks`, grupa Rozwój)** — osobista tablica zadań obok trackera aplikacji, w kształcie kanbanu w stylu flow: trzy kolumny (Backlog / W trakcie / Gotowe) z licznikami na żywo, karty niosą punkt priorytetu (wysoki/normalny/niski) i do 8 chipów tagów; PRZECIĄGANIE między kolumnami to zmiana statusu (jedno kanoniczne `PUT /api/tasks/:id`, optymistycznie z revert + toast przy błędzie); klawiatura na sfokusowanej karcie (←/→ przenosi, Enter otwiera modal); na mobile <900px przenoszenie przez select statusu na karcie; «+» przy każdej kolumnie tworzy od razu w niej; modal szczegółów edytuje tytuł/notatki/priorytet/tagi i usuwa za potwierdzeniem; wszystko natychmiast trwa do `data/career-tasks.json` (warstwa użytkownika, `withFileLock` + zapis atomowy, wszystkie mutacje pod rate limitem). 24 klucze i18n ×19; pomoc §27 zyskuje sekcję «Tablica zadań karierowych» ×19 (H3 131 → 132); README ×19 dokumentują tablicę.
+
+### Naprawiono
+
+- **Fala CodeQL 22** — niezakotwiczona asercja-regex w suite HireHive stała się prostym sprawdzeniem `includes`; martwa obwódka `if (absolute)` w Avature (każda ścieżka przez gałąź względną się rozwiązuje albo kontynuuje) rozwinięta; nieużywany import `existsSync` (auto-pipeline) i nieużywany helper `entryUrl` (aldi-nord) usunięte; zapisy archiwum raportów/jd (#777/#778/#779/#755) udokumentowane jako WYMAGANY design archiwizacji rodzica — treść sanityzowana + limitowana rozmiarem, deterministyczne ścieżki (oddalone z uzasadnieniem po merge).
+- **Łańcuch banerów README** — lead EN utknął na v1.269.2 (×18 luster były aktualne); teraz obrócony do leada wydania z prawdziwym łańcuchem poprzednich.
+- **Obserwowalność latencji na prodzie** — remote-qa zyskuje dispatch `perf`: `scripts/remote-qa/perf-probe.mjs` (5 zmierzonych rund na gorący endpoint, mediany TTFB/total/bytes, exit 1 przy endpoincie SLOW >2000 ms) uruchamia się ze środowiska produkcyjnego, gdzie mieszkają sekrety auth.
+
+### Uwagi
+
+- Tablica zadań przychodzi z nietkniętym lejkiem trackera — dwie tablice, dwa zbiory danych: aplikacje pozostają kanoniczne (`data/applications.md`), zadania osobiste mieszkają w `data/career-tasks.json`; żadna nie pisze do drugiej.
+- Tablica czyta i pisze TYLKO we własnym magazynie; zero wywołań LLM, zero sprzężenia ze skanem.
+
 ## [1.270.0] — 2026-11-07
 
 ### Dodano

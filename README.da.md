@@ -7,7 +7,7 @@
 
 _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-7871%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-7918%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
@@ -17,9 +17,9 @@ _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santi
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Seneste udgivelse — v1.270.0** — seks nye kilder til scan — ALDI Nord, HiBob, HireHive, Factorial, Polymer, Remote (registret **135 = 130 EN + 5 RU · 130 adapters**); scanneren læser hele boards: Consider går gennem hele sit katalog via boardets eget `meta.sequence` med retry pr. side og hård loft-advarsel, accepterer verdensomspændende lande-labels, `timeout_ms` pr. post, `CAREER_OPS_HTTP_TIMEOUT_MS` pr. anmodning og konfigurerbar scan-konkurrence (`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`, standarder uændrede 32/10).
+> **🆕 Seneste udgivelse — v1.271.0** — karriereopgave-kanban (`#/tasks`, Udvikling-gruppen): personlig træk-og-slip-tavle — kolonner Backlog/I gang/Færdig, optimistiske flyt via `PUT /api/tasks/:id`, tastatur + mobil select, «+» pr. kolonne, detalje-modal; persisterer til `data/career-tasks.json`; oprydning fra CodeQL-bølge 22; remote-qa `perf`-dispatch (median TTFB/total, exit 1 ved SLOW >2000 ms). Test 7874 → 7918.
 >
-> **Tidligere — v1.269.2** — rapport-gem uden race på BEGGE stier (første forsøg + epoch-suffiks dedup, begge eksklusive via `wx` i `server/lib/report-save.mjs::saveReportExclusive`), race-kontrakten bevist adfærdsmæssigt; `POST /api/reports` uden `overwrite` skriver eksklusivt (`wx`, samme 409). Test 7699 → 7704.
+> **Tidligere — v1.270.0** — seks nye kilder til scan — ALDI Nord, HiBob, HireHive, Factorial, Polymer, Remote (registret **135 = 130 EN + 5 RU · 130 adapters**); scanneren læser hele boards: Consider går gennem hele sit katalog via boardets eget `meta.sequence` med retry pr. side og hård loft-advarsel, accepterer verdensomspændende lande-labels, `timeout_ms` pr. post, `CAREER_OPS_HTTP_TIMEOUT_MS` pr. anmodning og konfigurerbar scan-konkurrence (`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`, standarder uændrede 32/10).
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -297,6 +297,7 @@ npm start
 | **Help**         | In-app Markdown-brugervejledning (`/#/help`), lokaliseret til alle 19 understøttede sprog (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi / ta / vi). |
 | **Activity log** | Revisionsspor af hver tilstandsændrende forespørgsel (writes, runs, scans). Hemmeligheder redigeret. |
 | **Notifications** 🔔 *(v1.58.34 / v1.58.35)* | Klokke i topbjælken med rødt ulæst-badge. Klik for at glide en skuffe ind, der oplister de seneste 50 toasts (pr. fane, pr. session) — Success / Error / Info-progress, hver med et lokaliseret tidsstempel, den menneskelige besked og ethvert `(METHOD /path · HTTP NNN)`-postfiks gemt i en `<details>`. Hjælp **§18** dokumenterer hver kategori. Skuffen åbner **kun** ved klik på klokken (eller tastatur Enter / Space); lukkes via ×, Esc eller ved at klikke på klokken igen. |
+| **Karriereopgaver** | `#/tasks` — en personlig kanban-tavle i Vækst-gruppen til dit eget karrierearbejde (interviewforberedelse, læring, netværk), adskilt fra ansøgningstrackeren: kolonnerne **Backlog / In Progress / Done**, hvor et træk ER statusændringen (ét kanonisk API-flyt, optimistisk med tilbageførsel), tastatur ←/→ + Enter, statusvælger pr. kort på mobil, hurtig-tilføj pr. kolonne og en detaljedialog (noter / prioritet / tags). Lokal først — gemmes i `data/career-tasks.json`. |
 
 Globale tastaturgenveje:
 

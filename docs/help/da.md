@@ -2443,6 +2443,17 @@ Planen lander i et redigerbart tekstfelt — juster hvad som helst, og klik dere
 
 Brug **Download .md**, **Gem som PDF** eller **Kopiér** for at tage planen ud af appen — de samme eksportknapper, der bruges på tværs af appens AI-rapporter. PDF'en går gennem den eksisterende inline-PDF-generator; Markdown er en direkte download.
 
+### Karriereopgave-tavle
+
+**{{t:nav.tasks}}** (`#/tasks`, i navigationsgruppen **Vækst**) er en personlig kanban-tavle til dit eget karrierearbejde — interviewforberedelse, læringsplaner, opfølgning på netværk — adskilt fra ansøgningstrackeren, som fortsat følger opslag. Tavlen har tre kolonner — **{{t:tasks.col.backlog}}**, **{{t:tasks.col.inProgress}}** og **{{t:tasks.col.done}}**, hver med en tæller i realtid — og at trække et kort mellem dem ER statusændringen: trækket gemmes med det samme gennem ét kanonisk API-kald, og hvis gemningen fejler, vender kortet tilbage til sin kolonne med en ærlig besked. Tastaturvejen gør det samme — **←** / **→** flytter det fokuserede kort, **Enter** åbner detaljevinduet — og under 900 px klarer en statusvælger pr. kort det samme uden træk.
+
+Opret en opgave med **{{t:tasks.add}}**-knappen i den kolonne, den hører hjemme i. Detaljevinduet rummer **{{t:tasks.field.title}}**, fritekst i **{{t:tasks.field.notes}}**, en trinvis **{{t:tasks.field.priority}}** (høj / normal / lav) og op til otte **{{t:tasks.field.tags}}** adskilt af kommaer; gem med **{{t:tasks.save}}** eller slet bag en bekræftelse med **{{t:tasks.delete}}**. Alt gemmes i `data/career-tasks.json` i dit overordnede projekts datamappe — lokal først, ingen sky.
+
+- **Hvor** — `#/tasks`, punktet **{{t:nav.tasks}}** under Vækst.
+- **Flyt** — træk mellem de tre kolonner (eller **←** / **→** på det fokuserede kort) = ét kanonisk statusflyt, optimistisk med tilbageførsel.
+- **Opret / rediger** — **{{t:tasks.add}}** pr. kolonne; detaljer: titel, noter, prioritet, tags (≤ 8, kommaadskilt); **{{t:tasks.delete}}** spørger først.
+- **Opbevaring** — `data/career-tasks.json` (brugerlag, overlever opdateringer).
+
 ## 28. Karriereorientering (`#/orientation`)
 
 Siden **Karriereorientering** besvarer "hvilke retninger passer faktisk til mig?" — den slags læsning, du ville få af en erhvervstest, men udledt af dit eget CV og din profil frem for et spørgeskema.

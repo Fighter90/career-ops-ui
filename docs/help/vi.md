@@ -2449,6 +2449,17 @@ Kế hoạch đổ vào một vùng văn bản có thể sửa — sửa bất c
 
 Dùng **Download .md**, **Save as PDF**, hay **Copy** để mang kế hoạch khỏi ứng dụng — cùng các nút xuất được dùng khắp các báo cáo AI của ứng dụng. PDF đi qua bộ tạo PDF nội dòng hiện có; Markdown là tải trực tiếp.
 
+### Bảng nhiệm vụ sự nghiệp
+
+**{{t:nav.tasks}}** (`#/tasks`, trong nhóm điều hướng **Growth**) là một kanban cá nhân cho công việc sự nghiệp của chính bạn — chuẩn bị phỏng vấn, kế hoạch học tập, follow-up kết nối — tách khỏi trình theo dõi ứng tuyển, vốn tiếp tục theo dõi tin tuyển dụng. Bảng có ba cột — **{{t:tasks.col.backlog}}**, **{{t:tasks.col.inProgress}}** và **{{t:tasks.col.done}}**, mỗi cột một bộ đếm trực tiếp — và kéo một thẻ giữa chúng chính là thay đổi trạng thái: nước đi được lưu ngay qua một lần gọi API chuẩn duy nhất, nếu lưu thất bại thẻ quay về cột của nó cùng một thông báo trung thực. Đường bàn phím làm điều tương tự — **←** / **→** di chuyển thẻ đang-focus, **Enter** mở hộp chi tiết — và dưới 900 px một ô chọn trạng thái trên từng thẻ làm y như vậy không cần kéo.
+
+Tạo một nhiệm vụ bằng nút **{{t:tasks.add}}** ở cột nó thuộc về. Hộp chi tiết chứa **{{t:tasks.field.title}}**, **{{t:tasks.field.notes}}** văn bản tự do, **{{t:tasks.field.priority}}** ba mức (cao / thường / thấp) và tối đa tám **{{t:tasks.field.tags}}** phân tách bằng dấu phẩy; lưu bằng **{{t:tasks.save}}** hoặc xóa sau xác nhận bằng **{{t:tasks.delete}}**. Mọi thứ lưu bền trong `data/career-tasks.json` ở thư mục dữ liệu dự án gốc của bạn — cục bộ trước, không đám mây.
+
+- **Ở đâu** — `#/tasks`, mục **{{t:nav.tasks}}** dưới Growth.
+- **Di chuyển** — kéo giữa ba cột (hoặc **←** / **→** trên thẻ đang-focus) = một nước đổi trạng thái chuẩn, tối ưu kèm hoàn tác.
+- **Tạo / sửa** — **{{t:tasks.add}}** cho từng cột; chi tiết: tiêu đề, ghi chú, mức ưu tiên, thẻ (≤ 8, phân tách dấu phẩy); **{{t:tasks.delete}}** hỏi trước.
+- **Lưu trữ** — `data/career-tasks.json` (tầng người dùng, sống qua các bản cập nhật).
+
 ## 28. Định hướng sự nghiệp (`#/orientation`)
 
 Trang **Career orientation** trả lời "những hướng nào thực sự phù hợp với tôi?" — kiểu đọc bạn sẽ nhận từ một bài test hướng nghiệp, nhưng suy ra từ chính CV và hồ sơ của bạn chứ không phải từ một bảng câu hỏi.

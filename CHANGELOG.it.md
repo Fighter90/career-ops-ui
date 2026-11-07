@@ -2,6 +2,23 @@
 
 > Questo changelog contiene ora la cronologia completa delle versioni. Le voci pubblicate prima della localizzazione italiana (v1.85.0) compaiono sotto nell'originale inglese — traduzione in attesa; il riferimento resta [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.271.0] — 2026-11-07
+
+### Aggiunto
+
+- **Kanban delle attività di carriera (`#/tasks`, gruppo Sviluppo)** — una bacheca di attività personale accanto al tracker delle candidature, nella forma kanban in stile flow: tre colonne (Backlog / In corso / Fatto) con conteggi in tempo reale, le schede portano un punto di priorità (alta/normale/bassa) e fino a 8 chip di tag; il TRASCINAMENTO tra colonne è il cambio di stato (un unico `PUT /api/tasks/:id` canonico, ottimista con revert + toast in caso di fallimento); tastiera su una scheda focalizzata (←/→ sposta, Enter apre il modale); su mobile <900px lo spostamento avviene tramite un select di stato per scheda; il «+» di ogni colonna crea direttamente lì; il modale dei dettagli modifica titolo/note/priorità/tag ed elimina dietro conferma; tutto persiste immediatamente in `data/career-tasks.json` (livello utente, `withFileLock` + scrittura atomica, tutte le mutazioni rate-limitate). 24 chiavi i18n ×19; l'aiuto §27 acquisisce una sezione «Bacheca delle attività di carriera» ×19 (H3 131 → 132); i README ×19 documentano la bacheca.
+
+### Corretto
+
+- **Ondata CodeQL 22** — la regex di asserzione non ancorata nella suite HireHive è diventata un semplice controllo `includes`; il wrapper morto `if (absolute)` di Avature (ogni percorso attraverso il ramo relativo si risolve o continua) è stato dispiegato; rimossi l'import `existsSync` inutilizzato (auto-pipeline) e l'helper `entryUrl` inutilizzato (aldi-nord); le scritture di archiviazione report/jd (#777/#778/#779/#755) documentate come il design di archiviazione RICHIESTO dal parent — contenuto sanificato + limitato in dimensione, percorsi deterministici (respinto con motivo dopo il merge).
+- **Catena dei banner del README** — il lead EN era rimasto fermo a v1.269.2 (i ×18 mirror erano aggiornati); ora ruotato al lead della release con la vera catena delle precedenti.
+- **Osservabilità della latenza in produzione** — remote-qa ottiene un dispatch `perf`: `scripts/remote-qa/perf-probe.mjs` (5 round misurati per endpoint caldo, mediane di TTFB/total/bytes, exit 1 su un endpoint SLOW >2000 ms) gira dall'ambiente di produzione, dove vivono i segreti di autenticazione.
+
+### Note
+
+- La bacheca delle attività arriva con l'imbuto del tracker intatto — due bacheche, due insiemi di dati: le candidature restano canoniche (`data/applications.md`), le attività personali vivono in `data/career-tasks.json`; nessuna scrive nell'altra.
+- La bacheca legge e scrive SOLO nel proprio store; nessuna chiamata LLM, nessun accoppiamento con lo scan.
+
 ## [1.270.0] — 2026-11-07
 
 ### Aggiunto

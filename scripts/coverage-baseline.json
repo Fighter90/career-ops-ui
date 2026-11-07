@@ -97,6 +97,7 @@
     "server/lib/routes/runners.mjs",
     "server/lib/routes/scan.mjs",
     "server/lib/routes/stats.mjs",
+    "server/lib/routes/tasks.mjs",
     "server/lib/routes/tracker.mjs",
     "server/lib/routes/two-pager.mjs",
     "server/lib/runner.mjs",

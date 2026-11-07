@@ -6,6 +6,23 @@
 
 ---
 
+## [1.271.0] — 2026-11-07
+
+### சேர்க்கப்பட்டது
+
+- **கேரியர் பணிகள் கான்பான் (`#/tasks`, வளர்ச்சி குழு)** — விண்ணப்ப tracker-க்கு அருகில் ஒரு தனிப்பட்ட பணி board, flow-பாணி kanban வடிவில்: live counts உடன் மூன்று columns (பேக்லாக் / நடைமுறையில் / முடிந்தது), cards priority dot (high/normal/low) + 8 வரை tag chips சுமக்கின்றன; columns இடையே DRAG செய்வதே status மாற்றம் (ஒரே canonical `PUT /api/tasks/:id`, optimistic — fail ஆனால் revert + toast); focus செய்யப்பட்ட card-இல் keyboard (←/→ நகர்த்தும், Enter modal-ஐத் திறக்கும்); <900px mobile-இல் card-வாரி status select மூலம் நகர்த்தப்படும்; ஒவ்வொரு column-இன் «+» அந்த column-இல் நேரடியாக create செய்யும்; details modal title/notes/priority/tags edit செய்யும், confirm-க்குப் பின் delete செய்யும்; எல்லாம் உடனே `data/career-tasks.json`-இல் persist ஆகும் (user layer, `withFileLock` + atomic write, எல்லா mutations-ம் rate-limited). 24 i18n keys ×19; help §27 «கேரியர் பணிகள் பலகை» பகுதியைப் பெறுகிறது ×19 (H3 131 → 132); README ×19 board-ஐ document செய்கிறது.
+
+### சரி செய்யப்பட்டது
+
+- **CodeQL wave 22** — HireHive suite-இன் unanchored assertion regex எளிய `includes` check ஆனது; Avature-இன் dead `if (absolute)` wrapper (relative branch-இன் எல்லா paths-ம் resolve ஆவதும் continue ஆவதும்) unwrap செய்யப்பட்டது; பயன்படுத்தாத `existsSync` import (auto-pipeline), பயன்படுத்தாத `entryUrl` helper (aldi-nord) நீக்கம்; report/jd archival writes (#777/#778/#779/#755) parent-இன் REQUIRED archival design ஆக document செய்யப்பட்டன — sanitized + size-bounded content, deterministic paths (merge-க்குப் பின் reason-உடன் dismissed).
+- **README banner chain** — EN lead v1.269.2-இல் சிக்கியிருந்தது (×18 mirrors புதுப்பித்தவை); இப்போது release lead-ஆக rotate ஆனது, உண்மையான previous chain-உடன்.
+- **Prod latency observability** — remote-qa-க்கு `perf` dispatch கிடைத்தது: `scripts/remote-qa/perf-probe.mjs` (ஒவ்வொரு hot endpoint-க்கும் 5 measured rounds, TTFB/total/bytes median, >2000 ms SLOW endpoint-இல் exit 1) auth secrets வாழும் production environment-இலிருந்து இயங்குகிறது.
+
+### குறிப்புகள்
+
+- Tasks board tracker-இன் funnel-ஐ தொடாமல் வருகிறது — இரண்டு boards, இரண்டு datasets: applications canonical ஆகவே இருக்கும் (`data/applications.md`), தனிப்பட்ட பணிகள் `data/career-tasks.json`-இல் வாழும்; எதுவும் மற்றொன்றில் எழுதாது.
+- Board தன் சொந்த store-ஐ மட்டுமே படிக்கிறது/எழுதுகிறது; LLM calls இல்லை, scan coupling இல்லை.
+
 ## [1.270.0] — 2026-11-07
 
 ### சேர்க்கப்பட்டது

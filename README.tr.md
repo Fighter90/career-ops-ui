@@ -7,7 +7,7 @@
 
 _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve onlar tarafından onaylanmamıştır._
 
-[![tests](https://img.shields.io/badge/tests-7871%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-7918%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
@@ -17,9 +17,9 @@ _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve 
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Son sürüm — v1.270.0** — altı yeni tarama kaynağı — ALDI Nord, HiBob, HireHive, Factorial, Polymer, Remote (kayıt **135 = 130 EN + 5 RU · 130 adapters**); tarayıcı panoları bütün olarak okuyor: Consider, kataloğunun tamamını panonun kendi `meta.sequence`'i üzerinden sayfa başına yeniden deneme ve sert tavan uyarısıyla geziyor, dünya çapında ülke etiketlerini kabul ediyor, girdi başına `timeout_ms`, istek başına `CAREER_OPS_HTTP_TIMEOUT_MS` ve yapılandırılabilir tarama eşzamanlılığı (`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`, varsayılanlar değişmedi 32/10) sunuyor.
+> **🆕 Son sürüm — v1.271.0** — kariyer görevleri kanbanı (`#/tasks`, Gelişim grubu): kişisel sürükle-bırak panosu — sütunlar Backlog/Devam Ediyor/Tamamlandı, `PUT /api/tasks/:id` ile iyimser taşıma, klavye + mobil select, sütun başına «+», ayrıntı modalı; `data/career-tasks.json` dosyasına kalıcılaşır; CodeQL dalga 22 temizlikleri; remote-qa `perf` dispatch'i (TTFB/total medyanı, >2000 ms SLOW'da exit 1). Testler 7874 → 7918.
 >
-> **Önceki — v1.269.2** — her iki yolda da yarışsız rapor kayıtları (ilk deneme + epoch-sonekli dedup, ikisi de `server/lib/report-save.mjs::saveReportExclusive` içindeki dışlayıcı `wx` ile), yarış sözleşmesi davranışsal olarak kanıtlandı; `overwrite` olmadan `POST /api/reports` dışlayıcı yazıyor (`wx`, aynı 409). Testler 7699 → 7704.
+> **Önceki — v1.270.0** — altı yeni tarama kaynağı — ALDI Nord, HiBob, HireHive, Factorial, Polymer, Remote (kayıt **135 = 130 EN + 5 RU · 130 adapters**); tarayıcı panoları bütün olarak okuyor: Consider, kataloğunun tamamını panonun kendi `meta.sequence`'i üzerinden sayfa başına yeniden deneme ve sert tavan uyarısıyla geziyor, dünya çapında ülke etiketlerini kabul ediyor, girdi başına `timeout_ms`, istek başına `CAREER_OPS_HTTP_TIMEOUT_MS` ve yapılandırılabilir tarama eşzamanlılığı (`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`, varsayılanlar değişmedi 32/10) sunuyor.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -297,6 +297,7 @@ http://127.0.0.1:4317 adresini açın. Pipeline sayacı artık `0 pending` okuma
 | **Help**         | Desteklenen 19 dilin tamamı için yerelleştirilmiş, uygulama içi Markdown kullanıcı kılavuzu (`/#/help`) (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi / ta / vi). |
 | **Activity log** | Durum değiştiren her isteğin (yazma, çalıştırma, tarama) denetim izi. Gizli bilgiler kaldırılır. |
 | **Notifications** 🔔 *(v1.58.34 / v1.58.35)* | Kırmızı okunmamış rozetli üst çubuk zili. Son 50 bildirimi (sekme başına, oturum başına) listeleyen bir çekmeceyi açmak için tıklayın — Başarı / Hata / Bilgi-ilerleme, her biri yerelleştirilmiş bir zaman damgası, insan okunur mesaj ve bir `<details>` içine tucked edilmiş herhangi bir `(METHOD /path · HTTP NNN)` son ekiyle. Yardım **§18** her kategoriyi belgeler. Çekmece **yalnızca** zile tıklandığında (veya klavye Enter / Space ile) açılır; ×, Esc ile ya da zile yeniden tıklayarak kapanır. |
+| **Kariyer görevleri** | `#/tasks` — Büyüme grubunda, kendi kariyer işleriniz (mülakat hazırlığı, öğrenme, networking) için kişisel bir kanban; başvuru takipçisinden ayrıdır: **Backlog / In Progress / Done** sütunlarında sürükleme durum değişikliğinin ta kendisidir (tek kanonik API hamlesi, geri alınabilir iyimser kayıt), klavye ←/→ + Enter, mobilde kart başına durum seçici, sütun başına hızlı ekleme ve ayrıntılar penceresi (notlar / öncelik / etiketler). Veriler yerel olarak önce `data/career-tasks.json` içinde saklanır. |
 
 Genel klavye kısayolları:
 

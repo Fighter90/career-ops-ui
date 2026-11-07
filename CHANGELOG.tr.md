@@ -2,6 +2,23 @@
 
 > Bu changelog artık tüm sürüm geçmişini içerir. Türkçe yerelleştirmenin eklenmesinden (v1.85.0) önce yayınlanan girdiler aşağıda İngilizce özgün hâliyle yer alır — çeviri bekliyor; asıl kaynak [🇬🇧 CHANGELOG.md](CHANGELOG.md)'dir.
 
+## [1.271.0] — 2026-11-07
+
+### Eklendi
+
+- **Kariyer görevleri kanbanı (`#/tasks`, Gelişim grubu)** — başvuru takipçisinin yanında kişisel bir görev panosu, flow tarzı kanban biçiminde: canlı sayaçlarla üç sütun (Backlog / Devam Ediyor / Tamamlandı), kartlar öncelik noktası (yüksek/normal/düşük) ve en fazla 8 etiket çipi taşır; sütunlar arası SÜRÜKLEME durum değişikliğidir (tek kanonik `PUT /api/tasks/:id`, iyimser — hata durumunda geri alma + toast); odaklanmış kartta klavye (←/→ taşır, Enter modalı açar); 900px altı mobilde kart başına durum select'i ile taşıma; her sütundaki «+» doğrudan o sütuna oluşturur; ayrıntı modalı başlık/notlar/öncelik/etiketleri düzenler ve onay arkasında siler; her şey anında `data/career-tasks.json` dosyasına kalıcılaşır (kullanıcı katmanı, `withFileLock` + atomik yazma, tüm mutasyonlar rate-limitli). 24 i18n anahtarı ×19; yardım §27 bir «Kariyer görevleri panosu» bölümü kazandı ×19 (H3 131 → 132); README ×19 panoyu belgeliyor.
+
+### Düzeltildi
+
+- **CodeQL dalga 22** — HireHive suitindeki çapasız assertion regex'i düz bir `includes` kontrolüne dönüştü; Avature'daki ölü `if (absolute)` sarmalayıcısı (göreli dalın her yolu ya çözülür ya devam eder) açıldı; kullanılmayan `existsSync` içe aktarımı (auto-pipeline) ve kullanılmayan `entryUrl` yardımcısı (aldi-nord) kaldırıldı; rapor/jd arşiv yazıları (#777/#778/#779/#755) ebeveynin ZORUNLU arşivleme tasarımı olarak belgelendi — temizlenmiş + boyut sınırlı içerik, deterministik yollar (merge sonrası gerekçeyle reddedildi).
+- **README banner zinciri** — EN lead v1.269.2'de takılı kalmıştı (×18 ayna günceldi); şimdi gerçek önceki zinciriyle birlikte sürüm lead'ine döndürüldü.
+- **Prod gecikme gözlemlenebilirliği** — remote-qa bir `perf` dispatch'i kazanıyor: `scripts/remote-qa/perf-probe.mjs` (sıcak uç nokta başına 5 ölçümlü tur, TTFB/total/bytes medyanları, >2000 ms SLOW uç noktada exit 1) auth sırlarının yaşadığı üretim ortamından çalışıyor.
+
+### Notlar
+
+- Görev panosu, takipçinin hunisine dokunmadan geliyor — iki pano, iki veri kümesi: başvurular kanonik kalır (`data/applications.md`), kişisel görevler `data/career-tasks.json` dosyasında yaşar; hiçbiri diğerine yazmaz.
+- Pano SADECE kendi deposunu okur ve yazar; LLM çağrısı yok, taramayla eşleşme yok.
+
 ## [1.270.0] — 2026-11-07
 
 ### Eklendi

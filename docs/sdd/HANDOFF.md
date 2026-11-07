@@ -2,6 +2,12 @@
 
 This is the operating manual. Read it, then `PLAN.md` (order) and `BACKLOG.md` (what is left).
 
+## State (2026-11-07, v1.271.0)
+
+- Released: **v1.271.0** (2026-11-07) — the Career tasks kanban feature release: new **#/tasks** view (Growth group) — 3 columns Backlog / In-Progress / Done with live counts, drag=PUT optimistic+revert, keyboard ←/→/Enter, mobile select, per-column «+», details modal; `data/career-tasks.json` (locked + atomic, rate-limited); 24 keys ×19; help §27 «Career tasks board» ×19 (H3 132); README ×19; CodeQL wave 22 (hirehive includes-check, avature dead branch unwrapped, unused import/helper dropped, archival writes documented); remote-qa `perf` dispatch (perf-probe.mjs, ROUNDS=5, exit 1 on SLOW); routes 39 → **40** (+47 tests).
+- Gates: test:ci **7921 tests / 7918 pass / 0 fail / 3 skip** · browser **209 pass / 0 fail / 1 opt-in skip** · coverage **98.59/90.57** (tasks.mjs added to the exempt baseline) · changelog parity ✓ ×19 at 1.271.0, 492 releases each · /api/health **1.271.0 / parent 1.39.0**.
+- History: **v1.270.0** (2026-11-07) and earlier — see the state blocks below.
+
 ## State (2026-11-07, v1.270.0)
 
 - Released: **v1.270.0** (2026-11-07) — the parent-sync features wave: six new sources (ALDI Nord, HiBob, HireHive, Factorial, Polymer, Remote — registry **135 = 130 EN + 5 RU · 130 adapters**, count gates regenerated), Consider whole-board walk + worldwide country labels, per-entry `timeout_ms` + per-request `CAREER_OPS_HTTP_TIMEOUT_MS` + configurable scan concurrency (defaults 32/10 kept), telegram strict Habr links + positional employers + DISCLOSED_HIDDEN, description passthrough ×6 boards + nodesk/jobicy decode, avature/arbeitsagentur/getro fixes, contributors list fix. Fork synced `31a29b30` → **`b859214b`** (148 commits, ADR-0002 divergences defended).

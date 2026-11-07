@@ -2517,6 +2517,17 @@ Plan, düzenlenebilir bir metin alanında belirir — istediğin her şeyi deği
 
 Planı uygulamanın dışına almak için **.md indir**, **PDF olarak kaydet** veya **Kopyala**yı kullan — uygulamanın yapay zeka raporlarının genelinde kullanılan aynı dışa aktarma denetimleridir. PDF, mevcut satır içi PDF oluşturucudan geçer; Markdown ise doğrudan bir indirmedir.
 
+### Kariyer görevleri panosu
+
+**{{t:nav.tasks}}** (`#/tasks`, **Büyüme** gezinme grubunda) kendi kariyer işleriniz için kişisel bir kanbandır — mülakat hazırlığı, öğrenme planları, networking takipleri — iş başvurularını izlemeye devam eden başvuru takipçisinden ayrıdır. Panonun üç sütunu vardır — **{{t:tasks.col.backlog}}**, **{{t:tasks.col.inProgress}}** ve **{{t:tasks.col.done}}**, her biri canlı bir sayacıyla — ve bir kartı aralarında sürüklemek durum değişikliğinin ta kendisidir: hamle tek bir kanonik API çağrısıyla anında kaydedilir, kayıt başarısız olursa kart dürüst bir bildirimle kendi sütununa döner. Klavye yolu aynısını yapar — **←** / **→** odaklı kartı taşır, **Enter** ayrıntılar penceresini açar — ve 900 px altında kart başına durum seçici sürüklemesiz aynı işi yapar.
+
+Bir görevi, ait olduğu sütundaki **{{t:tasks.add}}** düğmesiyle oluşturun. Ayrıntılar penceresi **{{t:tasks.field.title}}**, serbest metin **{{t:tasks.field.notes}}**, üç kademeli **{{t:tasks.field.priority}}** (yüksek / normal / düşük) ve virgülle ayrılmış sekize kadar **{{t:tasks.field.tags}}** içerir; **{{t:tasks.save}}** ile kaydedin ya da **{{t:tasks.delete}}** ile bir onayın ardında silin. Her şey üst projenizin veri klasöründeki `data/career-tasks.json` içinde kalır — önce yerel, bulut yok.
+
+- **Nerede** — `#/tasks`, Büyüme altındaki **{{t:nav.tasks}}** öğesi.
+- **Taşıma** — üç sütun arasında sürüklemek (veya odaklı kartta **←** / **→**) = tek kanonik durum hamlesi, geri alınabilir iyimser kayıt.
+- **Oluşturma / düzenleme** — sütun başına **{{t:tasks.add}}**; ayrıntılar: başlık, notlar, öncelik, etiketler (≤ 8, virgülle); **{{t:tasks.delete}}** önce sorar.
+- **Depolama** — `data/career-tasks.json` (kullanıcı katmanı, güncellemeleri aşar).
+
 ## 28. Kariyer yönelimi (`#/orientation`)
 
 **Kariyer yönelimi** sayfası "hangi yönler bana gerçekten uygun?" sorusunu yanıtlar — bir meslek testinden alacağın türden bir okuma, ama bir anketten değil, kendi özgeçmişin ve profilinden çıkarılır.

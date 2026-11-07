@@ -7,7 +7,7 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-7871%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-7918%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
@@ -17,9 +17,9 @@ _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.270.0** — 六个新扫描源 — ALDI Nord、HiBob、HireHive、Factorial、Polymer、Remote(注册表 **135 = 130 EN + 5 RU · 130 adapters**);扫描器读取整个看板:Consider 沿看板自身的 `meta.sequence` 走完整个目录,带逐页重试和硬上限警告,接受全球性国家标签,支持条目级 `timeout_ms`、按请求的 `CAREER_OPS_HTTP_TIMEOUT_MS` 以及可配置的扫描并发(`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`,默认值不变 32/10)。
+> **🆕 最新版本 — v1.271.0** — 职业任务看板(`#/tasks`,成长分组):支持拖拽的个人看板 —— 列为待办/进行中/已完成,经 `PUT /api/tasks/:id` 的乐观移动,键盘 + 移动端下拉,每列 «+» 快速创建,详情弹窗;持久化到 `data/career-tasks.json`;CodeQL 第 22 波清理;remote-qa `perf` 派发(TTFB/total 中位数,SLOW >2000 ms 时 exit 1)。测试 7874 → 7918。
 >
-> **上一版本 — v1.269.2** — 两条路径的报告保存均无竞态(首次尝试 + epoch 后缀去重,均经 `server/lib/report-save.mjs::saveReportExclusive` 独占 `wx`),竞态契约以行为方式证明;不带 `overwrite` 的 `POST /api/reports` 独占写入(`wx`,同样 409)。测试 7699 → 7704。
+> **上一版本 — v1.270.0** — 六个新扫描源 — ALDI Nord、HiBob、HireHive、Factorial、Polymer、Remote(注册表 **135 = 130 EN + 5 RU · 130 adapters**);扫描器读取整个看板:Consider 沿看板自身的 `meta.sequence` 走完整个目录,带逐页重试和硬上限警告,接受全球性国家标签,支持条目级 `timeout_ms`、按请求的 `CAREER_OPS_HTTP_TIMEOUT_MS` 以及可配置的扫描并发(`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`,默认值不变 32/10)。
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -264,6 +264,7 @@ npm start
 | **Help**         | 应用内 Markdown 用户手册(`/#/help`),覆盖全部 19 种语言(en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi / ta / vi)。                          |
 | **Activity log** | 所有写入、运行、扫描等状态变更请求的审计日志。密钥已脱敏。                                                                              |
 | **通知** 🔔 *(v1.58.34 / v1.58.35)* | 顶栏铃铛 + 红色未读徽章。点击 → 右侧抽屉展示最近 50 条 toast(按标签页/会话)— 成功 / 错误 / 信息-进度,每条带本地时间、消息,及在需要时把 `(METHOD /path · HTTP NNN)` 后缀放入 `<details>`。帮助 **§18** 描述每个类别。抽屉**仅在点击铃铛时打开**(或键盘 Enter / Space);通过 ×、Esc 或再次点击铃铛关闭。|
+| **职业任务** | `#/tasks` —— 成长组下的个人看板，管理你自己的职业事务（面试准备、学习、人脉跟进），与申请追踪器相互独立：**Backlog / In Progress / Done** 三列，拖动即状态变更（一次规范 API 移动，乐观保存、失败回滚），键盘 ←/→ + Enter，移动端的每卡状态选择器，每列快速新建，详情弹窗（备注 / 优先级 / 标签）。本地优先存储于 `data/career-tasks.json`。 |
 
 全局键盘快捷键:
 

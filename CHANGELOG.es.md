@@ -13,6 +13,23 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.271.0] — 2026-11-07
+
+### Añadido
+
+- **Kanban de tareas de carrera (`#/tasks`, grupo Desarrollo)** — un tablero de tareas personal junto al seguimiento de aplicaciones, con la forma kanban estilo flow: tres columnas (Pendientes / En curso / Hechas) con contadores en vivo, las tarjetas llevan un punto de prioridad (alta/normal/baja) y hasta 8 chips de etiquetas; ARRASTRAR entre columnas es el cambio de estado (un único `PUT /api/tasks/:id` canónico, optimista con reversión + toast en caso de fallo); teclado sobre una tarjeta enfocada (←/→ mueve, Enter abre el modal); en móvil <900px se mueve mediante un select de estado por tarjeta; el «+» de cada columna crea directamente en esa columna; el modal de detalles edita título/notas/prioridad/etiquetas y elimina tras una confirmación; todo persiste de inmediato en `data/career-tasks.json` (capa de usuario, `withFileLock` + escritura atómica, todas las mutaciones con rate-limit). 24 claves i18n ×19; la ayuda §27 gana una sección «Tablero de tareas de carrera» ×19 (H3 131 → 132); los README ×19 documentan el tablero.
+
+### Corregido
+
+- **Ola 22 de CodeQL** — la regex de aserción sin anclar en la suite de HireHive pasó a una comprobación `includes` simple; el envoltorio muerto `if (absolute)` de Avature (todos los caminos de la rama relativa se resuelven o continúan) se desenrolló; se eliminaron el import `existsSync` sin usar (auto-pipeline) y el helper `entryUrl` sin usar (aldi-nord); las escrituras de archivo de informes/jd (#777/#778/#779/#755) quedaron documentadas como el diseño de archivo REQUERIDO del proyecto padre — contenido saneado + acotado en tamaño, rutas deterministas (descartadas con motivo tras el merge).
+- **Cadena de banners del README** — el lead EN estaba estancado en v1.269.2 (los ×18 espejos estaban al día); ahora rota al lead de la release con la cadena de anteriores real.
+- **Observabilidad de latencia en producción** — remote-qa gana un dispatch `perf`: `scripts/remote-qa/perf-probe.mjs` (5 rondas medidas por endpoint caliente, medianas de TTFB/total/bytes, exit 1 ante un endpoint SLOW >2000 ms) se ejecuta desde el entorno de producción, donde viven los secretos de autenticación.
+
+### Notas
+
+- El tablero de tareas llega sin tocar el embudo del seguimiento — dos tableros, dos conjuntos de datos: las aplicaciones siguen siendo canónicas (`data/applications.md`), las tareas personales viven en `data/career-tasks.json`; ninguno escribe en el otro.
+- El tablero lee y escribe SOLO en su propio almacén; sin llamadas LLM, sin acoplamiento con el escaneo.
+
 ## [1.270.0] — 2026-11-07
 
 ### Añadido

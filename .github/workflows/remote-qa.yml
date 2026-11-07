@@ -35,6 +35,10 @@ on:
         description: 'With live: run the real scan first (off = LLM checks only)'
         type: boolean
         default: true
+      perf:
+        description: 'Run scripts/remote-qa/perf-probe.mjs against prod (median TTFB/total per hot endpoint; exit 1 on SLOW)'
+        type: boolean
+        default: false
   push:
     branches: ['claude/**']
     paths:
@@ -85,6 +89,28 @@ jobs:
           [[ "$p" == https://* && ( "$BASE_URL" == "$p" || "$BASE_URL" == "$p/"* ) ]] || { echo "::error::prod_url must be the PROD_URL origin over https — refusing to send credentials elsewhere"; exit 1; }
           set -o pipefail
           node scripts/remote-qa/prod-regression.mjs | tee -a "$GITHUB_STEP_SUMMARY"
+
+  prod-perf:
+    name: prod — perf probe (hot endpoints)
+    if: github.event_name == 'workflow_dispatch' && inputs.perf
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: read
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with: { node-version: 22 }
+      - run: npm ci --no-audit --no-fund
+      - name: Perf probe
+        env:
+          BASE_URL: ${{ inputs.prod_url || secrets.PROD_URL }}
+          BASIC_USER: ${{ secrets.AUTH_LOGIN }}
+          BASIC_PASS: ${{ secrets.AUTH_PASSWORD }}
+        run: |
+          [ -n "$BASE_URL" ] || { echo "::error::secret PROD_URL is not set"; exit 1; }
+          ROUNDS=5 node scripts/remote-qa/perf-probe.mjs | tee -a "$GITHUB_STEP_SUMMARY"
 
   prod-live:
     name: prod — live scan + LLM × all locales

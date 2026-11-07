@@ -2495,6 +2495,17 @@ Le plan apparaît dans une zone de texte modifiable — ajustez ce que vous voul
 
 Utilisez **Télécharger .md**, **Enregistrer en PDF** ou **Copier** pour sortir le plan de l'application — les mêmes commandes d'export que celles utilisées dans tous les rapports IA de l'application. Le PDF passe par le générateur PDF inline existant ; le Markdown est un téléchargement direct.
 
+### Tableau des tâches de carrière
+
+**{{t:nav.tasks}}** (`#/tasks`, dans le groupe de navigation **Croissance**) est un kanban personnel pour votre propre travail de carrière — préparation d'entretiens, plans d'apprentissage, relances de réseau — séparé du tracker de candidatures, qui continue de suivre les offres. Le tableau compte trois colonnes — **{{t:tasks.col.backlog}}**, **{{t:tasks.col.inProgress}}** et **{{t:tasks.col.done}}**, chacune avec un compteur en direct — et faire glisser une carte entre elles EST le changement de statut : le déplacement est enregistré aussitôt par un seul appel d'API canonique et, si l'enregistrement échoue, la carte revient dans sa colonne avec un message honnête. Le parcours clavier fait le même travail — **←** / **→** déplacent la carte focalisée, **Entrée** ouvre la fenêtre de détails — et sous 900 px, un sélecteur de statut par carte fait pareil sans glisser.
+
+Créez une tâche avec le bouton **{{t:tasks.add}}** de la colonne où elle doit se trouver. La fenêtre de détails contient **{{t:tasks.field.title}}**, des **{{t:tasks.field.notes}}** en texte libre, une **{{t:tasks.field.priority}}** à trois niveaux (haute / normale / basse) et jusqu'à huit **{{t:tasks.field.tags}}** séparées par des virgules ; enregistrez avec **{{t:tasks.save}}** ou supprimez derrière une confirmation avec **{{t:tasks.delete}}**. Tout persiste dans `data/career-tasks.json` dans le dossier de données de votre projet parent — local d'abord, sans cloud.
+
+- **Où** — `#/tasks`, l'entrée **{{t:nav.tasks}}** sous Croissance.
+- **Déplacer** — glisser entre les trois colonnes (ou **←** / **→** sur la carte focalisée) = un changement de statut canonique, optimiste avec retour arrière.
+- **Créer / modifier** — **{{t:tasks.add}}** par colonne ; détails : titre, notes, priorité, étiquettes (≤ 8, séparées par des virgules) ; **{{t:tasks.delete}}** demande d'abord.
+- **Stockage** — `data/career-tasks.json` (couche utilisateur, survit aux mises à jour).
+
 ## 28. Orientation de carrière (`#/orientation`)
 
 La page **Orientation de carrière** répond à la question « quelles directions me correspondent vraiment ? » — le genre de lecture qu'un test d'orientation vous donnerait, mais déduite de votre propre CV et profil plutôt que d'un questionnaire.
