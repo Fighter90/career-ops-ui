@@ -177,6 +177,10 @@ function cleanHimalayasUrl(value) {
 
 function locationText(value) {
   if (!Array.isArray(value)) return '';
+  // Explicit [] means no country restriction; timezone restrictions are
+  // separate (parent #6553 / #6413). The label keeps the remote signal for
+  // keyword filters and is recognized by location-filter's worldwide fallback.
+  if (value.length === 0) return 'Remote (worldwide)';
   return value
     .filter((v) => typeof v === 'string' && v.trim())
     .map((v) => v.trim())

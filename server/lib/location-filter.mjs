@@ -21,6 +21,8 @@
  *   - All matches: case-insensitive substring.
  */
 
+import { isCountryKeyword } from './sources/_country.mjs';
+
 // ── Keyword prefixes (parity with the parent's title-keywords.mjs) ──
 // `title_filter` and `content_filter` both default to case-insensitive
 // SUBSTRING matching, which is why a bare negative `intern` also rejects
@@ -218,6 +220,14 @@ export function buildTitleFilter(titleFilter) {
   };
 }
 
+// Whole labels only: a substring must not promote qualified or negated
+// geography ("Worldwide except Canada", "Not worldwide") to worldwide.
+const WORLDWIDE_LOCATION_LABELS = new Set([
+  'worldwide',
+  'anywhere in the world',
+  'remote (worldwide)',
+]);
+
 /**
  * `strict: true` (opt-in, parent parity career-ops @ 98e62de4, #3276): when a
  * restricting tier (`allow` / `block` / `block_hard`) is configured, a posting
@@ -225,6 +235,12 @@ export function buildTitleFilter(titleFilter) {
  * over a source that never returns a location otherwise silently inverts the
  * filter — the "only these places" allow list is never consulted.
  * `strict: true` alone restricts nothing and stays inert.
+ *
+ * #6413 / parent #6553 — whole-location worldwide labels. When BOTH allow
+ * lists are written entirely in country terms and `strict` is off, a posting
+ * located exactly "Worldwide" / "Anywhere in the World" / "Remote (worldwide)"
+ * passes: known worldwide eligibility is not missing location data. block /
+ * block_hard still win, and qualified labels never match (whole labels only).
  *
  * v1.248.1 (CAR-60, parent parity — scan.mjs #652/#4549 lineage): the parent's
  * `always_allow` and `block_hard` tiers. `always_allow` beats `block` — a
@@ -244,27 +260,43 @@ export function buildLocationFilter(locationFilter) {
   if (!locationFilter || typeof locationFilter !== 'object') return () => true;
   // Blank / non-string entries are dropped: `block: [""]` is a substring of every
   // location and used to reject the whole scan; a null became the text "null".
-  const allow = cleanStringList(locationFilter.allow).map((k) => k.toLowerCase());
+  const allowKeywords = cleanStringList(locationFilter.allow).map((k) => k.toLowerCase());
+  const allow = allowKeywords;
   const block = cleanStringList(locationFilter.block).map((k) => k.toLowerCase());
   // v1.248.1 (CAR-60) — the parent's tier model (scan.mjs #652/#4549):
   //   block_hard match → reject (the only tier always_allow cannot override)
   //   always_allow match → pass (takes precedence over block)
   //   block match → reject
   //   allow empty → pass; non-empty → ≥ 1 match
-  const alwaysAllow = cleanStringList(locationFilter.always_allow).map((k) => k.toLowerCase());
+  const alwaysAllowKeywords = cleanStringList(locationFilter.always_allow).map((k) => k.toLowerCase());
+  const alwaysAllow = alwaysAllowKeywords;
   const blockHard = cleanStringList(locationFilter.block_hard).map((k) => k.toLowerCase());
   const strict = locationFilter.strict === true && (allow.length > 0 || block.length > 0 || blockHard.length > 0);
+  // #6413 / parent #6553 — the worldwide-label fallback. Only when the user
+  // targeted COUNTRIES exclusively (both allow-lists contain nothing but exact
+  // country names/aliases/ISO codes) and did not opt into strict: a posting
+  // located exactly "Worldwide" is then eligible everywhere the list names,
+  // not missing location data. City-only or mixed city/country targeting is
+  // deliberately NOT widened.
+  const countryOnlyAllow = allowKeywords.length > 0
+    && [...alwaysAllowKeywords, ...allowKeywords].every(isCountryKeyword);
 
   return (location) => {
     // Nothing to judge on → pass (don't penalize missing data), unless strict.
-    // Whitespace-only is "nothing" too.
-    if (!location || !String(location).trim()) return !strict;
-    const lower = String(location).toLowerCase();
+    // Whitespace-only is "nothing" too, and a non-string value carries no
+    // location either (parent semantics: typeof check, not String() coercion).
+    const lower = typeof location === 'string' ? location.trim().toLowerCase() : '';
+    if (lower === '') return !strict;
     if (blockHard.length > 0 && blockHard.some((k) => lower.includes(k))) return false;
     if (alwaysAllow.length > 0 && alwaysAllow.some((k) => lower.includes(k))) return true;
     if (block.length > 0 && block.some((k) => lower.includes(k))) return false;
     if (allow.length === 0) return true;
-    return allow.some((k) => lower.includes(k));
+    if (allow.some((k) => lower.includes(k))) return true;
+    // Whole labels only: a substring test would promote qualified or negated
+    // geography ("Worldwide except Canada", "Not worldwide") to worldwide.
+    // Deliberately AFTER block, so a blocked keyword in the label still rejects.
+    if (!strict && countryOnlyAllow && WORLDWIDE_LOCATION_LABELS.has(lower)) return true;
+    return false;
   };
 }
 
