@@ -288,11 +288,11 @@ test('both halves respect the ≤800-LOC contract and stay CSP-safe', () => {
   }
 });
 
-test('index.html: all 38 nav items kept with data-route + data-i18n labels', () => {
+test('index.html: all 39 nav items kept with data-route + data-i18n labels', () => {
   const items = HTML.match(/<a class="nav-item" href="#\/[a-z-]+" data-route="[a-z-]+">/g) || [];
-  assert.equal(items.length, 38, 'nav item count changed — update this gate deliberately');
+  assert.equal(items.length, 39, 'nav item count changed — update this gate deliberately');
   const labeled = (HTML.match(/class="nav-item"[\s\S]{0,120}?data-i18n="nav\.[a-zA-Z]+"/g) || []).length;
-  assert.ok(labeled >= 38, 'every nav item keeps its data-i18n label (locale-sweep pin)');
+  assert.ok(labeled >= 39, 'every nav item keeps its data-i18n label (locale-sweep pin)');
 });
 
 test('index.html: every group toggle aria-controls pairs with its items id', () => {

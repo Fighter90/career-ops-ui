@@ -2,6 +2,23 @@
 
 > Dieses Changelog enthält die vollständige Versionsgeschichte. Einträge, die vor der deutschen Lokalisierung (v1.85.0) veröffentlicht wurden, stehen unten im englischen Original — Übersetzung ausstehend; maßgeblich bleibt [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.271.0] — 2026-11-07
+
+### Neu
+
+- **Karriereaufgaben-Kanban (`#/tasks`, Gruppe Entwicklung)** — ein persönliches Aufgaben-Board neben dem Bewerbungs-Tracker, in Kanban-Form im Flow-Stil: drei Spalten (Backlog / In Arbeit / Fertig) mit Live-Zählern, Karten tragen einen Prioritätspunkt (hoch/normal/niedrig) und bis zu 8 Tag-Chips; ZIEHEN zwischen Spalten ist die Statusänderung (ein kanonisches `PUT /api/tasks/:id`, optimistisch mit Revert + Toast bei Fehlschlag); Tastatur auf einer fokussierten Karte (←/→ verschiebt, Enter öffnet das Modal); auf Mobil <900px Verschieben über einen Status-Select pro Karte; das «+» jeder Spalte legt direkt dort an; das Detail-Modal bearbeitet Titel/Notizen/Priorität/Tags und löscht hinter einem Confirm; alles persistiert sofort in `data/career-tasks.json` (User-Layer, `withFileLock` + atomares Schreiben, alle Mutationen rate-limitiert). 24 i18n-Schlüssel ×19; die Hilfe §27 erhält einen Abschnitt «Karriereaufgaben-Board» ×19 (H3 131 → 132); README ×19 dokumentiert das Board.
+
+### Behoben
+
+- **CodeQL-Welle 22** — der unverankerte Assertion-Regex in der HireHive-Suite wurde zu einer simplen `includes`-Prüfung; der tote `if (absolute)`-Wrapper in Avature (jeder Pfad durch den relativen Zweig löst auf oder fährt fort) entpackt; der ungenutzte `existsSync`-Import (auto-pipeline) und der ungenutzte `entryUrl`-Helper (aldi-nord) entfernt; die Report-/jd-Archivierungs-Schreibvorgänge (#777/#778/#779/#755) als das ERFORDERLICHE Archivierungsdesign des Parents dokumentiert — bereinigter + größenbegrenzter Inhalt, deterministische Pfade (nach dem Merge mit Begründung abgelehnt).
+- **README-Banner-Kette** — der EN-Lead steckte bei v1.269.2 fest (die ×18 Spiegel waren aktuell); jetzt auf den Release-Lead gedreht, mit der echten Previous-Kette.
+- **Prod-Latenz-Observability** — remote-qa erhält einen `perf`-Dispatch: `scripts/remote-qa/perf-probe.mjs` (5 gemessene Runden pro Hot-Endpoint, Mediane von TTFB/total/bytes, exit 1 bei einem SLOW-Endpoint >2000 ms) läuft aus der Produktionsumgebung, in der die Auth-Secrets leben.
+
+### Hinweise
+
+- Das Aufgaben-Board kommt mit unangetastetem Tracker-Trichter — zwei Boards, zwei Datensätze: Bewerbungen bleiben kanonisch (`data/applications.md`), persönliche Aufgaben leben in `data/career-tasks.json`; keine schreibt in die andere.
+- Das Board liest und schreibt NUR in seinem eigenen Speicher; keine LLM-Aufrufe, keine Kopplung an den Scan.
+
 ## [1.270.0] — 2026-11-07
 
 ### Neu

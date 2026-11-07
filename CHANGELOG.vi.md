@@ -6,6 +6,23 @@ Bản dịch: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.271.0] — 2026-11-07
+
+### Đã thêm
+
+- **Kanban nhiệm vụ sự nghiệp (`#/tasks`, nhóm Phát triển)** — một bảng nhiệm vụ cá nhân bên cạnh tracker ứng tuyển, theo hình kanban phong cách flow: ba cột (Backlog / Đang làm / Hoàn thành) với số đếm trực tiếp, thẻ mang chấm ưu tiên (cao/thường/thấp) và tối đa 8 chip tag; KÉO giữa các cột chính là thay đổi trạng thái (một `PUT /api/tasks/:id` chuẩn tắc, tối ưu — thất bại thì hoàn tác + toast); bàn phím trên thẻ đang focus (←/→ di chuyển, Enter mở modal); trên mobile <900px di chuyển qua select trạng thái cho từng thẻ; «+» của mỗi cột tạo trực tiếp vào cột đó; modal chi tiết sửa tiêu đề/ghi chú/ưu tiên/tag và xóa sau xác nhận; mọi thứ được lưu ngay vào `data/career-tasks.json` (lớp người dùng, `withFileLock` + ghi nguyên tử, mọi thay đổi đều rate-limit). 24 khóa i18n ×19; trợ giúp §27 có thêm mục «Bảng nhiệm vụ sự nghiệp» ×19 (H3 131 → 132); README ×19 tài liệu hóa bảng.
+
+### Đã sửa
+
+- **Đợt CodeQL 22** — regex assertion không neo trong bộ HireHive trở thành kiểm tra `includes` thuần túy; wrapper chết `if (absolute)` của Avature (mọi đường qua nhánh tương đối đều phân giải hoặc tiếp tục) được gỡ bỏ; import `existsSync` không dùng (auto-pipeline) và helper `entryUrl` không dùng (aldi-nord) bị loại; các ghi lưu trữ báo cáo/jd (#777/#778/#779/#755) được ghi nhận là thiết kế lưu trữ BẮT BUỘC của dự án cha — nội dung đã vệ sinh + giới hạn kích thước, đường dẫn tất định (bị gạt với lý do sau merge).
+- **Chuỗi banner README** — lead EN đã kẹt ở v1.269.2 (×18 mirror thì cập nhật); nay xoay sang lead bản phát hành với chuỗi bản trước đúng thực tế.
+- **Quan sát được độ trễ trên prod** — remote-qa có thêm dispatch `perf`: `scripts/remote-qa/perf-probe.mjs` (5 vòng đo cho mỗi endpoint nóng, trung vị TTFB/total/bytes, exit 1 khi endpoint SLOW >2000 ms) chạy từ môi trường production — nơi sinh sống các auth secret.
+
+### Ghi chú
+
+- Bảng nhiệm vụ đi kèm với phễu của tracker không bị đụng tới — hai bảng, hai bộ dữ liệu: ứng tuyển vẫn là chuẩn tắc (`data/applications.md`), nhiệm vụ cá nhân sống trong `data/career-tasks.json`; không bên nào ghi vào bên kia.
+- Bảng chỉ đọc và ghi vào kho của riêng nó; không gọi LLM, không liên kết với scan.
+
 ## [1.270.0] — 2026-11-07
 
 ### Đã thêm

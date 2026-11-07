@@ -12,6 +12,23 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.271.0] — 2026-11-07
+
+### Ajouté
+
+- **Kanban des tâches de carrière (`#/tasks`, groupe Développement)** — un tableau de tâches personnel à côté du tracker de candidatures, sous la forme kanban style flow : trois colonnes (À faire / En cours / Terminé) avec compteurs en direct, les cartes portent un point de priorité (haute/normale/basse) et jusqu'à 8 chips d'étiquettes ; le GLISSER entre colonnes est le changement de statut (un unique `PUT /api/tasks/:id` canonique, optimiste avec revert + toast en cas d'échec) ; clavier sur une carte focalisée (←/→ déplace, Entrée ouvre le modal) ; sur mobile <900px, le déplacement passe par un select de statut par carte ; le « + » de chaque colonne crée directement dans celle-ci ; le modal de détails édite titre/notes/priorité/étiquettes et supprime derrière une confirmation ; tout persiste immédiatement dans `data/career-tasks.json` (couche utilisateur, `withFileLock` + écriture atomique, toutes les mutations rate-limitées). 24 clés i18n ×19 ; l'aide §27 gagne une section « Tableau des tâches de carrière » ×19 (H3 131 → 132) ; les README ×19 documentent le tableau.
+
+### Corrigé
+
+- **Vague 22 de CodeQL** — la regex d'assertion non ancrée dans la suite HireHive est devenue une simple vérification `includes` ; l'enveloppe morte `if (absolute)` d'Avature (tout chemin par la branche relative se résout ou continue) dépliée ; l'import `existsSync` inutilisé (auto-pipeline) et le helper `entryUrl` inutilisé (aldi-nord) supprimés ; les écritures d'archivage rapports/jd (#777/#778/#779/#755) documentées comme le design d'archivage EXIGÉ du parent — contenu assaini + borné en taille, chemins déterministes (rejeté avec motif après merge).
+- **Chaîne de bannières du README** — le lead EN était resté bloqué à v1.269.2 (les ×18 miroirs étaient à jour) ; désormais pivoté vers le lead de la release avec la vraie chaîne des précédentes.
+- **Observabilité de la latence en prod** — remote-qa gagne un dispatch `perf` : `scripts/remote-qa/perf-probe.mjs` (5 tours mesurés par endpoint chaud, médianes TTFB/total/bytes, exit 1 sur un endpoint SLOW >2000 ms) s'exécute depuis l'environnement de production, où vivent les secrets d'authentification.
+
+### Notes
+
+- Le tableau de tâches arrive sans toucher l'entonnoir du tracker — deux tableaux, deux jeux de données : les candidatures restent canoniques (`data/applications.md`), les tâches personnelles vivent dans `data/career-tasks.json` ; aucun n'écrit dans l'autre.
+- Le tableau ne lit et n'écrit QUE dans son propre stockage ; aucun appel LLM, aucun couplage au scan.
+
 ## [1.270.0] — 2026-11-07
 
 ### Ajouté

@@ -2380,6 +2380,17 @@ Plan pojawia się w edytowalnym polu tekstowym — dopracuj cokolwiek, a następ
 
 Użyj **Pobierz .md**, **Zapisz jako PDF** lub **Kopiuj**, aby wynieść plan poza aplikację — te same kontrolki eksportu, których używa się w raportach AI w całej aplikacji. PDF przechodzi przez istniejący wbudowany generator PDF; Markdown to bezpośrednie pobranie.
 
+### Tablica zadań kariery
+
+**{{t:nav.tasks}}** (`#/tasks`, w grupie nawigacji **Rozwój**) to osobisty kanban na Twoją własną pracę nad karierą — przygotowanie do rozmów, plany nauki, follow-upy po networkingu — oddzielony od trackera aplikacji, który dalej śledzi oferty. Tablica ma trzy kolumny — **{{t:tasks.col.backlog}}**, **{{t:tasks.col.inProgress}}** i **{{t:tasks.col.done}}**, każdą z licznikiem na żywo — a przeciągnięcie karty między nimi TO zmiana statusu: ruch jest od razu zapisywany jednym kanonicznym wywołaniem API, a jeśli zapis się nie powiedzie, karta wraca do swojej kolumny z uczciwym komunikatem. Ścieżka klawiaturowa robi to samo — **←** / **→** przenoszą sfokusowaną kartę, **Enter** otwiera okno szczegółów — a poniżej 900 px selektor statusu na karcie załatwia to bez przeciągania.
+
+Utwórz zadanie przyciskiem **{{t:tasks.add}}** w kolumnie, do której należy. Okno szczegółów zawiera **{{t:tasks.field.title}}**, dowolny tekst w **{{t:tasks.field.notes}}**, trzystopniową **{{t:tasks.field.priority}}** (wysoki / normalny / niski) i do ośmiu **{{t:tasks.field.tags}}** oddzielonych przecinkami; zapisz przez **{{t:tasks.save}}** lub usuń za potwierdzeniem przez **{{t:tasks.delete}}**. Wszystko zapisuje się w `data/career-tasks.json` w folderze danych Twojego projektu nadrzędnego — lokalnie przede wszystkim, bez chmury.
+
+- **Gdzie** — `#/tasks`, pozycja **{{t:nav.tasks}}** w grupie Rozwój.
+- **Przenoszenie** — przeciągnięcie między trzema kolumnami (lub **←** / **→** na sfokusowanej karcie) = jeden kanoniczny ruch statusu, optymistycznie z cofnięciem.
+- **Tworzenie / edycja** — **{{t:tasks.add}}** w każdej kolumnie; szczegóły: tytuł, notatki, priorytet, tagi (≤ 8, po przecinku); **{{t:tasks.delete}}** najpierw pyta.
+- **Przechowywanie** — `data/career-tasks.json` (warstwa użytkownika, przetrwa aktualizacje).
+
 ## 28. Orientacja zawodowa (`#/orientation`)
 
 Strona **Orientacja zawodowa** odpowiada na pytanie „które kierunki naprawdę do mnie pasują?" — taki odczyt, jaki dałby test predyspozycji zawodowych, ale wywnioskowany z Twojego własnego CV i profilu, a nie z kwestionariusza.

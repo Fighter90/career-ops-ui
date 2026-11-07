@@ -163,9 +163,9 @@ export function parseAvature(html, ctx = /** @type {any} */ ({})) {
         continue;
       }
     }
-    if (absolute) {
-      // Absolute href — keep only if it lands on the tenant origin. A
-      // protocol-relative relative form resolved above is re-checked here too.
+    {
+      // Absolute by this point (a relative href either resolved above or
+      // continued) — keep only if it lands on the tenant origin.
       let host = '';
       try {
         host = new URL(url).hostname.toLowerCase();

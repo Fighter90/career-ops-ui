@@ -7,7 +7,7 @@
 
 _Неофициальный интерфейс — не аффилирован с career-ops / santifer и не одобрен ими._
 
-[![tests](https://img.shields.io/badge/tests-7871%20passed-brightgreen)](#тесты)
+[![tests](https://img.shields.io/badge/tests-7918%20passed-brightgreen)](#тесты)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
@@ -17,9 +17,9 @@ _Неофициальный интерфейс — не аффилирован �
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Последний релиз — v1.270.0** — шесть новых источников сканирования — ALDI Nord, HiBob, HireHive, Factorial, Polymer, Remote (реестр **135 = 130 EN + 5 RU · 130 адаптеров**); сканер читает борды целиком: Consider проходит весь свой каталог через собственный `meta.sequence` борда с постраничным ретраем и жёстким предупреждением о капе, принимает всемирные метки стран, `timeout_ms` на запись, `CAREER_OPS_HTTP_TIMEOUT_MS` на запрос и настраиваемую конкурентность скана (`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`, дефолты прежние 32/10).
+> **🆕 Последний релиз — v1.271.0** — канбан карьерных задач (`#/tasks`, группа «Развитие»): личная доска с перетаскиванием — колонки Бэклог/В работе/Готово, оптимистичные перемещения через `PUT /api/tasks/:id`, клавиатура + мобильный селект, «+» у каждой колонки, модалка деталей; сохранение в `data/career-tasks.json`; зачистки волны CodeQL 22; `perf`-диспетчеризация remote-qa (медиана TTFB/total, exit 1 при SLOW >2000 мс). Тесты 7874 → 7918.
 >
-> **Предыдущий релиз — v1.269.2** — сохранения отчётов без гонки на ОБОИХ путях (первая попытка + дедуп с epoch-суффиксом — оба эксклюзивны через `wx` в `server/lib/report-save.mjs::saveReportExclusive`), контракт гонки доказан поведенчески; `POST /api/reports` без `overwrite` пишет эксклюзивно (`wx`, тот же 409). Тесты 7699 → 7704.
+> **Предыдущий релиз — v1.270.0** — шесть новых источников сканирования — ALDI Nord, HiBob, HireHive, Factorial, Polymer, Remote (реестр **135 = 130 EN + 5 RU · 130 адаптеров**); сканер читает борды целиком: Consider проходит весь свой каталог через собственный `meta.sequence` борда с постраничным ретраем и жёстким предупреждением о капе, принимает всемирные метки стран, `timeout_ms` на запись, `CAREER_OPS_HTTP_TIMEOUT_MS` на запрос и настраиваемую конкурентность скана (`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`, дефолты прежние 32/10).
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -264,6 +264,7 @@ npm start
 | **Help**         | Встроенное руководство пользователя в Markdown (`/#/help`), переведённое на все 19 поддерживаемых языков (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi / ta / vi). |
 | **Журнал активности** | Аудит-журнал всех изменяющих состояние запросов (writes, runs, scans). Секреты редактируются. |
 | **Уведомления** 🔔 *(v1.58.34 / v1.58.35)* | Колокольчик в верхней панели с красным badge непрочитанных. Клик → правый drawer показывает последние 50 toast (per-tab, per-session) — Success / Error / Info-progress, у каждой локальное время, текст и, если есть, технический хвост `(METHOD /path · HTTP NNN)` в `<details>`. Справка **§18** документирует каждую категорию. Drawer открывается **только** по клику на колокольчик (или клавиатура Enter / Space); закрывается ×, Esc или повторным кликом по колокольчику. |
+| **Карьерные задачи** | `#/tasks` — личный канбан в группе Рост для вашей собственной карьерной работы (подготовка к собеседованиям, обучение, нетворкинг), отдельно от трекера откликов: колонки **Backlog / In Progress / Done**, где перетаскивание и есть смена статуса (один канонический перенос через API, оптимистично с откатом), клавиатура ←/→ + Enter, селектор статуса на карточке в мобильном, быстрое добавление в каждой колонке и окно деталей (заметки / приоритет / теги). Данные лежат локально, в `data/career-tasks.json`. |
 
 Глобальные клавиатурные сокращения:
 

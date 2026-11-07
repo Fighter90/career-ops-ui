@@ -7,7 +7,7 @@
 
 _அதிகாரப்பூர்வமற்ற இடைமுகம் — career-ops / santifer உடன் எந்தத் தொடர்பும் அல்ல, அவர்களால் அங்கீகரிக்கப்படவும் இல்லை._
 
-[![tests](https://img.shields.io/badge/tests-7871%20passed-brightgreen)](#சோதனைகள்)
+[![tests](https://img.shields.io/badge/tests-7918%20passed-brightgreen)](#சோதனைகள்)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#சோதனைகள்)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#சோதனைகள்)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#தேவைகள்)
@@ -17,9 +17,9 @@ _அதிகாரப்பூர்வமற்ற இடைமுகம் �
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 சமீபத்திய வெளியீடு — v1.270.0** — ஆறு புதிய scan source-கள் — ALDI Nord, HiBob, HireHive, Factorial, Polymer, Remote (registry **135 = 130 EN + 5 RU · 130 adapters**); scanner board-களை முழுமையாகப் படிக்கிறது: Consider board-இன் சொந்த `meta.sequence` வழியாக தன் முழு catalog-ஐயும் per-page retry + hard cap warning உடன் நடக்கிறது, worldwide நாட்டு labels-ஐ ஏற்கிறது, entry-வாரி `timeout_ms`, request-வாரி `CAREER_OPS_HTTP_TIMEOUT_MS`, configure செய்யக்கூடிய scan concurrency (`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`, defaults மாறவில்லை 32/10).
+> **🆕 சமீபத்திய வெளியீடு — v1.271.0** — கேரியர் பணிகள் கான்பான் (`#/tasks`, வளர்ச்சி குழு): தனிப்பட்ட drag-and-drop பலகை — columns பேக்லாக்/நடைமுறையில்/முடிந்தது, `PUT /api/tasks/:id` வழியாக optimistic moves, keyboard + mobile select, column-வாரி «+», details modal; `data/career-tasks.json`-இல் persist; CodeQL wave 22 சுத்தம்; remote-qa `perf` dispatch (TTFB/total median, >2000 ms SLOW-இல் exit 1). Test count 7874 → 7918.
 >
-> **முந்தைய வெளியீடு — v1.269.2** — இரு பாதைகளிலும் race-இல்லாத report save (first attempt + epoch-suffix dedup, இரண்டும் `server/lib/report-save.mjs::saveReportExclusive`-இல் exclusive `wx` வழியாக), race contract நடத்தை ரீதியாக நிரூபிக்கப்பட்டது; `overwrite` இல்லாத `POST /api/reports` exclusive ஆக எழுதுகிறது (`wx`, அதே 409). Test count 7699 → 7704.
+> **முந்தைய வெளியீடு — v1.270.0** — ஆறு புதிய scan source-கள் — ALDI Nord, HiBob, HireHive, Factorial, Polymer, Remote (registry **135 = 130 EN + 5 RU · 130 adapters**); scanner board-களை முழுமையாகப் படிக்கிறது: Consider board-இன் சொந்த `meta.sequence` வழியாக தன் முழு catalog-ஐயும் per-page retry + hard cap warning உடன் நடக்கிறது, worldwide நாட்டு labels-ஐ ஏற்கிறது, entry-வாரி `timeout_ms`, request-வாரி `CAREER_OPS_HTTP_TIMEOUT_MS`, configure செய்யக்கூடிய scan concurrency (`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`, defaults மாறவில்லை 32/10).
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -168,6 +168,7 @@ npm start        # http://127.0.0.1:4317
 | **#/map** | ஸ்கேன்/பைப்லைன்/ட்ரேக்கரை OpenStreetMap இல் காட்டு |
 | **#/help** | உள்ளபயன்பாட்டு வழிகாட்டி (உங்கள் மொழியில்) |
 | **#/usage** | நேரடி AI செலவு கண்காணிப்பு (டோக்கன்கள் + மதிப்பிடப்பட்ட USD) |
+| **தொழில் பணிகள்** | `#/tasks` — Growth குழுவில் உங்கள் சொந்தத் தொழில் வேலைகளுக்கான (நேர்காணல் தயாரிப்பு, கற்றல், நெட்வொர்க்கிங்) தனிப்பட்ட கான்பான்; விண்ணப்ப டிராக்கரிலிருந்து தனித்தது: **Backlog / In Progress / Done** நெடுவரிசைகளுக்கு இடையே இழுப்பதே நிலை மாற்றம் (ஒரே ஒரு சீர்தர API அசைவு, திரும்பப் பெறுதலுடன்), விசைப்பலகை ←/→ + Enter, மொபைலில் அட்டை-வாரியான நிலைத் தேர்வி, ஒவ்வொரு நெடுவரிசையிலும் விரைவுச் சேர்ப்பு, விவரங்கள் சாளரம் (குறிப்புகள் / முன்னுரிமை / குறிச்சொற்கள்). உள்ளூர் முதலில் — `data/career-tasks.json` இல் சேமிப்பு. |
 
 ## ஸ்கேனிங்
 

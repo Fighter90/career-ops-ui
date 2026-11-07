@@ -2462,6 +2462,17 @@ The plan lands in an editable text area — tweak anything, then click **Save pl
 
 Use **Download .md**, **Save as PDF**, or **Copy** to take the plan out of the app — the same export controls used across the app's AI reports. The PDF goes through the existing inline-PDF generator; the Markdown is a direct download.
 
+### Career tasks board
+
+**{{t:nav.tasks}}** (`#/tasks`, in the **Growth** nav group) is a personal kanban for your own career work — interview prep, learning plans, outreach follow-ups — separate from the applications tracker, which keeps tracking job postings. The board has three columns — **{{t:tasks.col.backlog}}**, **{{t:tasks.col.inProgress}}** and **{{t:tasks.col.done}}**, each with a live count — and dragging a card between them *is* the status change: the move is saved at once through one canonical API call, and if the save fails the card returns to its column with an honest toast. The keyboard path mirrors it — **←** / **→** move the focused card, **Enter** opens the details dialog — and below 900 px a per-card status select does the same without a drag.
+
+Create a task with the **{{t:tasks.add}}** button in the column where it belongs. The details dialog holds **{{t:tasks.field.title}}**, free-text **{{t:tasks.field.notes}}**, a three-step **{{t:tasks.field.priority}}** (high / normal / low) and up to eight comma-separated **{{t:tasks.field.tags}}**; save with **{{t:tasks.save}}** or delete behind a confirmation with **{{t:tasks.delete}}**. Everything persists to `data/career-tasks.json` in your parent project's data folder — local-first, no cloud.
+
+- **Where** — `#/tasks`, the **{{t:nav.tasks}}** item under Growth.
+- **Move** — drag between the three columns (or **←** / **→** on a focused card) = one canonical status move, optimistic with revert.
+- **Create / edit** — per-column **{{t:tasks.add}}**; details: title, notes, priority, tags (≤ 8, comma-separated); **{{t:tasks.delete}}** asks first.
+- **Storage** — `data/career-tasks.json` (user layer, survives updates).
+
 ## 28. Career orientation (`#/orientation`)
 
 The **Career orientation** page answers "which directions actually fit me?" — the kind of read you'd get from a vocational test, but inferred from your own CV and profile rather than a questionnaire.

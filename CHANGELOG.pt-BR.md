@@ -8,6 +8,23 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.271.0] — 2026-11-07
+
+### Adicionado
+
+- **Kanban de tarefas de carreira (`#/tasks`, grupo Desenvolvimento)** — um quadro de tarefas pessoal ao lado do tracker de candidaturas, no formato kanban estilo flow: três colunas (Backlog / Em andamento / Concluído) com contagens ao vivo, os cartões carregam um ponto de prioridade (alta/normal/baixa) e até 8 chips de tags; ARRASTAR entre colunas é a mudança de status (um único `PUT /api/tasks/:id` canônico, otimista com reversão + toast em caso de falha); teclado em um cartão focado (←/→ move, Enter abre o modal); no móvel <900px move-se via um select de status por cartão; o «+» de cada coluna cria direto nela; o modal de detalhes edita título/notas/prioridade/tags e exclui atrás de uma confirmação; tudo persiste imediatamente em `data/career-tasks.json` (camada de usuário, `withFileLock` + escrita atômica, todas as mutações com rate-limit). 24 chaves i18n ×19; a ajuda §27 ganha uma seção «Quadro de tarefas de carreira» ×19 (H3 131 → 132); os README ×19 documentam o quadro.
+
+### Corrigido
+
+- **Onda 22 do CodeQL** — a regex de asserção sem âncora na suíte HireHive virou uma checagem `includes` simples; o wrapper morto `if (absolute)` do Avature (todo caminho pelo ramo relativo se resolve ou continua) foi desembrulhado; o import `existsSync` não usado (auto-pipeline) e o helper `entryUrl` não usado (aldi-nord) foram removidos; as escritas de arquivo de relatórios/jd (#777/#778/#779/#755) documentadas como o design de arquivamento REQUERIDO do projeto pai — conteúdo sanitizado + limitado em tamanho, caminhos determinísticos (descartadas com motivo pós-merge).
+- **Cadeia de banners do README** — o lead EN estava parado em v1.269.2 (os ×18 espelhos estavam em dia); agora rotacionou para o lead da release com a cadeia de anteriores verdadeira.
+- **Observabilidade de latência em produção** — o remote-qa ganha um dispatch `perf`: `scripts/remote-qa/perf-probe.mjs` (5 rodadas medidas por endpoint quente, medianas de TTFB/total/bytes, exit 1 diante de um endpoint SLOW >2000 ms) roda a partir do ambiente de produção, onde moram os segredos de autenticação.
+
+### Notas
+
+- O quadro de tarefas chega com o funil do tracker intocado — dois quadros, dois conjuntos de dados: as candidaturas continuam canônicas (`data/applications.md`), as tarefas pessoais vivem em `data/career-tasks.json`; nenhum escreve no outro.
+- O quadro lê e escreve SOMENTE no próprio armazenamento; sem chamadas LLM, sem acoplamento com o scan.
+
 ## [1.270.0] — 2026-11-07
 
 ### Adicionado

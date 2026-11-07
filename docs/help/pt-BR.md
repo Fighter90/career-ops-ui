@@ -2379,6 +2379,17 @@ O plano aparece em uma área de texto editável — ajuste o que quiser e clique
 
 Use **Baixar .md**, **Salvar como PDF** ou **Copiar** para levar o plano para fora do aplicativo — os mesmos controles de exportação usados em todos os relatórios de IA do app. O PDF passa pelo gerador de PDF inline existente; o Markdown é um download direto.
 
+### Quadro de tarefas profissionais
+
+**{{t:nav.tasks}}** (`#/tasks`, no grupo de navegação **Crescimento**) é um kanban pessoal para o seu próprio trabalho de carreira — preparação para entrevistas, planos de aprendizado, follow-ups de networking — separado do tracker de aplicações, que continua acompanhando vagas. O quadro tem três colunas — **{{t:tasks.col.backlog}}**, **{{t:tasks.col.inProgress}}** e **{{t:tasks.col.done}}**, cada uma com uma contagem em tempo real — e arrastar um cartão entre elas *é* a mudança de status: o movimento é salvo na hora por uma única chamada canônica de API e, se o salvamento falhar, o cartão volta para sua coluna com um aviso honesto. O caminho pelo teclado reproduz o mesmo — **←** / **→** movem o cartão em foco, **Enter** abre o diálogo de detalhes — e abaixo de 900 px um seletor de status por cartão faz o mesmo sem arrastar.
+
+Crie uma tarefa com o botão **{{t:tasks.add}}** da coluna onde ela pertence. O diálogo de detalhes contém **{{t:tasks.field.title}}**, **{{t:tasks.field.notes}}** de texto livre, uma **{{t:tasks.field.priority}}** de três níveis (alta / normal / baixa) e até oito **{{t:tasks.field.tags}}** separadas por vírgulas; salve com **{{t:tasks.save}}** ou exclua atrás de uma confirmação com **{{t:tasks.delete}}**. Tudo persiste em `data/career-tasks.json` na pasta de dados do seu projeto pai — local primeiro, sem nuvem.
+
+- **Onde** — `#/tasks`, o item **{{t:nav.tasks}}** em Crescimento.
+- **Mover** — arrastar entre as três colunas (ou **←** / **→** com o cartão em foco) = uma mudança de status canônica, otimista com reversão.
+- **Criar / editar** — **{{t:tasks.add}}** por coluna; detalhes: título, notas, prioridade, tags (≤ 8, separadas por vírgula); **{{t:tasks.delete}}** pede confirmação antes.
+- **Armazenamento** — `data/career-tasks.json` (camada de usuário, sobrevive às atualizações).
+
 ## 28. Orientação de carreira (`#/orientation`)
 
 A página de **Orientação de carreira** responde à pergunta "quais direções realmente combinam comigo?" — o tipo de leitura que você teria de um teste vocacional, mas inferida a partir do seu próprio currículo e perfil em vez de um questionário.

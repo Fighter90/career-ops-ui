@@ -278,7 +278,7 @@ test('hirehive: a page-1 failure throws — a 404 names the missing tenant; othe
   const gone = makeFetch(() => Object.assign(new Error('HTTP 404'), { status: 404 }));
   await assert.rejects(
     () => fetchHireHive(API, { fetchImpl: gone.impl, company: ENTRY(), sleep: SLEEP }),
-    (e) => e.status === 404 && /no such HireHive tenant/.test(e.message) && /acme\.hirehive\.com/.test(e.message),
+    (e) => e.status === 404 && /no such HireHive tenant/.test(e.message) && e.message.includes('acme.hirehive.com'),
   );
 
   const dead = makeFetch(() => Object.assign(new Error('HTTP 500'), { status: 500 }));

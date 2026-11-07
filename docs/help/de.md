@@ -2589,6 +2589,17 @@ Der Plan landet in einem bearbeitbaren Textfeld — passe alles an und klicke da
 
 Verwende **.md herunterladen**, **Als PDF speichern** oder **Kopieren**, um den Plan aus der App herauszuholen — dieselben Export-Steuerelemente, die überall in den KI-Berichten der App verwendet werden. Das PDF durchläuft den bestehenden Inline-PDF-Generator; das Markdown ist ein direkter Download.
 
+### Karriereaufgaben-Board
+
+**{{t:nav.tasks}}** (`#/tasks`, in der Navigationsgruppe **Wachstum**) ist ein persönliches Kanban-Board für deine eigene Karrierearbeit — Interview-Vorbereitung, Lernpläne, Networking-Nachfassen — getrennt vom Bewerbungs-Tracker, der weiter Stellenangebote verfolgt. Das Board hat drei Spalten — **{{t:tasks.col.backlog}}**, **{{t:tasks.col.inProgress}}** und **{{t:tasks.col.done}}**, jede mit einem Live-Zähler — und eine Karte zwischen ihnen zu ziehen IST die Statusänderung: der Zug wird sofort über einen einzigen kanonischen API-Aufruf gespeichert, und schlägt das Speichern fehl, kehrt die Karte mit einer ehrlichen Meldung in ihre Spalte zurück. Der Tastaturweg spiegelt das — **←** / **→** bewegen die fokussierte Karte, **Eingabe** öffnet den Detaildialog — und unter 900 px übernimmt ein Status-Dropdown pro Karte dasselbe ohne Ziehen.
+
+Lege eine Aufgabe mit dem **{{t:tasks.add}}**-Knopf der Spalte an, in die sie gehört. Der Detaildialog enthält **{{t:tasks.field.title}}**, freien Text in **{{t:tasks.field.notes}}**, eine dreistufige **{{t:tasks.field.priority}}** (hoch / normal / niedrig) und bis zu acht kommagetrennte **{{t:tasks.field.tags}}**; speichere mit **{{t:tasks.save}}** oder lösche hinter einer Bestätigung mit **{{t:tasks.delete}}**. Alles landet in `data/career-tasks.json` im Datenordner deines übergeordneten Projekts — lokal zuerst, ohne Cloud.
+
+- **Wo** — `#/tasks`, der Eintrag **{{t:nav.tasks}}** unter Wachstum.
+- **Bewegen** — zwischen den drei Spalten ziehen (oder **←** / **→** auf der fokussierten Karte) = ein kanonischer Statuszug, optimistisch mit Rücksetzen.
+- **Anlegen / Bearbeiten** — **{{t:tasks.add}}** pro Spalte; Details: Titel, Notizen, Priorität, Tags (≤ 8, kommagetrennt); **{{t:tasks.delete}}** fragt zuerst.
+- **Speicherort** — `data/career-tasks.json` (Nutzerschicht, übersteht Aktualisierungen).
+
 ## 28. Berufsorientierung (`#/orientation`)
 
 Die Seite **Berufsorientierung** beantwortet die Frage „welche Richtungen passen wirklich zu mir?" — die Art von Einschätzung, die dir ein Berufstest liefern würde, aber abgeleitet aus deinem eigenen Lebenslauf und Profil statt aus einem Fragebogen.

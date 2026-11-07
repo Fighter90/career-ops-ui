@@ -31,7 +31,7 @@
  * into this SSE would double the time budget; users can trigger PDF
  * from #/reports/<slug> after auto-pipeline completes.
  */
-import { writeFileSync, readFileSync, mkdirSync, existsSync, unlinkSync } from 'node:fs';
+import { writeFileSync, readFileSync, mkdirSync, unlinkSync } from 'node:fs';
 
 import { PATHS, path as projPath } from '../paths.mjs';
 import { isValidJobUrl, sanitizeJobDescription } from '../security.mjs';

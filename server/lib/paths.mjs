@@ -95,6 +95,9 @@ export const PATHS = {
   // development plan (roadmap, SMART/OKR goals, skill plan). Saved to the user
   // layer on explicit Save; never overwritten by system updates.
   careerPlan: path('config', 'career-plan.md'),
+  // v1.271.0 — «Career tasks» kanban board (Growth group). Plain-CRUD
+  // user-layer JSON, no LLM: { tasks: [...] }, newest-updated first.
+  careerTasks: path('data', 'career-tasks.json'),
   portals: path('portals.yml'),
   // v1.128.0 — the canonical application-state definitions
   // (id/label/aliases/dashboard_group). System layer, read-only; the tracker

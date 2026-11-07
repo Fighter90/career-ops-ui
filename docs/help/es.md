@@ -2355,6 +2355,17 @@ El plan aparece en un área de texto editable — ajusta lo que quieras y luego 
 
 Usa **Descargar .md**, **Guardar como PDF** o **Copiar** para sacar el plan de la aplicación — los mismos controles de exportación que se usan en todos los informes de IA de la app. El PDF pasa por el generador de PDF en línea existente; el Markdown es una descarga directa.
 
+### Tablero de tareas profesionales
+
+**{{t:nav.tasks}}** (`#/tasks`, en el grupo de navegación **Crecimiento**) es un kanban personal para tu propio trabajo profesional — preparación de entrevistas, planes de aprendizaje, seguimientos de contactos — separado del tracker de aplicaciones, que sigue evaluando ofertas. El tablero tiene tres columnas — **{{t:tasks.col.backlog}}**, **{{t:tasks.col.inProgress}}** y **{{t:tasks.col.done}}**, cada una con un contador en vivo — y arrastrar una tarjeta entre ellas *es* el cambio de estado: el movimiento se guarda de inmediato con una única llamada canónica a la API y, si el guardado falla, la tarjeta vuelve a su columna con un aviso honesto. El recorrido de teclado lo replica — **←** / **→** mueven la tarjeta enfocada, **Entrar** abre el diálogo de detalles — y por debajo de 900 px un selector de estado por tarjeta hace lo mismo sin arrastrar.
+
+Crea una tarea con el botón **{{t:tasks.add}}** de la columna donde pertenezca. El diálogo de detalles contiene **{{t:tasks.field.title}}**, **{{t:tasks.field.notes}}** de texto libre, una **{{t:tasks.field.priority}}** de tres niveles (alta / normal / baja) y hasta ocho **{{t:tasks.field.tags}}** separadas por comas; guarda con **{{t:tasks.save}}** o elimina tras una confirmación con **{{t:tasks.delete}}**. Todo persiste en `data/career-tasks.json` en la carpeta de datos de tu proyecto padre — local primero, sin nube.
+
+- **Dónde** — `#/tasks`, la entrada **{{t:nav.tasks}}** bajo Crecimiento.
+- **Mover** — arrastrar entre las tres columnas (o **←** / **→** con la tarjeta enfocada) = un cambio de estado canónico, optimista y con reversión.
+- **Crear / editar** — **{{t:tasks.add}}** por columna; detalles: título, notas, prioridad, etiquetas (≤ 8, separadas por comas); **{{t:tasks.delete}}** pide confirmación primero.
+- **Almacenamiento** — `data/career-tasks.json` (capa de usuario, sobrevive a las actualizaciones).
+
 ## 28. Orientación profesional (`#/orientation`)
 
 La página de **Orientación profesional** responde a la pregunta «¿qué direcciones encajan realmente conmigo?» — el tipo de lectura que obtendrías de un test vocacional, pero inferida a partir de tu propio CV y perfil en lugar de un cuestionario.

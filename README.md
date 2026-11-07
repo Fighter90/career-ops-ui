@@ -9,7 +9,7 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 🌐 **Website: [cvstart.org](https://cvstart.org)** — multilingual landing + user guide (source in [`site/`](site/)).
 
-[![tests](https://img.shields.io/badge/tests-7871%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-7918%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
@@ -19,10 +19,10 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Latest release — v1.269.2** — concurrent report saves can no longer clobber each other: the save lives in `server/lib/report-save.mjs::saveReportExclusive` with the kernel-exclusive `wx` flag on BOTH the first attempt and the epoch-suffix dedup path, and the race contract is proven behaviorally; `POST /api/reports` without `overwrite` is exclusive too (same 409). Tests 7699 → 7704.
+> **🆕 Latest release — v1.271.0** — Career tasks kanban (`#/tasks`, Growth group): Backlog / In Progress / Done columns with live counts, drag = the status change (one canonical PUT, optimistic with revert), keyboard ←/→/Enter, mobile status select, per-column quick-add, details modal with notes/priority/tags — persists to `data/career-tasks.json`. Plus CodeQL wave 22 fixes and a remote-qa `perf` dispatch (median TTFB per hot endpoint). Tests 7874 → 7918.
 
 >
-> **Previous — v1.269.1** — the docs + perf-paging patch: help ×19 gains the kanban-funnel (§11) and detailed-statistics (§26) sections (H3 gate 129 → 131); live verification of deterministic scoring (CAR-239) — locale-parity spread 0.0 / repeatability 0.0 ×3; SPA tracker pagination — one shared read per mount, server-side table paging (`?page&pageSize=200`). Tests 7627 → 7699. kanban funnel board on #/tracker (CAR-237, «Funnel | Table» toggle, canonical `POST /api/tracker/status` moves), detailed statistics tab on #/stats (CAR-247: currency selector, periods, search + facets, four charts, drill-down), report depth restored (CAR-245) with the server-side `## Job Description (archived verbatim)` section, prod-latency caches (CAR-236), cvstart.org hero video. Tests 7602 → 7627.
+> **Previous — v1.270.0** — the parent-sync features wave: six new scan sources (ALDI Nord, HiBob, HireHive, Factorial, Polymer, Remote — registry **135 = 130 EN + 5 RU · 130 adapters**), whole-board scanner walks + worldwide country filters, per-entry `timeout_ms` + configurable scan concurrency (defaults 32/10 kept), telegram strict Habr-link + positional-employer parsing, description passthrough ×6 boards. Tests 7704 → 7874.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -312,6 +312,7 @@ Open http://127.0.0.1:4317. Pipeline counter should now read `0 pending`. The Ma
 | **About-me**     | `#/memory` — an about-me note (`config/memory.md`) inlined into every AI request for grounding.                     |
 | **Career plan**  | `#/career-plan` — an AI development plan (`config/career-plan.md`) by horizon + focus.                              |
 | **Orientation**  | `#/orientation` — an AI career-orientation profile (archetype vectors, roles, strengths, working style).            |
+| **Career tasks** | `#/tasks` — a personal career-task kanban under Growth, separate from the applications tracker: **Backlog / In Progress / Done** columns where a drag IS the status change (one canonical API move, optimistic with revert), keyboard ←/→ + Enter, a per-card status select on mobile, per-column quick-add, and a details modal (notes / priority / tags). Stored local-first in `data/career-tasks.json`. |
 | **Usage**        | `#/usage` — per-provider token + estimated-USD rollup over 24h / 7d / 30d / all; a live sidebar cost HUD.           |
 | **Portals**      | `#/portals` — enable / disable tracked boards + SSRF-safe health probes of each `careers_url`.                      |
 | **Funded**       | `#/funded` — funded-company discovery from public RSS (logos, funding-amount chart, score / action cards).          |

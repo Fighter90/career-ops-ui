@@ -129,12 +129,6 @@ export function resolveSiteHost(raw) {
   return Object.hasOwn(SITES, www) ? www : null;
 }
 
-/** @param {any} entry */
-function entryUrl(entry) {
-  if (typeof entry?.careers_url === 'string' && entry.careers_url) return entry.careers_url;
-  if (typeof entry?.api === 'string' && entry.api) return entry.api;
-  return null;
-}
 
 /** @param {any} entry */
 export function resolveMaxPages(entry) {

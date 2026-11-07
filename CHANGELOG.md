@@ -1,3 +1,18 @@
+## [1.271.0] — 2026-11-07
+
+### Added
+- **Career tasks kanban (`#/tasks`, Growth group)** — a personal task board beside the applications tracker, in the flow-style kanban shape: three columns (Backlog / In Progress / Done) with live counts, cards carry a priority dot (high/normal/low) and up to 8 tag chips; DRAG between columns is the status change (one canonical `PUT /api/tasks/:id`, optimistic with revert + toast on failure); keyboard on a focused card (←/→ move, Enter opens the modal); mobile <900px moves via a per-card status select; per-column «+» quick-creates into that column; the details modal edits title/notes/priority/tags and deletes behind a confirm; everything persists immediately to `data/career-tasks.json` (user layer, `withFileLock` + atomic write, all mutations rate-limited). 24 i18n keys ×19; help §27 gains a «Career tasks board» section ×19 (H3 131 → 132); README ×19 documents the board.
+
+### Fixed
+- **CodeQL wave 22** — the unanchored assertion regex in the HireHive suite became a plain `includes` check; the Avature dead `if (absolute)` wrapper (every path through the relative branch resolves or continues) unwrapped; the unused `existsSync` import (auto-pipeline) and the unused `entryUrl` helper (aldi-nord) dropped; the report/jd archival writes (#777/#778/#779/#755) documented as the parent's REQUIRED archival design — sanitized + size-bounded content, deterministic paths (dismissed with reason post-merge).
+- **README banner chain** — the EN lead was stale at v1.269.2 (the ×18 mirrors were current); now rotated to the release lead with the true previous chain.
+- **Prod latency observability** — remote-qa gains a `perf` dispatch: `scripts/remote-qa/perf-probe.mjs` (5 measured rounds per hot endpoint, median TTFB/total/bytes, exit 1 on a >2000 ms SLOW endpoint) runs from the production environment where the auth secrets live.
+
+### Notes
+- The tasks board ships with the tracker's funnel untouched — two boards, two datasets: applications stay canonical (`data/applications.md`), personal tasks live in `data/career-tasks.json`; neither writes the other.
+- The board reads and writes ONLY its own store; no LLM calls, no scan coupling.
+- Deliberately NOT done in this release: no task export, sharing or recurring tasks — the board stays a local single-store feature.
+
 ## [1.270.0] — 2026-11-07
 
 ### Added
