@@ -7,7 +7,7 @@
 
 _Giao diện không chính thức — không liên kết với career-ops / santifer, cũng không được họ chứng thực._
 
-[![tests](https://img.shields.io/badge/tests-7920%20passed-brightgreen)](#kiểm-thử)
+[![tests](https://img.shields.io/badge/tests-7922%20passed-brightgreen)](#kiểm-thử)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#kiểm-thử)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#kiểm-thử)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#yêu-cầu)
@@ -17,9 +17,9 @@ _Giao diện không chính thức — không liên kết với career-ops / sant
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Bản phát hành mới nhất — v1.271.1** — /api/map/jobs slim theo mặc định (CAR-249): lần nạp trang nặng nhất trên prod (4.6 MB) giờ chỉ gửi 11 trường mà bản đồ tiêu thụ; `?full=1` khôi phục mọi cột; /api/pipeline cố ý không đụng đến. Test 7918 → 7920.
+> **🆕 Bản phát hành mới nhất — v1.271.2** — phần pipeline của /api/map/jobs giới hạn ở 1000 dòng mới nhất: số lượng thật trong `pipelineTotal`, `?pipeline=all` khôi phục tất cả; slim tracker đã phát hành trong v1.271.1. Test 7920 → 7922.
 >
-> **Bản trước — v1.271.0** — kanban nhiệm vụ sự nghiệp (`#/tasks`, nhóm Phát triển): bảng kéo-thả cá nhân — cột Backlog/Đang làm/Hoàn thành, di chuyển tối ưu qua `PUT /api/tasks/:id`, bàn phím + select trên mobile, «+» cho mỗi cột, modal chi tiết; lưu vào `data/career-tasks.json`; dọn dẹp đợt CodeQL 22; dispatch `perf` của remote-qa (trung vị TTFB/total, exit 1 khi SLOW >2000 ms). Test 7874 → 7918.
+> **Bản trước — v1.271.1** — /api/map/jobs slim theo mặc định (CAR-249): lần nạp trang nặng nhất trên prod (4.6 MB) giờ chỉ gửi 11 trường mà bản đồ tiêu thụ; `?full=1` khôi phục mọi cột; /api/pipeline cố ý không đụng đến. Test 7918 → 7920.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

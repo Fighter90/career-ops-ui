@@ -6,6 +6,15 @@ Bản dịch: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.271.2] — 2026-11-08
+
+### Đã sửa
+- **Phần pipeline của /api/map/jobs được giới hạn ở 1000 dòng mới nhất (CAR-250)** — slim tracker của v1.271.1 đã bỏ ~300 KB, nhưng probe sau bản vá vẫn đo 4.4 MB: trọng lượng thật là một pipeline.md sống lâu, mọi dòng của nó đều chảy qua `parsePipelineRows` vào payload (một file cỡ prod tích lũy hàng nghìn dòng cũ). Phần pipeline giờ mặc định gửi 1000 dòng mới nhất (hộp thư mới nhất — scanner nối vào cuối), số lượng thật được báo trong `pipelineTotal`, và `?pipeline=all` khôi phục mọi dòng. Phép tính `titleFit` theo từng dòng giờ chỉ chạy trên phần được gửi.
+
+### Ghi chú
+- Client bản đồ vẽ pin và tìm kiếm trong danh sách đã lấy về, nên tập hữu ích chính là hộp thư gần đây; view pipeline (`#/pipeline`) là bề mặt làm việc với toàn bộ lịch sử và cố ý KHÔNG thay đổi.
+- Dọn rỗng một pipeline cũ vẫn là việc của người vận hành (bulk discard của pipeline v2); giới hạn này là lớp bảo vệ phía app, KHÔNG phải thay đổi dữ liệu.
+
 ## [1.271.1] — 2026-11-07
 
 ### Đã sửa

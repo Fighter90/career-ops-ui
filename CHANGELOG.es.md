@@ -13,6 +13,15 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.271.2] — 2026-11-08
+
+### Corregido
+- **La sección de pipeline de /api/map/jobs se limita a las 1000 filas más recientes (CAR-250)** — el slim del tracker de v1.271.1 quitó ~300 KB, pero el probe posterior a la corrección seguía midiendo 4.4 MB: el peso real es un pipeline.md longevo, cuyas filas fluyen todas por `parsePipelineRows` hacia el payload (un archivo de tamaño de producción acumula miles de filas obsoletas). La sección de pipeline ahora envía por defecto las 1000 filas más recientes (la bandeja más fresca — el scanner añade al final), informa el número real en `pipelineTotal`, y `?pipeline=all` restaura cada fila. El cálculo de `titleFit` por fila ahora solo corre sobre la sección enviada.
+
+### Notas
+- El cliente del mapa dibuja los pines y busca dentro de la lista recibida, así que el conjunto útil es la bandeja reciente; la vista de pipeline (`#/pipeline`) sigue siendo la superficie para el trabajo con historial completo y NO se cambia deliberadamente.
+- Drenar un pipeline obsoleto sigue siendo una acción del operador (el descarte masivo de pipeline v2); el límite es la salvaguarda del lado de la app, NO un cambio de datos.
+
 ## [1.271.1] — 2026-11-07
 
 ### Corregido

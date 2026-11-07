@@ -192,3 +192,27 @@ test('CAR-249: ?full=1 restores the full row (notes/report/pdf) for any consumer
   assert.equal(beta.notes, 'no place here', 'full payload keeps the notes cell');
   assert.ok('pdf' in beta, 'full rows carry every parsed column');
 });
+
+test('CAR-250: the pipeline section caps at the newest 1000 rows by default (+ pipelineTotal)', async () => {
+  // Append 1005 fresh rows AFTER the existing fixture fence — the newest are
+  // the last appended (parsePipelineRows preserves file order).
+  const lines = [];
+  for (let i = 1; i <= 1005; i++) {
+    lines.push(`- [ ] https://fresh.example.com/jobs/${i} | Fresh${i} | Dev | Berlin, Germany`);
+  }
+  writeFileSync(resolve(root, 'data', 'pipeline.md'),
+    '# Pipeline\n\n```\n' + lines.join('\n') + '\n```\n');
+  const { status, body } = await getJson('/api/map/jobs');
+  assert.equal(status, 200);
+  assert.equal(body.pipelineTotal, 1005, 'the total count must be reported');
+  assert.equal(body.pipeline.length, 1000, 'default payload caps at 1000');
+  assert.equal(body.pipeline[0].company, 'Fresh6', 'the NEWEST 1000 are kept (1005 - 1000 + 1 = 6th first)');
+  assert.equal(body.pipeline.at(-1).company, 'Fresh1005', 'the last appended row leads the tail');
+});
+
+test('CAR-250: ?pipeline=all restores every pipeline row', async () => {
+  const { status, body } = await getJson('/api/map/jobs?pipeline=all');
+  assert.equal(status, 200);
+  assert.equal(body.pipeline.length, 1005, 'the opt-in returns the full list');
+  assert.equal(body.pipelineTotal, 1005);
+});

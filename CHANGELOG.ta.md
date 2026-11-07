@@ -6,6 +6,15 @@
 
 ---
 
+## [1.271.2] — 2026-11-08
+
+### சரி செய்யப்பட்டது
+- **/api/map/jobs-இன் pipeline section சமீபத்திய 1000 rows-ஆக cap செய்யப்பட்டது (CAR-250)** — v1.271.1 tracker slim ~300 KB அகற்றியது, ஆனால் post-fix probe இன்னும் 4.4 MB அளந்தது: உண்மையான எடை நீளமாக வளரும் pipeline.md — அதன் எல்லா rows-உம் `parsePipelineRows` வழியாக payload-இல் ஓடுகின்றன (prod-அளவு file ஆயிரக்கணக்கான பழைய rows-ஐ சேர்த்துக்கொள்கிறது). Pipeline section இப்போது default-ஆக சமீபத்திய 1000 rows அனுப்புகிறது (மிகப் புதிய inbox — scanner இறுதியில் சேர்க்கும்), உண்மையான count `pipelineTotal`-இல் தெரிவிக்கப்படும், `?pipeline=all` ஒவ்வொரு row-ஐயும் மீட்டுத் தரும். Row-வாரி `titleFit` கணக்கீடு இப்போது அனுப்பப்படும் section-இல் மட்டுமே இயங்கும்.
+
+### குறிப்புகள்
+- Map client pins-ஐ வரைந்து fetched list-க்குள் தேடுகிறது, எனவே பயனுள்ள set சமீபத்திய inbox தான்; pipeline VIEW (`#/pipeline`) full-history வேலையின் மேற்பரப்பு, வேண்டுமென்றே மாற்றவில்லை.
+- பழைய pipeline-ஐ காலி செய்வது இன்னும் operator-இன் செயல் (pipeline v2 bulk discard); cap என்பது app-side guard, data change இல்லை.
+
 ## [1.271.1] — 2026-11-07
 
 ### சரி செய்யப்பட்டது

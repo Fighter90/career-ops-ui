@@ -2,6 +2,12 @@
 
 This is the operating manual. Read it, then `PLAN.md` (order) and `BACKLOG.md` (what is left).
 
+## State (2026-11-08, v1.271.2)
+
+- Released: **v1.271.2** (2026-11-08) — the perf patch (CAR-250): `/api/map/jobs` **pipeline section capped at the newest 1000 rows by default** — a prod-sized pipeline.md accumulated ~19K rows (674 KB of file) and made the endpoint the heaviest page-load on prod (**4.4 MB** post-tracker-slim, the root of the CAR-249 weight left open); `pipelineTotal` reports the true count, `?pipeline=all` restores the full list, **titleFit is computed only on the shipped section** (the ×19K fit churn is gone with the cap). `/api/pipeline` deliberately NOT changed (the lazy/paging follow-up is tracked as CAR-250 data-owner design work). (+2 tests in the map-jobs-cache suite: cap+total, `?pipeline=all` opt-in.)
+- Gates: test:ci **7925 tests / 7922 pass / 0 fail / 3 skip** · browser **209 pass / 0 fail / 1 opt-in skip** · coverage **98.59/90.56** · changelog parity ✓ ×19 at 1.271.2, **494 releases each** · /api/health **1.271.2 / parent 1.39.0**.
+- History: **v1.271.1** (2026-11-07) and earlier — see the state blocks below.
+
 ## State (2026-11-07, v1.271.1)
 
 - Released: **v1.271.1** (2026-11-07) — the perf patch (CAR-249): `/api/map/jobs` slim by default — tracker rows project to the 11 map-consumed fields (notes fold server-side into workplace), `?full=1` restores everything; `/api/pipeline` deliberately NOT changed. Prod baseline before the fix: the perf probe measured map/jobs at **4.6 MB / 696 ms median**. (+2 tests in the map-jobs-cache suite: slim projection + full opt-in.)

@@ -10,6 +10,15 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.271.2] — 2026-11-08
+
+### Naprawiono
+- **Sekcja pipeline w /api/map/jobs ograniczona do 1000 najnowszych wierszy (CAR-250)** — slim trackera z v1.271.1 usunął ~300 KB, ale próba po poprawce nadal mierzyła 4.4 MB: prawdziwy ciężar to długowieczny pipeline.md, którego wiersze wszystkie przepływają przez `parsePipelineRows` do payloadu (plik rozmiaru produkcji akumuluje tysiące nieaktualnych wierszy). Sekcja pipeline domyślnie wysyła teraz 1000 najnowszych wierszy (najświeższa skrzynka — skaner dopisuje na końcu), prawdziwą liczbę raportuje `pipelineTotal`, a `?pipeline=all` przywraca każdy wiersz. Liczenie `titleFit` dla wiersza wykonuje się teraz tylko na wysyłanej sekcji.
+
+### Uwagi
+- Klient mapy rysuje piny i szuka wewnątrz pobranej listy, więc użyteczny zestaw to świeża skrzynka; widok pipeline (`#/pipeline`) pozostaje powierzchnią pracy z pełną historią i świadomie NIE został zmieniony.
+- Opróżnianie nieaktualnego pipeline pozostaje działaniem operatora (masowe usuwanie z pipeline v2); limit to zabezpieczenie po stronie aplikacji, a NIE zmiana danych.
+
 ## [1.271.1] — 2026-11-07
 
 ### Naprawiono

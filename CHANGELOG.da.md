@@ -9,6 +9,15 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 ---
 
 
+## [1.271.2] — 2026-11-08
+
+### Rettet
+- **Pipeline-sektionen i /api/map/jobs begrænset til de 1000 nyeste rækker (CAR-250)** — tracker-slimmen fra v1.271.1 fjernede ~300 KB, men proben efter fixet målte stadig 4.4 MB: den reelle vægt er en langlevende pipeline.md, hvis rækker alle strømmer gennem `parsePipelineRows` ind i payloaden (en prod-stor fil akkumulerer tusindvis af forældede rækker). Pipeline-sektionen sender nu som standard de 1000 nyeste rækker (den friskeste indbakke — scanneren tilføjer til sidst), den reelle optælling rapporteres i `pipelineTotal`, og `?pipeline=all` gendanner hver række. `titleFit`-beregningen pr. række kører nu kun på den udsendte sektion.
+
+### Noter
+- Kortklienten tegner pins og søger inden for den hentede liste, så det nyttige sæt er den nyeste indbakke; pipeline-Visningen (`#/pipeline`) forbliver overfladen for arbejde med den fulde historik og er bevidst IKKE ændret.
+- At tømme en forældet pipeline forbliver en operatorhandling (pipeline v2's bulk discard); grænsen er sikringen på app-siden, IKKE en dataændring.
+
 ## [1.271.1] — 2026-11-07
 
 ### Rettet
