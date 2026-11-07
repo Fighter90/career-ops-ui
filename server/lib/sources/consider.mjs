@@ -15,8 +15,9 @@
  * `url` is the clean destination ATS link (dedups with the ashby/greenhouse
  * sources); `companyName` is the portfolio company. The board id is NOT the host
  * (Founderful's is "wingman"), so it is set explicitly in portals.yml via
- * `consider_board`. `consider_size` (default 500) caps how many newest/featured
- * jobs are pulled in the single request.
+ * `consider_board`. `consider_size` (default 500, maximum 1000) is how many
+ * jobs one request pulls; the walk follows `meta.sequence` to read the whole
+ * board up to `max_pages` (default 10, hard cap 100).
  *
  *   tracked_companies:
  *     - name: Founderful (portfolio)
@@ -37,7 +38,7 @@
  * Used by the consider adapter (server/lib/portals/adapters/consider.mjs).
  */
 import { createHash } from 'node:crypto';
-import { fetchJson, fetchResponse, BROWSER_LIKE_USER_AGENT } from '../http-json.mjs';
+import { fetchJsonWithRetry, fetchResponse, delay, BROWSER_LIKE_USER_AGENT } from '../http-json.mjs';
 import { requireArray, requireContainer } from './_shape.mjs';
 
 // Budget for the anonymous GET that seeds the session cookie and csrfToken.
@@ -98,6 +99,16 @@ async function acquireCsrfHandshake(origin, fetchImpl, signal) {
 
 export const ENDPOINT_PATH = '/api-boards/search-jobs';
 export const DEFAULT_SIZE = 500;
+// The API answers HTTP 500 to a larger size, so an entry's value is clamped to it.
+export const MAX_SIZE = 1000;
+// `consider_size` (default 500, maximum 1000) is how many jobs one request
+// pulls. A full page carries `meta.sequence`, a cursor sent back in the next
+// request's `meta`, so the walk reads the whole board up to max_pages
+// (default 10, hard cap 100). The API orders jobs by its own score, so the
+// newest jobs come first only roughly, and the walk has no age cutoff.
+export const DEFAULT_MAX_PAGES = 10;
+export const MAX_PAGES_CAP = 100;
+const INTER_PAGE_DELAY_MS = 250;
 
 export const meta = {
   value: 'consider',
@@ -241,19 +252,24 @@ export function normalizeConsiderJob(job, { origin, company } = {}) {
 }
 
 /**
- * Fetch + normalize a Consider board in a SINGLE host-pinned POST. The origin
- * is (re)derived from the portal entry's careers_url via the structural
- * `resolveOrigin` guard — the security boundary — so even a wrongly-built
- * endpoint can't aim the request off a public host. A fetch failure THROWS
- * (dead-board contract: one request, nothing succeeded before it), so
- * portal-health records a real failure rather than "live but empty".
+ * Fetch + normalize a Consider board, walking the whole board through
+ * `meta.sequence`. The origin is (re)derived from the portal entry's
+ * careers_url via the structural `resolveOrigin` guard — the security
+ * boundary — so even a wrongly-built endpoint can't aim the request off a
+ * public host.
+ *
+ * Page 0 failing THROWS (dead-board contract: nothing succeeded before it, so
+ * portal-health records a real failure rather than "live but empty"); a later
+ * page failing after its retries keeps the partials and warns. All requests
+ * retry on a transient failure through the shared helper.
  *
  * @param {string} _endpoint tile endpoint from buildEndpoint (signature parity;
  *   the actual POST url is derived from the guarded origin below).
- * @param {{ fetchImpl?: typeof fetch, signal?: AbortSignal, company?: any }} [opts]
+ * @param {{ fetchImpl?: typeof fetch, signal?: AbortSignal, company?: any,
+ *           sleep?: Function }} [opts]
  */
 export async function fetchConsider(_endpoint, opts = {}) {
-  const { fetchImpl = fetch, signal, company } = opts;
+  const { fetchImpl = fetch, signal, company, sleep = delay } = opts;
 
   const origin = resolveOrigin(company || {});
   if (!origin) throw new Error('consider: needs an https careers_url on a public host');
@@ -262,7 +278,13 @@ export async function fetchConsider(_endpoint, opts = {}) {
   if (!board) throw new Error("consider: needs a 'consider_board' id in portals.yml");
 
   const rawSize = company && company.consider_size;
-  const size = Number.isInteger(rawSize) && rawSize > 0 ? rawSize : DEFAULT_SIZE;
+  const size = Number.isInteger(rawSize) && rawSize > 0 ? Math.min(rawSize, MAX_SIZE) : DEFAULT_SIZE;
+
+  const rawMaxPages = (company || {}).max_pages;
+  const maxPages = Number.isInteger(rawMaxPages) && rawMaxPages > 0
+    ? Math.min(rawMaxPages, MAX_PAGES_CAP)
+    : DEFAULT_MAX_PAGES;
+  const name = (company && company.name) || origin;
 
   // Consider rejects the POST without a session cookie + csrfToken from the
   // anonymous GET /jobs handshake (#2764). Degrades to null/null on failure.
@@ -271,41 +293,90 @@ export async function fetchConsider(_endpoint, opts = {}) {
   if (cookie) csrfHeaders.cookie = cookie;
   if (csrfToken) csrfHeaders['x-csrf-token'] = csrfToken;
 
-  const json = await fetchJson(fetchImpl, origin + ENDPOINT_PATH, {
-    signal,
-    method: 'POST',
-    // redirect:'error' so a 3xx from the (config-driven) board host can't be
-    // followed to a private/metadata IP — the host guard above pins the first hop.
-    redirect: 'error',
-    headers: {
-      'content-type': 'application/json',
-      accept: 'application/json',
-      referer: origin + '/jobs',
-      ...csrfHeaders,
-    },
-    body: JSON.stringify({
-      meta: { size },
-      board: { id: String(board), isParent: true },
-      query: { promoteFeatured: true },
-    }),
-  });
-
-  // The documented container is `jobs`. A 200 without it is a changed API or a
-  // challenge page and must throw, not read as an empty board (v1.242.0).
-  const jobs = requireArray(requireContainer(json, 'Consider board', 'jobs').jobs, 'Consider jobs');
-  const out = [];
+  const rows = [];
   const seen = new Set();
-  for (const j of jobs) {
-    const normalized = normalizeConsiderJob(j, { origin, company });
-    if (normalized && !seen.has(normalized.url)) {
-      seen.add(normalized.url);
-      out.push(normalized);
+  let total = null;
+  let sequence = null;
+  // Declared outside the loop so the cap check below can tell a walk that used
+  // every page it was allowed from one that ended on its own: every `break`
+  // leaves `page` below `maxPages`.
+  let page = 0;
+  for (; page < maxPages; page++) {
+    if (page > 0) await sleep(INTER_PAGE_DELAY_MS, signal);
+
+    let json;
+    let jobs;
+    try {
+      json = await fetchJsonWithRetry(fetchImpl, origin + ENDPOINT_PATH, {
+        method: 'POST',
+        // redirect:'error' so a 3xx from the (config-driven) board host can't be
+        // followed to a private/metadata IP — the host guard above pins the first hop.
+        redirect: 'error',
+        headers: {
+          'content-type': 'application/json',
+          accept: 'application/json',
+          referer: origin + '/jobs',
+          ...csrfHeaders,
+        },
+        body: JSON.stringify({
+          meta: sequence ? { size, sequence } : { size },
+          board: { id: String(board), isParent: true },
+          query: { promoteFeatured: true },
+        }),
+        signal,
+        sleep,
+      });
+      // Page-1 shape guard (v1.242.0): a 200 without a jobs array is a changed
+      // API or a challenge page and must throw, not read as an empty board.
+      // Later pages keep the partials (same idiom as the catch below).
+      jobs = page === 0
+        ? requireArray(requireContainer(json, 'Consider board', 'jobs').jobs, 'Consider jobs')
+        : (Array.isArray(json?.jobs) ? json.jobs : []);
+      if (Number.isInteger(json?.total)) total = json.total;
+    } catch (err) {
+      // Page 0 failing means the board is unreachable — nothing succeeded
+      // before it, so the failure propagates and portal-health records a real
+      // failure. A later page keeps what was read.
+      if (page === 0) throw err;
+      const attempts = err?.attempts;
+      const attemptsText = attempts === undefined
+        ? 'an unknown number of attempts'
+        : `${attempts} attempt${attempts === 1 ? '' : 's'}`;
+      const cause = err instanceof Error ? err.message : String(err);
+      console.error(`⚠️  consider: ${name} truncated at page ${page + 1} of ${maxPages} after ${attemptsText} (${rows.length} jobs): ${cause}`);
+      break;
     }
+
+    for (const job of jobs) {
+      const normalized = normalizeConsiderJob(job, { origin, company });
+      if (normalized && !seen.has(normalized.url)) {
+        seen.add(normalized.url);
+        rows.push(normalized);
+      }
+    }
+    if (page === 0 && jobs.length > 0 && rows.length === 0) {
+      // Raw rows arrived but none produced a usable https url — envelope drift,
+      // not an empty board.
+      throw new Error(`consider: ${jobs.length} job(s) returned but none parsed (title/https-url missing)`);
+    }
+
+    // The board ended: a short page, no cursor, or a cursor that does not move.
+    // Leaves `page` below the ceiling, so the cap check after the loop stays
+    // silent.
+    const next = json?.meta?.sequence;
+    if (jobs.length < size || !next || next === sequence) break;
+    sequence = next;
   }
-  if (jobs.length > 0 && out.length === 0) {
-    // Raw rows arrived but none produced a usable https url — envelope drift,
-    // not an empty board.
-    throw new Error(`consider: ${jobs.length} job(s) returned but none parsed (title/https-url missing)`);
+
+  // The page cap ended the walk while the board still had a cursor left, so
+  // the list is partial. At the hard ceiling a higher max_pages is clamped
+  // back to it, so raising the entry's value would read nothing more.
+  if (page >= maxPages) {
+    const of = total !== null ? ` of ${total}` : '';
+    const advice = maxPages >= MAX_PAGES_CAP
+      ? `the ${MAX_PAGES_CAP}-page hard cap, so raising max_pages reads no more`
+      : 'raise max_pages on this entry for more';
+    console.error(`⚠️  consider: ${name} truncated at max_pages=${maxPages} (${rows.length}${of} jobs) — ${advice}`);
   }
-  return out;
+  return rows;
 }

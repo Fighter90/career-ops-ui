@@ -107,3 +107,37 @@ test('We Work Remotely feed presence proves live, absence remains unknown', asyn
   const absent = await check('https://weworkremotely.com/remote-jobs/another-job', feed);
   assert.equal(absent, null);
 });
+
+// ── parent #6499: the API rung reads the real reference number from every path spelling ──
+test('Arbeitsagentur liveness sends the real reference number for every path spelling', async () => {
+  const detail = 'https://www.arbeitsagentur.de/jobsuche/jobdetail/';
+  const b64 = (refnr) => Buffer.from(refnr).toString('base64url');
+  for (const [path, refnr] of [
+    // The form the source writes and the site's own search results use
+    // (the slash encoded twice).
+    ['13319-900588%252F1_6041CS-S', '13319-900588/1_6041CS-S'],
+    // Hexadecimal digits can be lower case.
+    ['13319-900588%252f1_6041CS-S', '13319-900588/1_6041CS-S'],
+    // The detail page answers 404 to this form, but the API still finds the posting.
+    ['13319-900588%2F1_6041CS-S', '13319-900588/1_6041CS-S'],
+    // A colon encoded once, and bare (a colon is valid in a path unencoded).
+    ['17296-0008297%3A01-S', '17296-0008297:01-S'],
+    ['17296-0008297:01-S', '17296-0008297:01-S'],
+    // A literal percent sign stays in the number, and the text after it is not decoded.
+    ['100%25-remote', '100%-remote'],
+    ['A%2541', 'A%41'],
+  ]) {
+    assert.ok(resolveAtsApi(detail + path).apiUrl.endsWith(`/jobdetails/${b64(refnr)}`), path);
+    const live = await check(detail + path, async (url) => (
+      { status: 200, text: JSON.stringify({ referenznummer: refnr, stellenangebotsTitel: 'Engineer' }), finalUrl: url }
+    ));
+    assert.equal(live.result, 'active', `${path}: the API's matching referenznummer proves live`);
+    const other = await check(detail + path, async (url) => (
+      { status: 200, text: JSON.stringify({ referenznummer: 'other', stellenangebotsTitel: 'Engineer' }), finalUrl: url }
+    ));
+    assert.equal(other === null || other.provider === 'arbeitsagentur' && !other.result, true, `${path}: a different posting stays inconclusive`);
+  }
+  // A bare percent sign that is not valid UTF-8 percent-encoding cannot be
+  // decoded — inconclusive rather than a broken API call.
+  assert.equal(resolveAtsApi(`${detail}100%-remote`), null);
+});

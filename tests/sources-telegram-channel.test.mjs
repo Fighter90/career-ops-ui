@@ -315,3 +315,147 @@ test('telegram-channel hashtag metadata skipping preserves real role headlines',
     assert.equal(job.url, apply);
   }
 });
+
+// ── parent #6363: Habr Career links + positional employer shapes ────────────
+
+test('telegram-channel reads a Habr Career vacancy (a habr.com subdomain), not as a blog link', () => {
+  // career.habr.com sits under habr.com, a NON_APPLY_HOST; the board list is
+  // now checked first. Only "/vacancies/<id>" is a vacancy page — a company
+  // profile, a company's vacancy list and a search all carry a vacancy word
+  // in the path and used to read as a board posting.
+  assert.equal(classifyLink('https://career.habr.com/vacancies/1000169492'), 'board');
+  assert.equal(classifyLink('https://career.habr.com/vacancies/1000169492/?utm_source=tg'), 'board');
+  assert.equal(classifyLink('https://career.habr.com/companies/job'), null, 'a company profile whose slug is a vacancy word');
+  assert.equal(classifyLink('https://career.habr.com/companies/yandex/vacancies'), null, "a company's vacancy list");
+  assert.equal(classifyLink('https://career.habr.com/vacancies?q=go'), null, 'a search');
+  assert.equal(classifyLink('https://habr.com/ru/articles/912345/'), null, 'a Habr article stays refused');
+});
+
+test('telegram-channel refuses mirrors whose operator is not declared, and reads ingamejob.com', () => {
+  assert.equal(classifyLink('https://www.vseti.app/vakansii/3474384343943943943434343'), null, 'vseti.app: an aggregator page the posts carry in place of the employer link');
+  assert.equal(classifyLink('https://www.remocate.app/jobs/staff-software-engineer-backend-recoveries-affirm'), null, 'remocate.app: operator not declared yet');
+  assert.equal(classifyLink('https://offerclaw.app/vacancy/chief-technology-officer-tekhnicheskiy-direktor-83351aab'), null, 'offerclaw.app: operator not declared yet');
+  assert.equal(classifyLink('https://hellowehire.com/jobs/middle-business-analyst-t24-vietnam-company-fdcfb8fcb5'), null, 'hellowehire.com: a shared freelance-recruiter ATS, employer often blank');
+  assert.equal(classifyLink('https://ingamejob.com/en/job/qa-game-tester'), 'board', 'ingamejob.com: operator declared');
+});
+
+// Positional shapes (parent #6363): the employer is read from where the
+// channel template puts it, with no label. Each first line below is a real
+// shape from the channels the parent measured.
+test('telegram-channel reads each positional employer shape', () => {
+  const cases = [
+    [['Chief Technology Officer в MadOut Games', 'РФ или удаленно'], 'MadOut Games', '"Title в Employer" on the title line'],
+    [['✈️ Product Analyst в Авиасейлс (команда SERP)'], 'Авиасейлс', '"Title в Employer (team)" behind an emoji'],
+    [['Senior Product Manager, Core Platform в Tabby : https://www.remocate.example/jobs/senior-product-manager'], 'Tabby', '"Title в Employer : link"'],
+    [['🛰 Go-разработчик в TATLIN.UNIFIED — YADRO'], 'YADRO', '"Title в Team — Company" keeps the company'],
+    [['🛰 Golang-разработчик в БЮРО 1440'], 'БЮРО 1440', 'a positional employer may carry digits'],
+    [['💻 Wildberries ищет iOS-разработчика для мессенджера WB Chat'], 'Wildberries', '"Employer ищет …"'],
+    [['💻 МТС Банк ищет iOS-разработчика для кредитных продуктов в «Мой МТС»'], 'МТС Банк', '"Employer ищет …" ahead of a later `в`'],
+    [['Требуется « Full-stack разработчик на Go» (от 256 000 до 280 000 ₽)', 'Компания «Top Selection» ищет хорошего специалиста'], 'Top Selection', '"Компания «Employer» ищет" on the second line'],
+    [['📑 Вакансия Senior Frontend Developer', 'Удалённо · Полная занятость', '💎 Plus8Soft ищет Senior Frontend Developer'], 'Plus8Soft', '"Employer ищет" on the third line'],
+    [['#backend', 'YLAB Development', 'Python Backend Developer'], 'YLAB Development', 'a brand token keeps a name ending in a department word'],
+    [['Senior Python Developer в Moscow Exchange'], 'Moscow Exchange', 'a name that only starts with a place keeps it'],
+    [['Backend Developer', 'Компания: NDA Group'], 'NDA Group', 'a name that only starts with NDA keeps it'],
+    [['#remote', 'Relocation Today', 'Backend Engineer'], 'Relocation Today', 'a name that holds a format word keeps it on the hashtag template'],
+    [['Backend Developer в Relocation Today'], 'Relocation Today', 'a name that holds a format word keeps it after `в`'],
+    [['Backend Engineer', 'The Trade Desk is a global advertising technology company.'], 'The Trade Desk', 'a three-word name opening with "The" before "is a"'],
+    [['iOS Engineer – Creative App', 'ElevenLabs is an AI research and product company.'], 'ElevenLabs', '"Employer is a …" on the second line'],
+    [['Data Engineer (со знанием Java или Groovy)', 'от 200 000 до 230 000 ₽', 'WILIX', 'WILIX - аккредитованная IT - компания.'], 'WILIX', "a finder.work mirror's employer after the salary line"],
+  ];
+  for (const [lines, want, label] of cases) {
+    assert.equal(employerName(lines), want, label);
+  }
+});
+
+test('telegram-channel refuses every measured non-employer in a positional slot', () => {
+  const refused = [
+    [['🇦🇪 Вакансия Executive Assistant / Chief of Staff с переездом в Дубай'], 'a destination after "с переездом в"'],
+    [['🇨🇿 🇪🇸 Вакансия Senior Commercial Manager в Чехии или Испании'], 'a phrase of places after `в`'],
+    [['🇵🇹 Вакансия для парфюмера в Лиссабоне'], 'one declined Cyrillic word after `в` (a city)'],
+    [['💻 Golang-разработчик в команду CDP, 2ГИС'], 'a team after `в`'],
+    [['Sales Manager в FinTech'], 'a sector after `в`'],
+    [['Требуется «ML Engineer в Поиск»'], 'a `в` inside a quoted title'],
+    [['Крупная российская ИТ-компания ищет сильного Head of Mobile Engineering'], 'an unnamed company that "ищет"'],
+    [['Рекрутер Vital Partners ищет архитектора для неназванной финтех-организации'], 'a recruiter that "ищет"'],
+    [['😀 Senior JavaScript Developer', 'от 250 000 ₽ в месяц', 'Удаленно (Москва)'], 'a work format after the salary line'],
+    [['Golang-разработчик (Middle+), продуктовая команда', 'от 350 000 ₽', 'Иванова Мария Петровна'], 'a person after the salary line (fictional name, real shape)'],
+    [['Backend Engineer', 'This is a full-time role.'], 'a pronoun before "is a"'],
+    [['Backend Engineer', 'This role is a full-time position.'], 'a determiner and one word before "is a"'],
+    [['Go Developer в Алматы'], 'an undeclined city after `в`'],
+    [['Data Engineer', 'от 200 000 до 230 000 ₽', 'Москва'], 'a city after the salary line'],
+    [['Data Engineer', 'от 200 000 до 230 000 ₽', 'Relocation available'], 'a relocation phrase after the salary line'],
+    [['Go Developer в Relocation available'], 'a relocation phrase after `в`'],
+    [['#remote', 'Релокация', 'Senior Engineer'], 'a relocation term on the hashtag template'],
+    [['#remote', 'Relocation to Serbia', 'Senior Engineer'], 'a relocation phrase on the hashtag template'],
+    [['#remote', 'Гибрид Москва', 'Senior Engineer'], 'a work format and a city on the hashtag template'],
+    [['#remote', 'Гибрид (Москва)', 'Senior Engineer'], 'a work format and a parenthesised city on the hashtag template'],
+    [['#Develpment', 'Custom Software Development', 'Worldwide 🌏'], 'a line of business on the hashtag template'],
+    [['#Marketing', 'Worldwide 🌏', 'SEO / AI, Affiliate iGaming', 'remote'], 'a reach on the hashtag template'],
+    [['AI-разработчик (Python/Go) — автоматизация в AdTech', 'Локация: Удалённо', 'Компания: NDA'], 'an NDA after the `Компания:` label'],
+  ];
+  for (const [lines, label] of refused) {
+    assert.equal(employerName(lines), '', label);
+  }
+});
+
+test('telegram-channel drops a post whose employer name is disclosed as withheld (DISCLOSED_HIDDEN)', () => {
+  const HABR = 'https://career.habr.com/vacancies/1000168612';
+  const agencyPost = (id, withheld) => post(id,
+    `💻 Top Selection ищет Angular-разработчика<br/>Удалённо · зарплата не указана<br/>Подбор ведёт агентство Top Selection, ${withheld}.<br/><a href="${HABR}">Откликнуться</a>`,
+    { time: '2026-09-04T10:00:00+00:00' });
+  for (const withheld of [
+    'название компании-заказчика не раскрыто',
+    'название компании заказчика не раскрыто', // spaced variant (measured)
+    'наименование компании не раскрывается',
+  ]) {
+    const p = parseChannelPage(agencyPost(40, withheld), 'chan').posts[0];
+    assert.equal(postToJob(p, 'chan'), null, `withheld as "${withheld}" → the agency is not the employer, dropped`);
+  }
+  // A post that only withholds the salary keeps its employer and link.
+  const salaryHidden = parseChannelPage(post(41,
+    `💻 YADRO ищет C++ разработчика для серверных прошивок<br/>Нижний Новгород. Зарплата не раскрыта.<br/><a href="${HABR}">Откликнуться</a>`,
+    { time: '2026-09-04T10:00:00+00:00' }), 'chan').posts[0];
+  const kept = postToJob(salaryHidden, 'chan');
+  assert.equal(kept?.company, 'YADRO', '"Зарплата не раскрыта" withholds the salary, not the employer');
+  assert.equal(kept?.url, HABR);
+});
+
+test('telegram-channel strips a pasted link from the title line and skips work-format lines on the hashtag template', () => {
+  // "Title в Tabby : https://…" — the link is the url; cut at TITLE_CAP the
+  // title would end in "… :…".
+  const linkUrl = 'https://tabby.example/careers/senior-product-manager-core-platform-with-a-long-slug';
+  const withLink = parseChannelPage(post(42,
+    `Senior Product Manager, Core Platform в Tabby : <a href="${linkUrl}">${linkUrl}</a><br/>Помогают с релокацией (Сербия).`,
+    { time: '2026-09-04T10:00:00+00:00' }), 'chan').posts[0];
+  const linked = postToJob(withLink, 'chan');
+  assert.equal(linked?.title, 'Senior Product Manager, Core Platform в Tabby');
+  assert.equal(linked?.company, 'Tabby');
+  assert.equal(linked?.url, linkUrl);
+
+  // On the hashtag template a "Worldwide 🌏" / "Full-time" / "Релокация" line
+  // is not the title.
+  const apply = 'https://example.com/jobs/12345';
+  for (const term of ['Worldwide 🌏', 'Full-time', 'Part-time', 'Релокация']) {
+    const p = parseChannelPage(post(43,
+      `#Analytics<br/>Plurio<br/>${term}<br/>Senior Marketing Analyst<br/><a href="${apply}">${apply}</a>`,
+      { time: '2026-09-04T10:00:00+00:00' }), 'chan').posts[0];
+    const job = postToJob(p, 'chan');
+    assert.equal(job?.title, 'Senior Marketing Analyst', `the hashtag template skips a "${term}" line when choosing the title`);
+    assert.equal(job?.company, 'Plurio');
+  }
+});
+
+test('telegram-channel FORMAT_ONLY_RE does not backtrack exponentially on a word run', () => {
+  // The separator in FORMAT_ONLY_RE may be empty, so without a word-end guard
+  // "офисофис…1" could split between the \p{L}* tails in exponentially many
+  // ways before the match failed: at 60 words the scan never returned.
+  const apply = 'https://example.com/jobs/12345';
+  const started = performance.now();
+  const p = parseChannelPage(post(44,
+    `#Analytics<br/>Plurio<br/>${'офис'.repeat(60)}1<br/><a href="${apply}">${apply}</a>`,
+    { time: '2026-09-04T10:00:00+00:00' }), 'chan').posts[0];
+  const job = postToJob(p, 'chan');
+  const elapsed = performance.now() - started;
+  assert.ok(elapsed < 1000, `a run of 60 work-format words ending in a digit parsed in ${elapsed.toFixed(0)}ms`);
+  assert.equal(job?.title.startsWith('офисофис'), true, 'the run line still becomes the title when nothing better exists');
+});

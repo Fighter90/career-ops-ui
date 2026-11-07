@@ -326,3 +326,163 @@ test('resolveOrigin: rejects an explicit port and *.localhost (SSRF hardening)',
   assert.equal(resolveOrigin({ careers_url: 'https://evil.localhost/jobs' }), null);
   assert.equal(resolveOrigin({ careers_url: 'https://jobs.founderful.com/jobs' }), 'https://jobs.founderful.com');
 });
+
+// ---------------------------------------------------------------------------
+// parent #6467 — the whole board through meta.sequence + transient retries
+// ---------------------------------------------------------------------------
+
+const noSleep = async () => {};
+const withWarnings = async (fn) => {
+  const warnings = [];
+  const orig = console.error;
+  console.error = (...args) => { warnings.push(args.join(' ')); };
+  try {
+    return { value: await fn(), warnings };
+  } finally {
+    console.error = orig;
+  }
+};
+
+// A walk impl: answers the anonymous GET /jobs handshake, then `pages` full
+// pages of `size` rows, each answering the cursor `s<page+1>` while more pages
+// remain. Records every POST body.
+function walkFetch({ pages, size = 2, total, shape } = {}) {
+  const bodies = [];
+  const impl = async (_url, opts = {}) => {
+    if ((opts.method || 'GET') === 'GET') {
+      return {
+        ok: true, status: 200,
+        text: async () => '<script>{"csrfToken":"tok-abcd1234"}</script>',
+        headers: { getSetCookie: () => ['sid=xyz; Path=/'] },
+      };
+    }
+    const meta = JSON.parse(opts.body).meta;
+    const page = meta.sequence ? Number(meta.sequence.slice(1)) : 0;
+    bodies.push(meta);
+    const row = (i) => ({ title: `T${page}-${i}`, url: `https://jobs.acmevc.example/j${page}-${i}`, companyName: 'Acme' });
+    const response = { jobs: Array.from({ length: size }, (_, i) => row(i)), ...(total === undefined ? {} : { total }) };
+    if (page + 1 < pages) response.meta = { sequence: `s${page + 1}` };
+    const shaped = shape ? shape(page, response, row) : response;
+    return { ok: true, status: 200, json: async () => shaped };
+  };
+  return { impl, bodies };
+}
+
+test('fetchConsider: consider_size is clamped to 1000 (the API 500s above it)', async () => {
+  const { impl, bodies } = walkFetch({ pages: 1, size: 1, total: 1 });
+  await fetchConsider(null, { fetchImpl: impl, company: { ...OK_ENTRY, consider_size: 5000 }, sleep: noSleep });
+  assert.equal(bodies[0].size, 1000);
+  const { impl: atMax, bodies: atMaxBodies } = walkFetch({ pages: 1, size: 1, total: 1 });
+  await fetchConsider(null, { fetchImpl: atMax, company: { ...OK_ENTRY, consider_size: 1000 }, sleep: noSleep });
+  assert.equal(atMaxBodies[0].size, 1000);
+});
+
+test('fetchConsider: follows meta.sequence to the end of the board, waiting between pages', async () => {
+  const { impl, bodies } = walkFetch({ pages: 3, size: 2, total: 6 });
+  const delays = [];
+  const { value: jobs, warnings } = await withWarnings(() => fetchConsider(null, {
+    fetchImpl: impl,
+    company: { ...OK_ENTRY, consider_size: 2 },
+    sleep: async (ms) => { delays.push(ms); },
+  }));
+  assert.equal(jobs.length, 6);
+  assert.deepEqual(warnings, [], 'a walk that reaches the end never warns');
+  assert.deepEqual(bodies, [{ size: 2 }, { size: 2, sequence: 's1' }, { size: 2, sequence: 's2' }]);
+  assert.deepEqual(delays, [250, 250], 'the courtesy pause sits between pages, not before the first');
+});
+
+test('fetchConsider: stops at a short page and at a cursor that does not move', async () => {
+  // A short page means the board ended there, even when it carries a cursor.
+  const short = walkFetch({ pages: 3, size: 2, total: 6, shape: (_p, response, row) => ({ ...response, jobs: [row(0)] }) });
+  const shortRun = await withWarnings(() => fetchConsider(null, { fetchImpl: short.impl, company: { ...OK_ENTRY, consider_size: 2 }, sleep: noSleep }));
+  assert.equal(short.bodies.length, 1);
+  assert.equal(shortRun.warnings.length, 0);
+
+  const stuck = walkFetch({ pages: 3, size: 2, total: 6, shape: (_p, response) => ({ ...response, meta: { sequence: 's1' } }) });
+  const stuckRun = await withWarnings(() => fetchConsider(null, { fetchImpl: stuck.impl, company: { ...OK_ENTRY, consider_size: 2 }, sleep: noSleep }));
+  assert.equal(stuck.bodies.length, 2, 'a cursor equal to the one already sent ends the walk');
+  assert.equal(stuckRun.warnings.length, 0);
+});
+
+test('fetchConsider: warns when max_pages ends the walk with a cursor left', async () => {
+  const { impl } = walkFetch({ pages: 5, size: 2, total: 10 });
+  const { value: jobs, warnings } = await withWarnings(() => fetchConsider(null, {
+    fetchImpl: impl,
+    company: { ...OK_ENTRY, consider_size: 2, max_pages: 2 },
+    sleep: noSleep,
+  }));
+  assert.equal(jobs.length, 4);
+  assert.equal(warnings.length, 1);
+  assert.match(warnings[0], /Founderful truncated at max_pages=2 \(4 of 10 jobs\) — raise max_pages on this entry for more/);
+});
+
+test('fetchConsider: no cap warning when the board ends exactly at max_pages', async () => {
+  const { impl } = walkFetch({ pages: 2, size: 2, total: 4 });
+  const { warnings } = await withWarnings(() => fetchConsider(null, {
+    fetchImpl: impl,
+    company: { ...OK_ENTRY, consider_size: 2, max_pages: 2 },
+    sleep: noSleep,
+  }));
+  assert.deepEqual(warnings, []);
+});
+
+test('fetchConsider: at the 100-page hard cap the warning names it instead of advising a raise', async () => {
+  const { impl } = walkFetch({ pages: 200, size: 2, total: 400 });
+  const { value: jobs, warnings } = await withWarnings(() => fetchConsider(null, {
+    fetchImpl: impl,
+    company: { ...OK_ENTRY, consider_size: 2, max_pages: 5000 },
+    sleep: noSleep,
+  }));
+  assert.equal(jobs.length, 200, 'max_pages is clamped to the hard cap (100 pages × 2 rows)');
+  assert.equal(warnings.length, 1);
+  assert.match(warnings[0], /truncated at max_pages=100 \(200 of 400 jobs\) — the 100-page hard cap, so raising max_pages reads no more/);
+  assert.doesNotMatch(warnings[0], /raise max_pages on this entry/);
+});
+
+test('fetchConsider: a later page failing after its retries keeps the rows read and warns', async () => {
+  const http429 = Object.assign(new Error('HTTP 429'), { status: 429 });
+  let posts = 0;
+  const impl = async (_url, opts = {}) => {
+    if ((opts.method || 'GET') === 'GET') {
+      return {
+        ok: true, status: 200,
+        text: async () => '<script>{"csrfToken":"tok-abcd1234"}</script>',
+        headers: { getSetCookie: () => ['sid=xyz; Path=/'] },
+      };
+    }
+    posts++;
+    if (posts === 1) {
+      return { ok: true, status: 200, json: async () => ({ jobs: [
+        { title: 'T0-0', url: 'https://jobs.acmevc.example/j0-0', companyName: 'Acme' },
+        { title: 'T0-1', url: 'https://jobs.acmevc.example/j0-1', companyName: 'Acme' },
+      ], total: 10, meta: { sequence: 's1' } }) };
+    }
+    throw http429;
+  };
+  const { value: jobs, warnings } = await withWarnings(() => fetchConsider(null, {
+    fetchImpl: impl,
+    company: { ...OK_ENTRY, consider_size: 2 },
+    sleep: noSleep,
+  }));
+  assert.equal(jobs.length, 2, 'page 1 kept, the failing page 2 contributed nothing');
+  assert.equal(warnings.length, 1);
+  assert.match(warnings[0], /truncated at page 2 of 10 after 3 attempts \(2 jobs\): HTTP 429/,
+    'the warning names the failed page, the attempts the retry helper really made, and the rows kept');
+});
+
+test('fetchConsider: page 0 failing still throws after its retries (dead-board contract)', async () => {
+  const http500 = Object.assign(new Error('HTTP 500'), { status: 500 });
+  let posts = 0;
+  const impl = async (_url, opts = {}) => {
+    if ((opts.method || 'GET') === 'GET') {
+      return { ok: true, status: 200, text: async () => '', headers: { getSetCookie: () => [] } };
+    }
+    posts++;
+    throw http500;
+  };
+  await assert.rejects(
+    () => fetchConsider(null, { fetchImpl: impl, company: OK_ENTRY, sleep: noSleep }),
+    /HTTP 500/,
+  );
+  assert.equal(posts, 3, 'the shared retry budget (2 retries) ran before the throw');
+});

@@ -46,6 +46,13 @@ export const API_URL = 'https://rest.arbeitsagentur.de/jobboerse/jobsuche-servic
 const API_HOST = 'rest.arbeitsagentur.de';
 const API_KEY = 'jobboerse-jobsuche'; // public client key the arbeitsagentur.de UI uses
 const DETAIL_BASE = 'https://www.arbeitsagentur.de/jobsuche/jobdetail/';
+// The detail page answers 404 to a once-encoded slash in its path, and a bare
+// slash would split the path. Its own search results encode the slash twice
+// (parent #6499) — so the outgoing URL encodes it twice too, and the liveness
+// API rung decodes the path back to the real reference number.
+export const PATH_BREAKING_CHAR = '/';
+export const PATH_BREAKING_CHAR_ENCODED_ONCE = encodeURIComponent(PATH_BREAKING_CHAR);
+const PATH_BREAKING_CHAR_ENCODED_TWICE = encodeURIComponent(PATH_BREAKING_CHAR_ENCODED_ONCE);
 // Explicit work-from-home markers only. A bare "100 %" is FULL-TIME in German
 // titles (a "100% Stelle" is an on-site full-time role), and
 // "bundesweit"/"deutschlandweit" appear in on-site nationwide field-sales
@@ -158,7 +165,7 @@ export function normalizeJob(job) {
     id: `arbeitsagentur-${encodedRefnr}`,
     title,
     company: String((job && job.firma) || '').trim(),
-    url: DETAIL_BASE + encodedRefnr,
+    url: DETAIL_BASE + encodedRefnr.replaceAll(PATH_BREAKING_CHAR_ENCODED_ONCE, PATH_BREAKING_CHAR_ENCODED_TWICE),
     salary: '',
     location: buildLocation(job && job.stellenlokationen),
     isRemote,

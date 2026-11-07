@@ -85,7 +85,9 @@ function parseLocation(block) {
 // Tenants vary the result class: Synopsys uses `article--result`, Siemens
 // appends a position index (`article--result 1`). Accept any suffix.
 // careers.avature.net renders `article--jobs` cards instead (parent, 2026-09-28).
-const ARTICLE_RE_SOURCE = '<article class="article article--(?:result|jobs)\\b[^"]*"[\\s\\S]*?<\\/article>';
+// Deloitte USI drops the leading `article` class entirely:
+// `<article class="article--result ">` (parent #6593).
+const ARTICLE_RE_SOURCE = '<article class="(?:article )?article--(?:result|jobs)\\b[^"]*"[\\s\\S]*?<\\/article>';
 
 /**
  * Count the RAW result articles on a page (pre-filter). Pagination must stop
@@ -128,24 +130,42 @@ export function parseAvature(html, ctx = /** @type {any} */ ({})) {
   while ((a = re.exec(html)) !== null) {
     const block = a[0];
     // JobDetail path may or may not sit under /careers/ (branded tenants vary),
-    // so anchor on JobDetail/ itself rather than a fixed prefix. Prefer the
+    // so anchor on JobDetail itself rather than a fixed prefix. Prefer the
     // `class="link"` title anchor (most tenants); fall back to any JobDetail
     // anchor for tenants (e.g. Rohde & Schwarz) whose title link carries no
-    // class. Share/mailto buttons url-encode the path (%2FJobDetail%2F) so they
-    // never match the literal `/JobDetail/` and can't be mistaken for the title.
-    // An `article--jobs` card's class="link" anchor is a "View more" button, so
-    // its h3 header title anchor is tried first.
+    // class. Links are path-style `/JobDetail/<slug>/<id>` or query-style
+    // `/JobDetail?jobId=<id>` (e.g. Macquarie, parent #6477). Share/mailto
+    // buttons url-encode the path (%2FJobDetail%2F / %3F) so they never match
+    // and can't be mistaken for the title. An `article--jobs` card's
+    // class="link" anchor is a "View more" button, so its h3 header title
+    // anchor is tried first.
     const urlM =
-      block.match(/article__header__text__title[^>]*>\s*<a[^>]*href="([^"]*\/JobDetail\/[^"]+)"[^>]*>([\s\S]*?)<\/a>/) ||
-      block.match(/<a[^>]*class="link"[^>]*href="([^"]*\/JobDetail\/[^"]+)"[^>]*>([\s\S]*?)<\/a>/) ||
-      block.match(/<a[^>]*href="([^"]*\/JobDetail\/[^"]+)"[^>]*>([\s\S]*?)<\/a>/);
+      block.match(/article__header__text__title[^>]*>\s*<a[^>]*href="([^"]*\/JobDetail[/?][^"]+)"[^>]*>([\s\S]*?)<\/a>/) ||
+      block.match(/<a[^>]*class="link"[^>]*href="([^"]*\/JobDetail[/?][^"]+)"[^>]*>([\s\S]*?)<\/a>/) ||
+      block.match(/<a[^>]*href="([^"]*\/JobDetail[/?][^"]+)"[^>]*>([\s\S]*?)<\/a>/);
     if (!urlM) continue;
     const title = clean(urlM[2]);
     if (!title) continue;
 
     let url = decodeEntities(urlM[1]);
-    if (/^https?:\/\//i.test(url)) {
-      // Absolute href — keep only if it lands on the tenant origin.
+    let absolute = /^https?:\/\//i.test(url);
+    if (!absolute) {
+      if (!origin) continue; // no base to resolve a relative href against
+      // new URL resolves root-relative, path-relative and protocol-relative
+      // (//host/...) hrefs the way a browser would; string concatenation would
+      // turn the protocol-relative form into origin + "//host/...". A href it
+      // cannot resolve is dropped rather than emitted as a broken URL
+      // (parent #6477).
+      try {
+        url = new URL(url, origin).href;
+        absolute = true;
+      } catch {
+        continue;
+      }
+    }
+    if (absolute) {
+      // Absolute href — keep only if it lands on the tenant origin. A
+      // protocol-relative relative form resolved above is re-checked here too.
       let host = '';
       try {
         host = new URL(url).hostname.toLowerCase();
@@ -153,12 +173,9 @@ export function parseAvature(html, ctx = /** @type {any} */ ({})) {
         continue;
       }
       if (!originHost || host !== originHost) continue;
-    } else {
-      if (!origin) continue; // no base to resolve a relative href against
-      url = origin + (url.startsWith('/') ? url : '/' + url);
     }
 
-    const idM = url.match(/\/JobDetail\/[^/]*\/(\d+)/);
+    const idM = url.match(/\/JobDetail\/[^/]*\/(\d+)/) || url.match(/\/JobDetail\?(?:[^#]*&)?jobId=(\d+)/i);
     out.push({
       id: `avature-${idM ? idM[1] : url}`,
       title,
