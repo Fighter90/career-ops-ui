@@ -19,10 +19,10 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Latest release — v1.271.0** — Career tasks kanban (`#/tasks`, Growth group): Backlog / In Progress / Done columns with live counts, drag = the status change (one canonical PUT, optimistic with revert), keyboard ←/→/Enter, mobile status select, per-column quick-add, details modal with notes/priority/tags — persists to `data/career-tasks.json`. Plus CodeQL wave 22 fixes and a remote-qa `perf` dispatch (median TTFB per hot endpoint). Tests 7874 → 7918.
+> **🆕 Latest release — v1.271.2** — the `/api/map/jobs` pipeline section is capped at the newest 1000 rows: a prod-sized `pipeline.md` accumulated thousands of stale rows and made the map payload the heaviest page-load (4.4 MB post-tracker-slim) — `pipelineTotal` reports the true count, `?pipeline=all` restores everything, titleFit runs only on the shipped section; the tracker slim shipped in v1.271.1. Tests 7920 → 7922.
 
 >
-> **Previous — v1.270.0** — the parent-sync features wave: six new scan sources (ALDI Nord, HiBob, HireHive, Factorial, Polymer, Remote — registry **135 = 130 EN + 5 RU · 130 adapters**), whole-board scanner walks + worldwide country filters, per-entry `timeout_ms` + configurable scan concurrency (defaults 32/10 kept), telegram strict Habr-link + positional-employer parsing, description passthrough ×6 boards. Tests 7704 → 7874.
+> **Previous — v1.271.1** — `/api/map/jobs` slim by default (CAR-249): the heaviest prod page-load (4.6 MB measured by the perf probe) now projects tracker rows to the 11 fields the map consumes (notes fold server-side into `workplace`); `?full=1` restores every column; `/api/pipeline` deliberately NOT changed. Tests 7918 → 7920.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
