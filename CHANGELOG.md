@@ -1,3 +1,11 @@
+## [1.271.1] — 2026-11-07
+
+### Fixed
+- **/api/map/jobs slim by default (CAR-249)** — the endpoint was the heaviest page-load on prod (4.6 MB measured by the perf probe): parsed tracker rows shipped long Notes cells and raw markdown Report/PDF columns the map view never reads. The payload now projects each tracker row to the 11 fields the map consumes (num/company/role/status/score/scoreNum/url/href/location/workplace/reportPath — notes are folded server-side into `workplace` before projection); `?full=1` restores every parsed column for any consumer that needs them. Pipeline rows were already slim and are unchanged.
+
+### Notes
+- Deliberately NOT changed: /api/pipeline (1.2 MB) — its rows are the pipeline inbox view's working set and are consumed in full; a slim projection there is a separate decision.
+
 ## [1.271.0] — 2026-11-07
 
 ### Added

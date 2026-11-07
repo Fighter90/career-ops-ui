@@ -7,7 +7,7 @@
 
 _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-7918%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-7920%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
@@ -17,9 +17,9 @@ _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versión — v1.271.0** — kanban de tareas de carrera (`#/tasks`, grupo Desarrollo): tablero personal de arrastrar y soltar — columnas Pendientes/En curso/Hechas, movimientos optimistas vía `PUT /api/tasks/:id`, teclado + select móvil, «+» por columna, modal de detalles; persiste en `data/career-tasks.json`; limpiezas de la ola 22 de CodeQL; dispatch `perf` de remote-qa (mediana de TTFB/total, exit 1 con SLOW >2000 ms). Tests 7874 → 7918.
+> **🆕 Última versión — v1.271.1** — /api/map/jobs ligero por defecto (CAR-249): la carga de página más pesada de producción (4.6 MB) ahora envía solo los 11 campos que consume el mapa; `?full=1` restaura todas las columnas; /api/pipeline se deja intacta a propósito. Tests 7918 → 7920.
 >
-> **Anterior — v1.270.0** — seis nuevas fuentes de escaneo — ALDI Nord, HiBob, HireHive, Factorial, Polymer, Remote (registro **135 = 130 EN + 5 RU · 130 adapters**); el escáner lee tableros completos: Consider recorre su catálogo entero por el propio `meta.sequence` del tablero con reintento por página y aviso de tope duro, acepta etiquetas de país mundiales, `timeout_ms` por entrada, `CAREER_OPS_HTTP_TIMEOUT_MS` por petición y concurrencia de escaneo configurable (`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`, valores por defecto sin cambios 32/10).
+> **Anterior — v1.271.0** — kanban de tareas de carrera (`#/tasks`, grupo Desarrollo): tablero personal de arrastrar y soltar — columnas Pendientes/En curso/Hechas, movimientos optimistas vía `PUT /api/tasks/:id`, teclado + select móvil, «+» por columna, modal de detalles; persiste en `data/career-tasks.json`; limpiezas de la ola 22 de CodeQL; dispatch `perf` de remote-qa (mediana de TTFB/total, exit 1 con SLOW >2000 ms). Tests 7874 → 7918.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

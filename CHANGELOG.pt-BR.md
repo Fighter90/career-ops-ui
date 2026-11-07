@@ -8,6 +8,14 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.271.1] — 2026-11-07
+
+### Corrigido
+- **/api/map/jobs slim por padrão (CAR-249)** — o endpoint era o carregamento de página mais pesado em produção (4.6 MB medidos pelo perf probe): as linhas parseadas do tracker vinham com células de Notes longas e colunas Report/PDF em markdown cru que a view do mapa nunca lê. O payload agora projeta cada linha do tracker para os 11 campos que o mapa consome (num/company/role/status/score/scoreNum/url/href/location/workplace/reportPath — as notas são dobradas no servidor dentro de `workplace` antes da projeção); `?full=1` restaura todas as colunas parseadas para qualquer consumidor que precise delas. As linhas de pipeline já eram slim e permanecem inalteradas.
+
+### Notas
+- Deliberadamente NÃO alterado: /api/pipeline (1.2 MB) — suas linhas são o conjunto de trabalho da view da caixa de entrada do pipeline e são consumidas por completo; uma projeção slim ali é uma decisão separada.
+
 ## [1.271.0] — 2026-11-07
 
 ### Adicionado

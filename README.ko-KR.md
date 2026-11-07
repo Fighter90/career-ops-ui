@@ -7,7 +7,7 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-7918%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-7920%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
@@ -17,9 +17,9 @@ _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았�
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.271.0** — 커리어 작업 칸반 (`#/tasks`, 성장 그룹): 백로그/진행 중/완료 열을 갖춘 개인 드래그 앤 드롭 보드, `PUT /api/tasks/:id` 낙관적 이동, 키보드 + 모바일 셀렉트, 열별 «+» 빠른 생성, 상세 모달; `data/career-tasks.json`에 저장; CodeQL 22차 웨이브 정리; remote-qa `perf` 디스패치(TTFB/total 중앙값, 2000ms 초과 SLOW 시 exit 1). 테스트 7874 → 7918.
+> **🆕 최신 릴리스 — v1.271.1** — /api/map/jobs 기본 slim화 (CAR-249): 프로덕션에서 가장 무거운 페이지 로드(4.6 MB)가 이제 지도가 소비하는 11개 필드만 실어 보냅니다; `?full=1`이 모든 컬럼을 복원합니다; /api/pipeline은 의도적으로 그대로 둡니다. 테스트 7918 → 7920.
 >
-> **이전 버전 — v1.270.0** — 스캔 소스 6개 신규 — ALDI Nord, HiBob, HireHive, Factorial, Polymer, Remote (레지스트리 **135 = 130 EN + 5 RU · 130 adapters**); 스캐너가 보드 전체를 읽습니다: Consider가 보드 자체의 `meta.sequence`를 통해 카탈로그 전체를 페이지별 재시도와 하드 캡 경고로 순회하고, 전 세계 국가 레이블을 수용하며, 항목별 `timeout_ms`, 요청별 `CAREER_OPS_HTTP_TIMEOUT_MS`, 구성 가능한 스캔 동시성(`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`, 기본값은 기존대로 32/10)을 갖춥니다.
+> **이전 버전 — v1.271.0** — 커리어 작업 칸반 (`#/tasks`, 성장 그룹): 백로그/진행 중/완료 열을 갖춘 개인 드래그 앤 드롭 보드, `PUT /api/tasks/:id` 낙관적 이동, 키보드 + 모바일 셀렉트, 열별 «+» 빠른 생성, 상세 모달; `data/career-tasks.json`에 저장; CodeQL 22차 웨이브 정리; remote-qa `perf` 디스패치(TTFB/total 중앙값, 2000ms 초과 SLOW 시 exit 1). 테스트 7874 → 7918.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

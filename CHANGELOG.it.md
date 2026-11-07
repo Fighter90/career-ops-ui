@@ -2,6 +2,14 @@
 
 > Questo changelog contiene ora la cronologia completa delle versioni. Le voci pubblicate prima della localizzazione italiana (v1.85.0) compaiono sotto nell'originale inglese — traduzione in attesa; il riferimento resta [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.271.1] — 2026-11-07
+
+### Corretto
+- **/api/map/jobs slim per impostazione predefinita (CAR-249)** — l'endpoint era il caricamento pagina più pesante in produzione (4.6 MB misurati dal perf probe): le righe del tracker analizzate viaggiavano con celle Notes lunghe e colonne Report/PDF in markdown grezzo che la vista mappa non legge mai. Il payload ora proietta ogni riga del tracker sugli 11 campi che la mappa consuma (num/company/role/status/score/scoreNum/url/href/location/workplace/reportPath — le note vengono ripiegate lato server in `workplace` prima della proiezione); `?full=1` ripristina tutte le colonne analizzate per qualsiasi consumatore ne abbia bisogno. Le righe del pipeline erano già slim e restano invariate.
+
+### Note
+- Deliberatamente NON modificato: /api/pipeline (1.2 MB) — le sue righe sono l'insieme di lavoro della vista inbox del pipeline e sono consumate per intero; una proiezione slim lì è una decisione a parte.
+
 ## [1.271.0] — 2026-11-07
 
 ### Aggiunto

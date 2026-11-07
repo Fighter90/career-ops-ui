@@ -7,7 +7,7 @@
 
 _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-7918%20passed-brightgreen)](#testes)
+[![tests](https://img.shields.io/badge/tests-7920%20passed-brightgreen)](#testes)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#testes)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requisitos)
@@ -17,9 +17,9 @@ _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versão — v1.271.0** — kanban de tarefas de carreira (`#/tasks`, grupo Desenvolvimento): quadro pessoal de arrastar e soltar — colunas Backlog/Em andamento/Concluído, movimentos otimistas via `PUT /api/tasks/:id`, teclado + select no móvel, «+» por coluna, modal de detalhes; persiste em `data/career-tasks.json`; limpezas da onda 22 do CodeQL; dispatch `perf` do remote-qa (mediana de TTFB/total, exit 1 com SLOW >2000 ms). Testes 7874 → 7918.
+> **🆕 Última versão — v1.271.1** — /api/map/jobs slim por padrão (CAR-249): o carregamento de página mais pesado da produção (4.6 MB) agora envia apenas os 11 campos que o mapa consome; `?full=1` restaura todas as colunas; /api/pipeline fica intacta de propósito. Testes 7918 → 7920.
 >
-> **Anterior — v1.270.0** — seis novas fontes de scan — ALDI Nord, HiBob, HireHive, Factorial, Polymer, Remote (registro **135 = 130 EN + 5 RU · 130 adapters**); o scanner lê boards inteiros: Consider percorre todo o seu catálogo pelo próprio `meta.sequence` do board com retry por página e aviso de teto duro, aceita rótulos de país mundiais, `timeout_ms` por entrada, `CAREER_OPS_HTTP_TIMEOUT_MS` por requisição e concorrência de scan configurável (`CAREER_OPS_SCAN_CONCURRENCY` / `CAREER_OPS_SCAN_HOST_CONCURRENCY`, padrões inalterados 32/10).
+> **Anterior — v1.271.0** — kanban de tarefas de carreira (`#/tasks`, grupo Desenvolvimento): quadro pessoal de arrastar e soltar — colunas Backlog/Em andamento/Concluído, movimentos otimistas via `PUT /api/tasks/:id`, teclado + select no móvel, «+» por coluna, modal de detalhes; persiste em `data/career-tasks.json`; limpezas da onda 22 do CodeQL; dispatch `perf` do remote-qa (mediana de TTFB/total, exit 1 com SLOW >2000 ms). Testes 7874 → 7918.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

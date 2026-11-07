@@ -2,6 +2,12 @@
 
 This is the operating manual. Read it, then `PLAN.md` (order) and `BACKLOG.md` (what is left).
 
+## State (2026-11-07, v1.271.1)
+
+- Released: **v1.271.1** (2026-11-07) — the perf patch (CAR-249): `/api/map/jobs` slim by default — tracker rows project to the 11 map-consumed fields (notes fold server-side into workplace), `?full=1` restores everything; `/api/pipeline` deliberately NOT changed. Prod baseline before the fix: the perf probe measured map/jobs at **4.6 MB / 696 ms median**. (+2 tests in the map-jobs-cache suite: slim projection + full opt-in.)
+- Gates: test:ci **7923 tests / 7920 pass / 0 fail / 3 skip** · browser **209 pass / 0 fail / 1 opt-in skip** · coverage **98.59/90.56** · changelog parity ✓ ×19 at 1.271.1, 493 releases each · /api/health **1.271.1 / parent 1.39.0**.
+- History: **v1.271.0** (2026-11-07) and earlier — see the state blocks below.
+
 ## State (2026-11-07, v1.271.0)
 
 - Released: **v1.271.0** (2026-11-07) — the Career tasks kanban feature release: new **#/tasks** view (Growth group) — 3 columns Backlog / In-Progress / Done with live counts, drag=PUT optimistic+revert, keyboard ←/→/Enter, mobile select, per-column «+», details modal; `data/career-tasks.json` (locked + atomic, rate-limited); 24 keys ×19; help §27 «Career tasks board» ×19 (H3 132); README ×19; CodeQL wave 22 (hirehive includes-check, avature dead branch unwrapped, unused import/helper dropped, archival writes documented); remote-qa `perf` dispatch (perf-probe.mjs, ROUNDS=5, exit 1 on SLOW); routes 39 → **40** (+47 tests).

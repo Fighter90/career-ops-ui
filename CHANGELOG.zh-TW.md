@@ -8,6 +8,14 @@
 
 ---
 
+## [1.271.1] — 2026-11-07
+
+### 修復
+- **/api/map/jobs 預設瘦身 (CAR-249)** — 該端點曾是正式環境最重的頁面載入(perf 探針實測 4.6 MB):解析後的 tracker 列附帶了地圖檢視從不讀取的長 Notes 儲存格和原始 markdown 的 Report/PDF 欄。payload 現在把每條 tracker 列投影為地圖消費的 11 個欄位(num/company/role/status/score/scoreNum/url/href/location/workplace/reportPath —— 備註在投影前由伺服器端折疊進 `workplace`);`?full=1` 為任何需要的消費方還原全部解析後的欄。pipeline 列本來就瘦,維持不變。
+
+### 備註
+- 特意未改動:/api/pipeline (1.2 MB) —— 其列是 pipeline 收件匣檢視的工作集,被完整消費;在那裡做瘦身投影是另一個決定。
+
 ## [1.271.0] — 2026-11-07
 
 ### 新增

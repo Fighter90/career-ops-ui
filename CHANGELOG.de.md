@@ -2,6 +2,14 @@
 
 > Dieses Changelog enthält die vollständige Versionsgeschichte. Einträge, die vor der deutschen Lokalisierung (v1.85.0) veröffentlicht wurden, stehen unten im englischen Original — Übersetzung ausstehend; maßgeblich bleibt [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.271.1] — 2026-11-07
+
+### Behoben
+- **/api/map/jobs standardmäßig schlank (CAR-249)** — der Endpoint war der schwerste Seitenaufruf auf Prod (4.6 MB, gemessen vom perf probe): geparste Tracker-Zeilen schleppten lange Notes-Zellen und rohe Markdown-Spalten Report/PDF mit, die die Kartenansicht nie liest. Die Payload projiziert jede Tracker-Zeile jetzt auf die 11 Felder, die die Karte konsumiert (num/company/role/status/score/scoreNum/url/href/location/workplace/reportPath — Notes werden vor der Projektion serverseitig in `workplace` eingefaltet); `?full=1` stellt alle geparsten Spalten für jeden Konsumenten wieder her, der sie braucht. Pipeline-Zeilen waren bereits schlank und bleiben unverändert.
+
+### Hinweise
+- Bewusst NICHT geändert: /api/pipeline (1.2 MB) — ihre Zeilen sind der Arbeitssatz der Pipeline-Inbox-Ansicht und werden vollständig konsumiert; eine schlanke Projektion dort ist eine separate Entscheidung.
+
 ## [1.271.0] — 2026-11-07
 
 ### Neu

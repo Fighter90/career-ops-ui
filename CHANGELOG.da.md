@@ -9,6 +9,14 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 ---
 
 
+## [1.271.1] — 2026-11-07
+
+### Rettet
+- **/api/map/jobs slim som standard (CAR-249)** — endpointet var den tungeste sideindlæsning på prod (4.6 MB målt af perf-proben): parsede tracker-rækker sled rundt på lange Notes-celler og rå markdown-kolonner Report/PDF, som kortvisningen aldrig læser. Payloaden projicerer nu hver tracker-række til de 11 felter, kortet forbruger (num/company/role/status/score/scoreNum/url/href/location/workplace/reportPath — noter foldes server-side ind i `workplace` før projektionen); `?full=1` gendanner alle parsede kolonner for enhver forbruger, der har brug for dem. Pipeline-rækker var allerede slanke og er uændrede.
+
+### Noter
+- Bevidst IKKE ændret: /api/pipeline (1.2 MB) — dens rækker er pipeline-indbakkevisningens arbejdssæt og forbruges i fuldt omfang; en slim-projektion dér er en separat beslutning.
+
 ## [1.271.0] — 2026-11-07
 
 ### Tilføjet
