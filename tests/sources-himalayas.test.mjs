@@ -321,3 +321,50 @@ test('adapter: buildEndpoint falls back to api: field', () => {
   const custom = 'https://himalayas.app/jobs/api?limit=200';
   assert.equal(himalayasAdapter.buildEndpoint({ provider: 'himalayas', api: custom }), custom);
 });
+
+// ── #6413 / parent #6553 — explicitly empty restrictions are worldwide ──────
+// `locationRestrictions: []` means "no country restriction" (timezone
+// restrictions are a separate field), so the normalized location must say
+// "Remote (worldwide)" — not '' — and that label must carry the remote
+// signal for keyword filters while containing no country token.
+test('fetchHimalayas: explicit empty locationRestrictions normalize to Remote (worldwide)', async () => {
+  const fakeEmpty = async () => ({
+    ok: true,
+    json: async () => ({
+      jobs: [{
+        id: 'ww1',
+        title: 'Software Engineer',
+        companyName: 'Acme Corp',
+        applicationLink: 'https://himalayas.app/jobs/ww-engineer',
+        locationRestrictions: [],
+        pubDate: null,
+      }],
+    }),
+  });
+  const [job] = await fetchHimalayas(FEED_URL, { fetchImpl: fakeEmpty });
+  assert.equal(job.location, 'Remote (worldwide)');
+
+  // Through the shared filter: a country-only allow-list admits it (non-strict),
+  // and a block on the label still rejects it.
+  const { buildLocationFilter } = await import('../server/lib/location-filter.mjs');
+  const countryOnly = buildLocationFilter({ allow: ['United States', 'DEU'] });
+  assert.equal(countryOnly(job.location), true);
+  const blocked = buildLocationFilter({ allow: ['United States'], block: ['Worldwide'] });
+  assert.equal(blocked(job.location), false);
+
+  // A MISSING restrictions field stays '' (unknown), distinct from explicit [].
+  const fakeMissing = async () => ({
+    ok: true,
+    json: async () => ({
+      jobs: [{ id: 'ww2', title: 'Software Engineer', companyName: 'Acme Corp', applicationLink: 'https://himalayas.app/jobs/ww-2', pubDate: null }],
+    }),
+  });
+  const [unknown] = await fetchHimalayas(FEED_URL, { fetchImpl: fakeMissing });
+  assert.equal(unknown.location, '');
+
+  // The label carries no country name, alias or ISO token.
+  const { isCountryKeyword } = await import('../server/lib/sources/_country.mjs');
+  const words = job.location.match(/[\p{L}\p{N}.]+/gu) ?? [];
+  assert.ok(words.length > 0, 'the worldwide label must not be empty');
+  assert.deepEqual(words.filter(isCountryKeyword), [], job.location);
+});

@@ -18,8 +18,49 @@
 // now holds a concurrency slot for the full 60s, so a worst-case scan is
 // slower — the chronic hangers (Perplexity, Supabase, Resend, …) likely still
 // time out. A per-source / lower-Ashby-concurrency fix would address those
-// properly. Override with SCAN_FETCH_TIMEOUT_MS.
+// properly. Override with SCAN_FETCH_TIMEOUT_MS — or the parent's
+// CAREER_OPS_HTTP_TIMEOUT_MS, which takes precedence (both are read per
+// request; see resolveDefaultTimeoutMs below).
 export const DEFAULT_SCAN_TIMEOUT_MS = Number(process.env.SCAN_FETCH_TIMEOUT_MS) || 60000;
+
+// setTimeout rewrites a delay below 1ms or above 2_147_483_647ms to 1ms, which
+// would abort every request almost immediately — the exact failure the
+// timeout env vars exist to prevent, reached by a typo instead of a slow
+// board. "Unusable" therefore includes anything outside setTimeout's honored
+// range, not just values that fail to parse: falling back to the default is
+// the quieter outcome (a scan at the default beats a scan where every portal
+// reads as unreachable).
+const MAX_TIMER_MS = 2_147_483_647;
+const FALLBACK_TIMEOUT_MS = 60_000;
+
+/**
+ * Resolve a raw timeout value to whole milliseconds, falling back to
+ * `fallback` when the value is unusable (unset, non-numeric, or outside
+ * setTimeout's honored 1..2147483647ms range). Parent #6580's
+ * `resolveDefaultTimeoutMs`, adapted to web-ui's 60s default.
+ * @param {unknown} raw - Raw env / opts value.
+ * @param {number} [fallback=FALLBACK_TIMEOUT_MS] - Value used when `raw` is unusable.
+ * @returns {number} Milliseconds.
+ */
+export function resolveDefaultTimeoutMs(raw, fallback = FALLBACK_TIMEOUT_MS) {
+  if (raw === undefined || raw === null || String(raw).trim() === '') return fallback;
+  const parsed = Number(raw);
+  if (!Number.isFinite(parsed) || parsed < 1 || parsed > MAX_TIMER_MS) return fallback;
+  return parsed;
+}
+
+/**
+ * The default scan-request budget, read AT CALL TIME — not when this module
+ * loaded. The server (and every test) imports the scanner chain before
+ * `loadEnvFile()` runs, so a module-load read misses every .env value
+ * (parent #6580). CAREER_OPS_HTTP_TIMEOUT_MS is the parent-documented name
+ * and wins; SCAN_FETCH_TIMEOUT_MS stays as the legacy web-ui fallback.
+ * @returns {number} Milliseconds.
+ */
+export function defaultScanTimeoutMs() {
+  const raw = process.env.CAREER_OPS_HTTP_TIMEOUT_MS ?? process.env.SCAN_FETCH_TIMEOUT_MS;
+  return resolveDefaultTimeoutMs(raw, FALLBACK_TIMEOUT_MS);
+}
 
 /**
  * Combine an upstream abort signal with a timeout. Returns the combined
@@ -27,10 +68,10 @@ export const DEFAULT_SCAN_TIMEOUT_MS = Number(process.env.SCAN_FETCH_TIMEOUT_MS)
  * timer + detaches the listener — no leaks).
  *
  * @param {AbortSignal|undefined} upstream
- * @param {number} ms
+ * @param {number} [ms] defaults to the per-call env budget (see defaultScanTimeoutMs)
  * @returns {{ signal: AbortSignal, clear: () => void }}
  */
-export function withTimeout(upstream, ms = DEFAULT_SCAN_TIMEOUT_MS) {
+export function withTimeout(upstream, ms = defaultScanTimeoutMs()) {
   const ctrl = new AbortController();
   const onAbort = () => {
     try { ctrl.abort(upstream?.reason); } catch { ctrl.abort(); }
@@ -117,12 +158,16 @@ function discardBody(res) {
  * loopback host (literal or by DNS answer), at most MAX_SCAN_REDIRECTS hops.
  *
  * @param {typeof fetch} [baseFetch]
- * @param {number} [ms]
+ * @param {number} [ms] the base budget; when absent, resolved per REQUEST from
+ *   the timeout env vars (parent #6580 — the module is imported before the
+ *   data root's .env loads, so a module-load read misses it). A per-call
+ *   `opts.timeoutMs` (an entry's `timeout_ms`, #6582) wins over both.
  * @returns {typeof fetch}
  */
-export function makeTimeoutFetch(baseFetch = fetch, ms = DEFAULT_SCAN_TIMEOUT_MS) {
+export function makeTimeoutFetch(baseFetch = fetch, ms) {
   return async function timeoutFetch(url, opts = {}) {
-    const deadline = withTimeout(opts.signal, ms);
+    const baseMs = resolveDefaultTimeoutMs(ms, defaultScanTimeoutMs());
+    const deadline = withTimeout(opts.signal, resolveDefaultTimeoutMs(opts.timeoutMs, baseMs));
     const { signal, clear } = deadline;
     let handedOff = false;
     try {

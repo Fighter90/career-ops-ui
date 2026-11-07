@@ -267,3 +267,64 @@ test('createKeyedLimiter: ≤limit concurrent per key, parallel across keys, FIF
   assert.equal(perKeyNow.get('h1') || 0, 0, 'no slot leak after the run');
   assert.equal(globalNow, 0, 'no global leak');
 });
+
+// ───────────── #6573 — both scan limits are configurable ─────────────
+// web-ui keeps its host-pool defaults (#579: 32 global / 10 per host) and
+// adds the parent's configurability on top: CAREER_OPS_SCAN_CONCURRENCY caps
+// the whole scan, CAREER_OPS_SCAN_HOST_CONCURRENCY caps one hostname. The
+// env values are read PER RUN — the server loads the data root's .env after
+// this module is imported, so a module-load read would miss it.
+
+test('resolveConcurrency accepts only a positive integer, else the fallback', async () => {
+  const { resolveConcurrency, DEFAULT_SCAN_CONCURRENCY, DEFAULT_HOST_CONCURRENCY } = await import('../server/lib/en-scanner.mjs');
+  assert.equal(DEFAULT_SCAN_CONCURRENCY, 32, 'web-ui keeps its 32-wide host pool');
+  assert.equal(DEFAULT_HOST_CONCURRENCY, 10);
+  assert.equal(resolveConcurrency('7', 10), 7);
+  assert.equal(resolveConcurrency(' 32 ', 10), 32);
+  for (const bad of [undefined, null, '', '  ', '0', '-1', '2.5', 'abc', 'Infinity']) {
+    assert.equal(resolveConcurrency(bad, 10), 10, `value: ${JSON.stringify(bad)}`);
+  }
+  assert.equal(resolveConcurrency(undefined), DEFAULT_SCAN_CONCURRENCY, 'default fallback is the 32-wide pool');
+});
+
+test('env-configured limits shrink the pool a run actually uses', async () => {
+  writePortals(dir, [...portalsCompanies().slice(0, 4), ...portalsAshbyLever()]);
+  const savedScan = process.env.CAREER_OPS_SCAN_CONCURRENCY;
+  const savedHost = process.env.CAREER_OPS_SCAN_HOST_CONCURRENCY;
+  process.env.CAREER_OPS_SCAN_CONCURRENCY = '4';
+  process.env.CAREER_OPS_SCAN_HOST_CONCURRENCY = '2';
+  try {
+    const { fetch, m } = makeTimedFetch({ delayFor: () => 10 });
+    const result = await runEnScan({ writeFiles: false, fetchImpl: fetch, onLog: () => {} });
+    assert.equal(result.counts.raw, 12, 'every board still answered');
+    assert.equal(result.errors.length, 0, JSON.stringify(result.errors));
+    assert.ok(m.maxInFlight <= 4, `global in-flight capped at 4 (got ${m.maxInFlight})`);
+    assert.ok(m.maxInFlight >= 2, `the cap actually bit — some parallelism remained (got ${m.maxInFlight})`);
+    for (const h of [GH_HOST, ASH_HOST, LEV_HOST]) {
+      const seen = m.perHostMax.get(h) || 0;
+      assert.ok(seen <= 2, `${h} capped at 2 per host (got ${seen})`);
+    }
+  } finally {
+    if (savedScan === undefined) delete process.env.CAREER_OPS_SCAN_CONCURRENCY; else process.env.CAREER_OPS_SCAN_CONCURRENCY = savedScan;
+    if (savedHost === undefined) delete process.env.CAREER_OPS_SCAN_HOST_CONCURRENCY; else process.env.CAREER_OPS_SCAN_HOST_CONCURRENCY = savedHost;
+  }
+});
+
+test('an unusable env value falls back to the host-pool defaults', async () => {
+  writePortals(dir, [...portalsCompanies().slice(0, 4), ...portalsAshbyLever()]);
+  const savedScan = process.env.CAREER_OPS_SCAN_CONCURRENCY;
+  const savedHost = process.env.CAREER_OPS_SCAN_HOST_CONCURRENCY;
+  process.env.CAREER_OPS_SCAN_CONCURRENCY = 'abc';
+  process.env.CAREER_OPS_SCAN_HOST_CONCURRENCY = '0';
+  try {
+    const { fetch, m } = makeTimedFetch({ delayFor: () => 10 });
+    const result = await runEnScan({ writeFiles: false, fetchImpl: fetch, onLog: () => {} });
+    assert.equal(result.counts.raw, 12);
+    assert.equal(result.errors.length, 0);
+    // Defaults restored: the run used 32/10, so the 12 boards ran fully parallel.
+    assert.equal(m.maxInFlight, 12, `a typo must not stop or shrink the scan (got ${m.maxInFlight})`);
+  } finally {
+    if (savedScan === undefined) delete process.env.CAREER_OPS_SCAN_CONCURRENCY; else process.env.CAREER_OPS_SCAN_CONCURRENCY = savedScan;
+    if (savedHost === undefined) delete process.env.CAREER_OPS_SCAN_HOST_CONCURRENCY; else process.env.CAREER_OPS_SCAN_HOST_CONCURRENCY = savedHost;
+  }
+});

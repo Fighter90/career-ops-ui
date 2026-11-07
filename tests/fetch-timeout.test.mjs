@@ -98,3 +98,95 @@ test('fetchJsonWithRetry(makeTimeoutFetch(hung)) makes exactly ONE attempt', asy
   assert.equal(attempts, 1, 'one attempt — a retry would spend the same budget again');
   assert.ok(ms < 2000, `must fail fast on the first deadline, took ${ms}ms`);
 });
+
+// ── #6580 / parent — the default budget is read PER REQUEST ─────────────────
+// The scanner module is imported before the server's loadEnvFile() runs, so a
+// module-load read of the env var misses every .env value. The budget must be
+// resolved when the request starts. CAREER_OPS_HTTP_TIMEOUT_MS is the parent's
+// documented name; SCAN_FETCH_TIMEOUT_MS stays as the legacy web-ui fallback.
+
+import { resolveDefaultTimeoutMs, makeTimeoutFetch as mtf } from '../server/lib/fetch-timeout.mjs';
+
+const stalledFetch = (_url, { signal } = {}) =>
+  new Promise((_resolve, reject) => {
+    signal?.addEventListener('abort', () => reject(signal.reason || new Error('aborted')), { once: true });
+  });
+
+const withEnv = async (vars, fn) => {
+  const saved = {};
+  for (const k of Object.keys(vars)) saved[k] = process.env[k];
+  // process.env coerces assignments — `undefined` must DELETE the key, not
+  // set the string "undefined".
+  const set = (k, v) => { if (v === undefined) delete process.env[k]; else process.env[k] = v; };
+  try {
+    for (const [k, v] of Object.entries(vars)) set(k, v);
+    return await fn();
+  } finally {
+    for (const [k, v] of Object.entries(saved)) set(k, v);
+  }
+};
+
+test('resolveDefaultTimeoutMs: unusable env values fall back, bounds are inclusive', () => {
+  for (const bad of [undefined, null, '', '   ', 'abc', '0', '-5', 'Infinity', 'NaN', '0.5', '2147483648']) {
+    assert.equal(resolveDefaultTimeoutMs(bad, 60000), 60000, `value: ${JSON.stringify(bad)}`);
+  }
+  assert.equal(resolveDefaultTimeoutMs('1', 60000), 1);
+  assert.equal(resolveDefaultTimeoutMs('300', 60000), 300);
+  assert.equal(resolveDefaultTimeoutMs('2147483647', 60000), 2147483647);
+});
+
+test('CAREER_OPS_HTTP_TIMEOUT_MS set AFTER import reaches the request budget', async () => {
+  await withEnv({ CAREER_OPS_HTTP_TIMEOUT_MS: '300', SCAN_FETCH_TIMEOUT_MS: undefined }, async () => {
+    const t0 = Date.now();
+    await assert.rejects(
+      mtf(stalledFetch)('https://example.test/stall'),
+      (err) => err?.name === 'TimeoutError',
+    );
+    const elapsed = Date.now() - t0;
+    assert.ok(elapsed >= 250, `must wait out the env budget before aborting (took ${elapsed}ms)`);
+    assert.ok(elapsed < 5000, `per-request env read — not the 60s module default (took ${elapsed}ms)`);
+  });
+});
+
+test('CAREER_OPS_HTTP_TIMEOUT_MS takes precedence over SCAN_FETCH_TIMEOUT_MS', async () => {
+  await withEnv({ CAREER_OPS_HTTP_TIMEOUT_MS: '200', SCAN_FETCH_TIMEOUT_MS: '3000' }, async () => {
+    const t0 = Date.now();
+    await assert.rejects(mtf(stalledFetch)('https://example.test/stall'), (err) => err?.name === 'TimeoutError');
+    const elapsed = Date.now() - t0;
+    assert.ok(elapsed < 2000, `parent's var wins — abort near 200ms, not 3000 (took ${elapsed}ms)`);
+  });
+});
+
+test('SCAN_FETCH_TIMEOUT_MS (legacy web-ui name) is still honored per request', async () => {
+  await withEnv({ CAREER_OPS_HTTP_TIMEOUT_MS: undefined, SCAN_FETCH_TIMEOUT_MS: '200' }, async () => {
+    const t0 = Date.now();
+    await assert.rejects(mtf(stalledFetch)('https://example.test/stall'), (err) => err?.name === 'TimeoutError');
+    const elapsed = Date.now() - t0;
+    assert.ok(elapsed >= 150 && elapsed < 2000, `abort near 200ms (took ${elapsed}ms)`);
+  });
+});
+
+// ── #6582 / parent — a per-call timeoutMs overrides the wrapper's budget ────
+test('opts.timeoutMs wins over the wrapper default and over the env budget', async () => {
+  await withEnv({ CAREER_OPS_HTTP_TIMEOUT_MS: '5000' }, async () => {
+    const t0 = Date.now();
+    await assert.rejects(
+      mtf(stalledFetch)('https://example.test/stall', { timeoutMs: 30 }),
+      (err) => err?.name === 'TimeoutError',
+    );
+    const elapsed = Date.now() - t0;
+    assert.ok(elapsed < 2000, `the per-call value won (took ${elapsed}ms)`);
+  });
+});
+
+test('an unusable opts.timeoutMs falls back to the wrapper budget', async () => {
+  for (const bad of [0, 'abc', 1.5, 2147483648, null]) {
+    const t0 = Date.now();
+    await assert.rejects(
+      mtf(stalledFetch, 30)('https://example.test/stall', { timeoutMs: bad }),
+      (err) => err?.name === 'TimeoutError',
+    );
+    const elapsed = Date.now() - t0;
+    assert.ok(elapsed < 2000, `${String(bad)} ignored — wrapper 30ms won (took ${elapsed}ms)`);
+  }
+});

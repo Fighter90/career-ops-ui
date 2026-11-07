@@ -36,6 +36,8 @@ import { buildTierFilter } from './classify-tier.mjs';
 import { loadQuarantine, isQuarantined, quarantineAdd, pruneQuarantine, saveQuarantine, isPermanentFailure, RETRY_AFTER_DAYS } from './scan-quarantine.mjs';
 import { withFileLock, atomicWrite } from './file-lock.mjs';
 import { makeTimeoutFetch } from './fetch-timeout.mjs';
+// #6582 — a portals.yml entry can raise its request timeout with `timeout_ms`.
+import { applyEntryTimeout } from './entry-timeout.mjs';
 import { withBoardResponseCache, boardCacheStats, resolveBoardCacheTtlMs, formatBoardCacheWindow } from './board-response-cache.mjs';
 import { portalTopLevelTypos } from './portals-keys.mjs';
 import { loadReApplyWindows, buildCooldownFilter } from './cooldown.mjs';
@@ -58,8 +60,35 @@ import { resolveAdapter, ALL_ADAPTERS } from './portals/registry.mjs';
 // pool would hold 32 sustained connections to one API and earn an HTTP
 // throttle — and a throttled board silently loses live postings rather than
 // failing loudly.
-const CONCURRENCY = 32;
-const PER_HOST_CONCURRENCY = 10;
+//
+// #6573 (parent) — BOTH limits are configurable: CAREER_OPS_SCAN_CONCURRENCY
+// caps the whole company scan, CAREER_OPS_SCAN_HOST_CONCURRENCY caps one
+// hostname inside it. A board response can be tens of megabytes and a
+// request's timer also covers reading the body, so more requests in flight
+// can make a healthy board miss its timeout on a slower connection — lower
+// the values if a scan reports many "aborted" network errors for boards that
+// open normally on their own. web-ui KEEPS its host-pool defaults (32 global
+// / 10 per host) and adds the configurability on top. The env values are
+// read per RUN (see resolveConcurrency): the server loads the data root's
+// .env after this module is imported, so a module-load read would miss it.
+/** @type {number} web-ui's host-pool default (#579): the whole-scan company cap. */
+export const DEFAULT_SCAN_CONCURRENCY = 32;
+/** @type {number} web-ui's host-pool default (#579): the per-hostname cap. */
+export const DEFAULT_HOST_CONCURRENCY = 10;
+
+/**
+ * A concurrency limit from an env value. Anything but a positive integer
+ * falls back to the default: a typo should not stop a scan, and pMap never
+ * starts a task under a limit of 0.
+ * @param {unknown} raw - Raw env value.
+ * @param {number} [fallback] - Value used when `raw` is unusable.
+ * @returns {number}
+ */
+export function resolveConcurrency(raw, fallback = DEFAULT_SCAN_CONCURRENCY) {
+  if (raw === undefined || raw === null || String(raw).trim() === '') return fallback;
+  const parsed = Number(raw);
+  return Number.isSafeInteger(parsed) && parsed > 0 ? parsed : fallback;
+}
 
 // v1.76.0 — the scan result display is NO LONGER CAPPED. Every matched
 // (post-filter) result is stored in data/last-scan.json and the #/scan table
@@ -473,13 +502,16 @@ export async function runEnScan(opts = {}) {
   // flag lives on the array and is lost by the map/slice below, so it is
   // collected here to flow into the scan result and the snapshot.
   const truncatedSources = [];
-  // CAR-178 — one keyed limiter per run: the pool may hold CONCURRENCY
-  // companies in flight, but a single ATS host never takes more than
-  // PER_HOST_CONCURRENCY concurrent fetches. Detection, quarantine, dedup
+  // CAR-178 — one keyed limiter per run: the pool may hold scanConcurrency
+  // companies in flight, but a single ATS host never takes more than the
+  // resolved per-host limit concurrent fetches. Detection, quarantine, dedup
   // and the indexed pMap collection are untouched — results are still
   // gathered by input index, so the saved snapshot is identical to a
   // sequential run's whatever the completion order.
-  const withHostSlot = createKeyedLimiter(PER_HOST_CONCURRENCY);
+  const withHostSlot = createKeyedLimiter(
+    // #6573 — per-run env read: CAREER_OPS_SCAN_HOST_CONCURRENCY (default 10).
+    resolveConcurrency(process.env.CAREER_OPS_SCAN_HOST_CONCURRENCY, DEFAULT_HOST_CONCURRENCY),
+  );
   // L262-R3 — `yearsMin` exists for the years_min filter (and the #/scan
   // badge fed from it); parseYearsRequirement walks the whole description
   // (~ms per JD), so the stamp is computed during the fetch ONLY when the
@@ -496,6 +528,8 @@ export async function runEnScan(opts = {}) {
   const cacheEnabled = process.env.CAREER_OPS_HTTP_CACHE !== '0';
   const cacheTtlMs = resolveBoardCacheTtlMs(process.env.CAREER_OPS_HTTP_CACHE_TTL_MS);
   const fetchedPerCo = await withBoardResponseCache({ ttlMs: cacheTtlMs, disabled: !cacheEnabled }, async () => {
+    // #6573 — per-run env read: CAREER_OPS_SCAN_CONCURRENCY (default 32).
+    const scanConcurrency = resolveConcurrency(process.env.CAREER_OPS_SCAN_CONCURRENCY, DEFAULT_SCAN_CONCURRENCY);
     const fetchAllBoards = () => pMap(withApi, async (c) => {
     if (signal?.aborted) return [];
     const fetcher = fetcherFor(c._api.type);
@@ -506,8 +540,12 @@ export async function runEnScan(opts = {}) {
       // `<provider>:` block. URL-detected ATS fetchers ignore the extra opt.
       // CAR-178 — the per-host slot wraps ONLY the fetch; filters, error
       // handling and progress below run outside it.
+      // #6582 — the entry's own `timeout_ms` (when set) raises the request
+      // budget for THIS entry's fetches only; every other entry keeps the
+      // run default.
+      const coFetch = applyEntryTimeout(fetchImpl, c);
       const items = await withHostSlot(hostKeyFor(c), () => fetcher(c._api.url, {
-        fetchImpl, signal, company: c,
+        fetchImpl: coFetch, signal, company: c,
         // CAR-223 — a provider that serves extra language versions of a
         // posting at extra cost fetches them only when the scan will keep
         // them; one that returns versions selectively also returns the
@@ -579,7 +617,7 @@ export async function runEnScan(opts = {}) {
     } finally {
       onProgress(++progressDone, withApi.length);
     }
-  }, CONCURRENCY);
+  }, scanConcurrency);
     const rows = await fetchAllBoards();
     const stats = boardCacheStats();
     if (stats && (stats.hits > 0 || stats.revalidated > 0)) {

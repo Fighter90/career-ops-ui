@@ -141,3 +141,115 @@ test('location_filter: always_allow alone (no block) passes everything', () => {
   const f = buildLocationFilter({ always_allow: ['united kingdom'] });
   assert.equal(f('Tokyo, Japan'), true, 'no block tier → nothing to override');
 });
+
+// ── #6413 / parent #6553 — worldwide labels in country-only filters ─────────
+// A `location_filter` written entirely in country terms ("United States", "DE",
+// "U.K.") used to reject every posting whose location is exactly "Worldwide" /
+// "Anywhere in the World" / "Remote (worldwide)" — a KNOWN worldwide-eligible
+// role misread as missing location data. Parent fix: when BOTH allow-lists
+// contain only exact country names/aliases/ISO tokens and the config is not
+// strict, the exact worldwide labels pass — but block/block_hard still win and
+// qualified labels ("Worldwide except Canada") never do.
+
+import { isCountryKeyword } from '../server/lib/sources/_country.mjs';
+
+const WORLDWIDE_LABELS = ['Worldwide', 'Anywhere in the World', 'Remote (worldwide)'];
+const COUNTRY_ONLY_FILTER = {
+  always_allow: ['United States', 'USA'],
+  allow: ['United States', 'USA'],
+};
+
+test('worldwide: country-only lists accept the exact label case-insensitively (non-strict)', () => {
+  for (const label of WORLDWIDE_LABELS) {
+    for (const strict of [undefined, false]) {
+      const accepts = buildLocationFilter({ ...COUNTRY_ONLY_FILTER, strict });
+      assert.equal(accepts(label), true, `${label} strict=${strict}`);
+      assert.equal(accepts(`  ${label.toUpperCase()}  `), true, `${label} padded strict=${strict}`);
+    }
+  }
+});
+
+test('worldwide: explicit block and block_hard still win over the label', () => {
+  for (const label of WORLDWIDE_LABELS) {
+    for (const tier of ['block', 'block_hard']) {
+      const f = buildLocationFilter({ ...COUNTRY_ONLY_FILTER, [tier]: [label] });
+      assert.equal(f(label), false, `${tier} rejects ${label}`);
+    }
+  }
+});
+
+test('worldwide: admission recognizes shared country names, aliases and ISO codes', () => {
+  for (const country of ['Bangladesh', 'Canada', 'United Kingdom', 'U.K.', 'United States of America', 'DE', 'DEU', 'IN', 'Puerto Rico', 'PRI', 'Kosovo', 'XK']) {
+    const accepts = buildLocationFilter({ allow: [country] });
+    assert.equal(accepts('Worldwide'), true, country);
+  }
+});
+
+test('worldwide: labels do not broaden city-only or mixed city/country allow-lists', () => {
+  for (const config of [
+    { allow: ['New York'] },
+    { allow: ['United States', 'New York'] },
+    { always_allow: ['United States'], allow: ['United States', 'New York'] },
+    { always_allow: ['New York'], allow: ['United States'] },
+  ]) {
+    const accepts = buildLocationFilter(config);
+    for (const label of WORLDWIDE_LABELS) {
+      assert.equal(accepts(label), false, `${JSON.stringify(config)} vs ${label}`);
+    }
+  }
+  for (const allow of [['Europe'], ['EU'], ['United States or Canada']]) {
+    assert.equal(buildLocationFilter({ allow })('Worldwide'), false, JSON.stringify(allow));
+  }
+});
+
+test('worldwide: QO allow-list does not admit Worldwide (pseudo-regions are not countries)', () => {
+  const accepts = buildLocationFilter({ allow: ['QO'] });
+  assert.equal(accepts('Worldwide'), false);
+  assert.equal(accepts('QO'), true, 'explicit region keyword still matches');
+});
+
+test('worldwide: country keywords exclude CLDR subdivisions, aggregates and pseudo-regions', () => {
+  for (const [code, name] of [
+    ['AC', 'Ascension Island'], ['CP', 'Clipperton Island'], ['CQ', 'Sark'],
+    ['DG', 'Diego Garcia'], ['EA', 'Ceuta & Melilla'], ['IC', 'Canary Islands'],
+    ['TA', 'Tristan da Cunha'], ['QO', 'Outlying Oceania'],
+    ['XA', 'Pseudo-Accents'], ['XB', 'Pseudo-Bidi'],
+    ['EU', 'European Union'], ['EZ', 'Eurozone'], ['UN', 'United Nations'],
+    ['ZZ', 'Unknown Region'],
+  ]) {
+    assert.equal(isCountryKeyword(code), false, code);
+    assert.equal(isCountryKeyword(name), false, name);
+  }
+});
+
+test('worldwide: unrecognized or qualified labels do not acquire worldwide eligibility', () => {
+  const accepts = buildLocationFilter(COUNTRY_ONLY_FILTER);
+  for (const location of [
+    'Remote', 'Unknown', 'Anywhere', 'Global', 'Canada',
+    'Not worldwide', 'Worldwide except Canada', 'Worldwide (US only)',
+    'Worldwide, Europe', 'Remote (worldwide) - US only',
+    'Anywhere  in the World', 'Worldwide - extra',
+  ]) {
+    assert.equal(accepts(location), false, location);
+  }
+});
+
+test('worldwide: unknown locations and strict mode keep their existing behavior', () => {
+  for (const strict of [false, true]) {
+    const accepts = buildLocationFilter({ ...COUNTRY_ONLY_FILTER, strict });
+    for (const location of ['', '  ', undefined, null, 42, {}]) {
+      assert.equal(accepts(location), !strict, `strict=${strict} location=${String(location)}`);
+    }
+  }
+  const strict = buildLocationFilter({ ...COUNTRY_ONLY_FILTER, strict: true });
+  for (const label of WORLDWIDE_LABELS) assert.equal(strict(label), false, label);
+  assert.equal(strict('United States'), true, 'strict still admits matching countries');
+  assert.equal(buildLocationFilter({ strict: true, allow: ['Worldwide'] })('Worldwide'), true,
+    'an explicit Worldwide allow entry still works');
+  assert.equal(buildLocationFilter({ strict: true })('Worldwide'), true, 'strict alone stays inert');
+});
+
+test('worldwide: block substring inside the label rejects it (Remote (worldwide) vs block remote)', () => {
+  const f = buildLocationFilter({ ...COUNTRY_ONLY_FILTER, block: ['remote'] });
+  assert.equal(f('Remote (worldwide)'), false, 'web-ui matches block by substring, unchanged');
+});
