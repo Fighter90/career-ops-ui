@@ -120,3 +120,30 @@ test('adapter: buildEndpoint honors an on-host https override, never an off-host
   assert.equal(workingNomadsAdapter.buildEndpoint({ api: 'https://evil.com/api' }), FEED_URL);
   assert.equal(workingNomadsAdapter.fetch, fetchWorkingNomads);
 });
+
+// ── Description passthrough (parent #6567) ─────────────────────────────────
+// Every posting's `description` carries its HTML, in the response already
+// fetched. The row must carry it as plain text so the en-scanner's
+// content_filter (`j.description ?? j.snippet`) can read it.
+
+test('fetchWorkingNomads: the HTML description reaches the row as plain text with entities decoded', async () => {
+  const jobs = await fetchWorkingNomads(undefined, {
+    fetchImpl: okJson([
+      { ...FEED_ROW, description: '<p><strong>About:</strong> DevOps &amp; platform work</p><p>Async-first.</p>' },
+    ]),
+  });
+  assert.equal(jobs[0].description, 'About: DevOps & platform work Async-first.');
+});
+
+test('fetchWorkingNomads: absent, empty, whitespace, non-string or markup-only description stays empty', async () => {
+  const jobs = await fetchWorkingNomads(undefined, {
+    fetchImpl: okJson([
+      { ...FEED_ROW, url: 'https://www.workingnomads.com/j/a' }, // absent
+      { ...FEED_ROW, url: 'https://www.workingnomads.com/j/b', description: '' }, // empty
+      { ...FEED_ROW, url: 'https://www.workingnomads.com/j/c', description: '   ' }, // whitespace
+      { ...FEED_ROW, url: 'https://www.workingnomads.com/j/d', description: null }, // non-string
+      { ...FEED_ROW, url: 'https://www.workingnomads.com/j/e', description: '<br><img src="x">' }, // markup-only
+    ]),
+  });
+  assert.deepEqual(jobs.map((j) => j.description), ['', '', '', '', '']);
+});

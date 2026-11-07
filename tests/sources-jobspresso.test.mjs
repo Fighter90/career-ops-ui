@@ -198,3 +198,49 @@ test('meta: value, label, region', async () => {
   assert.equal(meta.label, 'Jobspresso');
   assert.equal(meta.region, 'en');
 });
+
+// ── Full-post passthrough (parent #6585) ───────────────────────────────────
+// WP Job Manager feeds carry each posting's full HTML in <content:encoded>.
+// The row must carry it as plain text so the en-scanner's content_filter
+// (`j.description ?? j.snippet`) can read it. <description> is NOT a
+// fallback: WordPress fills it with an excerpt, and content_filter drops a
+// posting whose text lacks a required keyword while it passes one with no
+// text — an excerpt must never stand in for the post.
+
+test('parseJobspressoFeed: content:encoded HTML arrives as plain-text description with entities decoded', () => {
+  const xml = `<rss><channel>
+    <item>
+      <title>Senior Backend Engineer</title>
+      <link>https://jobspresso.co/jobs/acme-backend</link>
+      <description><![CDATA[Senior role, first 55 words only.]]></description>
+      <content:encoded><![CDATA[<p><strong>Requirements:</strong> Node &amp; Postgres</p><p>Fully remote.</p>]]></content:encoded>
+    </item>
+  </channel></rss>`;
+  const jobs = parseJobspressoFeed(xml);
+  assert.equal(jobs.length, 1);
+  assert.equal(jobs[0].description, 'Requirements: Node & Postgres Fully remote.');
+});
+
+test('parseJobspressoFeed: an excerpt-only item leaves description empty — the excerpt never stands in', () => {
+  const xml = `<rss><channel>
+    <item>
+      <title>Platform Engineer</title>
+      <link>https://jobspresso.co/jobs/globex-platform</link>
+      <description><![CDATA[Short excerpt naming <b>Kubernetes</b>.]]></description>
+    </item>
+  </channel></rss>`;
+  const jobs = parseJobspressoFeed(xml);
+  assert.equal(jobs.length, 1);
+  assert.equal(jobs[0].description, '');
+});
+
+test('parseJobspressoFeed: empty, whitespace or markup-only content:encoded leaves description empty', () => {
+  const xml = `<rss><channel>
+    <item><title>One</title><link>https://jobspresso.co/jobs/one</link></item>
+    <item><title>Two</title><link>https://jobspresso.co/jobs/two</link><content:encoded><![CDATA[]]></content:encoded></item>
+    <item><title>Three</title><link>https://jobspresso.co/jobs/three</link><content:encoded><![CDATA[   ]]></content:encoded></item>
+    <item><title>Four</title><link>https://jobspresso.co/jobs/four</link><content:encoded><![CDATA[<br><img src="x">]]></content:encoded></item>
+  </channel></rss>`;
+  const jobs = parseJobspressoFeed(xml);
+  assert.deepEqual(jobs.map((j) => j.description), ['', '', '', '']);
+});

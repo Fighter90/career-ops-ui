@@ -333,3 +333,55 @@ test('adapter: id, label, fetch wired correctly', () => {
   assert.equal(jobicyAdapter.label, 'Jobicy');
   assert.equal(typeof jobicyAdapter.fetch, 'function');
 });
+
+// ── Entity decode in the feed's text fields (parent #6492) ─────────────────
+// The feed encodes its text ("Zone &#038; Co"); entities must be decoded so
+// title filters and blacklist entries written with the real name match, and
+// an entity that decodes to whitespace must not pass as a real name.
+
+const okJobicyJson = (data) => async () => ({ ok: true, json: async () => data });
+
+test('fetchJobicy: entities in title, company and location decode', async () => {
+  const json = {
+    jobs: [{
+      id: 201,
+      jobTitle: 'Platform &#038; Infra Engineer',
+      companyName: 'Zone &#038; Co',
+      url: 'https://jobicy.com/jobs/201-zone',
+      jobGeo: 'Worldwide &#038; Remote',
+    }],
+  };
+  const jobs = await fetchJobicy(FEED_URL, { fetchImpl: okJobicyJson(json) });
+  assert.equal(jobs.length, 1);
+  assert.equal(jobs[0].title, 'Platform & Infra Engineer');
+  assert.equal(jobs[0].company, 'Zone & Co');
+  assert.equal(jobs[0].location, 'Worldwide & Remote');
+});
+
+test('fetchJobicy: a company name that decodes to whitespace falls back to the default', async () => {
+  const json = {
+    jobs: [{
+      id: 202,
+      jobTitle: 'Backend Developer',
+      companyName: '&nbsp;',
+      url: 'https://jobicy.com/jobs/202-nbsp-co',
+      jobGeo: 'EU',
+    }],
+  };
+  const jobs = await fetchJobicy(FEED_URL, { fetchImpl: okJobicyJson(json) });
+  assert.equal(jobs.length, 1);
+  assert.equal(jobs[0].company, 'Jobicy');
+});
+
+test('fetchJobicy: a title that decodes to whitespace drops the row', async () => {
+  const json = {
+    jobs: [{
+      id: 203,
+      jobTitle: '&nbsp;',
+      companyName: 'Acme',
+      url: 'https://jobicy.com/jobs/203-nbsp-title',
+    }],
+  };
+  const jobs = await fetchJobicy(FEED_URL, { fetchImpl: okJobicyJson(json) });
+  assert.deepEqual(jobs, []);
+});

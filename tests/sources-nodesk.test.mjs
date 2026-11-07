@@ -114,3 +114,36 @@ test('meta: id/label/region', () => {
   assert.equal(meta.region, 'en');
   assert.equal(nodeskAdapter.id, 'nodesk');
 });
+
+// ── Twice-escaped ampersand (parent #6584) ─────────────────────────────────
+// NoDesk's feed escapes each title twice: the raw XML carries
+// "Hybrid Platform &amp;amp; Deployment Models", so the extractor's one decode
+// left "&amp;" in the title and in the company split from it. Exactly one
+// more decode pass — not a loop until the text stops changing.
+
+test('parseNodeskFeed: a twice-escaped & reads as & in the title and the company', () => {
+  const xml = `<rss><channel>
+    <item><title>Hybrid Platform &amp;amp; Deployment Models Engineer at Acme &amp;amp; Co</title><link>https://nodesk.co/remote-jobs/hybrid</link></item>
+  </channel></rss>`;
+  const jobs = parseNodeskFeed(xml);
+  assert.equal(jobs.length, 1);
+  assert.equal(jobs[0].title, 'Hybrid Platform & Deployment Models Engineer');
+  assert.equal(jobs[0].company, 'Acme & Co');
+});
+
+test('parseNodeskFeed: a once-escaped & still reads the same (no over-decode)', () => {
+  const xml = `<rss><channel>
+    <item><title>Go Engineer at Smith &amp; Sons</title><link>https://nodesk.co/remote-jobs/go-smith</link></item>
+  </channel></rss>`;
+  const jobs = parseNodeskFeed(xml);
+  assert.equal(jobs[0].title, 'Go Engineer');
+  assert.equal(jobs[0].company, 'Smith & Sons');
+});
+
+test('parseNodeskFeed: a three-times-escaped & stays one level escaped (exactly two passes)', () => {
+  const xml = `<rss><channel>
+    <item><title>Data &amp;amp;amp; Platform Engineer at Globex</title><link>https://nodesk.co/remote-jobs/data</link></item>
+  </channel></rss>`;
+  const jobs = parseNodeskFeed(xml);
+  assert.equal(jobs[0].title, 'Data &amp; Platform Engineer');
+});

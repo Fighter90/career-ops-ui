@@ -42,3 +42,46 @@ test('fetchWeWorkRemotely: still parses a normal feed', async () => {
   assert.equal(jobs.length, 1);
   assert.equal(jobs[0].title, 'Go Engineer');
 });
+
+// ── Description passthrough (parent #6568) ─────────────────────────────────
+// Every item's <description> carries the posting's HTML, in the feed already
+// fetched. The row must carry it as plain text so the en-scanner's
+// content_filter (`j.description ?? j.snippet`) can read it.
+
+test('parseWwrFeed: an entity-escaped description arrives as plain text with entities decoded', () => {
+  const xml = `<?xml version="1.0"?><rss version="2.0"><channel>
+  <item>
+    <title>Acme: Go Engineer</title>
+    <link>https://weworkremotely.com/remote-jobs/acme-go</link>
+    <description>&lt;p&gt;&lt;strong&gt;Requirements:&lt;/strong&gt; Go &amp;amp; Postgres&lt;/p&gt;&lt;p&gt;Remote-first.&lt;/p&gt;</description>
+  </item>
+</channel></rss>`;
+  const jobs = parseWwrFeed(xml);
+  assert.equal(jobs.length, 1);
+  assert.equal(jobs[0].description, 'Requirements: Go & Postgres Remote-first.');
+});
+
+test('parseWwrFeed: a CDATA description arrives as plain text too', () => {
+  const xml = `<?xml version="1.0"?><rss version="2.0"><channel>
+  <item>
+    <title><![CDATA[Globex: Support Engineer]]></title>
+    <link>https://weworkremotely.com/remote-jobs/globex-support</link>
+    <description><![CDATA[<p>We run <b>Intercom</b> for customers.</p>]]></description>
+  </item>
+</channel></rss>`;
+  const jobs = parseWwrFeed(xml);
+  assert.equal(jobs.length, 1);
+  assert.ok(jobs[0].description.includes('Intercom'), 'the body keyword must reach the row');
+  assert.equal(jobs[0].description, 'We run Intercom for customers.');
+});
+
+test('parseWwrFeed: absent, empty, whitespace or markup-only description stays empty', () => {
+  const xml = `<?xml version="1.0"?><rss version="2.0"><channel>
+  <item><title>A: One</title><link>https://weworkremotely.com/remote-jobs/one</link></item>
+  <item><title>A: Two</title><link>https://weworkremotely.com/remote-jobs/two</link><description></description></item>
+  <item><title>A: Three</title><link>https://weworkremotely.com/remote-jobs/three</link><description>   </description></item>
+  <item><title>A: Four</title><link>https://weworkremotely.com/remote-jobs/four</link><description>&lt;br&gt;&lt;img src="x"&gt;</description></item>
+</channel></rss>`;
+  const jobs = parseWwrFeed(xml);
+  assert.deepEqual(jobs.map((j) => j.description), ['', '', '', '']);
+});
