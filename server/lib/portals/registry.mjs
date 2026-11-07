@@ -192,6 +192,12 @@ import { techinasiaAdapter } from './adapters/techinasia.mjs';
 // host-detected <client>.hire.trakstar.com / <client>.recruiterbox.com or
 // explicit `provider: trakstar`; no-auth Frontend API, 100 openings/page).
 import { trakstarAdapter } from './adapters/trakstar.mjs';
+import { aldiNordAdapter } from './adapters/aldi-nord.mjs';
+import { hibobAdapter } from './adapters/hibob.mjs';
+import { hirehiveAdapter } from './adapters/hirehive.mjs';
+import { factorialAdapter } from './adapters/factorial.mjs';
+import { polymerAdapter } from './adapters/polymer.mjs';
+import { remoteComAdapter } from './adapters/remote-com.mjs';
 // CAR-184 — parent parity: Deel (multi-tenant job board jobs.deel.com/<slug>,
 // exact-host detected; the landing page's Next.js flight payload carries the
 // whole inventory in one request).
@@ -414,8 +420,25 @@ export const ALL_ADAPTERS = [
   // Keka (parent #6199) — <tenant>.keka.com embed-jobs feed; identifier off
   // the careers shell, redirect:'manual' tenant probe.
   kekaAdapter,
+  // Parent #6529 — ALDI Nord (single-company provider, careers.albinord... the
+  // parent's own host set; explicit `provider: aldi-nord` or a SITES host match).
+  aldiNordAdapter,
+  // Parent #6502 — HiBob (tenant boards <tenant>.careers.hibob.com, one
+  // job-ad API request; explicit `provider: hibob` or host match).
+  hibobAdapter,
+  // Parent #6503 — HireHive (tenant boards <tenant>.hirehive.com, v2 jobs
+  // API; explicit `provider: hirehive` or host match).
+  hirehiveAdapter,
+  // Parent #6394 — Factorial ATS (tenant careers sites on the factorial
+  // domain family; CSP-derived allowlist, host rewrite on read).
+  factorialAdapter,
+  // Parent #6128 — Polymer Hire (careers API walk; RAW-length stops +
+  // covering-count guard against the demo tenant's lying total).
+  polymerAdapter,
+  // Parent #6392 — Remote's own ATS (apply.remote.com; fixed endpoint,
+  // closed/not-accepting rows drop).
+  remoteComAdapter,
 ];
-
 /**
  * Find the adapter that handles a given company entry. Returns
  * `{ adapter, endpoint }` or `null` when no adapter matches.
