@@ -7,7 +7,7 @@
 
 _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von diesen unterstützt._
 
-[![tests](https://img.shields.io/badge/tests-7920%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-7922%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
@@ -17,9 +17,9 @@ _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Neueste Version — v1.271.1** — /api/map/jobs standardmäßig schlank (CAR-249): der schwerste Seitenaufruf auf Prod (4.6 MB) liefert jetzt nur die 11 Felder, die die Karte konsumiert; `?full=1` stellt alle Spalten wieder her; /api/pipeline bewusst unangetastet. Tests 7918 → 7920.
+> **🆕 Neueste Version — v1.271.2** — die Pipeline-Sektion von /api/map/jobs auf die neuesten 1000 Zeilen begrenzt: die wahre Zahl in `pipelineTotal`, `?pipeline=all` stellt alles wieder her; der Tracker-Schlankmacher erschien in v1.271.1. Tests 7920 → 7922.
 >
-> **Vorherige Version — v1.271.0** — Karriereaufgaben-Kanban (`#/tasks`, Gruppe Entwicklung): persönliches Drag-and-Drop-Board — Spalten Backlog/In Arbeit/Fertig, optimistische Verschiebungen via `PUT /api/tasks/:id`, Tastatur + Mobil-Select, «+» pro Spalte, Detail-Modal; persistiert in `data/career-tasks.json`; Aufräumungen aus CodeQL-Welle 22; `perf`-Dispatch von remote-qa (Median TTFB/total, exit 1 bei SLOW >2000 ms). Tests 7874 → 7918.
+> **Vorherige Version — v1.271.1** — /api/map/jobs standardmäßig schlank (CAR-249): der schwerste Seitenaufruf auf Prod (4.6 MB) liefert jetzt nur die 11 Felder, die die Karte konsumiert; `?full=1` stellt alle Spalten wieder her; /api/pipeline bewusst unangetastet. Tests 7918 → 7920.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

@@ -12,6 +12,15 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.271.2] — 2026-11-08
+
+### Corrigé
+- **Section pipeline de /api/map/jobs plafonnée aux 1000 lignes les plus récentes (CAR-250)** — l'allègement du tracker de v1.271.1 a retiré ~300 KB, mais la sonde post-correctif mesurait encore 4.4 MB : le vrai poids est un pipeline.md qui vit longtemps, dont toutes les lignes transitent par `parsePipelineRows` vers le payload (un fichier de taille prod accumule des milliers de lignes périmées). La section pipeline expédie désormais par défaut les 1000 lignes les plus récentes (la boîte de réception la plus fraîche — le scanner ajoute à la fin), le vrai compte est rapporté dans `pipelineTotal`, et `?pipeline=all` restaure chaque ligne. Le calcul de `titleFit` par ligne ne s'exécute plus que sur la section expédiée.
+
+### Notes
+- Le client carte affiche les épingles et cherche dans la liste récupérée : l'ensemble utile, c'est la boîte récente ; la vue pipeline (`#/pipeline`) reste la surface du travail sur l'historique complet et n'est délibérément PAS modifiée.
+- Purger un pipeline périmé reste une action d'opérateur (la suppression en masse de pipeline v2) ; le plafond est le garde-fou côté application, PAS un changement de données.
+
 ## [1.271.1] — 2026-11-07
 
 ### Corrigé

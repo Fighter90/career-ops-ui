@@ -2,6 +2,15 @@
 
 > Dieses Changelog enthält die vollständige Versionsgeschichte. Einträge, die vor der deutschen Lokalisierung (v1.85.0) veröffentlicht wurden, stehen unten im englischen Original — Übersetzung ausstehend; maßgeblich bleibt [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.271.2] — 2026-11-08
+
+### Behoben
+- **Die Pipeline-Sektion von /api/map/jobs auf die neuesten 1000 Zeilen begrenzt (CAR-250)** — der Tracker-Schlankmacher aus v1.271.1 nahm ~300 KB weg, aber die Post-Fix-Sonde maß weiterhin 4.4 MB: das echte Gewicht ist eine langlebige pipeline.md, deren Zeilen alle durch `parsePipelineRows` in die Payload fließen (eine prod-große Datei sammelt tausende veraltete Zeilen). Die Pipeline-Sektion liefert jetzt standardmäßig die neuesten 1000 Zeilen (der frischeste Eingang — der Scanner hängt hinten an), meldet die wahre Zahl in `pipelineTotal`, und `?pipeline=all` stellt jede Zeile wieder her. Die `titleFit`-Berechnung pro Zeile läuft jetzt nur über die ausgelieferte Sektion.
+
+### Hinweise
+- Der Karten-Client zeichnet Pins und sucht innerhalb der geladenen Liste, der nützliche Satz ist also der aktuelle Eingang; die Pipeline-Ansicht (`#/pipeline`) bleibt die Oberfläche für die Arbeit mit der vollen Historie und wird bewusst NICHT geändert.
+- Einen veralteten Pipeline-Eingang zu leeren bleibt eine Operator-Aufgabe (das Bulk-Discard von pipeline v2); die Begrenzung ist die Absicherung auf App-Seite, KEINE Datenänderung.
+
 ## [1.271.1] — 2026-11-07
 
 ### Behoben

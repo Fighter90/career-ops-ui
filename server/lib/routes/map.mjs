@@ -1,7 +1,7 @@
 /**
  * #/map data — pending pipeline rows and tracker rows, each with a location.
  *
- *   GET /api/map/jobs → { pipeline: [{url, href, company, title, location, fit?}],  (slim by default, CAR-249; ?full=1 restores every parsed column)
+ *   GET /api/map/jobs → { pipeline: [{url, href, company, title, location, fit?}],  (slim by default, CAR-249; ?full=1 restores every parsed column; pipeline capped at the newest 1000, CAR-250, ?pipeline=all)
  *                         tracker:  [{...tracker row, href, location}],
  *                         tiles:    {url, attribution} }
  *
@@ -158,6 +158,10 @@ const OSM_TILES = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
  * `origin` is the CSP form (wildcard subdomains). Attribution links are
  * anchors, not images — no CSP entry needed for carto.com.
  */
+// CAR-250 — the default pipeline-section cap for /api/map/jobs (see the
+// route comment below). Exported for tests.
+export const MAP_PIPELINE_CAP = 1000;
+
 export const DARK_TILES = Object.freeze({
   url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
   attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
@@ -218,11 +222,20 @@ export function registerMapRoutes(app) {
       idx = new Map();
     }
     const targets = loadProfileTargetRoles();
-    const pipeline = pending.map((r) => {
+    // CAR-250 — the pipeline section is capped at the newest MAP_PIPELINE_CAP
+    // rows by default (parsePipelineRows preserves file order, and the
+    // scanner appends, so the tail is the freshest inbox). A long-lived prod
+    // pipeline.md accumulates thousands of stale rows and made this endpoint
+    // the heaviest page-load on prod (4.4 MB of the 4.6 measured); the map
+    // renders pins and searches within the fetched list, so the recent inbox
+    // is the useful set. `?pipeline=all` restores every row, and
+    // `pipelineTotal` always reports the true count.
+    const allPipeline = pending.map((r) => {
       const f = titleFit(r.title, targets);
       const row = { ...r, href: httpOnly(r.href) };
       return f ? { ...row, fit: { band: f.band, score: f.score } } : row;
     });
+    const pipeline = allPipeline.length > MAP_PIPELINE_CAP ? allPipeline.slice(-MAP_PIPELINE_CAP) : allPipeline;
     // CAR-249 — the map view reads a fixed field set (num/company/role/status/
     // score/scoreNum/url/href/location/workplace/reportPath); the parsed
     // tracker rows additionally carry long notes and raw markdown cells
@@ -242,6 +255,12 @@ export function registerMapRoutes(app) {
       return out;
     });
     const { url, attribution, dark } = tileConfig();
-    res.json({ pipeline, tracker, tiles: { url, attribution, dark: { url: dark.url, attribution: dark.attribution } } });
+    const pipelineAll = req.query.pipeline === 'all';
+    res.json({
+      pipeline: pipelineAll ? allPipeline : pipeline,
+      pipelineTotal: allPipeline.length,
+      tracker,
+      tiles: { url, attribution, dark: { url: dark.url, attribution: dark.attribution } },
+    });
   });
 }

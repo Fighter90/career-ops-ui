@@ -1,3 +1,12 @@
+## [1.271.2] — 2026-11-08
+
+### Fixed
+- **/api/map/jobs pipeline section capped at the newest 1000 rows (CAR-250)** — the tracker slim in v1.271.1 removed ~300 KB, but the post-fix probe still measured 4.4 MB: the real weight is a long-lived pipeline.md, whose rows all flow through `parsePipelineRows` into the payload (a prod-sized file accumulates thousands of stale rows). The pipeline section now defaults to the newest 1000 rows (the freshest inbox — the scanner appends), reports the true count in `pipelineTotal`, and `?pipeline=all` restores every row. The per-row `titleFit` computation only runs on the shipped section now.
+
+### Notes
+- The map client renders pins and searches within the fetched list, so the recent inbox is the useful set; the pipeline VIEW (`#/pipeline`) is the surface for full-history work and is deliberately NOT changed.
+- Draining a stale pipeline remains an operator action (pipeline v2's bulk discard); the cap is the app-side guard, not a data change.
+
 ## [1.271.1] — 2026-11-07
 
 ### Fixed

@@ -2,6 +2,15 @@
 
 > Questo changelog contiene ora la cronologia completa delle versioni. Le voci pubblicate prima della localizzazione italiana (v1.85.0) compaiono sotto nell'originale inglese — traduzione in attesa; il riferimento resta [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.271.2] — 2026-11-08
+
+### Corretto
+- **La sezione pipeline di /api/map/jobs limitata alle 1000 righe più recenti (CAR-250)** — lo slim del tracker di v1.271.1 ha tolto ~300 KB, ma la sonda post-fix misurava ancora 4.4 MB: il vero peso è una pipeline.md di lunga vita, le cui righe fluiscono tutte attraverso `parsePipelineRows` nel payload (un file di dimensioni prod accumula migliaia di righe datate). La sezione pipeline ora invia per impostazione predefinita le 1000 righe più recenti (l'inbox più fresca — lo scanner aggiunge in coda), riporta il numero reale in `pipelineTotal`, e `?pipeline=all` ripristina ogni riga. Il calcolo di `titleFit` per riga ora gira solo sulla sezione inviata.
+
+### Note
+- Il client mappa disegna i pin e cerca dentro la lista ricevuta, quindi l'insieme utile è l'inbox recente; la vista pipeline (`#/pipeline`) resta la superficie per il lavoro sulla storia completa ed è deliberatamente NON modificata.
+- Svuotare una pipeline datata resta un'azione dell'operatore (l'eliminazione in blocco di pipeline v2); il limite è la protezione lato app, NON una modifica dei dati.
+
 ## [1.271.1] — 2026-11-07
 
 ### Corretto

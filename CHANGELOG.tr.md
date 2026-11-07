@@ -2,6 +2,15 @@
 
 > Bu changelog artık tüm sürüm geçmişini içerir. Türkçe yerelleştirmenin eklenmesinden (v1.85.0) önce yayınlanan girdiler aşağıda İngilizce özgün hâliyle yer alır — çeviri bekliyor; asıl kaynak [🇬🇧 CHANGELOG.md](CHANGELOG.md)'dir.
 
+## [1.271.2] — 2026-11-08
+
+### Düzeltildi
+- **/api/map/jobs'un pipeline bölümü en yeni 1000 satırla sınırlandı (CAR-250)** — v1.271.1'deki tracker slim'i ~300 KB kaldırdı ama düzeltme sonrası probe hâlâ 4.4 MB ölçüyordu: gerçek ağırlık uzun ömürlü bir pipeline.md — satırlarının tamamı `parsePipelineRows` üzerinden payload'a akıyor (prod boyutunda bir dosya binlerce bayat satır biriktiriyor). Pipeline bölümü artık varsayılan olarak en yeni 1000 satırı gönderiyor (en taze gelen kutusu — scanner sona ekler), gerçek sayıyı `pipelineTotal` içinde bildiriyor, `?pipeline=all` ise her satırı geri getiriyor. Satır başına `titleFit` hesabı artık yalnızca gönderilen bölüm üzerinde çalışıyor.
+
+### Notlar
+- Harita istemcisi pinleri çiziyor ve getirilen liste içinde arıyor, dolayısıyla kullanışlı küme yakın gelen kutusudur; pipeline GÖRÜNÜMÜ (`#/pipeline`) tam geçmişle çalışma yüzeyidir ve bilinçli olarak DEĞİŞTİRİLMEDİ.
+- Bayat bir pipeline'ı boşaltmak operatör eylemi olmaya devam ediyor (pipeline v2'nin toplu discard'ı); sınır, uygulama tarafındaki korumadır — bir veri değişikliği DEĞİLDİR.
+
 ## [1.271.1] — 2026-11-07
 
 ### Düzeltildi
