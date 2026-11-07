@@ -109,8 +109,11 @@ export function readTasks() {
   }
   corruptWarned = false;
   const tasks = parsed && typeof parsed === 'object' && Array.isArray(parsed.tasks) ? parsed.tasks : [];
-  // Keep only well-shaped rows so a hand-edited file can't poison the board.
-  return tasks.filter((t) => t && typeof t === 'object' && typeof t.id === 'string' && typeof t.title === 'string');
+  // Keep only well-shaped rows so a hand-edited file can't poison the board,
+  // and serve the board order contract: newest-updated first.
+  return tasks
+    .filter((t) => t && typeof t === 'object' && typeof t.id === 'string' && typeof t.title === 'string')
+    .sort(byNewestUpdated);
 }
 
 export function readTasksFile() {

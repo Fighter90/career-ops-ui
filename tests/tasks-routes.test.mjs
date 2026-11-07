@@ -161,12 +161,14 @@ test('DELETE removes the task ({ok:true}) and it leaves the list', async () => {
   assert.equal(tasks.some((t) => t.id === task.id), false);
 });
 
-test('list is newest-updated first (update the first → it comes first)', async () => {
+test('list is newest-updated first (update the SECOND → it jumps to the front)', async () => {
   const a = (await (await post({ title: 'First created' })).json()).task;
   const b = (await (await post({ title: 'Second created' })).json()).task;
-  await put(a.id, { priority: 'high' }); // touch the FIRST — it must lead
+  // Touch the LAST-created task — insertion order would keep `a` first, so
+  // this discriminates a real sort from an accidentally-passing array order.
+  await put(b.id, { priority: 'high' });
   const tasks = await list();
-  assert.equal(tasks[0].id, a.id);
+  assert.equal(tasks[0].id, b.id, 'the newest-updated task must lead');
   for (let i = 1; i < tasks.length; i++) {
     assert.ok(String(tasks[i - 1].updated) >= String(tasks[i].updated), 'array must be non-increasing by updated');
   }
