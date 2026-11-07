@@ -148,8 +148,7 @@ export function parseAvature(html, ctx = /** @type {any} */ ({})) {
     if (!title) continue;
 
     let url = decodeEntities(urlM[1]);
-    let absolute = /^https?:\/\//i.test(url);
-    if (!absolute) {
+    if (!/^https?:\/\//i.test(url)) {
       if (!origin) continue; // no base to resolve a relative href against
       // new URL resolves root-relative, path-relative and protocol-relative
       // (//host/...) hrefs the way a browser would; string concatenation would
@@ -158,14 +157,13 @@ export function parseAvature(html, ctx = /** @type {any} */ ({})) {
       // (parent #6477).
       try {
         url = new URL(url, origin).href;
-        absolute = true;
       } catch {
         continue;
       }
     }
     {
-      // Absolute by this point (a relative href either resolved above or
-      // continued) — keep only if it lands on the tenant origin.
+      // `url` is absolute here (it started http(s) or resolved above) — keep
+      // it only if it lands on the tenant origin.
       let host = '';
       try {
         host = new URL(url).hostname.toLowerCase();

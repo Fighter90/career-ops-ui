@@ -169,6 +169,7 @@ test('list is newest-updated first (update the SECOND → it jumps to the front)
   await put(b.id, { priority: 'high' });
   const tasks = await list();
   assert.equal(tasks[0].id, b.id, 'the newest-updated task must lead');
+  assert.ok(tasks.some((t) => t.id === a.id), 'the untouched task must still be listed');
   for (let i = 1; i < tasks.length; i++) {
     assert.ok(String(tasks[i - 1].updated) >= String(tasks[i].updated), 'array must be non-increasing by updated');
   }
