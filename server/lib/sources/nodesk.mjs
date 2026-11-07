@@ -104,7 +104,12 @@ export function parseNodeskFeed(xml, defaultCompany = 'NoDesk') {
   for (const item of blocks) {
     const url = cleanUrl(tagText(item, 'link'));
     if (!url) continue;
-    const rawTitle = tagText(item, 'title');
+    // The feed escapes titles twice: the raw XML carries `Hybrid Platform
+    // &amp;amp; Deployment Models`, so the extractor's one decode leaves
+    // `&amp;` in the title (and in the company split from it). Exactly one
+    // more pass, not a decode-until-stable loop — the same shape
+    // cryptocurrencyjobs.mjs decodes for the same reason. (parent #6584)
+    const rawTitle = decodeEntities(tagText(item, 'title'));
     if (!rawTitle) continue;
     const { title, company } = splitTitle(rawTitle, fallback);
     jobs.push({

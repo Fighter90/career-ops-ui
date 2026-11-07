@@ -19,6 +19,7 @@
  * Used by the remoteok adapter (server/lib/portals/adapters/remoteok.mjs).
  */
 import { fetchJson, labeledHttpError } from '../http-json.mjs';
+import { htmlToText } from '../html-to-text.mjs';
 
 const UA = 'career-ops-web-ui/1.0';
 
@@ -118,6 +119,10 @@ export async function fetchRemoteOk(feedUrl = FEED_URL, opts = {}) {
 function normalize(j) {
   const url = j.url.trim();
   const native = j.id != null ? String(j.id) : (j.slug || djb2(url));
+  // Every row carries the posting's HTML in `description`, so it costs no
+  // request. The en-scanner's content_filter (`j.description ?? j.snippet`)
+  // and the years_min reader match on it; empty/garbage → '' (the "no signal"
+  // path both handle). (parent #6565)
   return {
     id: `remoteok-${native}`,
     title: j.position.trim(),
@@ -130,6 +135,7 @@ function normalize(j) {
     relocates: false,
     date: toIsoDate(j.date),
     snippet: '',
+    description: htmlToText(j.description),
     source: 'remoteok',
   };
 }

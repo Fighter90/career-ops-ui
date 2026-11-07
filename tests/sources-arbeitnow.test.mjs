@@ -237,3 +237,46 @@ test('adapter: fetch is fetchArbeitnow', async () => {
   const jobs = await arbeitnowAdapter.fetch(FEED_URL, { fetchImpl: fakeFetch() });
   assert.equal(jobs.length, 2);
 });
+
+// ── Description passthrough (parent #6439) ─────────────────────────────────
+// The description ships in the list payload, so it costs no extra request.
+// The row must carry it (HTML-stripped) so the en-scanner's content_filter
+// (`j.description ?? j.snippet`) and the years_min reader can match on it.
+
+const okArbeitnowJson = (data) => async () => ({ ok: true, json: async () => data });
+
+test('fetchArbeitnow: the HTML description reaches the row as plain text with entities decoded', async () => {
+  const json = {
+    data: [{
+      slug: 'desc-acme',
+      company_name: 'Acme',
+      title: 'Backend Engineer',
+      url: 'https://www.arbeitnow.com/jobs/acme/backend',
+      location: 'Berlin',
+      remote: false,
+      description: '<p><strong>Stack:</strong> TypeScript &amp; Postgres</p><p>Visa sponsorship offered.</p>',
+      created_at: 1750000000,
+    }],
+  };
+  const jobs = await fetchArbeitnow(FEED_URL, { fetchImpl: okArbeitnowJson(json) });
+  assert.equal(jobs.length, 1);
+  assert.equal(jobs[0].description, 'Stack: TypeScript & Postgres Visa sponsorship offered.');
+});
+
+test('fetchArbeitnow: absent, empty, whitespace, non-string or markup-only description stays empty', async () => {
+  const mk = (slug, description) => ({
+    slug, company_name: 'Acme', title: `Role ${slug}`,
+    url: `https://www.arbeitnow.com/jobs/acme/${slug}`, description,
+  });
+  const json = {
+    data: [
+      mk('absent'), // absent
+      mk('empty', ''),
+      mk('ws', '   '),
+      mk('num', 42),
+      mk('markup', '<br><img src="x">'),
+    ],
+  };
+  const jobs = await fetchArbeitnow(FEED_URL, { fetchImpl: okArbeitnowJson(json) });
+  assert.deepEqual(jobs.map((j) => j.description), ['', '', '', '', '']);
+});

@@ -16,6 +16,7 @@
  *               job_types, location, created_at } ], links, meta }
  */
 import { fetchJson, labeledHttpError } from '../http-json.mjs';
+import { htmlToText } from '../html-to-text.mjs';
 
 const UA = 'career-ops-web-ui/1.0';
 const TRUSTED_HOST = 'www.arbeitnow.com';
@@ -99,6 +100,10 @@ function normalize(j) {
   const slugRaw = typeof j.slug === 'string' ? j.slug.trim() : '';
   const id = `arbeitnow-${slugRaw || url}`;
 
+  // `description` arrives as HTML in the same list payload (no per-job
+  // request), so it is free. The en-scanner's content_filter
+  // (`j.description ?? j.snippet`) and the years_min reader match on it;
+  // empty/garbage → '' (the "no signal" path both handle). (parent #6439)
   return {
     id,
     title,
@@ -111,6 +116,7 @@ function normalize(j) {
     relocates: false,
     date: epochSecondsToDate(j.created_at),
     snippet: '',
+    description: htmlToText(j.description),
     source: 'arbeitnow',
   };
 }

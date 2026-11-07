@@ -14,6 +14,7 @@
  */
 import { fetchText } from '../http-json.mjs';
 import { decodeEntities } from '../html-entities.mjs';
+import { htmlToText } from '../html-to-text.mjs';
 const decodeXmlEntities = decodeEntities;
 
 export const FEED_URL = 'https://jobspresso.co/?feed=job_feed';
@@ -134,6 +135,14 @@ export function parseJobspressoFeed(xml, fallbackCompany = 'Jobspresso') {
       ? { company: tagged, title: rawTitle }
       : splitTitle(rawTitle, company);
     const location = extractLocation(item);
+    // WP Job Manager carries the full post in <content:encoded>, in this same
+    // feed — so it costs no request. The en-scanner's content_filter
+    // (`j.description ?? j.snippet`) and the years_min reader match on it;
+    // no text remaining → ''. <description> is NOT a fallback: WordPress
+    // fills it with an excerpt (the post's first 55 words by default), and
+    // content_filter drops a posting whose text lacks a required keyword
+    // while it passes one with no text — an excerpt would drop postings that
+    // name the keyword further down. (parent #6585)
     jobs.push({
       id: `jobspresso-${djb2(url)}`,
       title,
@@ -146,6 +155,7 @@ export function parseJobspressoFeed(xml, fallbackCompany = 'Jobspresso') {
       relocates: false,
       date: toIsoDate(tagText(item, 'pubDate')),
       snippet: '',
+      description: htmlToText(tagText(item, 'content:encoded')),
       source: 'jobspresso',
     });
   }

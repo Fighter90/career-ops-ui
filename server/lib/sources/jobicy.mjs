@@ -13,6 +13,7 @@
  * Used by the jobicy adapter (server/lib/portals/adapters/jobicy.mjs).
  */
 import { requireArray, requireContainer } from './_shape.mjs';
+import { decodeEntities } from '../html-entities.mjs';
 
 import { fetchJson, labeledHttpError } from '../http-json.mjs';
 
@@ -125,10 +126,15 @@ export async function fetchJobicy(feedUrl = FEED_URL, opts = {}) {
   return all;
 }
 
-/** A row is usable when it carries a title and an https jobicy.com URL. */
+/**
+ * A row is usable when it carries a title and an https jobicy.com URL.
+ * The title is judged on the DECODED text — the feed's text fields arrive
+ * HTML-encoded, so an entity-only title (`&nbsp;`) is blank once decoded
+ * and must drop, not ship as an empty-title row. (parent #6492)
+ */
 function validRow(j) {
   if (!j || typeof j !== 'object') return false;
-  if (typeof j.jobTitle !== 'string' || j.jobTitle.trim() === '') return false;
+  if (typeof j.jobTitle !== 'string' || decodeEntities(j.jobTitle).trim() === '') return false;
   const rawUrl = typeof j.url === 'string' ? j.url.trim() : '';
   try {
     const p = new URL(rawUrl);
@@ -169,13 +175,18 @@ function normalize(j) {
     }
   }
 
+  // The feed's text fields arrive HTML-encoded ("Zone &#038; Co"), so they
+  // are decoded before use — a title filter or blacklist entry written with
+  // the real name could never match the entity. (parent #6492)
   return {
     id: `jobicy-${j.id != null ? String(j.id) : url}`,
-    title: j.jobTitle.trim(),
-    company: typeof j.companyName === 'string' && j.companyName.trim() ? j.companyName.trim() : 'Jobicy',
+    title: decodeEntities(j.jobTitle).trim(),
+    // The fallback is decided on the DECODED name: "&nbsp;" is not blank
+    // until it is decoded.
+    company: (typeof j.companyName === 'string' ? decodeEntities(j.companyName).trim() : '') || 'Jobicy',
     url,
     salary,
-    location: typeof j.jobGeo === 'string' ? j.jobGeo.trim() : '',
+    location: typeof j.jobGeo === 'string' ? decodeEntities(j.jobGeo).trim() : '',
     isRemote: true,
     workplaceType: 'Remote',
     relocates: false,

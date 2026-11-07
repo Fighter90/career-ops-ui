@@ -16,6 +16,7 @@
  */
 import { fetchText } from '../http-json.mjs';
 import { decodeEntities } from '../html-entities.mjs';
+import { htmlToText } from '../html-to-text.mjs';
 const decodeXmlEntities = decodeEntities;
 
 export const FEED_URL = 'https://weworkremotely.com/remote-jobs.rss';
@@ -113,6 +114,10 @@ export function parseWwrFeed(xml, defaultCompany = 'We Work Remotely') {
     if (!rawTitle) continue;
     const { company, title } = splitTitle(rawTitle, fallback);
     const location = tagText(item, 'region') || tagText(item, 'category') || 'Remote';
+    // The posting's HTML is in this same feed, so it costs no request. The
+    // en-scanner's content_filter (`j.description ?? j.snippet`) and the
+    // years_min reader match on it; no text remaining → '' (the "no signal"
+    // path both handle). (parent #6568)
     jobs.push({
       id: `weworkremotely-${url}`,
       title,
@@ -125,6 +130,7 @@ export function parseWwrFeed(xml, defaultCompany = 'We Work Remotely') {
       relocates: false,
       date: toIsoDate(tagText(item, 'pubDate')),
       snippet: '',
+      description: htmlToText(tagText(item, 'description')),
       source: 'weworkremotely',
     });
   }
