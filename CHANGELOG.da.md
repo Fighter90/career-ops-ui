@@ -9,6 +9,19 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 ---
 
 
+## [1.269.2] — 2026-11-07
+
+### Rettet
+
+- **Samtidige rapport-gem kan ikke længere overskrive hinanden (opfølgningsrunde af reviewet)** — rapport-gemmet flyttede til `server/lib/report-save.mjs::saveReportExclusive`: FØRSTE forsøg og epoch-suffiks dedup-stien er BEGGE kerne-eksklusive (`wx`); to samtidige pipelines, der gemmer samme slug, får hver sin fil og sit eget navn tilbage (det gamle fallback-skriv var en almindelig `w` og kunne overskrive en epoch-suffikset rapport). Race-kontrakten er nu bevist ADFÆRDSMÆSSIGT (frisk skriv / aldrig-overskriv / forskellige slugs / 512 KB-grænse) i stedet for at fastgøre kildestrenge.
+- **Den manuelle rapport-gem-rute lukker sit check-then-write-vindue** — `POST /api/reports` uden `overwrite` skriver nu eksklusivt (`wx`) og returnerer samme 409 på en slug, der dukker op i luften; semantikken er uændret (suiten er grøn).
+- **README-banner-kæden** — EN README's «Latest release»-blok annoncerede stadig v1.268.0 (de ×18 spejle var aktuelle; EN-kilden blev overset i v1.269.0/1-fan-out'en). Nu v1.269.1 i front + v1.269.0 som forrige, efter banner-konventionen.
+
+### Noter
+
+- `jds/`-capture-skrivningen er IKKE ændret: dens epoch-suffikserede navn er kollisionsfrit af konstruktion, og sanitize+bound-indholdskontrakten (CodeQL #755) landede allerede i v1.268.1.
+- Testantal 7699 → **7704** (+5: den adfærdsmæssige rapport-gem-suite).
+
 ## [1.269.1] — 2026-11-07
 
 ### Tilføjet

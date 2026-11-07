@@ -7,7 +7,7 @@
 
 _அதிகாரப்பூர்வமற்ற இடைமுகம் — career-ops / santifer உடன் எந்தத் தொடர்பும் அல்ல, அவர்களால் அங்கீகரிக்கப்படவும் இல்லை._
 
-[![tests](https://img.shields.io/badge/tests-7699%20passed-brightgreen)](#சோதனைகள்)
+[![tests](https://img.shields.io/badge/tests-7704%20passed-brightgreen)](#சோதனைகள்)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#சோதனைகள்)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#சோதனைகள்)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#தேவைகள்)
@@ -17,9 +17,9 @@ _அதிகாரப்பூர்வமற்ற இடைமுகம் �
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 சமீபத்திய வெளியீடு — v1.269.1** — Help ×19 kanban funnel + விரிவான புள்ளிவிவரங்களை ஆவணப்படுத்துகிறது (H3 gate 129 → 131); live verification (CAR-239): 19 locale spread 0.0, repeats 0.0 ×3, scoring-cache 27/28 calls, வெப்ப நிலையில் ≈$0.006/eval; prod latency வால் (CAR-236) — mount-க்கு ஒரே பகிர்வு tracker read, server-side table paging (`?page&pageSize=200`).
+> **🆕 சமீபத்திய வெளியீடு — v1.269.2** — இரு பாதைகளிலும் race-இல்லாத report save (first attempt + epoch-suffix dedup, இரண்டும் `server/lib/report-save.mjs::saveReportExclusive`-இல் exclusive `wx` வழியாக), race contract நடத்தை ரீதியாக நிரூபிக்கப்பட்டது; `overwrite` இல்லாத `POST /api/reports` exclusive ஆக எழுதுகிறது (`wx`, அதே 409). Test count 7699 → 7704.
 >
-> **முந்தைய வெளியீடு — v1.269.0** — #/tracker-இல் kanban funnel board (CAR-237, «Воронка | Таблица» toggle உடன்), #/stats-இன் «Детали» tab (CAR-247), மீட்டெடுக்கப்பட்ட அறிக்கை ஆழம் (CAR-245), cvstart.org hero video, மேலும் prod page latency-க்கு எதிரான mtime காச்கள் (CAR-236) மற்றும் CodeQL sweep வால்.
+> **முந்தைய வெளியீடு — v1.269.1** — Help ×19 kanban funnel + விரிவான புள்ளிவிவரங்களை ஆவணப்படுத்துகிறது (H3 gate 129 → 131); live verification (CAR-239): 19 locale spread 0.0, repeats 0.0 ×3, scoring-cache 27/28 calls, வெப்ப நிலையில் ≈$0.006/eval; prod latency வால் (CAR-236) — mount-க்கு ஒரே பகிர்வு tracker read, server-side table paging (`?page&pageSize=200`).
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

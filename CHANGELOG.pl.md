@@ -10,6 +10,19 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.269.2] — 2026-11-07
+
+### Naprawiono
+
+- **Równoległe zapisy raportów nie nadpisują się już nawzajem (kontynuacja rewii)** — zapis raportu przeniósł się do `server/lib/report-save.mjs::saveReportExclusive`: PIERWSZA próba i ścieżka dedupu z sufiksem epoki są OBIE ekskluzywne na poziomie jądra (`wx`); dwa równoległe pipeline'y zapisujące ten sam slug dostają każdy swój plik i swoją nazwę (stary fallbackowy zapis to zwykły `w` i mógł nadpisać raport z sufiksem epoki). Kontrakt wyścigu jest teraz dowodzony ZACHOWANIOWO (świeży zapis / nigdy-nie-nadpisuje / różne slugi / limit 512 KB) zamiast przypinać stringi źródła.
+- **Ręczny route zapisu raportu zamyka swoje okno check-then-write** — `POST /api/reports` bez `overwrite` zapisuje teraz ekskluzywnie (`wx`) i oddaje ten sam 409 na slugu, który pojawi się w locie; semantyka bez zmian (suite zielony).
+- **Łańcuch bannerów README** — blok «Latest release» w EN README wciąż ogłaszał v1.268.0 (×18 luster było aktualnych; EN-owe źródło prawdy umknęło w fanaucie v1.269.0/1). Teraz v1.269.1 na czele + v1.269.0 poprzednie, zgodnie z konwencją bannerów.
+
+### Uwagi
+
+- Zapis przechwyceń `jds/` NIE zmienia się: nazwa z sufiksem epoki jest wolna od kolizji z konstrukcji, a kontrakt treści sanitize+limit (CodeQL #755) wylądował już w v1.268.1.
+- Liczba testów 7699 → **7704** (+5: behawioralny suite zapisu raportów).
+
 ## [1.269.1] — 2026-11-07
 
 ### Dodano

@@ -9,7 +9,7 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-7699%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-7704%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
@@ -19,11 +19,9 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.269.1** — Help ×19 कानबन फ़नल + विस्तृत आंकड़े डॉक्यूमेंट करता है (H3 गेट 129 → 131); लाइव वेरिफिकेशन (CAR-239): 19 लोकेल का फैलाव 0.0, रिपीट 0.0 ×3, स्कोरिंग कैश 27/28 कॉल, गर्म अवस्था पर ≈$0.006/eval; प्रोड लेटेंसी की पूंछ (CAR-236) — प्रति माउंट एक साझा ट्रैकर रीड, सर्वर-साइड टेबल पेजिनेशन (`?page&pageSize=200`)।
-
-
+> **🆕 नवीनतम रिलीज़ — v1.269.2** — दोनों पाथों पर रेस-फ़्री रिपोर्ट सेव (पहली कोशिश + epoch-सफ़िक्स डीडुप, दोनों `server/lib/report-save.mjs::saveReportExclusive` में एक्सक्लूसिव `wx` से), रेस कॉन्ट्रैक्ट बिहेवियरली साबित; `overwrite` के बिना `POST /api/reports` एक्सक्लूसिव लिखता है (`wx`, वही 409)। टेस्ट 7699 → 7704।
 >
-> **पिछला — v1.269.0** — #/tracker पर कानबन फ़नल बोर्ड (CAR-237, «Воронка | Таблица» टॉगल के साथ), #/stats का «Детали» टैब (CAR-247), बहाल रिपोर्ट गहराई (CAR-245), cvstart.org हीरो वीडियो, साथ में प्रोड पेज लेटेंसी के खिलाफ mtime कैश (CAR-236) और CodeQL स्वीप की पूंछ।
+> **पिछला — v1.269.1** — Help ×19 कानबन फ़नल + विस्तृत आंकड़े डॉक्यूमेंट करता है (H3 गेट 129 → 131); लाइव वेरिफिकेशन (CAR-239): 19 लोकेल का फैलाव 0.0, रिपीट 0.0 ×3, स्कोरिंग कैश 27/28 कॉल, गर्म अवस्था पर ≈$0.006/eval; प्रोड लेटेंसी की पूंछ (CAR-236) — प्रति माउंट एक साझा ट्रैकर रीड, सर्वर-साइड टेबल पेजिनेशन (`?page&pageSize=200`)।
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

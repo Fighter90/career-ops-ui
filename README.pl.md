@@ -10,7 +10,7 @@
 
 _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich nieautoryzowany._
 
-[![tests](https://img.shields.io/badge/tests-7699%20passed-brightgreen)](#testy)
+[![tests](https://img.shields.io/badge/tests-7704%20passed-brightgreen)](#testy)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#testy)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
@@ -20,11 +20,9 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Najnowsze wydanie — v1.269.1** — Help ×19 dokumentuje lejek kanbanowy + szczegółowe statystyki (gate H3 129 → 131), żywą weryfikację parności evaluate (CAR-239: rozrzut 0.0 na 19 locale, powtórzenia 0.0 ×3, cache scoringu 27/28, ≈$0.006/eval na ciepło) oraz ogon opóźnień na prodzie (CAR-236) — jedno współdzielone czytanie trackera na mount, paginacja tabeli po stronie serwera (`?page&pageSize=200`).
-
-
+> **🆕 Najnowsze wydanie — v1.269.2** — zapisy raportów bez wyścigu na OBU ścieżkach (pierwsza próba + dedup z sufiksem epoki, obie ekskluzywne przez `wx` w `server/lib/report-save.mjs::saveReportExclusive`), kontrakt wyścigu dowiedziony zachowaniowo; `POST /api/reports` bez `overwrite` zapisuje ekskluzywnie (`wx`, ten sam 409). Testy 7699 → 7704.
 >
-> **Poprzednie wydanie — v1.269.0** — kanbanowa tablica lejka na #/tracker (CAR-237, z togglem «Воронка | Таблица»), zakładka «Детали» na #/stats (CAR-247), przywrócona głębia raportów (CAR-245), wideo hero na cvstart.org, plus cache mtime przeciw opóźnieniom stron na prodzie (CAR-236) i ogon zamiatań CodeQL.
+> **Poprzednie wydanie — v1.269.1** — Help ×19 dokumentuje lejek kanbanowy + szczegółowe statystyki (gate H3 129 → 131), żywą weryfikację parności evaluate (CAR-239: rozrzut 0.0 na 19 locale, powtórzenia 0.0 ×3, cache scoringu 27/28, ≈$0.006/eval na ciepło) oraz ogon opóźnień na prodzie (CAR-236) — jedno współdzielone czytanie trackera na mount, paginacja tabeli po stronie serwera (`?page&pageSize=200`).
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

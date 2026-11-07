@@ -6,6 +6,19 @@ Bản dịch: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.269.2] — 2026-11-07
+
+### Đã sửa
+
+- **Các lần lưu báo cáo đồng thời không còn ghi đè lẫn nhau (tiếp nối review)** — việc lưu báo cáo chuyển sang `server/lib/report-save.mjs::saveReportExclusive`: lần thử ĐẦU TIÊN và đường loại trùng lặp với hậu tố epoch ĐỀU độc quyền ở mức kernel (`wx`); hai pipeline đồng thời lưu cùng một slug thì mỗi bên nhận lại tệp và tên riêng của mình (kiểu ghi dự phòng cũ chỉ là `w` thường và có thể ghi đè một báo cáo có hậu tố epoch). Hợp đồng race giờ được chứng minh THEO HÀNH VI (ghi mới / không-bao-giờ-ghi-đè / slug khác nhau / giới hạn 512 KB) thay vì ghim chuỗi trong mã nguồn.
+- **Route lưu báo cáo thủ công đóng cửa sổ check-then-write của nó** — `POST /api/reports` không có `overwrite` giờ ghi độc quyền (`wx`) và trả đúng 409 trên slug xuất hiện giữa đường; ngữ nghĩa không đổi (suite xanh).
+- **Chuỗi banner README** — khối «Latest release» của README EN vẫn công bố v1.268.0 (×18 bản phản chiếu đều cập nhật; nguồn chân lý EN bị bỏ sót trong fan-out v1.269.0/1). Giờ là v1.269.1 dẫn đầu + v1.269.0 làm bản trước, theo quy ước banner.
+
+### Ghi chú
+
+- Kiểu ghi capture `jds/` KHÔNG đổi: tên có hậu tố epoch vốn không va chạm do cấu trúc, và hợp đồng nội dung sanitize+giới hạn (CodeQL #755) đã hạ cánh từ v1.268.1.
+- Số lượng test 7699 → **7704** (+5: suite lưu báo cáo theo hành vi).
+
 ## [1.269.1] — 2026-11-07
 
 ### Đã thêm

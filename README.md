@@ -9,7 +9,7 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 🌐 **Website: [cvstart.org](https://cvstart.org)** — multilingual landing + user guide (source in [`site/`](site/)).
 
-[![tests](https://img.shields.io/badge/tests-7699%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-7704%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
@@ -19,11 +19,10 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Latest release — v1.268.0** — four new scan sources — GermanTechJobs, Darwinbox, Keka, ApplicantPro/isolved (registry 129 = 124 EN + 5 RU) — ETag board-response reuse, dates on four boards, a misspelled portals.yml key now fails loud, getro walks past old featured pins (parent-sync @ 7d8feb6d). Tests 7096 → 7243.
-
+> **🆕 Latest release — v1.269.2** — concurrent report saves can no longer clobber each other: the save lives in `server/lib/report-save.mjs::saveReportExclusive` with the kernel-exclusive `wx` flag on BOTH the first attempt and the epoch-suffix dedup path, and the race contract is proven behaviorally; `POST /api/reports` without `overwrite` is exclusive too (same 409). Tests 7699 → 7704.
 
 >
-> **Previous — v1.267.2** — personio language-dedup (CAR-223): language versions of one posting survive the dedup behind scan_history.dedup_include_language, preferred_languages ordering, personio/recruitee per-language rows. Tests 7096 → 7203.
+> **Previous — v1.269.1** — the docs + perf-paging patch: help ×19 gains the kanban-funnel (§11) and detailed-statistics (§26) sections (H3 gate 129 → 131); live verification of deterministic scoring (CAR-239) — locale-parity spread 0.0 / repeatability 0.0 ×3; SPA tracker pagination — one shared read per mount, server-side table paging (`?page&pageSize=200`). Tests 7627 → 7699. kanban funnel board on #/tracker (CAR-237, «Funnel | Table» toggle, canonical `POST /api/tracker/status` moves), detailed statistics tab on #/stats (CAR-247: currency selector, periods, search + facets, four charts, drill-down), report depth restored (CAR-245) with the server-side `## Job Description (archived verbatim)` section, prod-latency caches (CAR-236), cvstart.org hero video. Tests 7602 → 7627.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

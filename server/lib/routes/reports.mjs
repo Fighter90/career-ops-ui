@@ -72,13 +72,21 @@ export function registerReportsRoutes(app) {
     if (Buffer.byteLength(markdown) > MAX_REPORT_BYTES) {
       return res.status(413).json({ error: `report markdown too large (max ${MAX_REPORT_BYTES} bytes)` });
     }
-    const file = projPath('reports', `${slug}.md`);
-    if (existsSync(file) && !overwrite) {
-      return res.status(409).json({ error: 'report already exists; pass overwrite:true to replace', slug });
-    }
     const sanitized = stripDangerousMarkdown(markdown);
     mkdirSync(PATHS.reportsDir, { recursive: true });
-    writeFileSync(file, sanitized);
+    const file = projPath('reports', `${slug}.md`);
+    try {
+      // Review v1.269.1 — race-free create: without `overwrite` the write is
+      // exclusive (`wx`); the kernel rejects a slug that appeared between the
+      // request and the write, surfacing the same 409 the existsSync check
+      // would have — without the check-then-write window.
+      writeFileSync(file, sanitized, overwrite ? {} : { flag: 'wx' });
+    } catch (e) {
+      if (e.code === 'EEXIST') {
+        return res.status(409).json({ error: 'report already exists; pass overwrite:true to replace', slug });
+      }
+      throw e;
+    }
     logActivity({
       action: 'reports.save',
       target: `reports/${slug}.md`,

@@ -2,6 +2,19 @@
 
 > Questo changelog contiene ora la cronologia completa delle versioni. Le voci pubblicate prima della localizzazione italiana (v1.85.0) compaiono sotto nell'originale inglese — traduzione in attesa; il riferimento resta [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.269.2] — 2026-11-07
+
+### Corretto
+
+- **I salvataggi concorrenti dei report non si sovrascrivono più a vicenda (follow-up della review)** — il salvataggio del report si è spostato in `server/lib/report-save.mjs::saveReportExclusive`: il PRIMO tentativo e il percorso di dedup con suffisso d'epoca sono ENTRAMBI esclusivi a livello di kernel (`wx`); due pipeline concorrenti che salvano lo stesso slug ricevono ciascuna il proprio file e il proprio nome (la vecchia scrittura di fallback era un semplice `w` e poteva sovrascrivere un report con suffisso d'epoca). Il contratto di race ora è dimostrato COMPORTAMENTALMENTE (scrittura fresca / mai-sovrascritta / slug distinti / limite di 512 KB) invece di conficcarsi sulle stringhe del sorgente.
+- **La route manuale di salvataggio chiude la sua finestra check-then-write** — `POST /api/reports` senza `overwrite` ora scrive in esclusiva (`wx`) e restituisce lo stesso 409 su uno slug che compare in corsa; semantica invariata (suite verde).
+- **Catena di banner del README** — il blocco «Latest release» del README EN annunciava ancora la v1.268.0 (le ×18 copie speculari erano aggiornate; la fonte di verità EN era sfuggita nel fan-out v1.269.0/1). Ora v1.269.1 in testa + v1.269.0 come precedente, secondo la convenzione dei banner.
+
+### Note
+
+- La scrittura delle capture in `jds/` NON cambia: il nome con suffisso d'epoca è esente da collisioni per costruzione, e il contratto di contenuto sanitizzato+limitato (CodeQL #755) è già atterrato in v1.268.1.
+- Conteggio dei test 7699 → **7704** (+5: la suite comportamentale di salvataggio dei report).
+
 ## [1.269.1] — 2026-11-07
 
 ### Aggiunto

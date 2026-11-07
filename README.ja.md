@@ -7,7 +7,7 @@
 
 _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
 
-[![tests](https://img.shields.io/badge/tests-7699%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-7704%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
@@ -17,9 +17,9 @@ _非公式 UI — career-ops / santifer とは提携しておらず、承認も�
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新リリース — v1.269.1** — Help ×19 にカンバン・ファネル + 詳細統計を文書化(H3 ゲート 129 → 131)、evaluate のライブ検証(CAR-239: 19 ロケールのスプレッド 0.0、リピート 0.0 ×3、スコアリングキャッシュ 27/28、ウォーム時 ≈$0.006/eval)、さらに CAR-236 の本番レイテンシの尾 — マウントごとに 1 つの共有トラッカー読み取り、サーバー側テーブルページング(`?page&pageSize=200`)。
+> **🆕 最新リリース — v1.269.2** — 両パスでレースフリーのリポート保存(最初の試行 + エポックサフィックス重複排除、どちらも `server/lib/report-save.mjs::saveReportExclusive` の排他的 `wx`)、レース契約は振る舞いとして証明;`overwrite` なしの `POST /api/reports` も排他的に(`wx`、同じ 409)書きます。テスト 7699 → 7704。
 >
-> **前バージョン — v1.269.0** — #/tracker にカンバン・ファネルボード(CAR-237、«Воронка | Таблица» トグル)、#/stats に「Детали」タブ(CAR-247)、復元されたレポートの深さ(CAR-245)、cvstart.org のヒーロー動画、さらに本番ページのレイテンシを抑える mtime キャッシュ(CAR-236)と CodeQL 掃討の尾。
+> **前バージョン — v1.269.1** — Help ×19 にカンバン・ファネル + 詳細統計を文書化(H3 ゲート 129 → 131)、evaluate のライブ検証(CAR-239: 19 ロケールのスプレッド 0.0、リピート 0.0 ×3、スコアリングキャッシュ 27/28、ウォーム時 ≈$0.006/eval)、さらに CAR-236 の本番レイテンシの尾 — マウントごとに 1 つの共有トラッカー読み取り、サーバー側テーブルページング(`?page&pageSize=200`)。
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

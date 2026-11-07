@@ -8,6 +8,19 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.269.2] — 2026-11-07
+
+### Corrigido
+
+- **Salvamentos concorrentes de relatórios não se sobrescrevem mais (desdobramento da revisão)** — o salvamento do relatório mudou para `server/lib/report-save.mjs::saveReportExclusive`: a PRIMEIRA tentativa e o caminho de dedup com sufixo de época são AMBOS exclusivos no nível do kernel (`wx`); dois pipelines concorrentes salvando o mesmo slug recebem cada um seu próprio arquivo e seu próprio nome (a antiga escrita de fallback era um `w` simples e podia sobrescrever um relatório com sufixo de época). O contrato de corrida agora é provado COMPORTAMENTALMENTE (escrita fresca / nunca sobrescreve / slugs distintos / limite de 512 KB) em vez de prender strings do fonte.
+- **A rota manual de salvamento fecha sua janela check-then-write** — `POST /api/reports` sem `overwrite` agora escreve exclusivo (`wx`) e devolve o mesmo 409 num slug que aparece em pleno voo; semântica inalterada (suite verde).
+- **Cadeia de banners do README** — o bloco «Latest release» do README EN ainda anunciava a v1.268.0 (os ×18 espelhos estavam em dia; a fonte da verdade EN ficou fora do fan-out v1.269.0/1). Agora v1.269.1 na frente + v1.269.0 anterior, pela convenção de banners.
+
+### Notas
+
+- A escrita de capturas em `jds/` NÃO muda: o nome com sufixo de época é livre de colisões por construção, e o contrato de conteúdo sanitizado+limitado (CodeQL #755) já chegou na v1.268.1.
+- Contagem de testes 7699 → **7704** (+5: a suite comportamental de salvamento de relatórios).
+
 ## [1.269.1] — 2026-11-07
 
 ### Adicionado

@@ -7,7 +7,7 @@
 
 _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。_
 
-[![tests](https://img.shields.io/badge/tests-7699%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-7704%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
@@ -17,11 +17,9 @@ _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.269.1** — Help ×19 記錄看板漏斗 + 詳細統計(H3 門檻 129 → 131),evaluate 一致性實測驗證(CAR-239:19 個語言離散度 0.0、重複 0.0 ×3、評分快取 27/28、熱態 ≈$0.006/eval),以及 CAR-236 正式環境延遲收尾 — 每次掛載共用一次 tracker 讀取,表格伺服器端分頁(`?page&pageSize=200`)。
-
-
+> **🆕 最新版本 — v1.269.2** — 兩條路徑的報告儲存皆無競態(首次嘗試 + epoch 後綴去重,均經 `server/lib/report-save.mjs::saveReportExclusive` 獨佔 `wx`),競態契約以行為方式證明;不帶 `overwrite` 的 `POST /api/reports` 獨佔寫入(`wx`,同樣 409)。測試 7699 → 7704。
 >
-> **前一版本 — v1.269.0** — #/tracker 的看板漏斗板(CAR-237,附「Воронка | Таблица」切換),#/stats 的「Детали」分頁(CAR-247),恢復的報告深度(CAR-245),cvstart.org 首圖影片,外加對抗正式環境頁面延遲的 mtime 快取(CAR-236)與 CodeQL 清掃收尾。
+> **前一版本 — v1.269.1** — Help ×19 記錄看板漏斗 + 詳細統計(H3 門檻 129 → 131),evaluate 一致性實測驗證(CAR-239:19 個語言離散度 0.0、重複 0.0 ×3、評分快取 27/28、熱態 ≈$0.006/eval),以及 CAR-236 正式環境延遲收尾 — 每次掛載共用一次 tracker 讀取,表格伺服器端分頁(`?page&pageSize=200`)。
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

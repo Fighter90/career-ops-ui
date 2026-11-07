@@ -7,7 +7,7 @@
 
 _Giao diện không chính thức — không liên kết với career-ops / santifer, cũng không được họ chứng thực._
 
-[![tests](https://img.shields.io/badge/tests-7699%20passed-brightgreen)](#kiểm-thử)
+[![tests](https://img.shields.io/badge/tests-7704%20passed-brightgreen)](#kiểm-thử)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#kiểm-thử)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#kiểm-thử)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#yêu-cầu)
@@ -17,11 +17,9 @@ _Giao diện không chính thức — không liên kết với career-ops / sant
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Bản phát hành mới nhất — v1.269.1** — Help ×19 ghi lại phễu kanban + thống kê chi tiết (cổng H3 129 → 131); xác minh trực tiếp (CAR-239): độ lan tỏa 0.0 qua 19 locale, lặp 0.0 ×3, cache chấm điểm 27/28 lần gọi, ≈$0.006/eval khi nóng; đuôi độ trễ prod (CAR-236) — một lần đọc tracker chia sẻ mỗi mount, phân trang bảng phía máy chủ (`?page&pageSize=200`).
-
-
+> **🆕 Bản phát hành mới nhất — v1.269.2** — lưu báo cáo không race trên CẢ HAI đường (lần thử đầu tiên + loại trùng lặp hậu tố epoch, đều độc quyền qua `wx` trong `server/lib/report-save.mjs::saveReportExclusive`), hợp đồng race được chứng minh theo hành vi; `POST /api/reports` không có `overwrite` ghi độc quyền (`wx`, cùng 409). Test 7699 → 7704.
 >
-> **Bản trước — v1.269.0** — bảng kanban phễu trên #/tracker (CAR-237, kèm toggle «Воронка | Таблица»), tab «Детали» trên #/stats (CAR-247), chiều sâu báo cáo được khôi phục (CAR-245), video hero trên cvstart.org, cùng các cache mtime chống độ trễ trang prod (CAR-236) và đuôi càn quét CodeQL.
+> **Bản trước — v1.269.1** — Help ×19 ghi lại phễu kanban + thống kê chi tiết (cổng H3 129 → 131); xác minh trực tiếp (CAR-239): độ lan tỏa 0.0 qua 19 locale, lặp 0.0 ×3, cache chấm điểm 27/28 lần gọi, ≈$0.006/eval khi nóng; đuôi độ trễ prod (CAR-236) — một lần đọc tracker chia sẻ mỗi mount, phân trang bảng phía máy chủ (`?page&pageSize=200`).
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

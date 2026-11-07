@@ -34,11 +34,16 @@ after(async () => {
   }
 });
 
-test('the report save uses the exclusive wx flag (race contract pinned at source)', async () => {
+test('the route delegates the report save to the exclusive-create helper (race contract pinned at source)', async () => {
   const src = await (await import('node:fs/promises')).readFile(
     resolve(fileURLToPath(new URL('.', import.meta.url)), '..', 'server', 'lib', 'routes', 'auto-pipeline.mjs'), 'utf8');
-  assert.ok(src.includes("flag: 'wx'"), 'the first save must be write-exclusive (wx) — no existsSync-then-write TOCTOU');
-  assert.ok(!/if \(existsSync\(file\)\) \{/.test(src), 'the existsSync-then-write branch must be gone');
-  assert.ok(src.includes("code !== 'EEXIST'"), 'EEXIST falls through to the epoch-suffix dedup path');
-  assert.ok(src.includes("sanitized.length > 512 * 1024"), 'the bounded write survives the restructure');
+  const lib = await (await import('node:fs/promises')).readFile(
+    resolve(fileURLToPath(new URL('.', import.meta.url)), '..', 'server', 'lib', 'report-save.mjs'), 'utf8');
+  assert.ok(src.includes("saveReportExclusive(PATHS.reportsDir, slug, sanitized)"), 'the route must delegate the report save to the helper');
+  assert.ok(lib.includes("flag: 'wx'"), 'the helper must write-exclusive (wx) — no existsSync-then-write TOCTOU');
+  assert.ok(!/writeFileSync\(projPath\('reports'[^)]*\), (?:sanitized|bounded)\)(?!.*wx)/.test(src), 'no plain writeFileSync of report content in the route — everything goes through the helper');
+  assert.ok(lib.includes("code !== 'EEXIST'"), 'EEXIST falls through to the epoch-suffix dedup path');
+  assert.ok(lib.includes('REPORT_MAX_BYTES'), 'the bounded write lives in the helper');
+  // the BEHAVIOR is proven in tests/report-save.test.mjs — this pin only
+  // keeps the wiring honest.
 });

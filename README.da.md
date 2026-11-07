@@ -7,7 +7,7 @@
 
 _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-7699%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-7704%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
@@ -17,9 +17,9 @@ _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santi
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Seneste udgivelse — v1.269.1** — Help ×19 dokumenterer kanban-tragten + de detaljerede statistikker (H3-gate 129 → 131); live-verificering (CAR-239): spredning 0.0 over 19 locales, gentagelser 0.0 ×3, scoring-cache 27/28 kald, ≈$0.006/eval varmt; prod-forsinkelseshalen (CAR-236) — én delt tracker-læsning pr. mount, server-side tabel-paginering (`?page&pageSize=200`).
+> **🆕 Seneste udgivelse — v1.269.2** — rapport-gem uden race på BEGGE stier (første forsøg + epoch-suffiks dedup, begge eksklusive via `wx` i `server/lib/report-save.mjs::saveReportExclusive`), race-kontrakten bevist adfærdsmæssigt; `POST /api/reports` uden `overwrite` skriver eksklusivt (`wx`, samme 409). Test 7699 → 7704.
 >
-> **Tidligere — v1.269.0** — kanban-tragtbord på #/tracker (CAR-237, med «Воронка | Таблица»-kontakten), fanebladet «Детали» på #/stats (CAR-247), genoprettet rapportdybde (CAR-245), hero-video på cvstart.org, plus mtime-caches mod prod-sideforsinkelse (CAR-236) og CodeQL-svejsens hale.
+> **Tidligere — v1.269.1** — Help ×19 dokumenterer kanban-tragten + de detaljerede statistikker (H3-gate 129 → 131); live-verificering (CAR-239): spredning 0.0 over 19 locales, gentagelser 0.0 ×3, scoring-cache 27/28 kald, ≈$0.006/eval varmt; prod-forsinkelseshalen (CAR-236) — én delt tracker-læsning pr. mount, server-side tabel-paginering (`?page&pageSize=200`).
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

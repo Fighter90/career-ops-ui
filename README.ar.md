@@ -10,7 +10,7 @@
 
 _واجهة غير رسمية — لا علاقة لها بـ career-ops / santifer ولا تحظى بموافقتهما._
 
-[![tests](https://img.shields.io/badge/tests-7699%20passed-brightgreen)](#الاختبارات)
+[![tests](https://img.shields.io/badge/tests-7704%20passed-brightgreen)](#الاختبارات)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#الاختبارات)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
@@ -20,11 +20,9 @@ _واجهة غير رسمية — لا علاقة لها بـ career-ops / santi
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 أحدث إصدار — v1.269.1** — Help ×19 يوثّق القُمع الكانبان + الإحصاءات المفصّلة (بوابة H3 من 129 → 131)؛ التحقق الحي (CAR-239): تشتت 0.0 عبر الـ 19 لغة، تكرارات 0.0 ×3، ذاكرة تنقيط 27/28 نداء، ≈$0.006/eval ساخنًا؛ ذيل زمن الاستجابة في الإنتاج (CAR-236) — قراءة واحدة مشتركة للمتتبعة لكل تركيب، وترقيم صفحات الجدول جهة الخادم (`?page&pageSize=200`).
-
-
+> **🆕 أحدث إصدار — v1.269.2** — حفظ تقارير بلا سباق على كلا المسارين (المحاولة الأولى + إزالة التكرار باللاحق الحقبي، كلاهما حصري عبر `wx` في `server/lib/report-save.mjs::saveReportExclusive`)، وعقد السباق مثبت سلوكيًّا؛ يكتب `POST /api/reports` دون `overwrite` حصريًّا (`wx`، والـ 409 ذاته). الاختبارات 7699 → 7704.
 >
-> **السابق — v1.269.0** — لوحة كانبان على شكل قُمع في #/tracker (CAR-237 مع مفتاح «Воронка | Таблица»)، وتبويب «Детали» في #/stats (CAR-247)، واستعادة عمق التقارير (CAR-245)، وفيديو البطل في cvstart.org، مع ذاكرات mtime ضد زمن استجابة صفحات الإنتاج (CAR-236) وذيل مسح CodeQL.
+> **السابق — v1.269.1** — Help ×19 يوثّق القُمع الكانبان + الإحصاءات المفصّلة (بوابة H3 من 129 → 131)؛ التحقق الحي (CAR-239): تشتت 0.0 عبر الـ 19 لغة، تكرارات 0.0 ×3، ذاكرة تنقيط 27/28 نداء، ≈$0.006/eval ساخنًا؛ ذيل زمن الاستجابة في الإنتاج (CAR-236) — قراءة واحدة مشتركة للمتتبعة لكل تركيب، وترقيم صفحات الجدول جهة الخادم (`?page&pageSize=200`).
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

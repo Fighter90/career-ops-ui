@@ -7,7 +7,7 @@
 
 _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-7699%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-7704%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
@@ -17,11 +17,9 @@ _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versión — v1.269.1** — Help ×19 documenta el embudo kanban + las estadísticas detalladas (gate H3 129 → 131), verificación en vivo de la paridad de evaluate (CAR-239: dispersión 0.0 en las 19 locales, repeticiones 0.0 ×3, caché de scoring 27/28, ≈$0.006/eval en caliente) y la cola de latencia en prod (CAR-236): una lectura compartida del tracker por montaje, paginación de tabla del lado del servidor (`?page&pageSize=200`).
-
-
+> **🆕 Última versión — v1.269.2** — guardados de informes sin carreras en AMBAS rutas (primer intento + dedup con sufijo de época, ambos exclusivos vía `wx` en `server/lib/report-save.mjs::saveReportExclusive`), el contrato de carrera probado comportamentalmente; `POST /api/reports` sin `overwrite` escribe exclusivo (`wx`, mismo 409). Tests 7699 → 7704.
 >
-> **Anterior — v1.269.0** — tablero kanban de embudo en #/tracker (CAR-237) con el toggle «Воронка | Таблица», pestaña «Детали» en #/stats (CAR-247), profundidad de informes restaurada (CAR-245), vídeo hero en cvstart.org, además de cachés mtime contra la latencia de páginas en prod (CAR-236) y la cola del barrido CodeQL.
+> **Anterior — v1.269.1** — Help ×19 documenta el embudo kanban + las estadísticas detalladas (gate H3 129 → 131), verificación en vivo de la paridad de evaluate (CAR-239: dispersión 0.0 en las 19 locales, repeticiones 0.0 ×3, caché de scoring 27/28, ≈$0.006/eval en caliente) y la cola de latencia en prod (CAR-236): una lectura compartida del tracker por montaje, paginación de tabla del lado del servidor (`?page&pageSize=200`).
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

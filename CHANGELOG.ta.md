@@ -6,6 +6,19 @@
 
 ---
 
+## [1.269.2] — 2026-11-07
+
+### சரி செய்யப்பட்டது
+
+- **Concurrent report save-கள் இனி ஒன்றையொன்று clobber செய்யாது (review follow-up)** — report save `server/lib/report-save.mjs::saveReportExclusive`-க்கு நகர்ந்தது: FIRST attempt-ம் epoch-suffix dedup path-ம் இரண்டும் kernel-level exclusive (`wx`); ஒரே slug-ஐ save செய்யும் இரு concurrent pipeline-கள் ஒவ்வொன்றும் தனது சொந்த file-ஐயும் பெயரையும் மீட்டுகிறது (பழைய fallback write வெறும் `w`; epoch-suffix report-ஐ overwrite செய்யக்கூடியது). Race contract இப்போது BEHAVIORALLY நிரூபிக்கப்படுகிறது (fresh write / never-clobber / distinct slugs / 512 KB bound) — source strings-ஐ pin செய்வதற்கு பதிலாக.
+- **Manual report-save route அதன் check-then-write window-ஐ மூடுகிறது** — `overwrite` இல்லாத `POST /api/reports` இப்போது exclusive ஆக எழுதுகிறது (`wx`), பாதையில் தோன்றும் slug-க்கு அதே 409-ஐ தருகிறது; semantics மாறவில்லை (suite பச்சை).
+- **README banner சங்கிலி** — EN README-இன் «Latest release» block இன்னும் v1.268.0-ஐ அறிவித்துக்கொண்டிருந்தது (×18 mirrors புதுப்பிக்கப்பட்டிருந்தன; v1.269.0/1 fan-out-இல் EN source of truth தவறவிடப்பட்டது). இப்போது banner மரபின்படி v1.269.1 lead + v1.269.0 previous.
+
+### குறிப்புகள்
+
+- `jds/` capture write மாறவில்லை: அதன் epoch-suffix பெயர் கட்டமைப்பினாலேயே collision-இல்லாதது; sanitize+bound content contract (CodeQL #755) ஏற்கனவே v1.268.1-இல் இறங்கிவிட்டது.
+- Test count 7699 → **7704** (+5: behavioral report-save suite).
+
 ## [1.269.1] — 2026-11-07
 
 ### சேர்க்கப்பட்டது

@@ -7,7 +7,7 @@
 
 _Неофициальный интерфейс — не аффилирован с career-ops / santifer и не одобрен ими._
 
-[![tests](https://img.shields.io/badge/tests-7699%20passed-brightgreen)](#тесты)
+[![tests](https://img.shields.io/badge/tests-7704%20passed-brightgreen)](#тесты)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
@@ -17,11 +17,9 @@ _Неофициальный интерфейс — не аффилирован �
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Последний релиз — v1.269.1** — Help ×19: канбан-воронка и подробная статистика задокументированы в каждом help-бандле (H3-гейт 129 → 131); живая верификация (CAR-239): разброс 0.0 по 19 локалям, повторы 0.0 ×3, кэш скоринга 27/28 вызовов, ≈$0.006/eval в тёплом состоянии; хвост прод-задержки (CAR-236) — одно общее чтение трекера на mount, серверная пагинация таблицы (`?page&pageSize=200`).
-
-
+> **🆕 Последний релиз — v1.269.2** — сохранения отчётов без гонки на ОБОИХ путях (первая попытка + дедуп с epoch-суффиксом — оба эксклюзивны через `wx` в `server/lib/report-save.mjs::saveReportExclusive`), контракт гонки доказан поведенчески; `POST /api/reports` без `overwrite` пишет эксклюзивно (`wx`, тот же 409). Тесты 7699 → 7704.
 >
-> **Предыдущий релиз — v1.269.0** — канбан-воронка на #/tracker (CAR-237) с тумблером «Воронка | Таблица», вкладка «Детали» на #/stats (CAR-247), восстановленная глубина отчётов (CAR-245), hero-видео на cvstart.org, плюс mtime-кэши против задержки прод-страниц (CAR-236) и хвост зачистки CodeQL.
+> **Предыдущий релиз — v1.269.1** — Help ×19: канбан-воронка и подробная статистика задокументированы в каждом help-бандле (H3-гейт 129 → 131); живая верификация (CAR-239): разброс 0.0 по 19 локалям, повторы 0.0 ×3, кэш скоринга 27/28 вызовов, ≈$0.006/eval в тёплом состоянии; хвост прод-задержки (CAR-236) — одно общее чтение трекера на mount, серверная пагинация таблицы (`?page&pageSize=200`).
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

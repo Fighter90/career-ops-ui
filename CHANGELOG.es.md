@@ -13,6 +13,19 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.269.2] — 2026-11-07
+
+### Corregido
+
+- **Los guardados concurrentes de informes ya no se pisan entre sí (continuación de la revisión)** — el guardado del informe se movió a `server/lib/report-save.mjs::saveReportExclusive`: el PRIMER intento y la ruta de dedup con sufijo de época son AMBOS exclusivos a nivel de kernel (`wx`); dos pipelines concurrentes que guardan el mismo slug reciben cada uno su propio archivo y su propio nombre (la antigua escritura de respaldo era un `w` plano y podía sobrescribir un informe con sufijo de época). El contrato de carrera ahora se demuestra COMPORTAMENTALMENTE (escritura fresca / nunca se pisa / slugs distintos / límite de 512 KB) en vez de anclar cadenas del código fuente.
+- **La ruta manual de guardado de informes cierra su ventana check-then-write** — `POST /api/reports` sin `overwrite` ahora escribe exclusivo (`wx`) y devuelve el mismo 409 sobre un slug que aparece en pleno vuelo; la semántica no cambia (suite en verde).
+- **Cadena de banners del README** — el bloque «Latest release» del README EN seguía anunciando la v1.268.0 (las ×18 réplicas estaban al día; la fuente de verdad EN se quedó fuera del fan-out v1.269.0/1). Ahora v1.269.1 como principal + v1.269.0 como anterior, según la convención de banners.
+
+### Notas
+
+- La escritura de capturas en `jds/` NO cambia: su nombre con sufijo de época es libre de colisiones por construcción, y el contrato de contenido sanitizado+acotado (CodeQL #755) ya aterrizó en la v1.268.1.
+- Recuento de tests 7699 → **7704** (+5: la suite comportamental de guardado de informes).
+
 ## [1.269.1] — 2026-11-07
 
 ### Añadido

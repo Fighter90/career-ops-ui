@@ -2,6 +2,19 @@
 
 > Bu changelog artık tüm sürüm geçmişini içerir. Türkçe yerelleştirmenin eklenmesinden (v1.85.0) önce yayınlanan girdiler aşağıda İngilizce özgün hâliyle yer alır — çeviri bekliyor; asıl kaynak [🇬🇧 CHANGELOG.md](CHANGELOG.md)'dir.
 
+## [1.269.2] — 2026-11-07
+
+### Düzeltildi
+
+- **Eşzamanlı rapor kayıtları artık birbirini ezmüyor (inceleme takibi)** — rapor kaydı `server/lib/report-save.mjs::saveReportExclusive` içine taşındı: İLK deneme ve epoch-sonekli dedup yolu İKİSİ de çekirdek düzeyinde dışlayıcı (`wx`); aynı slug'ı kaydeden iki eşzamanlı pipeline her biri kendi dosyasını ve kendi adını geri alıyor (eski fallback yazımı düz bir `w` idi ve epoch-sonekli bir raporu ezebilirdi). Yarış sözleşmesi artık DAVRANIŞSAL olarak kanıtlanıyor (taze yazım / asla-ezmez / farklı slug'lar / 512 KB sınırı) — kaynak dizelerini çakmak yerine.
+- **Manuel rapor kayıt rotası check-then-write penceresini kapatıyor** — `overwrite` olmadan `POST /api/reports` artık dışlayıcı yazıyor (`wx`) ve yarı yolda beliren bir slug üzerinde aynı 409'u veriyor; anlam değişmedi (suite yeşil).
+- **README banner zinciri** — EN README'deki «Latest release» bloğu hâlâ v1.268.0 duyuruyordu (×18 ayna günceldi; EN hakikat kaynağı v1.269.0/1 fan-out'unda gözden kaçmıştı). Artık banner geleneğine göre v1.269.1 başta + v1.269.0 önceki.
+
+### Notlar
+
+- `jds/` yakalama yazımı DEĞİŞMİYOR: epoch-sonekli adı yapısal olarak çarpışmasız, sanitize+sınır içerik sözleşmesi (CodeQL #755) ise çoktan v1.268.1'de inmişti.
+- Test sayısı 7699 → **7704** (+5: davranışsal rapor kayıt suite'i).
+
 ## [1.269.1] — 2026-11-07
 
 ### Eklendi

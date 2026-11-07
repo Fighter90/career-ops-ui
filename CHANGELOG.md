@@ -1,3 +1,14 @@
+## [1.269.2] — 2026-11-07
+
+### Fixed
+- **Concurrent report saves can no longer clobber each other (review follow-up)** — the report save moved to `server/lib/report-save.mjs::saveReportExclusive`: the FIRST attempt and the epoch-suffix dedup path are BOTH kernel-exclusive (`wx`); two concurrent pipelines saving the same slug each get their own file and their own name back (the old fallback write was a plain `w` and could overwrite an epoch-suffixed report). The race contract is now proven BEHAVIORALLY (fresh write / never-clobber / distinct-slugs / 512 KB bound) instead of pinning source strings.
+- **The manual report-save route closes its check-then-write window** — `POST /api/reports` without `overwrite` now writes exclusive (`wx`) and surfaces the same 409 on a slug that appears mid-flight; semantics unchanged (suite green).
+- **README banner chain** — the EN README's «Latest release» block was still announcing v1.268.0 (the ×18 mirrors were current; the EN source of truth was missed in the v1.269.0/1 fan-out). Now v1.269.1 lead + v1.269.0 previous, per the banner convention.
+
+### Notes
+- The `jds/` capture write is NOT changed: its epoch-suffixed name is collision-free by construction, and the sanitize+bound content contract (CodeQL #755) already landed in v1.268.1.
+- Test count 7699 → **7704** (+5: the behavioral report-save suite).
+
 ## [1.269.1] — 2026-11-07
 
 ### Added

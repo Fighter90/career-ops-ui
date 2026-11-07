@@ -2,6 +2,12 @@
 
 This is the operating manual. Read it, then `PLAN.md` (order) and `BACKLOG.md` (what is left).
 
+## State (2026-11-07, v1.269.2)
+
+- Released: **v1.269.2** (2026-11-07) — the review-fix patch on v1.269.1: `saveReportExclusive` (`server/lib/report-save.mjs`) — exclusive-create (`wx`) on BOTH the first attempt and the epoch-suffix dedup path, backed by a behavioral race suite (fresh write / concurrent second writer never clobbers / distinct slugs independent / 512KB round-trip); `POST /api/reports` saves through the exclusive path — duplicate slug → **409**, `overwrite: true` still replaces; EN README banner chain fixed (the lead was stale at v1.268.0).
+- Gates: test:ci **7704 tests / 7701 pass / 0 fail / 3 skip** · browser **201 pass / 0 fail / 1 opt-in skip** · evals 0 ✗ (16 pass, 1 skip) · coverage **98.55/90.42** (above ratchet) · changelog parity ✓ ×19 at 1.269.2, 490 releases each · /api/health **1.269.2 / parent 1.38.0**.
+- History: **v1.269.1** (2026-11-07) and earlier — see the state blocks below.
+
 ## State (2026-11-07, v1.269.1)
 
 - Released: **v1.269.1** (2026-11-07) — the docs + perf-paging patch on top of v1.269.0's features: help ×19 kanban+stats sections (H3 131 — §11 "Kanban funnel board" CAR-237 + §26 "Detailed statistics" CAR-247 in every localized guide); live verification numbers recorded — evaluate locale-parity spread **0.0** / repeatability **0.0** (the v1.268.0 failure-mode 1.5-spread confirmed gone, the determinism graders pass offline); SPA tracker pagination — one shared read per mount, server-side table paging (`GET /api/tracker?page=N&pageSize=200`, route caps pageSize at 500, answers `{rows, total, page, pageSize, funnel}`), the kanban board reads ALL rows; tracker-v2 relabel.

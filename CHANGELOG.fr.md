@@ -12,6 +12,19 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.269.2] — 2026-11-07
+
+### Corrigé
+
+- **Les sauvegardes concurrentes de rapports ne s'écrasent plus entre elles (suite de la revue)** — la sauvegarde du rapport a déménagé dans `server/lib/report-save.mjs::saveReportExclusive` : la PREMIÈRE tentative et le chemin de dédup à suffixe d'époque sont TOUS DEUX exclusifs au niveau noyau (`wx`) ; deux pipelines concurrents qui sauvegardent le même slug obtiennent chacun leur propre fichier et leur propre nom (l'ancienne écriture de repli était un simple `w` et pouvait écraser un rapport à suffixe d'époque). Le contrat de course est désormais prouvé COMPORTAMENTALEMENT (écriture fraîche / jamais d'écrasement / slugs distincts / borne de 512 KB) au lieu d'épingler des chaînes du source.
+- **La route manuelle de sauvegarde ferme sa fenêtre check-then-write** — `POST /api/reports` sans `overwrite` écrit désormais en exclusif (`wx`) et rend le même 409 sur un slug qui apparaît en plein vol ; sémantique inchangée (suite verte).
+- **Chaîne de bannières du README** — le bloc « Latest release » du README EN annonçait encore la v1.268.0 (les ×18 miroirs étaient à jour ; la source de vérité EN avait été oubliée dans le fan-out v1.269.0/1). Désormais v1.269.1 en tête + v1.269.0 en précédent, selon la convention des bannières.
+
+### Notes
+
+- L'écriture des captures `jds/` n'est PAS modifiée : son nom à suffixe d'époque est sans collision par construction, et le contrat de contenu assaini+borné (CodeQL #755) est déjà arrivé en v1.268.1.
+- Nombre de tests 7699 → **7704** (+5 : la suite comportementale de sauvegarde des rapports).
+
 ## [1.269.1] — 2026-11-07
 
 ### Ajouté

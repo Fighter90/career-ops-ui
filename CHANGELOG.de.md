@@ -2,6 +2,19 @@
 
 > Dieses Changelog enthält die vollständige Versionsgeschichte. Einträge, die vor der deutschen Lokalisierung (v1.85.0) veröffentlicht wurden, stehen unten im englischen Original — Übersetzung ausstehend; maßgeblich bleibt [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.269.2] — 2026-11-07
+
+### Behoben
+
+- **Gleichzeitige Report-Saves überschreiben sich nicht mehr gegenseitig (Review-Follow-up)** — der Report-Save ist in `server/lib/report-save.mjs::saveReportExclusive` gezogen: der ERSTE Versuch UND der Epoch-Suffix-Dedup-Pfad sind BEIDE kernel-exklusiv (`wx`); zwei gleichzeitige Pipelines, die denselben Slug speichern, bekommen jede ihre eigene Datei und ihren eigenen Namen zurück (der alte Fallback-Schreibvorgang war ein schlichtes `w` und konnte einen Epoch-Suffix-Report überschreiben). Der Race-Vertrag ist jetzt BEHAVIORAL bewiesen (frischer Write / nie-clobber / unterschiedliche Slugs / 512-KB-Grenze) statt Quelltext-Strings zu pinnen.
+- **Die manuelle Report-Save-Route schließt ihr Check-then-Write-Fenster** — `POST /api/reports` ohne `overwrite` schreibt jetzt exklusiv (`wx`) und liefert dasselbe 409 auf einem Slug, der unterwegs auftaucht; Semantik unverändert (Suite grün).
+- **README-Banner-Kette** — der «Latest release»-Block des EN-Readmes kündigte noch v1.268.0 an (die ×18 Spiegel waren aktuell; die EN-Source-of-Truth war im v1.269.0/1-Fan-out untergegangen). Jetzt v1.269.1 als Lead + v1.269.0 als Previous, gemäß der Banner-Konvention.
+
+### Hinweise
+
+- Das `jds/`-Capture-Schreiben ändert sich NICHT: sein epoch-suffigierter Name ist von der Konstruktion her kollisionsfrei, und der Sanitize+Bound-Inhaltsvertrag (CodeQL #755) ist bereits in v1.268.1 gelandet.
+- Testzahl 7699 → **7704** (+5: die behavioral Report-Save-Suite).
+
 ## [1.269.1] — 2026-11-07
 
 ### Neu

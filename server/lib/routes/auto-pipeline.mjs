@@ -40,6 +40,7 @@ import { buildEvaluationPrompt, resolveLocale } from '../prompts.mjs';
 import { resolveProvider } from '../llm-dispatch.mjs';
 import { runTwoStepEvaluation } from '../eval-two-step.mjs';
 import { recordUsage, parseSubprocessUsage } from '../llm-usage.mjs';
+import { saveReportExclusive } from '../report-save.mjs';
 import { evalTimeoutMs, evalMaxTokens, geminiEvalArgs } from './llm.mjs';
 import { providerOrder } from '../env-config.mjs';
 import { stripDangerousMarkdown } from '../security.mjs';
@@ -873,27 +874,24 @@ export function registerAutoPipelineRoutes(app) {
       const h1At = sanitizedFull.search(/^#[ \t]/m);
       const sanitized = h1At > 0 ? sanitizedFull.slice(h1At) : sanitizedFull;
       mkdirSync(PATHS.reportsDir, { recursive: true });
-      const file = projPath('reports', `${slug}.md`);
-      // Review v1.269 — race-free create: the write uses the exclusive `wx`
-      // flag, so an existsSync-then-write TOCTOU window (CodeQL #752) cannot
-      // exist — the kernel refuses to clobber, and we retry with an epoch
-      // suffix. Two concurrent pipelines can never overwrite each other.
-      const bounded = sanitized.length > 512 * 1024 ? sanitized.slice(0, 512 * 1024) : sanitized;
-      try {
-        writeFileSync(file, bounded, { flag: 'wx' });
-        logActivity({ action: 'auto-pipeline.report.saved', target: reportPath });
-        step(3, 'done', slug);
-      } catch (e) {
-        if (e.code !== 'EEXIST') throw e;
-        // Don't clobber existing — append epoch suffix. The tracker row and
-        // the `done` event must point at the file actually written.
-        const altSlug = `${slug}-${Date.now()}`;
-        writeFileSync(projPath('reports', `${altSlug}.md`), bounded);
-        logActivity({ action: 'auto-pipeline.report.saved', target: `reports/${altSlug}.md`, detail: `deduped from ${slug}` });
-        slug = altSlug;
+      // Review v1.269 — race-free create on BOTH paths (v1.269.1 review
+      // follow-up): saveReportExclusive writes the first attempt and the
+      // epoch-suffix dedup path with the kernel's exclusive `wx` flag — no
+      // existsSync-then-write TOCTOU (CodeQL #752), and two concurrent
+      // pipelines saving the same slug can never overwrite each other's
+      // report; each gets its own file and its own name back.
+      const writtenSlug = saveReportExclusive(PATHS.reportsDir, slug, sanitized);
+      if (writtenSlug !== slug) {
+        // Don't clobber existing — the helper appended an epoch suffix. The
+        // tracker row and the `done` event must point at the file actually
+        // written.
+        logActivity({ action: 'auto-pipeline.report.saved', target: `reports/${writtenSlug}.md`, detail: `deduped from ${slug}` });
+        slug = writtenSlug;
         reportPath = `reports/${slug}.md`;
-        step(3, 'done', slug);
+      } else {
+        logActivity({ action: 'auto-pipeline.report.saved', target: reportPath });
       }
+      step(3, 'done', slug);
     } catch (e) {
       step(3, 'failed', e.message);
       return fail(3, e.message);
