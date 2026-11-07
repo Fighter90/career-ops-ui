@@ -1,7 +1,7 @@
 /**
  * #/map data — pending pipeline rows and tracker rows, each with a location.
  *
- *   GET /api/map/jobs → { pipeline: [{url, href, company, title, location, fit?}],
+ *   GET /api/map/jobs → { pipeline: [{url, href, company, title, location, fit?}],  (slim by default, CAR-249; ?full=1 restores every parsed column)
  *                         tracker:  [{...tracker row, href, location}],
  *                         tiles:    {url, attribution} }
  *
@@ -202,7 +202,7 @@ export function registerMapRoutes(app) {
     res.json(commutePayload());
   });
 
-  app.get('/api/map/jobs', (_req, res) => {
+  app.get('/api/map/jobs', (req, res) => {
     const pending = parsePipelineRows(read(PATHS.pipeline));
     // CAR-236: the pipeline part of the index is computed fresh (pipeline.md
     // is small and changes on every pipeline write); the scan-history and
@@ -223,10 +223,23 @@ export function registerMapRoutes(app) {
       const row = { ...r, href: httpOnly(r.href) };
       return f ? { ...row, fit: { band: f.band, score: f.score } } : row;
     });
+    // CAR-249 — the map view reads a fixed field set (num/company/role/status/
+    // score/scoreNum/url/href/location/workplace/reportPath); the parsed
+    // tracker rows additionally carry long notes and raw markdown cells
+    // (report/pdf), which made this endpoint the heaviest page-load on prod
+    // (4.6 MB measured by the perf probe). SLIM by default — the projection
+    // below — with ?full=1 as the honest escape hatch.
+    const full = req.query.full === '1' || req.query.full === 'true';
+    const SLIM_FIELDS = ['num', 'company', 'role', 'status', 'score', 'scoreNum',
+      'url', 'href', 'location', 'workplace', 'reportPath'];
     const tracker = safeReadApps().map((r) => {
       let href = r.url;
       if (!href) { try { href = reportUrl(r.reportPath); } catch { href = ''; } }
-      return { ...r, href: httpOnly(href), location: r.location || idx.get(href) || '', workplace: notesPlace(r.notes) };
+      const row = { ...r, href: httpOnly(href), location: r.location || idx.get(href) || '', workplace: notesPlace(r.notes) };
+      if (full) return row;
+      const out = {};
+      for (const k of SLIM_FIELDS) out[k] = row[k];
+      return out;
     });
     const { url, attribution, dark } = tileConfig();
     res.json({ pipeline, tracker, tiles: { url, attribution, dark: { url: dark.url, attribution: dark.attribution } } });

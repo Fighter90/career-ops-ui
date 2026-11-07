@@ -159,3 +159,36 @@ test('a rewritten report re-parses exactly once for the url-less row', async () 
   assert.equal(third.body.tracker[0].href, 'https://beta.example.com/jobs/NEW', 'report mtime change → re-parse');
   assert.equal(__mapCache.reportParses, 2);
 });
+
+test('CAR-249: the payload is SLIM by default — notes/report/pdf never leave the server', async () => {
+  const { status, body } = await getJson('/api/map/jobs');
+  assert.equal(status, 200);
+  const slimKeys = new Set(['num', 'company', 'role', 'status', 'score', 'scoreNum',
+    'url', 'href', 'location', 'workplace', 'reportPath']);
+  for (const row of body.tracker) {
+    for (const k of Object.keys(row)) assert.ok(slimKeys.has(k), `tracker row must not carry "${k}" in the slim payload`);
+  }
+  // By this point in the file the tracker fixture holds the single Beta row
+  // (the report-reparse test rewrote applications.md last). The fields the
+  // map view reads survive the projection:
+  const beta = body.tracker.find((r) => r.company === 'Beta');
+  assert.ok(beta, 'the Beta row survives the projection');
+  assert.equal(beta.num, '2');
+  assert.equal(beta.workplace, '', 'wordy note leads fail the place shape — notes stay server-side');
+  assert.equal(beta.scoreNum, 3);
+  assert.equal(beta.reportPath, 'reports/043-beta-2026-01-02.md');
+  assert.equal(beta.href, 'https://beta.example.com/jobs/NEW', 'the report-resolved href survives');
+  // Pipeline rows were already slim — same shape as before this change.
+  for (const k of Object.keys(body.pipeline[0])) {
+    assert.ok(['url', 'company', 'title', 'location', 'href', 'fit'].includes(k), `pipeline row must not carry "${k}"`);
+  }
+});
+
+test('CAR-249: ?full=1 restores the full row (notes/report/pdf) for any consumer that needs it', async () => {
+  const { status, body } = await getJson('/api/map/jobs?full=1');
+  assert.equal(status, 200);
+  const beta = body.tracker.find((r) => r.company === 'Beta');
+  assert.ok(beta, 'the Beta row is present in the full payload');
+  assert.equal(beta.notes, 'no place here', 'full payload keeps the notes cell');
+  assert.ok('pdf' in beta, 'full rows carry every parsed column');
+});
