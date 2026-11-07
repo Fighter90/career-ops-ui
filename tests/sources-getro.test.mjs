@@ -616,3 +616,82 @@ test('fetchGetro: a non-object rejection warns an unknown attempt count (#6465)'
   }
   assert.match(warnings.join('\n'), /truncated at page 2 of 5 after an unknown number of attempts/);
 });
+
+// ── parent #6433: the cap warning — the page cap ended the walk with postings left ──
+
+// Undated rows, so the age cutoff never applies unless a case dates them.
+// `count` may be undefined (the board gives no count); `lastPageRows` shortens
+// the last page; `failPage` makes that page throw.
+async function capRun(entryExtra, { count, pages, maxPages, lastPageCreatedAt, lastPageRows = 20, failPage } = {}) {
+  const warnings = [];
+  const origError = console.error;
+  console.error = (m) => warnings.push(String(m));
+  let calls = 0;
+  let jobsOut = [];
+  try {
+    jobsOut = await fetchGetro(null, {
+      ...(maxPages ? { maxPages } : {}),
+      sleep: async () => {},
+      fetchImpl: async (_url, opts) => {
+        calls++;
+        const p = JSON.parse(opts.body).page;
+        if (p === failPage) throw new Error(`page ${p} blew up`);
+        const withCount = (jobs) => ({ ok: true, json: async () => ({ results: { ...(count === undefined ? {} : { count }), jobs } }) });
+        if (p >= pages) return withCount([]);
+        const rows = p === pages - 1 ? lastPageRows : 20;
+        return withCount(Array.from({ length: rows }, (_, i) => ({
+          title: `t${p}-${i}`, url: `https://jobs.b2venture.vc/cap-${p}-${i}`, organization: { name: 'Acme' },
+          ...(p === pages - 1 && lastPageCreatedAt ? { created_at: lastPageCreatedAt } : {}),
+        })));
+      },
+      company: { name: 'ExampleVC', getro_collection: 4283, getro_max_age_days: 0, ...entryExtra },
+    });
+  } finally {
+    console.error = origError;
+  }
+  return { calls, jobs: jobsOut.length, warnings, capWarnings: warnings.filter((w) => w.includes('getro_max_pages')) };
+}
+
+test('fetchGetro: warns, naming the entry, when getro_max_pages ends the walk with postings left', async () => {
+  const hit = await capRun({ getro_max_pages: 2 }, { count: 100, pages: 5 });
+  assert.equal(hit.calls, 2);
+  assert.equal(hit.capWarnings.length, 1);
+  assert.match(hit.capWarnings[0], /ExampleVC truncated at getro_max_pages=2 \(40 of 100 jobs\) — raise getro_max_pages on this entry for more/);
+});
+
+test('fetchGetro: at the hard cap the warning names it instead of advising a higher getro_max_pages', async () => {
+  // getro_max_pages above the mirror's 200-page ceiling is clamped back to it,
+  // so raising the entry's value would read nothing more.
+  const hard = await capRun({ getro_max_pages: 5000 }, { count: 8000, pages: 400 });
+  assert.equal(hard.calls, 200, 'getro_max_pages is clamped to the hard cap');
+  assert.equal(hard.capWarnings.length, 1);
+  assert.match(hard.capWarnings[0], /truncated at getro_max_pages=200 \(4000 of 8000 jobs\) — the 200-page hard cap/);
+  assert.doesNotMatch(hard.capWarnings[0], /raise getro_max_pages on this entry/);
+});
+
+test('fetchGetro: no cap warning when the board ends at the cap or the age cutoff ends the last page', async () => {
+  const exact = await capRun({ getro_max_pages: 2 }, { count: 40, pages: 2 });
+  const aged = await capRun(
+    { getro_max_pages: 2, getro_max_age_days: 90 },
+    { count: 100, pages: 2, lastPageCreatedAt: '2020-01-01T00:00:00Z' },
+  );
+  assert.equal(exact.capWarnings.length, 0, 'a board ending exactly at the cap is complete');
+  assert.equal(aged.capWarnings.length, 0, 'the age cutoff ending the walk is not a cap cut');
+});
+
+test('fetchGetro: a short last page is the board ending, with or without a count', async () => {
+  const shortNoCount = await capRun({ getro_max_pages: 2 }, { count: undefined, pages: 2, lastPageRows: 15 });
+  const shortOverCount = await capRun({ getro_max_pages: 2 }, { count: 100, pages: 2, lastPageRows: 15 });
+  const fullNoCount = await capRun({ getro_max_pages: 2 }, { count: undefined, pages: 5 });
+  assert.equal(shortNoCount.capWarnings.length, 0);
+  assert.equal(shortOverCount.capWarnings.length, 0, 'an overstated count does not make a short page a cap cut');
+  assert.equal(fullNoCount.capWarnings.length, 1, 'a full last page with no count still warns');
+  assert.match(fullNoCount.capWarnings[0], /\(40 jobs\)/);
+});
+
+test('fetchGetro: the last allowed page failing ends the walk on the error, not the cap', async () => {
+  const failed = await capRun({ getro_max_pages: 2 }, { count: 100, pages: 5, failPage: 1 });
+  assert.equal(failed.capWarnings.length, 0);
+  assert.equal(failed.jobs, 20, 'only page 0 was read');
+  assert.ok(failed.warnings.some((w) => w.includes('truncated at page 2 of 2')), 'the failure warning names the failed page');
+});

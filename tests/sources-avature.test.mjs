@@ -8,6 +8,7 @@ import assert from 'node:assert/strict';
 import {
   parseAvature, fetchAvature, assertAvatureUrl, meta,
 } from '../server/lib/sources/avature.mjs';
+import { countAvatureArticles } from '../server/lib/sources/avature.mjs';
 import { avatureAdapter } from '../server/lib/portals/adapters/avature.mjs';
 
 const ORIGIN = 'https://acme.avature.net';
@@ -224,4 +225,60 @@ test('parseAvature: an "article--jobs" card yields the h3 title (not "View more"
   assert.equal(jobs[0].id, 'avature-7739');
   assert.equal(jobs[0].title, 'Cloud Engineer');
   assert.equal(jobs[0].location, 'Argentina');
+});
+
+// ── parent #6477: query-style /JobDetail?jobId= links ───────────────────────
+// Some tenants (Macquarie) link postings as /JobDetail?jobId=<id> rather than
+// /JobDetail/<slug>/<id>. The title-link regex only accepted the path form, so
+// every article was dropped and the board read as live but empty.
+
+test('parseAvature: accepts query-style /JobDetail?jobId= links and takes the id from jobId', () => {
+  const html = pageHtml([
+    articleBlock({ href: '/JobDetail?jobId=777001', title: 'Platform Engineer' }),
+    articleBlock({ href: '/careers/JobDetail?jobId=777002', title: 'Analyst' }),
+  ]);
+  const jobs = parseAvature(html, { origin: ORIGIN, fallbackCompany: 'Acme' });
+  assert.equal(jobs.length, 2, 'query-style links were dropped as non-JobDetail');
+  assert.equal(jobs[0].id, 'avature-777001');
+  assert.equal(jobs[0].url, `${ORIGIN}/JobDetail?jobId=777001`);
+  assert.equal(jobs[1].id, 'avature-777002');
+});
+
+test('parseAvature: resolves relative JobDetail hrefs with new URL(), dropping unresolvable ones', () => {
+  const html = pageHtml([
+    // Protocol-relative: string concatenation produced origin + "//host/..." —
+    // a URL pointing nowhere. Same-origin host resolves and is kept.
+    articleBlock({ href: '//acme.avature.net/JobDetail/Rel-Proto/4001', title: 'Protocol Relative' }),
+    // Path-relative form (no leading slash, internal slash before JobDetail).
+    articleBlock({ href: 'careers/JobDetail/Path-Relative/4002', title: 'Path Relative' }),
+    // A protocol-relative href pointing OFF the tenant origin is dropped
+    // (anti-injection), not emitted as a broken same-origin path.
+    articleBlock({ href: '//evil.example/JobDetail/Steal/4003', title: 'Cross Host' }),
+  ]);
+  const jobs = parseAvature(html, { origin: ORIGIN, fallbackCompany: 'Acme' });
+  assert.deepEqual(jobs.map((j) => j.title), ['Protocol Relative', 'Path Relative']);
+  assert.equal(jobs[0].url, `${ORIGIN}/JobDetail/Rel-Proto/4001`);
+  assert.equal(jobs[0].id, 'avature-4001');
+  assert.equal(jobs[1].url, `${ORIGIN}/careers/JobDetail/Path-Relative/4002`,
+    'a path-relative href resolves against the origin, as a browser would');
+});
+
+// ── parent #6593: article--result cards without the leading article class ──
+// Deloitte USI renders `<article class="article--result ">`; the pattern
+// required `<article class="article article--…`, so the page held JobDetail
+// links but parsed to zero articles.
+
+test('parseAvature: parses a result card rendered without the leading article class', () => {
+  const block = `
+    <article class="article--result ">
+      <h3 class="article__header__text__title"><a href="/JobDetail/Usi-Analyst/9001">USI Analyst</a></h3>
+      <div class="subtitle">Posted 02-May-2026</div>
+    </article>`;
+  const jobs = parseAvature(pageHtml([block]), { origin: ORIGIN, fallbackCompany: 'Acme' });
+  assert.equal(jobs.length, 1, 'a leading-class-less card was invisible to the article pattern');
+  assert.equal(jobs[0].id, 'avature-9001');
+  assert.equal(jobs[0].title, 'USI Analyst');
+
+  // The raw count (pagination stops on it) sees the same card.
+  assert.equal(countAvatureArticles(pageHtml([block])), 1);
 });

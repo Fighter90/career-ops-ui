@@ -34,7 +34,8 @@
  * for efficiency (don't page through 2000 stale jobs); each job still carries a
  * `date` for downstream freshness handling. The bound default (90d) is
  * deliberately wide. `getro_max_pages` (default 40, hard cap 200) is a request
- * safety cap. Jobs with no created_at are kept ("missing data = pass").
+ * safety cap; a walk that reaches it with postings left warns, naming the
+ * entry (parent #6433). Jobs with no created_at are kept ("missing data = pass").
  *
  * Host-pinned to api.getro.com + HTTPS + `redirect:'error'` (SSRF-safe). Used by
  * the getro adapter (server/lib/portals/adapters/getro.mjs).
@@ -410,8 +411,14 @@ export async function fetchGetro(endpoint, opts = {}) {
   const seen = new Set();
   let total = Infinity;
   let succeededOnce = false;
-
-  for (let page = 0; page < maxPages && page * HITS_PER_PAGE < total; page += 1) {
+  // Declared outside the loop so the cap check below can tell a walk that
+  // used every page it was allowed from one that ended on its own: every
+  // `break` leaves `page` below `maxPages` (parent #6433).
+  let page = 0;
+  // Rows the API returned on the last page read, before any is dropped: a
+  // short last page means the board ended there, whatever the cap.
+  let lastPageRows = 0;
+  for (; page < maxPages && page * HITS_PER_PAGE < total; page += 1) {
     let json;
     try {
       // Transient per-page failures (429/5xx/network) retry through the shared
@@ -453,6 +460,7 @@ export async function fetchGetro(endpoint, opts = {}) {
       ? requireArray(results.jobs, 'Getro results.jobs')
       : (Array.isArray(results.jobs) ? results.jobs : []);
     if (typeof results.count === 'number') total = results.count;
+    lastPageRows = jobs.length;
     if (jobs.length === 0) break;
 
     let reachedOld = false;
@@ -478,6 +486,23 @@ export async function fetchGetro(endpoint, opts = {}) {
     }
     // Once we've crossed the age cutoff, all later pages are older still.
     if (reachedOld) break;
+  }
+
+  // The page cap ended the walk while the board still had postings left, so
+  // the list is partial: every allowed page was read, the last one was full,
+  // and the board's count (when it gives one) says more remain (parent
+  // #6433). A short last page means the board ended there, with or without a
+  // count. (The parent also stays silent when a ctx.maxPages health-probe cap
+  // cut the walk; web-ui has no probe path through the source, so there is
+  // nothing to exempt here.)
+  if (page >= maxPages && lastPageRows >= HITS_PER_PAGE && page * HITS_PER_PAGE < total) {
+    const of = Number.isFinite(total) ? ` of ${total}` : '';
+    // At the hard ceiling a higher getro_max_pages is clamped back to it, so
+    // raising the entry's value would read nothing more: say so instead.
+    const advice = Number.isInteger(rawMaxPages) && rawMaxPages > 0 && rawMaxPages >= HARD_MAX_PAGES
+      ? `the ${HARD_MAX_PAGES}-page hard cap, so raising getro_max_pages reads no more`
+      : 'raise getro_max_pages on this entry for more';
+    console.error(`⚠️  getro: ${company?.name || id} truncated at getro_max_pages=${maxPages} (${out.length}${of} jobs) — ${advice}`);
   }
 
   return out;

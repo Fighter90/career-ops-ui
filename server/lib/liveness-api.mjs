@@ -42,8 +42,11 @@
 import { safeGet } from './safe-fetch.mjs';
 import { parseWwrFeed } from './sources/weworkremotely.mjs';
 import { HOST_RE as ULTIPRO_HOST_RE, extractCandidateOpportunityDetail } from './sources/ultipro.mjs';
+import { PATH_BREAKING_CHAR, PATH_BREAKING_CHAR_ENCODED_ONCE } from './sources/arbeitsagentur.mjs';
 
 const TIMEOUT_MS = 8_000;
+// Arbeitsagentur: the hexadecimal digits of an encoded character can be in either case.
+const PATH_BREAKING_CHAR_ENCODED_ONCE_RE = new RegExp(PATH_BREAKING_CHAR_ENCODED_ONCE, 'gi');
 // A polite, honest UA. `safeGet` supplies its own default; we set one explicitly
 // so the ATS logs attribute the request to the liveness checker.
 const LIVENESS_UA = 'career-ops-ui-liveness/1.0';
@@ -220,13 +223,28 @@ const ATS_PROVIDERS = [
     match(u) {
       if (u.hostname !== 'www.arbeitsagentur.de') return null;
       const m = u.pathname.match(/^\/jobsuche\/jobdetail\/([^/]+)\/?$/);
-      return m ? { refnr: m[1] } : null;
+      if (!m) return null;
+      // The path holds the reference number encoded once, except a slash, which
+      // is encoded once or twice (%2F or %252F). Decoding once keeps a literal
+      // percent sign, and leaves only a twice-encoded slash still encoded.
+      // The API takes the base64url of the real number. Only that form is passed
+      // on: the real number can hold characters the safe-value check refuses
+      // (parent #6499).
+      try {
+        const refnr = decodeURIComponent(m[1]).replace(PATH_BREAKING_CHAR_ENCODED_ONCE_RE, PATH_BREAKING_CHAR);
+        return { refnrBase64: Buffer.from(refnr).toString('base64url') };
+      } catch {
+        return null;
+      }
     },
-    api: ({ refnr }) => `https://rest.arbeitsagentur.de/jobboerse/jobsuche-service/pc/v4/jobdetails/${Buffer.from(refnr).toString('base64url')}`,
+    api: ({ refnrBase64 }) => `https://rest.arbeitsagentur.de/jobboerse/jobsuche-service/pc/v4/jobdetails/${refnrBase64}`,
     headers: { 'X-API-Key': 'jobboerse-jobsuche' },
     api404Authoritative: false, // no expired real-job control; absence stays unknown
-    interpret(posting, { refnr }) {
-      return posting?.referenznummer === refnr && posting?.stellenangebotsTitel
+    // Synchronous: web-ui's dispatch does not await interpret, and the
+    // base64url round-trip cannot throw.
+    interpret(posting, { refnrBase64 }) {
+      const decoded = Buffer.from(String(refnrBase64), 'base64url').toString();
+      return posting?.referenznummer === decoded && posting?.stellenangebotsTitel
         ? { result: 'active', code: 'arbeitsagentur_api_active', reason: 'Arbeitsagentur returns the matching job detail' }
         : null;
     },

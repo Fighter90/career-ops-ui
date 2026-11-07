@@ -282,3 +282,22 @@ test('a wrong-shape answer on one keyword keeps the other keyword’s jobs (part
   assert.equal(jobs.length, 1);
   assert.ok(jobs[0].id.includes('G'));
 });
+
+// ── parent #6499: reference numbers with a slash ────────────────────────────
+// A reference number can contain a slash. A once-encoded slash in the detail
+// path answers 404 and a bare slash would split the path, so the outgoing URL
+// encodes it twice (/ → %2F → %252F), the shape the site's own search results
+// use; every other character still encodes once.
+
+test('normalizeJob: a slash in the reference number is encoded twice, other characters once', () => {
+  const slashed = normalizeJob(v6('10000-123/4 X', 'ML Engineer', 'Berlin', { firma: ' ACME ' }));
+  assert.equal(slashed.url, 'https://www.arbeitsagentur.de/jobsuche/jobdetail/10000-123%252F4%20X',
+    'the slash rides as %2F encoded once more (%252F), the space stays once');
+  assert.equal(slashed.refnr, '10000-123/4 X');
+  assert.equal(slashed.id, `arbeitsagentur-${encodeURIComponent('10000-123/4 X')}`,
+    'the id keeps the once-encoded form (the dedup key is unchanged)');
+
+  const colon = normalizeJob(v6('17296-0008297:01-S', 'ML Engineer', 'Berlin'));
+  assert.equal(colon.url, 'https://www.arbeitsagentur.de/jobsuche/jobdetail/17296-0008297%3A01-S',
+    'a colon encodes once — it was never the breaking character');
+});
