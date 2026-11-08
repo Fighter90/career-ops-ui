@@ -9,9 +9,8 @@
 //         single-instance lock in .task-board/; failures comment on the issue.
 
 import { spawn } from 'node:child_process';
-import { readFileSync, writeFileSync, mkdirSync, existsSync, rmSync, unlinkSync, readdirSync, appendFileSync } from 'node:fs';
-import { resolve, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { openSync, writeSync, closeSync, readFileSync, writeFileSync, mkdirSync, unlinkSync, readdirSync, appendFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 
 const ROOT = process.cwd();
 const SWARM = resolve(ROOT, 'scripts/swarm');
@@ -96,13 +95,26 @@ async function clerk(op) {
 
 // ---------- pipeline steps ----------
 
+export function parsePickOutput(out) {
+  if (/\bSWARM_PICK::NONE\b/.test(out)) return null;
+  const m = out.match(/SWARM_PICK::([^:\n]+)::([^:\n]+)::([\s\S]*?)(?:\n|$)/);
+  if (!m) throw new Error('cannot parse clerk pick output');
+  const issue = { id: m[1].trim(), identifier: m[2].trim(), title: m[3].trim() };
+  // Guard against the clerk echoing the format template with literal placeholders
+  // (first real run: it printed SWARM_PICK::<issueId>::<identifier>::<title> verbatim).
+  if (/[<>]/.test(issue.id + issue.identifier + issue.title)) {
+    throw new Error('clerk output contains placeholder characters — refusing');
+  }
+  if (!/^[A-Z][A-Z0-9]*-\d+$/.test(issue.identifier)) {
+    throw new Error(`clerk returned a non-issue identifier ("${short(issue.identifier, 40)}") — refusing to continue`);
+  }
+  return issue;
+}
+
 async function pickIssue() {
   const out = await clerk(
-    `Read-only. In Linear team "${TEAM}", list issues that have the label "${LABEL}" and are in state "Todo" (use the linear MCP list_issues with a filter, try label by name "swarm"; if label filtering is unsupported, list Todo issues and check their labels). Take the FIRST one. Do NOT modify anything.\nResult line format (use '::' separators, keep the title intact in the last field):\nSWARM_PICK::<issueId>::<identifier>::<title>\nIf there is no such issue, print: SWARM_PICK::NONE`);
-  const m = out.match(/SWARM_PICK::([^:\n]+)::([^:\n]+)::([\s\S]*?)(?:\n|$)/);
-  if (!m) throw new Error(`cannot parse clerk pick output`);
-  if (m[1].trim() === 'NONE') return null;
-  return { id: m[1].trim(), identifier: m[2].trim(), title: m[3].trim() };
+    `Read-only. In Linear team "${TEAM}", list issues that have the label "${LABEL}" and are in state "Todo" (use the linear MCP list_issues with a filter, try label by name "swarm"; if label filtering is unsupported, list Todo issues and check their labels). Take the FIRST one. Do NOT modify anything.\nPrint the result as a data line, substituting REAL values from the issue — never print placeholder words like <issueId> or <identifier>:\nSWARM_PICK::<REAL issueId>::<REAL identifier like CAR-123>::<REAL title>\nIf there is no such issue, print exactly: SWARM_PICK::NONE`);
+  return parsePickOutput(out);
 }
 const claimIssue = (i) => clerk(`Operation: for issue ${i.identifier} (id ${i.id}) set state to "In Progress" and add comment: "🎯 Swarm claimed this issue — orchestrator starting (dev → gates → review → release → prod-QA)."\nResult line: SWARM_CLAIM::<identifier>`);
 const doneIssue = (i, evidence) => clerk(`Operation: for issue ${i.identifier} set state "Done" and add comment:\n---\n${evidence}\n---\nResult line: SWARM_DONE::<identifier>`);
@@ -126,8 +138,13 @@ async function main() {
   if (!existsSync(resolve(ROOT, 'package.json'))) throw new Error('run from the web-ui repo root');
   mkdirSync(LOGS, { recursive: true });
   const lock = resolve(STATE, 'lock');
-  if (existsSync(lock)) throw new Error('another swarm instance holds the lock (.task-board/lock)');
-  writeFileSync(lock, String(process.pid));
+  try {
+    const fd = openSync(lock, 'wx'); // exclusive create — no exists/write race
+    writeSync(fd, String(process.pid));
+    closeSync(fd);
+  } catch {
+    throw new Error('another swarm instance holds the lock (.task-board/lock)');
+  }
 
   try {
     for (let n = 0; n < MAX_TASKS; n++) {
@@ -218,11 +235,11 @@ async function main() {
 
         // ---- release manager
         log('-- release manager: PR');
-        const pr = await sh(`gh pr create --head ${branch} --title "${issue.identifier}: ${issue.title.replace(/"/g, "'")}" --body "${(story || '').replace(/"/g, "'").slice(0, 400)}\n\nSwarm cycle: dev(${MAX_ROUNDS} rounds max) → gates → review(ACCEPT) → release."`, { timeoutMs: 120_000 });
+        const pr = await sh(`gh pr create --head ${branch} --title "${issue.identifier}: ${issue.title.replace(/"/g, "'")}" --body "${story.replace(/"/g, "'").slice(0, 400)}\n\nSwarm cycle: dev(${MAX_ROUNDS} rounds max) → gates → review(ACCEPT) → release."`, { timeoutMs: 120_000 });
         const prUrl = (pr.out.match(/https:\/\/github\.com\/\S+/) || [])[0];
         if (!prUrl) throw new Error(`gh pr create failed: ${short(pr.all)}`);
         await sh(`gh pr checks --watch ${prUrl.split('/').pop()} --require-passing`, { timeoutMs: 45 * 60_000 });
-        const merge = await sh(`gh pr merge ${prUrl.split('/').pop()} --squash --delete-branch`, { timeoutMs: 300_000 });
+        await sh(`gh pr merge ${prUrl.split('/').pop()} --squash --delete-branch`, { timeoutMs: 300_000 });
         log(`  merged: ${prUrl}`);
 
         await sh('git checkout -q main && git pull -q');
@@ -237,7 +254,9 @@ async function main() {
         writeFileSync('CHANGELOG.md', entry('Fixed', 'Notes') + changelog);
         for (const [file, [f, nn]] of Object.entries(LOCALES)) {
           const p = resolve(ROOT, file);
-          if (existsSync(p)) writeFileSync(p, entry(f, nn) + readFileSync(p, 'utf8'));
+          try {
+            writeFileSync(p, entry(f, nn) + readFileSync(p, 'utf8'));
+          } catch { /* locale mirror absent — skip */ }
         }
         mkdirSync(resolve(ROOT, 'qa/archive/superseded-prompts'), { recursive: true });
         for (const f of readdirSync(resolve(ROOT, 'qa'))) {
@@ -259,9 +278,6 @@ async function main() {
         log('-- release manager: tag → Release → publish → Pages → deploy → verify');
         await sh(`git tag v${ver} && git push -q origin v${ver}`);
         const parentSha = (await sh('git -C ../ rev-parse --short HEAD')).out.trim() || 'main';
-        const chain = [
-          ['release', `sleep 10; gh run list --workflow=release.yml --limit 1 --json databaseId --jq '.[0].databaseId'`],
-        ];
         await sh('sleep 10');
         const relId = (await sh(`gh run list --workflow=release.yml --limit 1 --json databaseId --jq '.[0].databaseId'`)).out.trim();
         await sh(`gh run watch ${relId} --exit-status`, { timeoutMs: 30 * 60_000 });
@@ -299,7 +315,11 @@ async function main() {
   }
 }
 
-main().then(
-  () => process.exit(0),
-  (e) => { console.error(`SWARM ERROR: ${String(e).slice(0, 500)}`); process.exit(1); },
-);
+
+const isMain = process.argv[1] && resolve(process.argv[1]) === decodeURIComponent(new URL(import.meta.url).pathname);
+if (isMain) {
+  main().then(
+    () => process.exit(0),
+    (e) => { console.error(`SWARM ERROR: ${String(e).slice(0, 500)}`); process.exit(1); },
+  );
+}
