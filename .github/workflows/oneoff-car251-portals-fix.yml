@@ -56,7 +56,7 @@ jobs:
             n=$(grep -c 'channel: php_vakansii1' "$f" || true)
             if [ "$n" -gt 0 ]; then
               cp -p "$f" "$f.bak-$(date +%Y%m%d%H%M%S)"
-              sed -i 's#^    - { name: "PHP вакансии (1)",        channel: php_vakansii1 }$#    # php_vakansii1 removed 2026-11-08 (CAR-251): t.me stopped serving its web feed (Contact stub, 0 posts) — it failed the live-scan remote-QA job twice.#' "$f"
+              sed -i 's|^    - { name: "PHP вакансии (1)",        channel: php_vakansii1 }$|    # php_vakansii1 removed 2026-11-08 (CAR-251): t.me stopped serving its web feed (Contact stub, 0 posts) — it failed the live-scan remote-QA job twice.|' "$f"
               n2=$(grep -c 'channel: php_vakansii1' "$f" || true)
               [ "$n2" = 0 ] || { echo "::error::$f still carries the dead channel"; exit 1; }
               echo "patched: dead channel line replaced with a comment (was $n)"
