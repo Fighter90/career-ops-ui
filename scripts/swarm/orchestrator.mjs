@@ -187,6 +187,29 @@ async function main() {
           devStatus = commits > 0 ? 'done' : (dev1.status === 'done' ? 'blocked' : dev1.status);
           devSummary = dev1.summary;
           log(`  commits on branch: ${commits}; executor status: ${dev1.status} → using ${devStatus}`);
+          // Run-5 lesson: an executor that reports "already-implemented" may have FOUND
+          // its own lost work — a previous cycle's branch was recreated with -B and the
+          // commit survived only in the reflog. Rescue it instead of canceling.
+          if (devStatus !== 'done' && dev1.status !== 'not-reproducible') {
+            const found = await sh(`git log --all --grep="${issue.identifier}" --pretty=%H -5`, { timeoutMs: 60_000 });
+            let sha = '';
+            for (const cand of found.out.trim().split('\n')) {
+              if (!/^[0-9a-f]{7,40}$/.test(cand)) continue;
+              const anc = await sh(`git merge-base --is-ancestor ${cand} origin/main && echo ancestor || echo fresh`);
+              if (anc.out.includes('fresh')) { sha = cand; break; } // newest non-merged match
+            }
+            if (sha) {
+              log(`  reflog rescue: found lost work ${sha.slice(0, 9)} for ${issue.identifier} — cherry-picking`);
+              const cp = await sh(`git cherry-pick ${sha}`);
+              const after = parseInt((await sh('git rev-list --count origin/main..HEAD')).out.trim() || '0', 10);
+              if (cp.code === 0 && after > 0) {
+                devStatus = 'done'; devSummary = `(rescued from lost branch commit ${sha.slice(0, 9)}) ${devSummary}`;
+                log(`  rescued: ${after} commit(s) on the branch — proceeding to gates`);
+              } else {
+                await sh('git cherry-pick --abort');
+              }
+            }
+          }
           if (devStatus !== 'done') break;
 
           log('-- tester: deterministic gates (npm run test:ci)');
