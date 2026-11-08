@@ -1,0 +1,305 @@
+#!/usr/bin/env node
+// Swarm orchestrator — Linear → EXECUTOR → TESTER(gates) → REVIEWER → DOCUMENTER →
+// RELEASE MANAGER → PROD TESTER → Linear Done. All LLM roles run on GLM via
+// `opencode run` with role prompt templates (scripts/swarm/roles/*.md); every git/gh/npm
+// step is deterministic code. See scripts/swarm/README.md (ru) for the architecture.
+//
+// Usage:  node scripts/swarm/orchestrator.mjs [--max N] [--dry-run] [--no-release] [--rounds N]
+// Safety: claims only Linear issues labeled `swarm` in Todo; refuses a dirty tree;
+//         single-instance lock in .task-board/; failures comment on the issue.
+
+import { spawn } from 'node:child_process';
+import { readFileSync, writeFileSync, mkdirSync, existsSync, rmSync, unlinkSync, readdirSync, appendFileSync } from 'node:fs';
+import { resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const ROOT = process.cwd();
+const SWARM = resolve(ROOT, 'scripts/swarm');
+const STATE = resolve(ROOT, '.task-board');
+const LOGS = resolve(STATE, 'log');
+const TEAM = 'Carrer-ops-ui';
+const LABEL = 'swarm';
+
+const args = process.argv.slice(2);
+const flag = (name) => args.includes(name);
+const num = (name, def) => { const i = args.indexOf(name); return i >= 0 ? Number(args[i + 1]) || def : def; };
+const MAX_TASKS = num('--max', 1);
+const MAX_ROUNDS = num('--rounds', 3);
+const DRY = flag('--dry-run');
+const NO_RELEASE = flag('--no-release');
+const PROD_LIVE = !!process.env.SWARM_REMOTE_QA_LIVE;
+
+const ROLES = {
+  executor: readFileSync(resolve(SWARM, 'roles/executor.md'), 'utf8'),
+  reviewer: readFileSync(resolve(SWARM, 'roles/reviewer.md'), 'utf8'),
+  documenter: readFileSync(resolve(SWARM, 'roles/documenter.md'), 'utf8'),
+  clerk: readFileSync(resolve(SWARM, 'roles/clerk.md'), 'utf8'),
+};
+const LOCALES = {
+  'CHANGELOG.es.md': ['Corregido', 'Notas'], 'CHANGELOG.pt-BR.md': ['Corrigido', 'Notas'],
+  'CHANGELOG.ko-KR.md': ['수정', '참고'], 'CHANGELOG.ja.md': ['修正', 'メモ'],
+  'CHANGELOG.ru.md': ['Исправлено', 'Примечания'], 'CHANGELOG.zh-CN.md': ['修复', '备注'],
+  'CHANGELOG.zh-TW.md': ['修復', '備註'], 'CHANGELOG.fr.md': ['Corrigé', 'Notes'],
+  'CHANGELOG.pl.md': ['Naprawiono', 'Uwagi'], 'CHANGELOG.uk.md': ['Виправлено', 'Примітки'],
+  'CHANGELOG.da.md': ['Rettet', 'Noter'], 'CHANGELOG.ar.md': ['أُصلح', 'ملاحظات'],
+  'CHANGELOG.de.md': ['Behoben', 'Hinweise'], 'CHANGELOG.it.md': ['Corretto', 'Note'],
+  'CHANGELOG.tr.md': ['Düzeltildi', 'Notlar'], 'CHANGELOG.hi.md': ['ठीक किया गया', 'नोट्स'],
+  'CHANGELOG.ta.md': ['சரி செய்யப்பட்டது', 'குறிப்புகள்'], 'CHANGELOG.vi.md': ['Đã sửa', 'Ghi chú'],
+};
+
+let logFile = null;
+const ts = () => new Date().toISOString().replace('T', ' ').slice(0, 19);
+function log(msg) {
+  const line = `[${ts()}] ${msg}`;
+  console.log(line);
+  if (logFile) appendFileSync(logFile, line + '\n');
+}
+const short = (s, n = 400) => String(s).replace(/\s+/g, ' ').trim().slice(0, n);
+
+function run(cmd, args_, { timeoutMs = 600_000, cwd = ROOT } = {}) {
+  return new Promise((res) => {
+    const p = spawn(cmd, args_, { cwd, env: process.env, stdio: ['ignore', 'pipe', 'pipe'] });
+    let out = '', err = '';
+    const t = setTimeout(() => { try { p.kill('SIGKILL'); } catch {} }, timeoutMs);
+    p.stdout.on('data', (d) => { out += d; });
+    p.stderr.on('data', (d) => { err += d; });
+    p.on('close', (code) => { clearTimeout(t); res({ code, out, err, all: out + err }); });
+  });
+}
+const sh = async (cmd, opts) => {
+  const r = await run('bash', ['-lc', cmd], opts);
+  log(`  $ ${cmd.slice(0, 120)} → ${r.code}`);
+  return r;
+};
+
+async function worker(role, vars, { timeoutMs = 25 * 60_000 } = {}) {
+  let prompt = ROLES[role];
+  for (const [k, v] of Object.entries(vars)) prompt = prompt.replaceAll(`{{${k}}}`, v ?? '');
+  log(`  [${role}] GLM worker started (timeout ${Math.round(timeoutMs / 60000)}m)`);
+  const r = await run('opencode', ['run', prompt], { timeoutMs });
+  const tail = r.all.slice(-4000);
+  log(`  [${role}] finished code=${r.code}`);
+  return { ...r, tail };
+}
+const after = (text, marker, until) => {
+  const i = text.indexOf(marker);
+  if (i < 0) return null;
+  const j = until ? text.indexOf(until, i + marker.length) : -1;
+  return text.slice(i + marker.length, j > 0 ? j : undefined).trim();
+};
+
+async function clerk(op) {
+  const r = await worker('clerk', { OP: op }, { timeoutMs: 6 * 60_000 });
+  if (!r.tail.includes('CLERK_OK')) throw new Error(`clerk failed: ${short(r.tail)}`);
+  return r.tail;
+}
+
+// ---------- pipeline steps ----------
+
+async function pickIssue() {
+  const out = await clerk(
+    `Read-only. In Linear team "${TEAM}", list issues that have the label "${LABEL}" and are in state "Todo" (use the linear MCP list_issues with a filter, try label by name "swarm"; if label filtering is unsupported, list Todo issues and check their labels). Take the FIRST one. Do NOT modify anything.\nResult line format (use '::' separators, keep the title intact in the last field):\nSWARM_PICK::<issueId>::<identifier>::<title>\nIf there is no such issue, print: SWARM_PICK::NONE`);
+  const m = out.match(/SWARM_PICK::([^:\n]+)::([^:\n]+)::([\s\S]*?)(?:\n|$)/);
+  if (!m) throw new Error(`cannot parse clerk pick output`);
+  if (m[1].trim() === 'NONE') return null;
+  return { id: m[1].trim(), identifier: m[2].trim(), title: m[3].trim() };
+}
+const claimIssue = (i) => clerk(`Operation: for issue ${i.identifier} (id ${i.id}) set state to "In Progress" and add comment: "🎯 Swarm claimed this issue — orchestrator starting (dev → gates → review → release → prod-QA)."\nResult line: SWARM_CLAIM::<identifier>`);
+const doneIssue = (i, evidence) => clerk(`Operation: for issue ${i.identifier} set state "Done" and add comment:\n---\n${evidence}\n---\nResult line: SWARM_DONE::<identifier>`);
+const cancelIssue = (i, why) => clerk(`Operation: for issue ${i.identifier} set state "Canceled" and add comment: "Swarm: ${why} — nothing to ship."\nResult line: SWARM_CANCEL::<identifier>`);
+const failIssue = async (i, step, msg) => {
+  try { await clerk(`Operation: add comment to issue ${i.identifier}: "⚠️ Swarm failed at step ${step}: ${short(msg, 300)}"\nResult line: SWARM_FAIL::<identifier>`); }
+  catch (e) { log(`  (clerk failure-report also failed: ${short(String(e))})`); }
+};
+
+const extractDev = (tail) => {
+  const status = (tail.match(/status:\s*(done|already-implemented|not-reproducible|blocked)/) || [])[1] || 'blocked';
+  return { status, summary: after(tail, 'DEV_SUMMARY:') || '' };
+};
+const extractVerdict = (tail) => {
+  if (/VERDICT:\s*ACCEPT/.test(tail)) return { verdict: 'ACCEPT', notes: '' };
+  if (/VERDICT:\s*RETURN/.test(tail)) return { verdict: 'RETURN', notes: after(tail, 'VERDICT: RETURN', /\ntitle:|<\/DIFF>/) || short(tail, 600) };
+  return { verdict: 'RETURN', notes: 'reviewer produced no verdict — treat as RETURN' };
+};
+
+async function main() {
+  if (!existsSync(resolve(ROOT, 'package.json'))) throw new Error('run from the web-ui repo root');
+  mkdirSync(LOGS, { recursive: true });
+  const lock = resolve(STATE, 'lock');
+  if (existsSync(lock)) throw new Error('another swarm instance holds the lock (.task-board/lock)');
+  writeFileSync(lock, String(process.pid));
+
+  try {
+    for (let n = 0; n < MAX_TASKS; n++) {
+      logFile = resolve(LOGS, `cycle-${Date.now()}.log`);
+      log(`=== task ${n + 1}/${MAX_TASKS} ===`);
+
+      const clean = await sh('git status --porcelain');
+      if (clean.out.trim()) throw new Error('working tree is not clean — aborting before pick');
+      await sh('git fetch origin -q && git checkout -q main && git reset --hard origin/main');
+
+      const issue = await pickIssue();
+      if (!issue) { log('queue empty — no Todo issues labeled `swarm`.'); break; }
+      log(`picked ${issue.identifier}: ${issue.title}`);
+      if (DRY) { log('dry-run: would claim → develop → gates → review → document → release → prod-QA → Done.'); break; }
+
+      const branch = `swarm/${issue.identifier.toLowerCase()}`;
+      let accepted = null, devStatus = null, devSummary = '', story = null;
+
+      try {
+        await claimIssue(issue);
+      } catch (e) { throw new Error(`claim: ${short(String(e))}`); }
+
+      try {
+        // ---- develop (executor ↔ reviewer loop, deterministic TESTER between rounds)
+        let reviewNotes = '';
+        let round = 0;
+        for (; round < MAX_ROUNDS; round++) {
+          log(`-- round ${round + 1}/${MAX_ROUNDS}: develop`);
+          await sh(`git checkout -q -B ${branch} origin/main`);
+          const dev = await worker('executor', {
+            IDENTIFIER: issue.identifier, TITLE: issue.title, ROUND: String(round + 1),
+            DESCRIPTION: '(fetch the full issue body yourself via the linear MCP if needed)',
+            REVIEW_NOTES: reviewNotes ? `\nREVIEWER RETURNED THIS CHANGE WITH NOTES — address every point:\n${reviewNotes}` : '',
+          });
+          const dev1 = extractDev(dev.tail);
+          devStatus = dev1.status; devSummary = dev1.summary;
+          if (devStatus !== 'done') break;
+
+          log('-- tester: deterministic gates (npm run test:ci)');
+          const gates = await sh('npm run test:ci', { timeoutMs: 30 * 60_000 });
+          const passLine = (gates.all.match(/# pass (\d+)/) || [])[1];
+          if (gates.code !== 0 || !passLine) {
+            if (round + 1 < MAX_ROUNDS) {
+              reviewNotes = `The test gate failed. Output tail:\n${short(gates.all.slice(-1500), 1500)}`;
+              log(`  gates FAILED — feeding output back to the executor`);
+              continue;
+            }
+            throw new Error(`gates failed after ${MAX_ROUNDS} rounds`);
+          }
+          log(`  gates green (# pass ${passLine})`);
+
+          log(`-- round ${round + 1}: review`);
+          const diff = await sh(`git diff origin/main...HEAD`);
+          const rev = await worker('reviewer', {
+            IDENTIFIER: issue.identifier, TITLE: issue.title,
+            DESCRIPTION: '(the executor fetched the issue body; judge the diff below)',
+            DIFF: `<DIFF>\n${diff.all.slice(0, 60_000)}\n</DIFF>`,
+          }, { timeoutMs: 12 * 60_000 });
+          const v = extractVerdict(rev.tail);
+          if (v.verdict === 'ACCEPT') { accepted = true; log('  verdict: ACCEPT'); break; }
+          accepted = false;
+          reviewNotes = v.notes;
+          log(`  verdict: RETURN — ${short(v.notes, 160)}`);
+        }
+        if (devStatus !== 'done') {
+          await cancelIssue(issue, `executor reported "${devStatus}"`);
+          log(`finished: ${devStatus} — issue canceled`); continue;
+        }
+        if (!accepted) {
+          await failIssue(issue, 'review', `no ACCEPT in ${MAX_ROUNDS} rounds; branch ${branch} kept for human review`);
+          throw new Error(`review: no ACCEPT in ${MAX_ROUNDS} rounds`);
+        }
+
+        // ---- document (артист)
+        log('-- documenter');
+        const stat = await sh(`git diff --stat origin/main...HEAD`);
+        const doc = await worker('documenter', {
+          IDENTIFIER: issue.identifier, TITLE: issue.title,
+          DEV_SUMMARY: devSummary || '(no summary)', DIFF_STAT: short(stat.out, 1200),
+        }, { timeoutMs: 8 * 60_000 });
+        const fixed = after(doc.tail, 'CHLOG_FIXED:', 'CHLOG_NOTES:');
+        const notes = after(doc.tail, 'CHLOG_NOTES:', 'STORY:');
+        story = after(doc.tail, 'STORY:');
+        if (!fixed || !notes || !story) throw new Error('documenter output incomplete');
+        log(`  story: ${short(story, 120)}`);
+
+        if (NO_RELEASE) { log('--no-release: stopping after ACCEPT + document.'); break; }
+
+        // ---- release manager
+        log('-- release manager: PR');
+        const pr = await sh(`gh pr create --head ${branch} --title "${issue.identifier}: ${issue.title.replace(/"/g, "'")}" --body "${(story || '').replace(/"/g, "'").slice(0, 400)}\n\nSwarm cycle: dev(${MAX_ROUNDS} rounds max) → gates → review(ACCEPT) → release."`, { timeoutMs: 120_000 });
+        const prUrl = (pr.out.match(/https:\/\/github\.com\/\S+/) || [])[0];
+        if (!prUrl) throw new Error(`gh pr create failed: ${short(pr.all)}`);
+        await sh(`gh pr checks --watch ${prUrl.split('/').pop()} --require-passing`, { timeoutMs: 45 * 60_000 });
+        const merge = await sh(`gh pr merge ${prUrl.split('/').pop()} --squash --delete-branch`, { timeoutMs: 300_000 });
+        log(`  merged: ${prUrl}`);
+
+        await sh('git checkout -q main && git pull -q');
+        const verOut = await sh('npm version patch --no-git-tag-version');
+        const ver = verOut.out.trim().replace(/^v/, '');
+        log(`-- release manager: v${ver} (changelog ×19 + QA prompt)`);
+
+        const today = new Date().toISOString().slice(0, 10);
+        const entry = (fixedLabel, notesLabel) =>
+          `## [${ver}] — ${today}\n\n### ${fixedLabel}\n${fixed}\n\n### ${notesLabel}\n${notes}\n\n`;
+        const changelog = readFileSync('CHANGELOG.md', 'utf8');
+        writeFileSync('CHANGELOG.md', entry('Fixed', 'Notes') + changelog);
+        for (const [file, [f, nn]] of Object.entries(LOCALES)) {
+          const p = resolve(ROOT, file);
+          if (existsSync(p)) writeFileSync(p, entry(f, nn) + readFileSync(p, 'utf8'));
+        }
+        mkdirSync(resolve(ROOT, 'qa/archive/superseded-prompts'), { recursive: true });
+        for (const f of readdirSync(resolve(ROOT, 'qa'))) {
+          if (/^QA-REGRESSION-PROMPT-v.+\.md$/.test(f)) {
+            const from = resolve(ROOT, 'qa', f); const to = resolve(ROOT, 'qa/archive/superseded-prompts', f);
+            try { rmSync(to); } catch {}
+            await sh(`mv "${from}" "${to}"`);
+          }
+        }
+        writeFileSync(resolve(ROOT, `qa/QA-REGRESSION-PROMPT-v${ver}.md`),
+          `# QA regression prompt — v${ver}\n\nSwarm release (${issue.identifier}). Story: ${story}\n\n- Gates at ship time: see the CHANGELOG entry for ${ver} and the release workflow run.\n- Spot check: ${issue.title} behaves as described; no regressions on the touched surfaces.\n`);
+
+        const relCommit = await sh(`git add -A && git commit -q -m "release: v${ver} (swarm ${issue.identifier})" && git push -q`, { timeoutMs: 300_000 });
+        if (relCommit.code !== 0) throw new Error(`release commit failed: ${short(relCommit.all)}`);
+        const ci = await sh(`sleep 20; gh run list --workflow=ci.yml --branch main --limit 1 --json databaseId --jq '.[0].databaseId'`);
+        const ciId = ci.out.trim();
+        await sh(`gh run watch ${ciId} --exit-status`, { timeoutMs: 60 * 60_000 });
+
+        log('-- release manager: tag → Release → publish → Pages → deploy → verify');
+        await sh(`git tag v${ver} && git push -q origin v${ver}`);
+        const parentSha = (await sh('git -C ../ rev-parse --short HEAD')).out.trim() || 'main';
+        const chain = [
+          ['release', `sleep 10; gh run list --workflow=release.yml --limit 1 --json databaseId --jq '.[0].databaseId'`],
+        ];
+        await sh('sleep 10');
+        const relId = (await sh(`gh run list --workflow=release.yml --limit 1 --json databaseId --jq '.[0].databaseId'`)).out.trim();
+        await sh(`gh run watch ${relId} --exit-status`, { timeoutMs: 30 * 60_000 });
+        await sh('gh workflow run publish-package.yml --ref main && gh workflow run deploy-pages.yml --ref main');
+        await sh('sleep 15');
+        const pubId = (await sh(`gh run list --workflow=publish-package.yml --limit 1 --json databaseId --jq '.[0].databaseId'`)).out.trim();
+        const pagId = (await sh(`gh run list --workflow=deploy-pages.yml --limit 1 --json databaseId --jq '.[0].databaseId'`)).out.trim();
+        await sh(`gh run watch ${pubId} --exit-status`, { timeoutMs: 30 * 60_000 });
+        await sh(`gh run watch ${pagId} --exit-status`, { timeoutMs: 30 * 60_000 });
+        await sh('gh workflow run deploy.yml --ref main -f mode=deploy -f ui_ref=' + `v${ver}` + ' -f parent_ref=' + parentSha);
+        await sh('sleep 15');
+        const depId = (await sh(`gh run list --workflow=deploy.yml --limit 1 --json databaseId --jq '.[0].databaseId'`)).out.trim();
+        await sh(`gh run watch ${depId} --exit-status`, { timeoutMs: 45 * 60_000 });
+        const depLog = await sh(`gh run view ${depId} --log | grep ok=true | tail -1`);
+        if (!/ok=true/.test(depLog.all)) throw new Error(`deploy did not report ok=true: ${short(depLog.all)}`);
+
+        log('-- prod tester: remote-qa (perf)');
+        await sh(`gh workflow run remote-qa.yml --ref main -f perf=true${PROD_LIVE ? ' -f live=true' : ''}`);
+        await sh('sleep 15');
+        const rqId = (await sh(`gh run list --workflow=remote-qa.yml --limit 1 --json databaseId --jq '.[0].databaseId'`)).out.trim();
+        await sh(`gh run watch ${rqId} --exit-status`, { timeoutMs: 90 * 60_000 });
+        const rqJobs = (await sh(`gh run view ${rqId} --json jobs --jq '.jobs[] | "\\(.name): \\(.conclusion)"'`)).out.trim();
+
+        const evidence = `**Shipped by the agent swarm in v${ver}** (${today})\n\n- Issue: ${issue.identifier} — ${issue.title}\n- PR: ${prUrl} (squash-merged, CI ✓)\n- Release chain: tag v${ver} → Release → publish → Pages → deploy → verify \`ok=true version=${ver}\`\n- Prod QA (remote-qa perf):\n${rqJobs.split('\n').map((l) => '  - ' + l).join('\n')}\n- Story: ${short(story, 300)}`;
+        await doneIssue(issue, evidence);
+        await sh(`git branch -D ${branch}`);
+        log(`=== DONE: ${issue.identifier} shipped as v${ver} ===`);
+      } catch (e) {
+        await failIssue(issue, 'pipeline', String(e));
+        throw e;
+      }
+    }
+  } finally {
+    try { unlinkSync(resolve(STATE, 'lock')); } catch {}
+  }
+}
+
+main().then(
+  () => process.exit(0),
+  (e) => { console.error(`SWARM ERROR: ${String(e).slice(0, 500)}`); process.exit(1); },
+);

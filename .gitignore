@@ -146,3 +146,4 @@ site/.astro/
 qa/reports/
 /public/js/bundle.js.br
 /public/js/bundle.js.gz
+.task-board/
