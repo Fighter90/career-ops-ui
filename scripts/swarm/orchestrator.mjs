@@ -9,7 +9,7 @@
 //         single-instance lock in .task-board/; failures comment on the issue.
 
 import { spawn } from 'node:child_process';
-import { openSync, writeSync, closeSync, readFileSync, writeFileSync, mkdirSync, unlinkSync, readdirSync, appendFileSync } from 'node:fs';
+import { openSync, writeSync, closeSync, readFileSync, writeFileSync, mkdirSync, existsSync, unlinkSync, readdirSync, appendFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 const ROOT = process.cwd();
@@ -265,8 +265,7 @@ async function main() {
         for (const f of readdirSync(resolve(ROOT, 'qa'))) {
           if (/^QA-REGRESSION-PROMPT-v.+\.md$/.test(f)) {
             const from = resolve(ROOT, 'qa', f); const to = resolve(ROOT, 'qa/archive/superseded-prompts', f);
-            try { rmSync(to); } catch {}
-            await sh(`mv "${from}" "${to}"`);
+            await sh(`mv -f "${from}" "${to}"`);
           }
         }
         writeFileSync(resolve(ROOT, `qa/QA-REGRESSION-PROMPT-v${ver}.md`),
