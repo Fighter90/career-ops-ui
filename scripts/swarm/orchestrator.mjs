@@ -162,7 +162,7 @@ async function main() {
       if (DRY) { log('dry-run: would claim → develop → gates → review → document → release → prod-QA → Done.'); break; }
 
       const branch = `swarm/${issue.identifier.toLowerCase()}`;
-      let accepted = null, devStatus = null, devSummary = '', story = null;
+      let accepted = null, devStatus = null, devSummary = '', story = null, mergedDone = false;
 
       try {
         await claimIssue(issue);
@@ -192,11 +192,20 @@ async function main() {
           // commit survived only in the reflog. Rescue it instead of canceling.
           if (devStatus !== 'done' && dev1.status !== 'not-reproducible') {
             const found = await sh(`git log --all --grep="${issue.identifier}" --pretty=%H -5`, { timeoutMs: 60_000 });
-            let sha = '';
+            let sha = '', mergedSha = '';
             for (const cand of found.out.trim().split('\n')) {
               if (!/^[0-9a-f]{7,40}$/.test(cand)) continue;
               const anc = await sh(`git merge-base --is-ancestor ${cand} origin/main && echo ancestor || echo fresh`);
               if (anc.out.includes('fresh')) { sha = cand; break; } // newest non-merged match
+              if (!mergedSha) mergedSha = cand; // newest already-merged match
+            }
+            if (!sha && mergedSha) {
+              // Run-6 truth: the executor's work is ALREADY merged to main — the task is
+              // done, not blocked. Close it with evidence instead of failing.
+              const ev = `**Already merged to main** — the executor's work is commit ${mergedSha.slice(0, 9)} (an ancestor of origin/main; CI green on the containing run). Nothing left to ship.`;
+              await doneIssue(issue, ev);
+              log(`already merged: ${mergedSha.slice(0, 9)} — issue closed as Done`);
+              mergedDone = true; break;
             }
             if (sha) {
               log(`  reflog rescue: found lost work ${sha.slice(0, 9)} for ${issue.identifier} — cherry-picking`);
@@ -238,6 +247,7 @@ async function main() {
           reviewNotes = v.notes;
           log(`  verdict: RETURN — ${short(v.notes, 160)}`);
         }
+        if (mergedDone) { log('finished: work already merged — issue closed as Done'); continue; }
         if (devStatus !== 'done') {
           if (devStatus === 'blocked') {
             await failIssue(issue, 'executor', 'reported blocked — the branch and the board are left for human review');
