@@ -10,7 +10,7 @@
 open work is in `docs/sdd/BACKLOG.md`, the order in `docs/sdd/PLAN.md`. OpenCode agents:
 `.opencode/agent/{fixer,locale-docs,release}.md` + the three reviewers mirrored from
 `.claude/agents/` (`spa-view-reviewer`, `test-isolation-reviewer`, `web-ui-route-reviewer`);
-commands: `/continue`, `/ship X.Y.Z`, `/parent-sync`, `/sdd-status`, `/codebase-tour`.
+commands: `/continue`, `/ship X.Y.Z`, `/parent-sync`, `/sdd-status`, `/codebase-tour`, `/swarm`.
 
 ## Quick orientation
 
