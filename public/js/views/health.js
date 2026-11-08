@@ -45,6 +45,13 @@ Router.register('health', async () => {
     'cv.md':                      '#/cv',
     'portals.yml':                '#/portals',
     'data/applications.md':       '#/tracker',
+    // CAR-252 — keys are the real /api/health check names (server/lib/
+    // routes/health.mjs); a missing pipeline row now routes to its page
+    // like the tracker row above. modes/oferta.md stays unmapped: it is a
+    // parent system file no UI surface writes (pinned by
+    // tests/health-fix-targets-car252.test.mjs, together with the other
+    // not-UI-fixable required checks).
+    'data/pipeline.md':           '#/pipeline',
   };
   function resolveFixUrl(ch) {
     if (ch.ok) return null;
