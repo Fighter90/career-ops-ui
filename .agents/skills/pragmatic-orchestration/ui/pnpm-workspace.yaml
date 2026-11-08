@@ -1,4 +1,0 @@
-allowBuilds:
-  electron: true
-minimumReleaseAgeExclude:
-  - electron@44.4.4
