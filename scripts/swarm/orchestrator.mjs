@@ -78,6 +78,7 @@ async function worker(role, vars, { timeoutMs = 25 * 60_000 } = {}) {
   const r = await run('opencode', ['run', prompt], { timeoutMs });
   const tail = r.all.slice(-4000);
   log(`  [${role}] finished code=${r.code}`);
+  log(`  [${role}] tail: ${short(tail, 600)}`);
   return { ...r, tail };
 }
 const after = (text, marker, until) => {
@@ -176,11 +177,16 @@ async function main() {
           await sh(`git checkout -q -B ${branch} origin/main`);
           const dev = await worker('executor', {
             IDENTIFIER: issue.identifier, TITLE: issue.title, ROUND: String(round + 1),
-            DESCRIPTION: '(fetch the full issue body yourself via the linear MCP if needed)',
+            DESCRIPTION: '(fetch the full issue BODY via the linear MCP if needed; never read or judge the issue STATE — the orchestrator owns the lifecycle)',
             REVIEW_NOTES: reviewNotes ? `\nREVIEWER RETURNED THIS CHANGE WITH NOTES — address every point:\n${reviewNotes}` : '',
           });
+          const commits = parseInt((await sh('git rev-list --count origin/main..HEAD')).out.trim() || '0', 10);
           const dev1 = extractDev(dev.tail);
-          devStatus = dev1.status; devSummary = dev1.summary;
+          // The tree is the truth: a committed branch goes to the gates even if the
+          // executor's summary line claims otherwise (gates + review are the arbiters).
+          devStatus = commits > 0 ? 'done' : (dev1.status === 'done' ? 'blocked' : dev1.status);
+          devSummary = dev1.summary;
+          log(`  commits on branch: ${commits}; executor status: ${dev1.status} → using ${devStatus}`);
           if (devStatus !== 'done') break;
 
           log('-- tester: deterministic gates (npm run test:ci)');
@@ -210,6 +216,10 @@ async function main() {
           log(`  verdict: RETURN — ${short(v.notes, 160)}`);
         }
         if (devStatus !== 'done') {
+          if (devStatus === 'blocked') {
+            await failIssue(issue, 'executor', 'reported blocked — the branch and the board are left for human review');
+            throw new Error('executor reported blocked');
+          }
           await cancelIssue(issue, `executor reported "${devStatus}"`);
           log(`finished: ${devStatus} — issue canceled`); continue;
         }

@@ -23,6 +23,9 @@ HARD RULES
    (`fix(<scope>): <what> — {{IDENTIFIER}}`). Do NOT push. Do NOT create branches, PRs, or tags.
 6. If you discover the issue is already implemented or not reproducible, make NO changes,
    commit nothing, and say so in your summary.
+7. NEVER read or reason about the Linear issue's STATE (Todo/In Progress/Canceled…) — the
+   orchestrator owns the lifecycle; only the issue BODY is yours to fetch.
+8. If you have committed anything on the branch, your summary status MUST be `done`.
 
 Finish by printing EXACTLY this block (and nothing after it):
 
