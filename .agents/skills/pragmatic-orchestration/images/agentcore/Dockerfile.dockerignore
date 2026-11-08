@@ -1,0 +1,11 @@
+**
+!scripts/
+!scripts/**
+scripts/tests/
+scripts/**/__pycache__/
+!prompts/
+!prompts/**
+!references/
+!references/**
+!config.example.json
+!SKILL.md

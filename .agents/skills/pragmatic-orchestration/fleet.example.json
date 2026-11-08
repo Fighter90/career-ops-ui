@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "state_path": "/replace/private/coordinator/fleet.sqlite3",
+  "hosts": [
+    {
+      "id": "vm",
+      "transport": "local",
+      "porch": "/replace/porch/scripts/porch",
+      "automatic": true,
+      "capacity": 1,
+      "request_timeout_seconds": 60,
+      "agents": ["codex", "codex-gpt-6.1-terra"],
+      "workspaces": {"feature-a": "/replace/isolated/workspace-a"}
+    },
+    {
+      "id": "mac",
+      "transport": "ssh",
+      "address": "replace-mac-ssh-alias",
+      "porch": "/replace/porch/scripts/porch",
+      "automatic": false,
+      "capacity": 1,
+      "request_timeout_seconds": 60,
+      "agents": ["codex", "codex-gpt-6.1-terra"],
+      "workspaces": {"feature-a": "/replace/isolated/workspace-a"}
+    }
+  ]
+}

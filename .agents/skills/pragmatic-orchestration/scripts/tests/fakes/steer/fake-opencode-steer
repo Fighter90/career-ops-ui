@@ -1,0 +1,203 @@
+#!/usr/bin/env python3
+"""OpenCode 2 HTTP/SSE test server with durable session messages."""
+from __future__ import annotations
+import base64
+import json
+import os
+import sys
+from pathlib import Path
+import threading
+import time
+import uuid
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from socketserver import TCPServer
+from urllib.parse import urlparse
+
+
+class LoopbackHTTPServer(ThreadingHTTPServer):
+    def server_bind(self):
+        TCPServer.server_bind(self)
+        self.server_name, self.server_port = self.server_address[:2]
+
+
+class State:
+    def __init__(self):
+        self.session_id = "ses_" + uuid.uuid4().hex[:8]
+        self.prompts = []
+        self.messages = []
+        self.queues = []
+        self.active = False
+        self.generation = 0
+        self.lock = threading.RLock()
+        self.slow = float(os.environ.get("PORCH_FAKE_STEER_SLOW", "0.35"))
+
+
+STATE = State()
+
+
+def broadcast(kind, data):
+    frame = "data: " + json.dumps({"type": kind, "data": data}, ensure_ascii=False) + "\n\n"
+    with STATE.lock:
+        for q in STATE.queues:
+            q.append(frame)
+
+
+class Handler(BaseHTTPRequestHandler):
+    protocol_version = "HTTP/1.1"
+
+    def log_message(self, fmt, *args):
+        pass
+
+    def auth(self):
+        password = os.environ.get("OPENCODE_PASSWORD", "")
+        expected = "Basic " + base64.b64encode(f"opencode:{password}".encode()).decode()
+        if self.headers.get("Authorization") == expected:
+            return True
+        self.reply(401, {"error": "unauthorized"})
+        return False
+
+    def reply(self, status, obj):
+        raw = json.dumps(obj).encode() if obj is not None else b""
+        self.send_response(status)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(raw)))
+        self.end_headers()
+        if raw:
+            self.wfile.write(raw)
+
+    def do_GET(self):
+        if not self.auth():
+            return
+        path = urlparse(self.path).path
+        if path == "/api/info":
+            return self.reply(200, {"version": os.environ.get("PORCH_FAKE_OPENCODE_VERSION", "2.2.6")})
+        if path == "/api/session/active":
+            with STATE.lock:
+                return self.reply(200, {"data": {STATE.session_id: {"type": "running"}} if STATE.active else {}})
+        if path == "/api/experimental/job":
+            return self.reply(200, {"data": []})
+        if path == f"/api/session/{STATE.session_id}/inbox":
+            return self.reply(200, {"data": []})
+        if path == f"/api/session/{STATE.session_id}/message":
+            with STATE.lock:
+                return self.reply(200, {"data": list(STATE.messages), "cursor": {}})
+        if path == "/api/event":
+            self.send_response(200)
+            self.send_header("Content-Type", "text/event-stream")
+            self.send_header("Connection", "close")
+            self.end_headers()
+            q = []
+            with STATE.lock:
+                STATE.queues.append(q)
+            try:
+                self.wfile.write(b'data: {"type":"server.connected","data":{}}\n\n')
+                self.wfile.flush()
+                while True:
+                    with STATE.lock:
+                        items = list(q)
+                        q.clear()
+                    for item in items:
+                        self.wfile.write(item.encode())
+                        self.wfile.flush()
+                    time.sleep(.03)
+            except (BrokenPipeError, ConnectionResetError):
+                pass
+            finally:
+                with STATE.lock:
+                    STATE.queues.remove(q)
+            return
+        self.reply(404, {"error": "not found", "path": path})
+
+    def do_POST(self):
+        if not self.auth():
+            return
+        path = urlparse(self.path).path
+        size = int(self.headers.get("Content-Length") or 0)
+        body = json.loads(self.rfile.read(size)) if size else {}
+        if path == "/api/session":
+            return self.reply(200, {"data": {"id": STATE.session_id}})
+        if path == f"/api/session/{STATE.session_id}/interrupt":
+            with STATE.lock:
+                was_active = STATE.active
+                STATE.generation += 1
+                STATE.active = False
+            if was_active:
+                broadcast("session.execution.interrupted", {"sessionID": STATE.session_id, "reason": "user"})
+            return self.reply(200, {"interrupted": was_active})
+        if path == f"/api/session/{STATE.session_id}/prompt":
+            mid = body["id"]
+            client = body.get("metadata", {}).get("clientId", "")
+            created = int(time.time() * 1000)
+            with STATE.lock:
+                STATE.prompts.append(body)
+                STATE.messages.append({"id": mid, "type": "user", "text": body["text"]})
+                STATE.active = True
+                generation = STATE.generation
+                count = len(STATE.prompts)
+            self.reply(200, {"data": {"id": mid, "time": {"created": created}}})
+            def work():
+                broadcast("session.inbox.delivered", {"sessionID": STATE.session_id, "inboxID": mid})
+                time.sleep(STATE.slow * .4)
+                with STATE.lock:
+                    if generation != STATE.generation:
+                        return
+                if os.environ.get("PORCH_FAKE_OC_PERMISSION"):
+                    base = {"sessionID": STATE.session_id, "id": "call-permission", "assistantMessageID": "msg_tool"}
+                    broadcast("session.tool.input.started", {**base, "name": "shell"})
+                    broadcast("session.tool.called", {**base, "input": {"command": "mkdir /tmp/example"}, "executed": True})
+                    time.sleep(float(os.environ.get("PORCH_FAKE_OC_PERMISSION_DELAY", "0")))
+                    broadcast("permission.asked", {"sessionID": STATE.session_id, "id": "permission-example",
+                        "action": "external_directory", "resources": ["/tmp/example/*"],
+                        "metadata": {"command": "mkdir /tmp/example"}})
+                    return
+                chunk = "FAKE_OC" + (f"+{client[:6]}" if client and client != "initial" else "")
+                msg = "msg_answer_" + mid
+                data = {"sessionID": STATE.session_id, "assistantMessageID": msg, "ordinal": 0}
+                broadcast("session.text.delta", {**data, "delta": chunk})
+                broadcast("session.text.ended", {**data, "text": chunk})
+                with STATE.lock:
+                    STATE.messages.append({"id": msg, "type": "assistant", "content": [{"type": "text", "text": chunk}]})
+                time.sleep(STATE.slow * .3)
+                with STATE.lock:
+                    if generation != STATE.generation or count != len(STATE.prompts):
+                        return
+                    STATE.active = False
+                    STATE.messages.append({"id": "idle_" + mid, "type": "idle", "outcome": "succeeded"})
+                broadcast("session.execution.succeeded", {"sessionID": STATE.session_id})
+            threading.Thread(target=work, daemon=True).start()
+            return
+        self.reply(404, {"error": "not found", "path": path})
+
+    def do_DELETE(self):
+        if self.auth():
+            self.reply(204, None)
+
+
+def main():
+    if sys.argv[1:] == ["debug", "paths", "db"]:
+        data = Path(os.environ.get("XDG_DATA_HOME") or (Path.home() / ".local/share")) / "opencode"
+        filename = os.environ.get("OPENCODE_DB", os.environ.get("PORCH_FAKE_OPENCODE_CHANNEL_DB", "opencode.db"))
+        print(filename if filename == ":memory:" else (data / filename).resolve())
+        return 0
+    pid_file = os.environ.get("PORCH_FAKE_OPENCODE_SERVER_PID_FILE")
+    if pid_file:
+        with open(pid_file, "w", encoding="utf-8") as f:
+            f.write(str(os.getpid()))
+    log = os.environ.get("PORCH_FAKE_ARGV_LOG")
+    if log:
+        with open(log, "a", encoding="utf-8") as f:
+            f.write(json.dumps({"bin": "opencode-steer", "argv": sys.argv[1:]}) + "\n")
+    args = sys.argv[1:]
+    host = args[args.index("--hostname") + 1] if "--hostname" in args else "127.0.0.1"
+    port = int(args[args.index("--port") + 1]) if "--port" in args else 0
+    server = LoopbackHTTPServer((host, port), Handler)
+    print(f"server listening on http://{host}:{server.server_address[1]}", flush=True)
+    try:
+        server.serve_forever()
+    finally:
+        server.server_close()
+    return 0
+
+
+if __name__ == "__main__":
+    main()

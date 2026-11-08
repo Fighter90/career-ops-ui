@@ -1,0 +1,253 @@
+#!/bin/bash
+#
+# porch — single public CLI for pragmatic-orchestration v5
+#
+# Modes:
+#   porch review ask  [...]
+#   porch review code --depth basic|specialists|super|ultra [...]
+#   porch delegate -a <exact-agent-id> [...]
+#   porch delegate wait|watch|events|list [...]
+#   porch quota [all|codex|grok]
+#   porch sessions roots|list|grep|show [...]
+#
+# Observability contract:
+#   compact semantic live progress → stderr
+#   clean final answer → stdout
+#   per-run artifacts under PORCH_RUN_DIR / PORCH_OUTPUT_DIR
+#
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LIB_DIR="$SCRIPT_DIR/lib"
+
+# shellcheck source=lib/common.sh
+source "$LIB_DIR/common.sh"
+# shellcheck source=lib/progress.sh
+source "$LIB_DIR/progress.sh"
+
+usage() {
+    cat <<'EOF'
+porch — multi-agent review and single-agent YOLO delegation
+
+Usage:
+  porch review ask [options] ["question"]
+  porch review code --depth basic|specialists|super|ultra [options] <file|--diff>
+  porch delegate -a <exact-agent-id> ["task"]
+  porch delegate -a <exact-agent-id> --one-shot ["task"]
+  porch delegate -a <exact-agent-id> --detach ["task"]
+  porch delegate -a <codex-profile> --persist-session [--detach] "task"
+  porch delegate -a <codex-profile> --continue-run RUN_ID [--detach] "follow-up"
+  porch delegate -a <codex-profile> --continue-run RUN_ID --recover-session [--detach] "remaining work"
+  porch delegate steer RUN_ID [--mode auto|queue|interrupt] [--prompt-file FILE] "guidance"
+  porch delegate status RUN_ID [--json]
+  porch delegate cancel RUN_ID
+  porch delegate wait RUN_ID [--timeout SEC] [--json] [--quiet]
+  porch delegate wait-any RUN_ID [RUN_ID ...] [--timeout SEC]
+  porch delegate watch RUN_ID [--heartbeat SEC] [--json]
+  porch delegate events RUN_ID [--cursor N] [--max-events N]
+  porch delegate list [--active|--all] [--reap] [--json]
+  porch quota [all|codex|grok]
+  porch fleet probe|status|plan|launch|control|reconcile [options]
+  porch ui [--desktop] [--port PORT] [--registry-root PATH]
+  porch sessions roots [-a harness[,harness...]] [--store SUBSTR]
+  porch sessions list [-a ...] [--store S] [--cwd S] [--since T] [--until T] [--limit N]
+  porch sessions grep [-a ...] [--scope SCOPE] [-i] [--regex] [--limit N] PATTERN
+  porch sessions show <harness:session-id|--file PATH> [--around SEQ] [--context N]
+                          [--scope SCOPE] [--max-chars N]
+  porch sessions turns [-a ...] [--since T] [--until T] [--limit N]
+  porch sessions flags [-a ...] [--kind PATTERN] [--since T] [--limit N]
+  porch sessions stats [-a ...] [--by model|harness|cwd|day] [--since T]
+  porch --list-agents
+  porch -h | --help
+
+review ask
+  Fan-out independent opinions across enabled (or selected) agents. Read-only.
+  Every agent's answer is returned separately — this skill never synthesizes a
+  verdict; the calling agent is the judge.
+  Options: --xml, --list-agents, --prompt-file, --context-stdin, -a/--agents, -x/--exclude,
+           --progress full|compact|none
+
+review code
+  Structured code review. Always read-only.
+  --depth basic         2 specialists: security + correctness (default)
+  --depth specialists   5 specialists
+  --depth super         multi-stage superreview + judge
+  --depth ultra         multi-stage ultrareview + judge
+  Other options: --xml, --diff, --related FILE (repeatable), -a/--agents,
+                 -x/--exclude, --dry-run (super/ultra),
+                 --judge, --no-fallback (ultra), --progress full|compact|none
+
+Live progress (all review depths)
+  full (default)  per-agent thinking / answer previews on stderr, keyed by the
+                  invocation (agent, agent.role, stage.index.agent.role) so
+                  parallel passes of the same agent stay distinguishable
+  compact         content-free liveness counters (chunks/chars/elapsed)
+  none            silence — stdout still carries the report
+  Env fallback: PORCH_PROGRESS.
+
+delegate
+  Full-YOLO: run exactly one agent in the current directory with no sandbox
+  and no approval prompts. Requires -a <exact-agent-id> (no globs, no default).
+  Supported backends: codex-cli, claude-code, opencode, grok-build, devin-cli.
+  Gemini is review-only.
+  Starts a long-lived session with mailbox steer/status/cancel by default.
+  --steerable is an explicit alias for the default; --one-shot uses the legacy
+  direct run. --detach prints run_id and returns immediately; the
+  supervisor becomes its own session leader and outlives the caller.
+  wait blocks until the run is terminal and prints the full final answer.
+    Exit: 0 completed, 130 cancelled, 70 supervisor died, 74 completed without
+    an answer.
+  watch emits lifecycle changes and heartbeats, not tool/file/text progress,
+  and exits with the same codes. Use wait to print the final answer.
+  events returns one bounded JSON page of normalized progress and exits. Reuse
+  next_cursor as --cursor on the next observation.
+  list finds runs again after the run id was lost.
+
+quota
+  Return machine-readable remaining subscription quota for Codex, Grok, or
+  both. Codex uses its typed app-server API. Grok uses the official /usage TUI
+  command on the SSH host (default: grok-aws). A partial result exits 2; all
+  requested providers failing exits 3.
+
+sessions
+  Read-only search and navigation over local coding-agent session histories
+  (claude-code, codex, opencode, grok, devin, gemini, cursor, qwen-code,
+  kimi-code, omp, claude-desktop, plus porch's own runs). No index or
+  database is created — every command streams decoded JSONL records with
+  native locators (file:line / db table:key) and a coverage summary.
+    roots  detected stores, availability, evidence level
+    list   session ids with title, cwd, dates, models
+    grep   text search; each hit carries kind (prompt/assistant/reasoning/
+           tool_call/tool_result/context/permission/metadata/…), authorship,
+           model, ts, seq, rel ids
+    show   one session's fragments; --around SEQ emits a ±--context window
+    turns  one row per user-triggered turn: duration, models, tool/error/
+           retry counts, usage, has_final, first/last locators
+    flags  deterministic anti-patterns (retry_loop, search_loop,
+           edit_without_read, correction(_burst), abandoned,
+           permission_friction, context_pressure, interrupted, error_burst,
+           failed_run) — each carries evidence locators, not verdicts
+    stats  grouped aggregates (--by model|harness|cwd|day): sessions, turns,
+           error rate, compactions, median turn duration, token usage, flags
+  Scope presets: convo (default) = prompts+assistant; prompts, assistant,
+  tools, reasoning, system, all. Classification rules and per-harness format
+  recipes: references/session-history.md.
+
+Environment:
+  PORCH_CONFIG, PORCH_PROGRESS, PORCH_OUTPUT_DIR, PORCH_RUN_DIR, PORCH_SAVE_OUTPUTS,
+  PORCH_STEER_DIR and per-backend
+  model/effort overrides — see SKILL.md.
+EOF
+}
+
+if [[ $# -eq 0 ]]; then
+    usage
+    exit $EXIT_USAGE
+fi
+
+case "$1" in
+    -h|--help|help)
+        usage
+        exit $EXIT_OK
+        ;;
+    --list-agents)
+        # shellcheck source=lib/config.sh
+        source "$LIB_DIR/config.sh"
+        config_validate || exit $EXIT_CONFIG_ERROR
+        config_xml_plan
+        exit $EXIT_OK
+        ;;
+    review)
+        shift
+        sub="${1:-}"
+        [[ -n "$sub" ]] || { echo "Error: review requires 'ask' or 'code'" >&2; exit $EXIT_USAGE; }
+        shift
+        case "$sub" in
+            ask)
+                exec bash "$LIB_DIR/review_ask.sh" "$@"
+                ;;
+            code)
+                # Parse --depth early to route super/ultra pipelines
+                DEPTH="${PORCH_REVIEW_MODE:-basic}"
+                FORWARD=()
+                while [[ $# -gt 0 ]]; do
+                    case "$1" in
+                        --depth)
+                            DEPTH="${2:-}"
+                            shift 2
+                            ;;
+                        --depth=*)
+                            DEPTH="${1#--depth=}"
+                            shift
+                            ;;
+                        --mode)
+                            # accept legacy --mode as alias of --depth
+                            DEPTH="${2:-}"
+                            shift 2
+                            ;;
+                        --mode=*)
+                            DEPTH="${1#--mode=}"
+                            shift
+                            ;;
+                        *)
+                            FORWARD+=("$1")
+                            shift
+                            ;;
+                    esac
+                done
+                case "$DEPTH" in
+                    basic|specialists)
+                        exec bash "$LIB_DIR/review_code.sh" --depth "$DEPTH" "${FORWARD[@]+"${FORWARD[@]}"}"
+                        ;;
+                    super)
+                        exec bash "$LIB_DIR/review_super.sh" "${FORWARD[@]+"${FORWARD[@]}"}"
+                        ;;
+                    ultra)
+                        exec bash "$LIB_DIR/review_ultra.sh" "${FORWARD[@]+"${FORWARD[@]}"}"
+                        ;;
+                    *)
+                        echo "Error: --depth must be basic|specialists|super|ultra (got: $DEPTH)" >&2
+                        exit $EXIT_USAGE
+                        ;;
+                esac
+                ;;
+            *)
+                echo "Error: unknown review subcommand: $sub (expected ask|code)" >&2
+                exit $EXIT_USAGE
+                ;;
+        esac
+        ;;
+    delegate)
+        shift
+        exec bash "$LIB_DIR/delegate.sh" "$@"
+        ;;
+    ui)
+        shift
+        PY=$(command -v python3 || command -v python) || exit "$EXIT_USAGE"
+        export PYTHONPATH="${LIB_DIR}${PYTHONPATH:+:$PYTHONPATH}"
+        exec "$PY" -m ui "$@"
+        ;;
+    fleet)
+        shift
+        PY=$(command -v python3 || command -v python) || exit "$EXIT_USAGE"
+        exec "$PY" "$LIB_DIR/fleet_cli.py" "$@"
+        ;;
+    quota|sessions|history)
+        cmd=$1; shift
+        # python3 on POSIX; Git Bash on Windows usually exposes only `python`
+        PY=$(command -v python3 || command -v python) || {
+            echo "Error: no python interpreter found (need python3 or python on PATH)" >&2
+            exit $EXIT_USAGE
+        }
+        if [ "$cmd" = "quota" ]; then
+            exec "$PY" "$LIB_DIR/quota.py" "$@"
+        else
+            exec "$PY" "$LIB_DIR/sessions.py" "$@"
+        fi
+        ;;
+    *)
+        echo "Error: unknown command: $1 (expected review|delegate|quota|sessions|ui)" >&2
+        usage >&2
+        exit $EXIT_USAGE
+        ;;
+esac

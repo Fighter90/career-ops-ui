@@ -1,0 +1,46 @@
+#!/bin/bash
+set -euo pipefail
+if [[ "${1:-}" == "serve" || "${1:-}" == "debug" ]]; then
+  unset PORCH_FAKE_ARGV_LOG
+  exec "$(dirname "$0")/steer/fake-opencode-steer" "$@"
+fi
+LOG="${PORCH_FAKE_ARGV_LOG:-/dev/null}"
+python3 -c '
+import json, os, sys
+try:
+    inline = json.loads(os.environ.get("OPENCODE_CONFIG_CONTENT", "{}"))
+    review_agent = inline.get("agents", {}).get("porch-review", {})
+    perms = {rule["action"]: rule["effect"] for rule in review_agent.get("permissions", [])}
+except Exception:
+    review_agent = {}
+    perms = {}
+print(json.dumps({
+    "bin": "opencode",
+    "argv": sys.argv[1:],
+    "stdin": sys.stdin.read(),
+    "cwd": os.getcwd(),
+    "has_FULL_PROMPT": "FULL_PROMPT" in os.environ,
+    "has_JUDGE_INPUT_BODY": "JUDGE_INPUT_BODY" in os.environ,
+    "has_JR_INPUT_BODY": "JR_INPUT_BODY" in os.environ,
+    "has_JR_FINDINGS_BODY": "JR_FINDINGS_BODY" in os.environ,
+    "review_policy": {k: perms.get(k) for k in ("edit", "subagent")},
+    "review_agent_prompt": review_agent.get("system", ""),
+}))
+' -- "$@" >> "$LOG"
+
+if [[ -n "${PORCH_FAKE_OPENCODE_CLIENT_PID_FILE:-}" ]]; then
+  printf '%s\n' "$$" > "$PORCH_FAKE_OPENCODE_CLIENT_PID_FILE"
+  sleep 60
+fi
+
+if printf '%s\n' "$@" | grep -qx -- 'json' || printf '%s\n' "$@" | grep -q -- '--format'; then
+  # emit json when format json requested
+  for a in "$@"; do
+    if [[ "$a" == "json" ]]; then
+      echo '{"type":"text","part":{"type":"text","text":"FAKE_OPENCODE_OK"}}'
+      exit 0
+    fi
+  done
+fi
+echo 'FAKE_OPENCODE_OK'
+exit 0
