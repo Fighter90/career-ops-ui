@@ -18,9 +18,10 @@ test('NONE means an empty queue', () => {
 });
 
 test('REFUSES the literal placeholder echo (the first-run regression)', () => {
+  // The <…> check runs first, so the template echo is reported as placeholders.
   assert.throws(
     () => parsePickOutput('SWARM_PICK::<issueId>::<identifier>::<title>'),
-    /non-issue identifier/,
+    /placeholder characters/,
   );
 });
 

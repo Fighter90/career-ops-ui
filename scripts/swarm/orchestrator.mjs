@@ -256,7 +256,10 @@ async function main() {
           const p = resolve(ROOT, file);
           try {
             writeFileSync(p, entry(f, nn) + readFileSync(p, 'utf8'));
-          } catch { /* locale mirror absent — skip */ }
+          } catch (err) {
+            if (err && err.code === 'ENOENT') log(`  (locale mirror absent — skipped: ${file})`);
+            else throw err; // a write failure (EROFS/EMFILE/…) must not masquerade as "absent"
+          }
         }
         mkdirSync(resolve(ROOT, 'qa/archive/superseded-prompts'), { recursive: true });
         for (const f of readdirSync(resolve(ROOT, 'qa'))) {
