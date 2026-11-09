@@ -29,6 +29,7 @@ import { RU_CONFIG_KEYS } from './sources/registry.mjs';
 import { addPipelineUrl } from './parsers.mjs';
 import { sanitizeTsvField, normalizeScanUrl } from './scan-sanitize.mjs';
 import { normalizeUrl } from './url-key.mjs';
+import { closesAtIso } from './posting-close.mjs';
 import { makeTimeoutFetch } from './fetch-timeout.mjs';
 import { saveLastScan, snapshotKeepReason, loadSeenUrls as loadSeenUrlsShared } from './en-scanner.mjs';
 import { withFileLock, atomicWrite } from './file-lock.mjs';
@@ -449,6 +450,9 @@ async function appendToPipeline(jobs) {
 function appendToHistory(jobs) {
   mkdirSync(PATHS.scanHistory.replace(/\/[^/]+$/, ''), { recursive: true });
   // v1.75.0 (#1098) — sanitize every TSV cell (newline-row-injection + formula).
+  // CAR-256 (#6597) — the same 7th `closes_at` cell the EN scanner appends
+  // (the posting's close day, YYYY-MM-DD, or empty), so both scanners store
+  // the day the pipeline surface joins back onto the queue.
   const lines = jobs.map((j) =>
     [
       new Date().toISOString().slice(0, 10),
@@ -457,6 +461,7 @@ function appendToHistory(jobs) {
       j.company,
       j.title,
       normalizeScanUrl(j.url),
+      closesAtIso(j.closesAt) || closesAtIso(j),
     ]
       .map(sanitizeTsvField)
       .join('\t')

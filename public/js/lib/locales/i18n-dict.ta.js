@@ -736,6 +736,8 @@ window.__I18N_DICT_TA = {
   'pipe.bulkRemove': "தேர்ந்தெடுத்தவற்றை அகற்று",
   'pipe.selectedCount': "தேர்ந்தெடுக்கப்பட்டது",
   'pipe.removing': "அகற்றப்படுகிறது",
+  // CAR-256 (#6597) — the posting close day chip on #/pipeline
+  'pipe.closes': "முடிவடையும்",
   'pipe.bulkCancel': "ரத்து",
   'pipe.undo': "செயல்தவிர்",
   'pipe.undoDismiss': "மூடு",

@@ -728,6 +728,8 @@ window.__I18N_DICT_DA = {
   'pipe.bulkRemove': "Fjern valgte",
   'pipe.selectedCount': "valgt",
   'pipe.removing': "Fjerner",
+  // CAR-256 (#6597) — the posting close day chip on #/pipeline
+  'pipe.closes': "Lukker",
   'pipe.bulkCancel': "Annuller",
   'pipe.undo': "Fortryd",
   'pipe.undoDismiss': "Luk",

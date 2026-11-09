@@ -18,7 +18,10 @@
  *   - `block` match                       → reject (takes precedence over allow).
  *   - `allow` empty                       → pass (already cleared block).
  *   - `allow` non-empty                   → must match ≥ 1 keyword.
- *   - All matches: case-insensitive substring.
+ *   - `positive` non-empty               → must match ≥ 1 keyword.
+ *   - All matches: case-insensitive substring — EXCEPT a two-uppercase-letter
+ *     entry ("IN", "DE"): an ISO country code matches case-sensitively as a
+ *     whole word against the original-case location (CAR-256, #6616).
  */
 
 import { isCountryKeyword } from './sources/_country.mjs';
@@ -170,6 +173,35 @@ export function compileKeywordList(arr, compiler = compileKeyword) {
 }
 
 /**
+ * CAR-256 (parent parity, upstream #6616) — compile one raw `location_filter`
+ * entry into a matcher `(lower, original) => boolean`.
+ *
+ * An entry written as two uppercase letters ("IN", "DE") is an ISO country
+ * code. Lowercased like every other keyword it would substring-match the
+ * plain word "in" in "Anywhere in the World" (#6605), so it is matched as a
+ * whole word against the ORIGINAL-case location instead. Lowercase and
+ * mixed-case entries keep the case-insensitive substring behavior. Each
+ * entry is judged on its own spelling, so ['IN', 'in'] compiles one
+ * case-sensitive code and one case-insensitive word.
+ *
+ * web-ui keeps its substring idiom for non-ISO entries (the parent's
+ * word-boundary location compiler stays a documented no-port), so the ONLY
+ * whole-word matcher here is the ISO-code one — where substring matching is
+ * actively wrong.
+ * @param {string} entry raw, untrimmed config entry
+ * @returns {(lower: string, original: string) => boolean}
+ */
+export function compileLocationEntry(entry) {
+  const trimmed = entry.trim();
+  if (!/^[A-Z]{2}$/.test(trimmed)) {
+    const k = trimmed.toLowerCase();
+    return (lower) => lower.includes(k);
+  }
+  const re = new RegExp(`(?<![\\p{L}\\p{M}\\p{N}])${trimmed}(?![\\p{L}\\p{M}\\p{N}])`, 'u');
+  return (_lower, original) => typeof original === 'string' && re.test(original);
+}
+
+/**
  * Compile a lowercased `content_filter` keyword into a matcher.
  *
  * `content_filter` matches the job DESCRIPTION, and its default has always been
@@ -260,17 +292,23 @@ export function buildLocationFilter(locationFilter) {
   if (!locationFilter || typeof locationFilter !== 'object') return () => true;
   // Blank / non-string entries are dropped: `block: [""]` is a substring of every
   // location and used to reject the whole scan; a null became the text "null".
+  // CAR-256 (parent parity, #6616) — entries compile through
+  // compileLocationEntry, so a two-uppercase-letter entry ("IN", "DE") matches
+  // case-sensitively as a whole word against the ORIGINAL-case location while
+  // every other spelling keeps the lowercased substring behavior. The
+  // lowercased keyword lists below stay for the country-only worldwide check.
+  const match = (list) => cleanStringList(list).map(compileLocationEntry);
   const allowKeywords = cleanStringList(locationFilter.allow).map((k) => k.toLowerCase());
-  const allow = allowKeywords;
-  const block = cleanStringList(locationFilter.block).map((k) => k.toLowerCase());
+  const allow = match(locationFilter.allow);
+  const block = match(locationFilter.block);
   // v1.248.1 (CAR-60) — the parent's tier model (scan.mjs #652/#4549):
   //   block_hard match → reject (the only tier always_allow cannot override)
   //   always_allow match → pass (takes precedence over block)
   //   block match → reject
   //   allow empty → pass; non-empty → ≥ 1 match
   const alwaysAllowKeywords = cleanStringList(locationFilter.always_allow).map((k) => k.toLowerCase());
-  const alwaysAllow = alwaysAllowKeywords;
-  const blockHard = cleanStringList(locationFilter.block_hard).map((k) => k.toLowerCase());
+  const alwaysAllow = match(locationFilter.always_allow);
+  const blockHard = match(locationFilter.block_hard);
   const strict = locationFilter.strict === true && (allow.length > 0 || block.length > 0 || blockHard.length > 0);
   // #6413 / parent #6553 — the worldwide-label fallback. Only when the user
   // targeted COUNTRIES exclusively (both allow-lists contain nothing but exact
@@ -285,13 +323,17 @@ export function buildLocationFilter(locationFilter) {
     // Nothing to judge on → pass (don't penalize missing data), unless strict.
     // Whitespace-only is "nothing" too, and a non-string value carries no
     // location either (parent semantics: typeof check, not String() coercion).
-    const lower = typeof location === 'string' ? location.trim().toLowerCase() : '';
+    const original = typeof location === 'string' ? location.trim() : '';
+    const lower = original.toLowerCase();
     if (lower === '') return !strict;
-    if (blockHard.length > 0 && blockHard.some((k) => lower.includes(k))) return false;
-    if (alwaysAllow.length > 0 && alwaysAllow.some((k) => lower.includes(k))) return true;
-    if (block.length > 0 && block.some((k) => lower.includes(k))) return false;
+    // ISO-code matchers test the ORIGINAL case; every other matcher tests the
+    // lowercased copy. Same call shape for both.
+    const matches = (list) => list.some((m) => m(lower, original));
+    if (blockHard.length > 0 && matches(blockHard)) return false;
+    if (alwaysAllow.length > 0 && matches(alwaysAllow)) return true;
+    if (block.length > 0 && matches(block)) return false;
     if (allow.length === 0) return true;
-    if (allow.some((k) => lower.includes(k))) return true;
+    if (matches(allow)) return true;
     // Whole labels only: a substring test would promote qualified or negated
     // geography ("Worldwide except Canada", "Not worldwide") to worldwide.
     // Deliberately AFTER block, so a blocked keyword in the label still rejects.

@@ -728,6 +728,8 @@ window.__I18N_DICT_UK = {
   'pipe.bulkRemove': "Видалити вибрані",
   'pipe.selectedCount': "вибрано",
   'pipe.removing': "Видалення",
+  // CAR-256 (#6597) — the posting close day chip on #/pipeline
+  'pipe.closes': "Закривається",
   'pipe.bulkCancel': "Скасувати",
   'pipe.undo': "Повернути",
   'pipe.undoDismiss': "Закрити",

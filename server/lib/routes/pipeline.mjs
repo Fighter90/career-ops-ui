@@ -22,6 +22,7 @@ import { PATHS, path as projPath } from '../paths.mjs';
 import { parsePipeline, addPipelineUrl, removePipelineUrlExtract, restorePipelineLines, pipelineLineComp } from '../parsers.mjs';
 import { isValidJobUrl } from '../security.mjs';
 import { safeReadPipeline } from '../store.mjs';
+import { closeDatesByUrl, closeDateForUrl } from '../posting-close.mjs';
 import { safeGet } from '../safe-fetch.mjs';
 import { withFileLock, atomicWrite } from '../file-lock.mjs';
 import { writeRateLimit } from '../rate-limit.mjs';
@@ -51,7 +52,20 @@ function rememberRestoreToken(lines) {
 
 export function registerPipelineRoutes(app) {
   app.get('/api/pipeline', (_req, res) => {
-    res.json({ urls: safeReadPipeline() });
+    const urls = safeReadPipeline();
+    // CAR-256 (#6597) — the posting close days recorded in scan-history
+    // (closes_at), joined onto the queue by URL and keyed by the raw URL the
+    // client holds. URLs with no recorded day are simply absent. A missing
+    // or unreadable history file degrades to an empty map.
+    let closesAt = {};
+    try {
+      const index = closeDatesByUrl(readFileSync(PATHS.scanHistory, 'utf8'));
+      for (const url of urls) {
+        const day = closeDateForUrl(index, url);
+        if (day) closesAt[url] = day;
+      }
+    } catch { /* no history → no close days */ }
+    res.json({ urls, closesAt });
   });
 
   app.post('/api/pipeline', writeRateLimit(), async (req, res) => {

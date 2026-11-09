@@ -731,6 +731,8 @@ window.__I18N_DICT_HI = {
   'pipe.bulkRemove': "चयनित हटाएँ",
   'pipe.selectedCount': "चयनित",
   'pipe.removing': "हटाया जा रहा है",
+  // CAR-256 (#6597) — the posting close day chip on #/pipeline
+  'pipe.closes': "बंद होगा",
   'pipe.bulkCancel': "रद्द करें",
   'pipe.undo': "पूर्ववत करें",
   'pipe.undoDismiss': "बंद करें",

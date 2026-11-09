@@ -210,11 +210,16 @@ Some `server/lib` modules are **hand-mirrors of parent `career-ops` modules** an
 | `server/lib/sources/_safe-url.mjs` | `providers/_safe-url.mjs` (safeEncodeURIComponent — lone-surrogate guard; v1.234.0) |
 | `server/lib/states.mjs` | states / `templates/states.yml` (+ web/ states) |
 | `server/lib/location-filter.mjs`, `scan-sanitize.mjs`, `cooldown.mjs`, `text-key.mjs` | corresponding `scan.mjs` filter/sanitize logic |
+| `server/lib/board-truncation.mjs` | `lib/board-truncation.mjs` (CAR-256, #6636 — canonical `truncated` + legacy `<name>Truncated\|Incomplete` tags → `partialSources`) |
+| `server/lib/posting-close.mjs` | `lib/posting-close.mjs` (CAR-256, #6597 — `closesAtIso` / `closeDatesByUrl` / `closeDateForUrl`; storage = the scanners' 7th `closes_at` history cell; the pipeline route joins days onto the queue) |
+| `server/lib/fetch-error-kind.mjs` | `scan.mjs::classifyFetchError` (imported from `verify-portals.mjs` upstream; CAR-256, #6675 — `network`/`server` kinds are the transient retry set) |
 | `server/lib/sources/*.mjs` | `providers/*.mjs` (each job board) |
 | `server/lib/portals/adapters/*.mjs` | provider detection in `providers/*.mjs` |
 | `public/js/lib/{logbuf,bug-report,job-facets,score-tone,company-logo,tracker-stages}.js` | parent `web/src/lib/*` |
 
 When porting a parent change here, frame CHANGELOG/README as a **new feature** (never "ported/parity"); provenance stays only in the commit body + this file. See the memory note *changelog-readme-new-feature-framing* (centralized here on purpose — the map is engineering context, kept out of product/CHANGELOG surfaces, not concealed).
+
+**CAR-256 scanner-wave deliberate NO-PORTS** (parent delta `b859214b..24da28e8`, scan.mjs + tools): `community-asks.mjs` (#6700) and `update-system.mjs` are parent-side scripts web-ui deliberately does not mirror; `verify-cv-facts.mjs` / `github-evidence.mjs` are parent CV tools without a web-ui counterpart; and the parent's robots-policy rule 6 (#6691 — the headed liveness retry's `robotsAllows` gate) has no web-ui port because web-ui runs no headed liveness path of its own. The parent's manifesto TTY note (removed upstream) never existed here.
 
 ## Agent fleet policy (owner directive, 2026-10-28)
 

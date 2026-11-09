@@ -29,6 +29,9 @@ Router.register('pipeline', async () => {
 
   // ── state ──
   let allUrls = [];
+  // CAR-256 (#6597) — posting close days (scan-history closes_at) keyed by
+  // the raw queue URL; refreshed with the queue itself.
+  let closeDates = {};
   let filterQuery = '';
   let activeUrl = null;       // currently selected for preview
   let previewBody = '';
@@ -431,6 +434,19 @@ Router.register('pipeline', async () => {
     try { return new URL(url).hostname.replace(/^www\./, ''); } catch { return url.slice(0, 40); }
   }
 
+  // CAR-256 (#6597) — the posting's close day, when scan-history recorded
+  // one for this URL. A day within a week (or already past) reads as due.
+  function closeChip(url) {
+    const day = closeDates[url];
+    if (!day) return null;
+    const ts = Date.parse(`${day}T00:00:00Z`);
+    const due = !Number.isNaN(ts) && (ts - Date.now()) / 86400000 <= 7;
+    return c('span', {
+      className: 'v2-chip v2-chip-close' + (due ? ' is-due' : ''),
+      title: t('pipe.closes', 'Closes'),
+    }, `${t('pipe.closes', 'Closes')} ${day}`);
+  }
+
   function renderPreview() {
     previewPane.innerHTML = '';
     if (!activeUrl) {
@@ -635,6 +651,7 @@ Router.register('pipeline', async () => {
       // explicit aria-label disambiguated by a truncated URL so the
       // accessibility tree reads e.g. "Delete: …/jobs/12345".
       c('div', { className: 'flex gap-1' }, [
+        closeChip(url),
         c('button', {
           className: 'btn btn-ghost btn-sm',
           title: t('pipe.evaluateBtn'),
@@ -831,6 +848,8 @@ Router.register('pipeline', async () => {
     }
     if (e.location) chips.push(c('span', { className: 'v2-chip' }, e.location));
     if (e.date) chips.push(c('span', { className: 'v2-chip v2-chip-date' }, e.date));
+    const closeChipEl = closeChip(url);
+    if (closeChipEl) chips.push(closeChipEl);
     return c('div', {
       className: 'flex-between pipeline-row v2-row',
       'data-url': url,
@@ -1015,6 +1034,9 @@ Router.register('pipeline', async () => {
       readTrackerRows(true),
     ]);
     allUrls = fresh.urls || [];
+    // CAR-256 — the posting close days the server joined from scan-history
+    // (closes_at), keyed by the queue URL. Missing key = no recorded day.
+    closeDates = (fresh.closesAt && typeof fresh.closesAt === 'object') ? fresh.closesAt : {};
     trackerRows = (tr && tr.rows) || [];
     rebuildEntries();
     // CAR-116 review — URLs that left the queue (deleted here or in

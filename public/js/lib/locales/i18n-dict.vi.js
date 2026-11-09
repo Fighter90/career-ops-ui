@@ -723,6 +723,8 @@ window.__I18N_DICT_VI = {
   'pipe.bulkRemove': "Xóa mục đã chọn",
   'pipe.selectedCount': "đã chọn",
   'pipe.removing': "Đang xóa",
+  // CAR-256 (#6597) — the posting close day chip on #/pipeline
+  'pipe.closes': "Đóng",
   'pipe.bulkCancel': "Hủy",
   'pipe.undo': "Hoàn tác",
   'pipe.undoDismiss': "Đóng",

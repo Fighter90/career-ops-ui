@@ -728,6 +728,8 @@ window.__I18N_DICT_PL = {
   'pipe.bulkRemove': "Usuń zaznaczone",
   'pipe.selectedCount': "zaznaczono",
   'pipe.removing': "Usuwanie",
+  // CAR-256 (#6597) — the posting close day chip on #/pipeline
+  'pipe.closes': "Zamyka się",
   'pipe.bulkCancel': "Anuluj",
   'pipe.undo': "Cofnij",
   'pipe.undoDismiss': "Zamknij",
