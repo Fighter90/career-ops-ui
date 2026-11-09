@@ -17,6 +17,7 @@ window.ScanResults = (function () {
   const FALLBACK_SOURCES = [
     { value: '4dayweek', label: '4 Day Week' },
     { value: 'a16z-speedrun-talent', label: 'a16z Speedrun' },
+    { value: 'adp-myjobs', label: 'ADP myjobs' },
     { value: 'adp-workforcenow', label: 'ADP Workforce Now' },
     { value: 'agenticjobs', label: 'Agentic Jobs' },
     { value: 'aldi-nord', label: 'ALDI Nord' },
@@ -121,6 +122,7 @@ window.ScanResults = (function () {
     { value: 'successfactors', label: 'SAP SuccessFactors' },
     { value: 'schoolspring', label: 'SchoolSpring' },
     { value: 'senjob', label: 'Senjob' },
+    { value: 'sitemap', label: 'Sitemap' },
     { value: 'smartrecruiters', label: 'SmartRecruiters' },
     { value: 'softgarden', label: 'softgarden' },
     { value: 'solidjobs', label: 'SolidJobs' },
@@ -136,6 +138,7 @@ window.ScanResults = (function () {
     { value: 'tkms', label: 'TKMS' },
     { value: 'torre', label: 'Torre' },
     { value: 'trakstar', label: 'Trakstar Hire' },
+    { value: 'turbohire', label: 'TurboHire' },
     { value: 'ultipro', label: 'UKG Pro (UltiPro)' },
     { value: 'vdab', label: 'VDAB' },
     { value: 'weworkremotely', label: 'We Work Remotely' },
