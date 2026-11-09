@@ -232,8 +232,12 @@ async function main() {
 
           log('-- tester: deterministic gates (npm run test:ci)');
           const gates = await sh('npm run test:ci', { timeoutMs: 30 * 60_000 });
-          const passLine = (gates.all.match(/# pass (\d+)/) || [])[1];
-          if (gates.code !== 0 || !passLine) {
+          // v1.7: the gate verdict is the EXIT CODE. node --test exits non-zero on any
+          // failure regardless of the reporter format (TAP prints "# pass N", the spec
+          // reporter prints "✔ …" — parse nothing, trust the code). A green run with a
+          // missing summary line is still green (run-12: worktree login shells resolve
+          // a different node whose spec reporter has no "# pass" at all).
+          if (gates.code !== 0) {
             if (round + 1 < MAX_ROUNDS) {
               reviewNotes = `The test gate failed. Output tail:\n${short(gates.all.slice(-1500), 1500)}`;
               log(`  gates FAILED — feeding output back to the executor`);
@@ -241,7 +245,7 @@ async function main() {
             }
             throw new Error(`gates failed after ${MAX_ROUNDS} rounds`);
           }
-          log(`  gates green (# pass ${passLine})`);
+          log('  gates green (exit 0)');
 
           log(`-- round ${round + 1}: review`);
           const diff = await sh(`git diff origin/main...HEAD`);
