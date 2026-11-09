@@ -112,10 +112,15 @@ export function parsePickOutput(out) {
   return issue;
 }
 
+const PIN = process.env.SWARM_PIN_ISSUE || ''; // parallel instances pin their task
+
 async function pickIssue() {
-  const out = await clerk(
-    `Read-only. In Linear team "${TEAM}", list issues that have the label "${LABEL}" and are in state "Todo" (use the linear MCP list_issues with a filter, try label by name "swarm"; if label filtering is unsupported, list Todo issues and check their labels). Take the FIRST one. Do NOT modify anything.\nPrint the result as a data line, substituting REAL values from the issue — never print placeholder words like <issueId> or <identifier>:\nSWARM_PICK::<REAL issueId>::<REAL identifier like CAR-123>::<REAL title>\nIf there is no such issue, print exactly: SWARM_PICK::NONE`);
-  return parsePickOutput(out);
+  const op = PIN
+    ? `Read-only. In Linear team "${TEAM}", find the issue ${PIN} (use the linear MCP). It must be in state "Todo" and carry the label "${LABEL}". Do NOT modify anything.\nPrint the result as a data line with REAL values:\nSWARM_PICK::<REAL issueId>::${PIN}::<REAL title>\nIf ${PIN} is not in Todo (or lacks the label), print exactly: SWARM_PICK::NONE`
+    : `Read-only. In Linear team "${TEAM}", list issues that have the label "${LABEL}" and are in state "Todo" (use the linear MCP list_issues with a filter, try label by name "swarm"; if label filtering is unsupported, list Todo issues and check their labels). Take the FIRST one. Do NOT modify anything.\nPrint the result as a data line, substituting REAL values from the issue — never print placeholder words like <issueId> or <identifier>:\nSWARM_PICK::<REAL issueId>::<REAL identifier like CAR-123>::<REAL title>\nIf there is no such issue, print exactly: SWARM_PICK::NONE`;
+  const issue = parsePickOutput(await clerk(op));
+  if (issue && PIN && issue.identifier !== PIN) throw new Error(`pinned ${PIN} but the clerk returned ${issue.identifier}`);
+  return issue;
 }
 const claimIssue = (i) => clerk(`Operation: for issue ${i.identifier} (id ${i.id}) set state to "In Progress" and add comment: "🎯 Swarm claimed this issue — orchestrator starting (dev → gates → review → release → prod-QA)."\nResult line: SWARM_CLAIM::<identifier>`);
 const doneIssue = (i, evidence) => clerk(`Operation: for issue ${i.identifier} set state "Done" and add comment:\n---\n${evidence}\n---\nResult line: SWARM_DONE::<identifier>`);
@@ -278,7 +283,9 @@ async function main() {
 
         // ---- release manager
         log('-- release manager: PR');
-        const pr = await sh(`gh pr create --head ${branch} --title "${issue.identifier}: ${issue.title.replace(/"/g, "'")}" --body "${story.replace(/"/g, "'").slice(0, 400)}\n\nSwarm cycle: dev(${MAX_ROUNDS} rounds max) → gates → review(ACCEPT) → release."`, { timeoutMs: 120_000 });
+        const prBody = resolve(STATE, `pr-body-${issue.identifier}.md`);
+        writeFileSync(prBody, `${story}\n\nSwarm cycle: dev(${MAX_ROUNDS} rounds max) → gates → review(ACCEPT) → release.`);
+        const pr = await sh(`gh pr create --head ${branch} --title ${JSON.stringify(`${issue.identifier}: ${issue.title}`)} --body-file ${JSON.stringify(prBody)}`, { timeoutMs: 120_000 });
         const prUrl = (pr.out.match(/https:\/\/github\.com\/\S+/) || [])[0];
         if (!prUrl) throw new Error(`gh pr create failed: ${short(pr.all)}`);
         await sh(`gh pr checks --watch ${prUrl.split('/').pop()} --require-passing`, { timeoutMs: 45 * 60_000 });
@@ -314,7 +321,7 @@ async function main() {
         writeFileSync(resolve(ROOT, `qa/QA-REGRESSION-PROMPT-v${ver}.md`),
           `# QA regression prompt — v${ver}\n\nSwarm release (${issue.identifier}). Story: ${story}\n\n- Gates at ship time: see the CHANGELOG entry for ${ver} and the release workflow run.\n- Spot check: ${issue.title} behaves as described; no regressions on the touched surfaces.\n`);
 
-        const relCommit = await sh(`git add -A && git commit -q -m "release: v${ver} (swarm ${issue.identifier})" && git push -q`, { timeoutMs: 300_000 });
+        const relCommit = await sh(`git add CHANGELOG.md CHANGELOG.*.md qa/ package.json && git commit -q -m ${JSON.stringify(`release: v${ver} (swarm ${issue.identifier})`)} && git push origin main`, { timeoutMs: 300_000 });
         if (relCommit.code !== 0) throw new Error(`release commit failed: ${short(relCommit.all)}`);
         const ci = await sh(`sleep 20; gh run list --workflow=ci.yml --branch main --limit 1 --json databaseId --jq '.[0].databaseId'`);
         const ciId = ci.out.trim();
