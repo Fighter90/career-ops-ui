@@ -30,7 +30,8 @@ const UA = 'career-ops-web-ui/1.0';
 
 export const FEED_URL = 'https://jobicy.com/api/v2/remote-jobs?count=50';
 
-/** Rows per request. 50 is the API maximum. */
+/** Rows per request. The API also serves 100 (parent #6612 measured live); the
+ * mirror deliberately walks smaller pages of 50 to the same full coverage. */
 export const PAGE_SIZE = 50;
 /** Pages per sweep (50 × 50 = 2500 postings) when no max is configured. */
 export const DEFAULT_MAX_PAGES = 50;
