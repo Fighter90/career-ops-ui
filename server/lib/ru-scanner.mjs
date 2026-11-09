@@ -250,6 +250,12 @@ export async function runRuScan(opts = {}) {
   const sourceFailures = {};
   // Per-call tally for the R-12 snapshot guard (every call failed → keep).
   const calls = { attempted: 0, failed: 0 };
+  // CAR-256 upstream wave — deliberate no-ports for THIS scanner:
+  //  - retry-after-sweep (#6675) is an EN-scanner mechanism: it re-runs boards
+  //    that lost a race against the CONCURRENT sweep. Queries here run one at
+  //    a time, so there is no burst for a retry to escape.
+  //  - partial-status (#6636) reads a board truncation signal; none of the
+  //    five RU sources tags its results, so there is nothing to read.
   let hhDisabled = false;
 
   // Compiled once, then applied per query. Previously this ran after the loop,

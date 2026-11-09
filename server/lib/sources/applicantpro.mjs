@@ -58,6 +58,7 @@
  */
 import { fetchJsonWithRetry, fetchTextWithRetry, delay } from '../http-json.mjs';
 import { htmlToText } from '../html-to-text.mjs';
+import { closesAtIso } from '../posting-close.mjs';
 
 export const meta = {
   value: 'applicantpro',
@@ -274,11 +275,12 @@ function flattenJsonLd(value) {
 }
 
 /**
- * Title, description and posted date from a detail page's `JobPosting`
- * JSON-LD. `validThrough`, `employmentType` and `baseSalary` are deliberately
- * not read (see the header). Exported for unit tests.
+ * Title, description, posted date and a close day from a detail page's
+ * `JobPosting` JSON-LD. `closesAt` is set only when `validThrough` is a real
+ * calendar day (CAR-256, parent parity, upstream #6597); `employmentType` and
+ * `baseSalary` are not read (see the header). Exported for unit tests.
  * @param {unknown} html
- * @returns {{ title?: string, description?: string, postedAt?: number, location?: string }}
+ * @returns {{ title?: string, description?: string, postedAt?: number, location?: string, closesAt?: string }}
  */
 export function parseDetail(html) {
   if (typeof html !== 'string') return {};
@@ -293,6 +295,7 @@ export function parseDetail(html) {
     const title = typeof node.title === 'string' ? node.title.replace(/\s+/g, ' ').trim() : '';
     const description = htmlToText(typeof node.description === 'string' ? node.description : '');
     const postedAt = toEpochMs(node.datePosted);
+    const closesAt = closesAtIso(node);
     const places = Array.isArray(node.jobLocation) ? node.jobLocation : [node.jobLocation];
     const address = places.find((p) => p?.address)?.address || {};
     const location = [address.addressLocality, address.addressRegion]
@@ -302,6 +305,7 @@ export function parseDetail(html) {
       ...(description ? { description } : {}),
       ...(postedAt !== undefined ? { postedAt } : {}),
       ...(location ? { location } : {}),
+      ...(closesAt ? { closesAt } : {}),
     };
   }
   return {};
@@ -332,6 +336,9 @@ function normalize(row) {
     relocates: false,
     date: typeof row.postedAt === 'number' ? new Date(row.postedAt).toISOString() : '',
     snippet: row.description || '',
+    // CAR-256 (#6597) — the close day the detail fetch read off the JSON-LD
+    // validThrough; the scanner's history writer records it.
+    ...(row.closesAt ? { closesAt: row.closesAt } : {}),
     source: 'applicantpro',
   };
 }
@@ -387,6 +394,8 @@ export async function fetchApplicantpro(endpoint, opts = {}) {
       if (detail.description) job.description = detail.description;
       if (job.postedAt === undefined && detail.postedAt !== undefined) job.postedAt = detail.postedAt;
       if (!job.location && detail.location) job.location = detail.location;
+      // CAR-256 (#6597) — a real detail close day rides onto the list row.
+      if (detail.closesAt) job.closesAt = detail.closesAt;
     } catch { /* optional enrichment: keep the list row */ }
   }
   return jobs.map(normalize);

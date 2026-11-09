@@ -15,7 +15,11 @@
  * each detail page's JSON-LD, but the web-ui in-process scanner returns jobs
  * directly and does NOT support a per-job enrich hook, so that hook is OMITTED
  * here: every job is returned undated (`date: ''`), same as other web-ui
- * sources that carry no list-page date.
+ * sources that carry no list-page date. The same divergence covers the close
+ * date (CAR-256 upstream #6597 added a `validThrough` read to the parent's
+ * `enrichDate`): with no detail-fetch hook there is nothing to read it from,
+ * so this source records no `closesAt` — the scanner still stores and surfaces
+ * close days for every source that does ship one (platsbanken, applicantpro).
  *
  * Per-tenant: the portal origin comes from the company entry's `api:` /
  * careers_url, host-pinned to a `*.icims.com` https host. `redirect: 'error'`

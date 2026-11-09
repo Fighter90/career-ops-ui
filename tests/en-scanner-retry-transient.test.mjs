@@ -173,3 +173,38 @@ test('a retry that fails again re-records the error (and is not retried a second
     ALL_ADAPTERS.splice(ALL_ADAPTERS.indexOf(always), 1);
   }
 });
+
+// CAR-256 (parent parity, upstream #6636) — a board cut short is CALLed OUT in
+// the run summary (the parent's "only PARTLY read" block) and lands in the
+// scan result's partialSources with the reason + counts, so a partial read is
+// never silently presented as the whole board.
+test('a partly-read board gets the run-summary call-out and lands in partialSources', async () => {
+  const jobs = [{ title: 'Senior Kotlin Engineer', url: 'https://example.com/cap/1' }];
+  jobs.truncated = { reason: 'page-cap', fetched: 1, total: 340 };
+  const capped = makeAdapter('zz-car256-cap', async () => jobs);
+  ALL_ADAPTERS.unshift(capped);
+  try {
+    writePortals([
+      'tracked_companies:',
+      '  - name: Capped Co',
+      '    provider: zz-car256-cap',
+    ]);
+    const logs = [];
+    const result = await runEnScan({ writeFiles: false, onLog: (s, l) => logs.push(`${s}:${l}`) });
+    assert.deepEqual(result.partialSources, [
+      { company: 'Capped Co', reason: 'page-cap', fetched: 1, total: 340, source: 'truncated' },
+    ]);
+    assert.ok(result.truncatedSources.includes('Capped Co'), 'the bare-name snapshot shape is kept');
+    assert.ok(
+      logs.some((l) => /board\(s\) only PARTLY read/.test(l)),
+      `the run summary flags the partly-read boards: ${JSON.stringify(logs)}`,
+    );
+    assert.ok(
+      logs.some((l) => /•\s+Capped Co \(page-cap, 1 of 340\)/.test(l)),
+      `the run summary names the board with its reason + counts: ${JSON.stringify(logs)}`,
+    );
+    assert.equal(result.errors.length, 0, 'a partial read is not a failure');
+  } finally {
+    ALL_ADAPTERS.splice(ALL_ADAPTERS.indexOf(capped), 1);
+  }
+});

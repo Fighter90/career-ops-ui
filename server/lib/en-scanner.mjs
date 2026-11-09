@@ -814,6 +814,17 @@ export async function runEnScan(opts = {}) {
   log('stdout', `New offers added:      ${fresh.length}`);
   log('stdout', '━'.repeat(60));
 
+  // CAR-256 (parent parity, upstream #6636) — the run-summary call-out for
+  // boards read only PARTLY (page cap, 429, fetch error): postings beyond the
+  // cut were never scanned, so the run must say so rather than present the
+  // partial board as the whole one. The per-board fetch-time ⚠ lines above can
+  // drown in the concurrent sweep; this block is the one that survives.
+  if (partialSources.length > 0) {
+    log('stderr', `⚠️  ${partialSources.length} board(s) only PARTLY read — postings beyond the cut were not scanned:`);
+    for (const t of partialSources) log('stderr', `   • ${describeTruncation(t.company, t)}`);
+    log('stderr', `   For a page cap, raise max_pages on the entry or narrow its search; a fetch error or rate limit that repeats points at the board's host.`);
+  }
+
   if (writeFiles) {
     if (fresh.length) {
       await appendToPipeline(fresh);
