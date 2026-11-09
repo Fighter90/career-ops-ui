@@ -136,9 +136,16 @@ const extractDev = (tail) => {
   const status = (tail.match(/status:\s*(done|already-implemented|not-reproducible|blocked)/) || [])[1] || 'blocked';
   return { status, summary: after(tail, 'DEV_SUMMARY:') || '' };
 };
-const extractVerdict = (tail) => {
-  if (/VERDICT:\s*ACCEPT/.test(tail)) return { verdict: 'ACCEPT', notes: '' };
-  if (/VERDICT:\s*RETURN/.test(tail)) return { verdict: 'RETURN', notes: after(tail, 'VERDICT: RETURN', /\ntitle:|<\/DIFF>/) || short(tail, 600) };
+const extractVerdict = (all) => {
+  // v1.8: scan the WHOLE output, case-insensitive, English or Russian phrasing —
+  // run-14's reviewer wrote a full analysis but phrased the verdict off-template.
+  const accept = /verdict\s*[:\-—]*\s*accept|верdict\s*[:\-—]*\s*accept|вердикт\s*[:\-—]*\s*(принят|accept)/i;
+  const ret = /verdict\s*[:\-—]*\s*return|вердикт\s*[:\-—]*\s*(вернуть|return)/i;
+  if (accept.test(all)) return { verdict: 'ACCEPT', notes: '' };
+  if (ret.test(all)) {
+    const notes = after(all, /VERDICT:\s*RETURN|вердикт[^\n]*вернуть/i) || short(all, 600);
+    return { verdict: 'RETURN', notes };
+  }
   return { verdict: 'RETURN', notes: 'reviewer produced no verdict — treat as RETURN' };
 };
 
@@ -254,7 +261,7 @@ async function main() {
             DESCRIPTION: '(the executor fetched the issue body; judge the diff below)',
             DIFF: `<DIFF>\n${diff.all.slice(0, 60_000)}\n</DIFF>`,
           }, { timeoutMs: 12 * 60_000 });
-          const v = extractVerdict(rev.tail);
+          const v = extractVerdict(rev.all || rev.tail);
           if (v.verdict === 'ACCEPT') { accepted = true; log('  verdict: ACCEPT'); break; }
           accepted = false;
           reviewNotes = v.notes;
