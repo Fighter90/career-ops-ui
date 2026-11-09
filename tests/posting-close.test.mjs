@@ -75,6 +75,15 @@ test('closesAtIso: a naive datetime keeps its date prefix', () => {
   assert.equal(closesAtIso('2026-11-24T23:59'), '2026-11-24');
 });
 
+test('closesAtIso: fractional seconds parse (with and without a zone)', () => {
+  assert.equal(closesAtIso('2026-11-24T23:30:00.5'), '2026-11-24',
+    'a fraction alone never moves the day');
+  assert.equal(closesAtIso('2026-11-24T23:30:00.123456Z'), '2026-11-24',
+    'a fraction under Z is truncated to milliseconds');
+  assert.equal(closesAtIso('2026-11-24T23:30:00.5+01:00'), '2026-11-24',
+    'a fraction under a numeric offset converts like the whole-second form');
+});
+
 test('closesAtIso: an explicit offset converts to the UTC calendar day', () => {
   assert.equal(closesAtIso('2026-11-24T23:30:00-05:00'), '2026-11-25');
   assert.equal(closesAtIso('2026-11-25T02:30:00+05:00'), '2026-11-24');
@@ -82,7 +91,11 @@ test('closesAtIso: an explicit offset converts to the UTC calendar day', () => {
   assert.equal(closesAtIso('2026-11-24T23:30:00+0000'), '2026-11-24', 'offset without a colon');
   assert.equal(closesAtIso('2026-11-24T25:00:00'), '', 'hour out of range');
   assert.equal(closesAtIso('2026-11-24T10:99:00'), '', 'minute out of range');
-  assert.equal(closesAtIso('2026-11-24T10:00:00+99:00'), '', 'offset out of range');
+  assert.equal(closesAtIso('2026-11-24T10:00:99'), '', 'second out of range');
+  assert.equal(closesAtIso('2026-02-30T10:00:00'), '',
+    'a valid time on an impossible calendar day is refused');
+  assert.equal(closesAtIso('2026-11-24T10:00:00+05:99'), '', 'offset minutes out of range');
+  assert.equal(closesAtIso('2026-11-24T10:00:00+99:00'), '', 'offset hours out of range');
 });
 
 test('closesAtIso: an object is read through the CLOSE_FIELDS precedence', () => {
@@ -142,6 +155,35 @@ test('closeDatesByUrl: an unadded URL takes the latest row it has', () => {
   const index = closeDatesByUrl(text);
   assert.equal(index.get(url), '2026-03-02');
   assert.equal(closeDatesByUrl('').size, 0);
+});
+
+test('closeDatesByUrl: a later NON-observational status DOES override the added day', () => {
+  const url = 'https://jobs.example.com/override';
+  const text = [
+    `2026-11-09\ten\t46\tAcme\tEngineer\t${url}\t2026-12-01`,
+    `${url}\t2026-11-11\tacme-gh\tEngineer\tAcme\tskipped_expired\t\t\t\t\t\t\t\t\t\t2026-12-28`,
+  ].join('\n');
+  const index = closeDatesByUrl(text);
+  assert.equal(index.get(url), '2026-12-28',
+    'skipped_expired is not in the visibility-only set: the newer observation wins');
+});
+
+test('closeDatesByUrl: a URL that does not normalize still indexes under its raw cell', () => {
+  const text = '2026-11-09\ten\t47\tAcme\tEngineer\tnot-a-url\t2026-04-01';
+  const index = closeDatesByUrl(text);
+  assert.equal(index.get('not-a-url'), '2026-04-01',
+    'the canonical key falls back to the raw URL cell when normalization empties it');
+});
+
+test('closeDatesByUrl: a row with an EMPTY url cell contributes nothing', () => {
+  const text = '2026-11-09\ten\t49\tAcme\tEngineer\t\t2026-05-01';
+  const index = closeDatesByUrl(text);
+  assert.equal(index.size, 0, 'no key, no entry');
+});
+
+test('closeDateForUrl: an empty-string URL is a miss, not a lookup', () => {
+  const index = closeDatesByUrl('2026-11-09\ten\t48\tAcme\tEngineer\thttps://jobs.example.com/g\t2026-06-01');
+  assert.equal(closeDateForUrl(index, ''), '');
 });
 
 test('closeDateForUrl: hit, miss, and non-string input', () => {
