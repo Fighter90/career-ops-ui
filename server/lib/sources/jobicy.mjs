@@ -10,10 +10,19 @@
  * page) until hasMore runs out or a page cap. The
  * en-scanner's title_filter can gate on configured titles.
  *
+ * CAR-255 parity (upstream #6612): the entry's optional `geo` / `industry` /
+ * `tag` keys ride every page request as Jobicy's own server-side filters
+ * (validated before any request — a slug the API does not know is answered
+ * with HTTP 400 naming the list to pick from), a repeated or oversized cursor
+ * stops the walk as a broken page, and a cap / fetch-error / bad-cursor stop
+ * marks the result `truncated` (canonical partial-read shape,
+ * board-truncation.mjs) instead of presenting the prefix as the whole board.
+ *
  * Used by the jobicy adapter (server/lib/portals/adapters/jobicy.mjs).
  */
 import { requireArray, requireContainer } from './_shape.mjs';
 import { decodeEntities } from '../html-entities.mjs';
+import { markTruncated } from '../board-truncation.mjs';
 
 import { fetchJson, labeledHttpError } from '../http-json.mjs';
 
@@ -33,6 +42,55 @@ export const meta = {
   label: 'Jobicy',
   region: 'en',
 };
+
+// ── CAR-255 parity (upstream #6612) — entry filters ────────────────────────
+// Optional entry keys, sent as Jobicy's own server-side filters:
+//   geo: latam             # a geoSlug from ?get=locations (argentina, europe, usa, ...)
+//   industry: engineering  # an industrySlug from ?get=industries (data-science, qa-testing, ...)
+//   tag: python            # keyword matched against the job title
+// A slug the API does not know is answered with HTTP 400 naming the list to
+// pick from, so a typo in portals.yml reads as one config error — validated
+// here, before any request.
+
+const SLUG_RE = /^[a-z0-9][a-z0-9-]{0,63}$/;
+const SLUG_LISTS = { geo: 'locations', industry: 'industries' };
+const MAX_TAG_LENGTH = 100;
+/** A repeated or oversized cursor is a broken page, not a longer board. */
+const MAX_CURSOR_LENGTH = 4096;
+
+/** @param {string} text */
+const hasControlChar = (text) => [...text].some((c) => c < ' ' || c === '\u007f');
+
+/**
+ * The entry's optional Jobicy filters, validated. Exported for tests. Throws
+ * on a malformed value: a config error, raised before any request.
+ *
+ * @param {any} entry - the job_boards entry (`provider: jobicy`).
+ * @returns {{ geo?: string, industry?: string, tag?: string }}
+ */
+export function jobicyFilters(entry) {
+  /** @type {{ geo?: string, industry?: string, tag?: string }} */
+  const filters = {};
+  const where = `entry "${entry?.name ?? '?'}"`;
+  for (const key of /** @type {const} */ (['geo', 'industry'])) {
+    const raw = entry?.[key];
+    if (raw === undefined || raw === null || raw === '') continue;
+    const slug = typeof raw === 'string' ? raw.trim().toLowerCase() : '';
+    if (!SLUG_RE.test(slug)) {
+      throw new Error(`jobicy: ${key} ${JSON.stringify(raw)} in ${where} is not a slug — pick one from ${FEED_URL}?get=${SLUG_LISTS[key]}`);
+    }
+    filters[key] = slug;
+  }
+  const tag = entry?.tag;
+  if (tag !== undefined && tag !== null && tag !== '') {
+    const text = typeof tag === 'string' ? tag.trim() : '';
+    if (!text || text.length > MAX_TAG_LENGTH || hasControlChar(text)) {
+      throw new Error(`jobicy: tag in ${where} must be one line of 1-${MAX_TAG_LENGTH} characters`);
+    }
+    filters.tag = text;
+  }
+  return filters;
+}
 
 /**
  * Validate that the URL targets jobicy.com over HTTPS (SSRF guard).
@@ -82,17 +140,33 @@ async function fetchOne(fetchImpl, url, signal) {
 export async function fetchJobicy(feedUrl = FEED_URL, opts = {}) {
   const { fetchImpl = fetch, signal } = opts;
   assertJobicyUrl(feedUrl);
+  // Validated BEFORE any request: a malformed filter is a config error, not
+  // an empty board (CAR-255 parity, upstream #6612).
+  const filters = jobicyFilters(opts.company);
   const base = new URL(feedUrl);
   // Respect a caller's smaller `count`; the API caps at 50.
   const pageSize = Math.min(Math.max(Number(base.searchParams.get('count')) || PAGE_SIZE, 1), PAGE_SIZE);
-  const maxPages = resolveMaxPages(opts.company, opts);
+  // An explicit `opts.maxPages` is a probe budget (verify-portals parity): it
+  // caps the walk and, unlike the entry's own max_pages, never reads as a
+  // partial read at the cap.
+  const probing = Number.isInteger(opts.maxPages) && opts.maxPages > 0;
+  const configured = resolveMaxPages(opts.company, opts);
+  const maxPages = probing ? Math.min(configured, opts.maxPages) : configured;
 
   const all = [];
   const seen = new Set();
+  const cursorsSeen = new Set();
   let cursor = null;
+  // Why the walk stopped: 'complete' (the feed said so), 'page-cap'
+  // (max_pages ran out with a next page on offer), 'fetch-error' or
+  // 'unrecognised-page' (a repeated/oversized cursor).
+  let stopReason = 'complete';
   for (let page = 1; page <= maxPages; page += 1) {
     const pageUrl = new URL(base.href);
     pageUrl.searchParams.set('count', String(pageSize));
+    for (const key of /** @type {const} */ (['geo', 'industry', 'tag'])) {
+      if (filters[key]) pageUrl.searchParams.set(key, filters[key]);
+    }
     if (cursor) pageUrl.searchParams.set('cursor', cursor);
 
     let json;
@@ -103,6 +177,8 @@ export async function fetchJobicy(feedUrl = FEED_URL, opts = {}) {
     } catch (err) {
       if (page === 1) throw err;
       console.warn(`jobicy: page ${page} failed — ${err.message} (keeping ${all.length} jobs fetched so far)`);
+      stopReason = 'fetch-error';
+      cursor = null;
       break;
     }
 
@@ -122,7 +198,24 @@ export async function fetchJobicy(feedUrl = FEED_URL, opts = {}) {
     if (raw.length === 0) break;
     cursor = typeof json.nextCursor === 'string' && json.nextCursor.trim() ? json.nextCursor.trim() : null;
     if (!cursor || json.hasMore === false) break;
+    // A repeated or oversized cursor is a broken page, not a longer board.
+    if (cursor.length > MAX_CURSOR_LENGTH || cursorsSeen.has(cursor)) {
+      console.warn(`jobicy: stopped at page ${page + 1} — the API returned ${cursorsSeen.has(cursor) ? 'a cursor it had already returned' : 'an oversized cursor'}`);
+      stopReason = 'unrecognised-page';
+      cursor = null;
+      break;
+    }
+    cursorsSeen.add(cursor);
   }
+  // Out of pages with another one on offer: the entry's own cap truncated
+  // the feed (a probe budget never counts as a partial read).
+  if (stopReason === 'complete' && cursor !== null && !probing) {
+    stopReason = 'page-cap';
+    console.warn(`jobicy: truncated at max_pages=${configured} (${all.length} jobs) — raise max_pages on this entry for more`);
+  }
+  // A cap or a broken page leaves the board partial; tag it in the canonical
+  // shape (board-truncation.mjs) so the scan reports it, not just stderr.
+  if (stopReason !== 'complete') markTruncated(all, stopReason, { fetched: all.length });
   return all;
 }
 

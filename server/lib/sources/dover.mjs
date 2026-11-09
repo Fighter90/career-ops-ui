@@ -26,6 +26,7 @@
  */
 import { fetchJsonWithRetry, delay, BROWSER_LIKE_USER_AGENT } from '../http-json.mjs';
 import { safeEncodeURIComponent } from './_safe-url.mjs';
+import { markTruncated } from '../board-truncation.mjs';
 
 const UA = BROWSER_LIKE_USER_AGENT;
 
@@ -220,8 +221,9 @@ function normalize(row, entry) {
  * Fetch + normalize the Dover careers-page jobs for one board (paginated).
  * Mirrors the parent's fetch(): stop on a short page (raw count, before row
  * filtering) or a missing `next`, keep the partials on a later-page fetch
- * error, and tag the result array `doverTruncated` when the max_pages cap
- * (not the feed) stopped the sweep — the web-ui partial-board convention.
+ * error, and mark the result `truncated` (canonical partial-read shape,
+ * board-truncation.mjs) when a page cap or a fetch error — not the feed —
+ * stopped the sweep.
  *
  * The parent also accepted a ctx.maxPages probe budget; web-ui's scanner has
  * no probe path, so the entry's own max_pages is the only cap here.
@@ -279,6 +281,12 @@ export async function fetchDover(endpoint, opts = {}) {
     console.error(`⚠️  dover: ${entry.name} truncated at max_pages=${maxPages} (${jobs.length} jobs) — raise max_pages on this entry for more`);
   }
 
-  if (stopReason === STOP_REASON.CAP) jobs.doverTruncated = true;
+  if (stopReason === STOP_REASON.CAP || stopReason === STOP_REASON.FETCH_ERROR) {
+    // CAR-255 parity (upstream dover) — the canonical partial-read signal
+    // (board-truncation.mjs): the scan reports this board `partial`, not
+    // `reachable`. Both a page cap and a mid-walk fetch error leave the
+    // board partly read.
+    markTruncated(jobs, stopReason === STOP_REASON.CAP ? 'page-cap' : 'fetch-error', { fetched: jobs.length });
+  }
   return jobs;
 }

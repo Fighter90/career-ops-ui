@@ -54,10 +54,19 @@ test('the host is pinned and the site id must be a positive integer', () => {
   assert.equal(parseTenantUrl('not a url'), null);
 });
 
-test('tenants excluded by robots.txt are refused at config time', () => {
-  // Refused before any request, rather than fetched and discarded.
-  assert.equal(parseTenantUrl('https://app.mokahr.com/social-recruitment/shopee/74378'), null);
-  assert.equal(parseTenantUrl('https://app.mokahr.com/social-recruitment/lingjuninvest/46355'), null);
+test('the tenants the old robots.txt rule skipped now parse (#6726 parity)', () => {
+  // Upstream #6691 made robots.txt no longer a provider gate, so #6726 dropped
+  // the config-time refusal: these tenants are read like any other.
+  assert.deepEqual(parseTenantUrl('https://app.mokahr.com/social-recruitment/shopee/74378'), {
+    orgId: 'shopee', siteId: 74378,
+    baseUrl: 'https://app.mokahr.com/social-recruitment/shopee/74378',
+    apiUrl: 'https://app.mokahr.com/api/outer/ats-apply/website/jobs/v2',
+  });
+  assert.deepEqual(parseTenantUrl('https://app.mokahr.com/social-recruitment/lingjuninvest/46355'), {
+    orgId: 'lingjuninvest', siteId: 46355,
+    baseUrl: 'https://app.mokahr.com/social-recruitment/lingjuninvest/46355',
+    apiUrl: 'https://app.mokahr.com/api/outer/ats-apply/website/jobs/v2',
+  });
 });
 
 test('a real AES envelope round-trips', () => {

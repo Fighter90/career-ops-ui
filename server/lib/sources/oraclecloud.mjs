@@ -52,6 +52,7 @@
  */
 import { fetchJson, delay, BROWSER_LIKE_USER_AGENT } from '../http-json.mjs';
 import { decodeEntities } from '../html-entities.mjs';
+import { markTruncated } from '../board-truncation.mjs';
 
 // `oraclecloud(?:[1-9][0-9]?)?` = the unnumbered apex plus the numbered family
 // oraclecloud1.com … oraclecloud99.com (some tenants live only on a numbered
@@ -288,12 +289,21 @@ export async function fetchOraclecloud(endpoint, opts = {}) {
   assertOraclecloudUrl(endpoint);
   const site = resolveSite(endpoint, company);
   if (!site) throw new Error(`oraclecloud: cannot derive API URL from ${endpoint}`);
-  const maxPages = resolveMaxPages(company);
+  // CAR-255 parity (upstream) — `opts.maxPages` is the liveness-probe budget:
+  // honor it as a ceiling so a probe costs one request instead of the whole
+  // board, and never let a probe read as a cap stop below.
+  const probeBudget = Number(opts.maxPages);
+  const probing = Number.isInteger(probeBudget) && probeBudget > 0;
+  const maxPages = probing ? Math.min(resolveMaxPages(company), probeBudget) : resolveMaxPages(company);
   const companyName = (company && typeof company.name === 'string') ? company.name : '';
 
   /** @type {Map<string, object>} */
   const seen = new Map();
   let total = null;
+  // Set when the loop's own bound ended the walk on the last allowed page —
+  // the tenant still reported more (or reports no total at all), so the board
+  // is only partly read.
+  let capped = false;
   for (let page = 0; page < maxPages; page += 1) {
     const offset = page * PAGE_SIZE;
     const apiUrl = buildApiUrl(site, offset, PAGE_SIZE);
@@ -353,6 +363,15 @@ export async function fetchOraclecloud(endpoint, opts = {}) {
     if (total !== null) {
       if (offset + PAGE_SIZE >= total) break;
     } else if (listLen < PAGE_SIZE) break;
+    if (page === maxPages - 1 && !probing) capped = true;
   }
-  return [...seen.values()];
+  const all = [...seen.values()];
+  if (capped) {
+    // Walked every allowed page and the tenant still reports more: say so
+    // (canonical partial-read shape, board-truncation.mjs) instead of
+    // returning a silent prefix.
+    console.error(`⚠️  oraclecloud: ${companyName || endpoint} stopped at max_pages=${maxPages} (${all.length}${total === null ? '' : ` of ${total}`} jobs) — the board is partial`);
+    markTruncated(all, 'page-cap', { fetched: all.length, ...(total !== null ? { total } : {}) });
+  }
+  return all;
 }

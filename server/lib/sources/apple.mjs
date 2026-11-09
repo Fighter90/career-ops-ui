@@ -41,6 +41,7 @@
  */
 import { fetchTextWithRetry } from '../http-json.mjs';
 import { safeEncodeURIComponent } from './_safe-url.mjs';
+import { markTruncated } from '../board-truncation.mjs';
 
 const ALLOWED_HOST = 'jobs.apple.com';
 const BASE = 'https://jobs.apple.com';
@@ -253,5 +254,10 @@ export async function fetchApple(apiUrl = `${BASE}/en-us/search`, opts = {}) {
     console.error(`⚠️  apple: ${company.name || 'Apple'} hit the ${maxPages}-page cap on at least one search — raise max_pages on this entry for more`);
   }
 
-  return [...byUrl.values()];
+  const result = [...byUrl.values()];
+  // CAR-255 parity (upstream, delta b859214b..24da28e8) — the canonical
+  // partial-read signal (board-truncation.mjs): the scan reports this board
+  // `partial` instead of presenting the cap-cut prefix as the whole one.
+  if (truncated) markTruncated(result, 'page-cap', { fetched: result.length });
+  return result;
 }

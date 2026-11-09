@@ -311,6 +311,46 @@ test('fetchOraclecloud: honors max_pages from the entry, hard-capped at MAX_PAGE
   assert.equal(uncapped.calls.length, MAX_PAGES);
 });
 
+// CAR-255 parity (upstream oraclecloud) — a cap stop with the tenant still
+// reporting more is a partial read, reported in the canonical shape instead
+// of returning a silent prefix.
+test('fetchOraclecloud: a cap stop marks the board partial (canonical truncation signal)', async () => {
+  const fetchImpl = fakeFetch(() => makePage(
+    Array.from({ length: PAGE_SIZE }, (_, i) => makeReq({ Id: `${Math.random()}-${i}` })),
+    100000,
+    true,
+  ));
+  const jobs = await fetchOraclecloud(CAREERS, { fetchImpl, company: { max_pages: 2 } });
+  assert.equal(fetchImpl.calls.length, 2);
+  assert.deepEqual(jobs.truncated, { reason: 'page-cap', fetched: PAGE_SIZE * 2, total: 100000 });
+});
+
+test('fetchOraclecloud: a complete board carries no truncation mark', async () => {
+  const fetchImpl = fakeFetch((url) => {
+    const offset = parseInt(new URL(url).searchParams.get('offset') || '0', 10);
+    const len = offset < 400 ? PAGE_SIZE : 50;
+    return makePage(
+      Array.from({ length: len }, (_, i) => makeReq({ Id: `c${offset}-${i}`, Title: `Role ${i}` })),
+      450,
+      true,
+    );
+  });
+  const jobs = await fetchOraclecloud(CAREERS, { fetchImpl });
+  assert.equal(jobs.length, 450);
+  assert.equal(jobs.truncated, undefined, 'the walk ended on the tenant total — the board is whole');
+});
+
+test('fetchOraclecloud: an opts.maxPages probe costs one request and marks nothing', async () => {
+  const fetchImpl = fakeFetch(() => makePage(
+    Array.from({ length: PAGE_SIZE }, (_, i) => makeReq({ Id: `${Math.random()}-${i}` })),
+    100000,
+    true,
+  ));
+  const jobs = await fetchOraclecloud(CAREERS, { fetchImpl, company: { max_pages: 5 }, maxPages: 1 });
+  assert.equal(fetchImpl.calls.length, 1, 'the probe budget bounds the walk');
+  assert.equal(jobs.truncated, undefined, 'a probe never reads as a cap stop');
+});
+
 test('fetchOraclecloud: first-request failure throws; mid-run blip keeps collected jobs', async () => {
   const failing = async () => ({ ok: false, status: 503 });
   await assert.rejects(() => fetchOraclecloud(CAREERS, { fetchImpl: failing }), /HTTP 503/);

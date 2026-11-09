@@ -39,6 +39,7 @@
  */
 import { BROWSER_LIKE_USER_AGENT, fetchJson, fetchRawResponse, labeledHttpError } from '../http-json.mjs';
 import { requireContainer, requireArray } from './_shape.mjs';
+import { markTruncated } from '../board-truncation.mjs';
 
 const PAGE_LIMIT = 100;
 
@@ -315,10 +316,13 @@ export async function fetchWorkday(apiUrl, opts = {}) {
   // until a short RAW page (the tenant is done), bounded by MAX_PAGES. Page 1
   // failures keep the documented v1.16 fallback semantics; a failure on a
   // LATER page keeps the pages already collected and logs.
+  // CAR-255 parity (upstream workday #6672) — the loop's own bound ending the
+  // walk on a FULL last page is a cap stop, not the board's end: the board is
+  // only partly read, so it is reported in the canonical partial-read shape.
+  let capStopped = false;
   for (let page = 0; page < MAX_PAGES; page++) {
     const offset = page * PAGE_LIMIT;
-    let data;
-    try {
+    let data;    try {
       data = await fetchJson(fetchImpl, apiUrl, {
         method: 'POST',
         signal,
@@ -404,6 +408,11 @@ export async function fetchWorkday(apiUrl, opts = {}) {
     // Stop on a short RAW page — the tenant ran out of postings. Never on the
     // filtered/normalized count.
     if (rows.length < PAGE_LIMIT) break;
+    if (page === MAX_PAGES - 1) capStopped = true;
+  }
+  if (capStopped) {
+    console.error(`  ⚠ workday: ${apiUrl} stopped at the ${MAX_PAGES}-page cap (${jobs.length} postings) — the board is partial`);
+    markTruncated(jobs, 'page-cap', { fetched: jobs.length });
   }
   return jobs;
 }

@@ -89,7 +89,7 @@ test('computrabajo: caps resolve — max_pages/max_jobs are hard-capped at the d
   assert.equal(resolveMaxJobs({ max_jobs: 999 }), DEFAULT_MAX_JOBS);
 });
 
-test('computrabajo: buildPageUrl sorts newest-first, preserves the user sort, and never sorts /ofertas-de-trabajo/', () => {
+test('computrabajo: buildPageUrl sorts newest-first and preserves the user sort on every path (#6739 parity)', () => {
   assert.equal(
     buildPageUrl(resolveListUrl(BASE), 2),
     `${BASE}?by=publicationtime&p=2`,
@@ -99,9 +99,13 @@ test('computrabajo: buildPageUrl sorts newest-first, preserves the user sort, an
     `${BASE}?by=salary&p=1`,
     'a by= the user put in their URL wins');
   assert.equal(
+    buildPageUrl(resolveListUrl('https://co.computrabajo.com/ofertas-de-trabajo/?q=python'), 1),
+    'https://co.computrabajo.com/ofertas-de-trabajo/?q=python&by=publicationtime&p=1',
+    'the newest-first sort is sent on /ofertas-de-trabajo/ too (robots.txt no longer gates the provider)');
+  assert.equal(
     buildPageUrl(resolveListUrl('https://co.computrabajo.com/ofertas-de-trabajo/?q=python&by=salary'), 1),
-    'https://co.computrabajo.com/ofertas-de-trabajo/?q=python&p=1',
-    'robots.txt keeps /ofertas-de-trabajo/ free of by=');
+    'https://co.computrabajo.com/ofertas-de-trabajo/?q=python&by=salary&p=1',
+    'a user sort wins there too');
 });
 
 test('computrabajo: parseCards keeps the real employer, decodes entities, drops the fragment', () => {
@@ -207,15 +211,15 @@ test('computrabajo: fetchComputrabajo — normalized rows, redirect error + UA, 
   assert.equal(jobs[1].date, '');
 });
 
-test('computrabajo: fetchComputrabajo keeps a user sort; drops it under /ofertas-de-trabajo/', async () => {
+test('computrabajo: fetchComputrabajo keeps a user sort; sends the newest-first sort under /ofertas-de-trabajo/ (#6739)', async () => {
   const keep = makeFetch({ 1: page(card('S1')) });
   await fetchComputrabajo(`${BASE}?by=salary`, { fetchImpl: keep.fetchImpl, delayMs: 0 });
   assert.equal(new URL(keep.calls[0].url).searchParams.get('by'), 'salary');
 
-  const drop = makeFetch({ 1: page(card('R2')) });
-  await fetchComputrabajo('https://co.computrabajo.com/ofertas-de-trabajo/?q=python&by=salary', { fetchImpl: drop.fetchImpl, delayMs: 0 });
-  assert.equal(new URL(drop.calls[0].url).searchParams.has('by'), false);
-  assert.equal(new URL(drop.calls[0].url).searchParams.get('q'), 'python');
+  const sorted = makeFetch({ 1: page(card('R2')) });
+  await fetchComputrabajo('https://co.computrabajo.com/ofertas-de-trabajo/?q=python', { fetchImpl: sorted.fetchImpl, delayMs: 0 });
+  assert.equal(new URL(sorted.calls[0].url).searchParams.get('by'), 'publicationtime');
+  assert.equal(new URL(sorted.calls[0].url).searchParams.get('q'), 'python');
 });
 
 test('computrabajo: fetchComputrabajo enforces the 3-page / 15-posting crawl caps (partial board)', async () => {
