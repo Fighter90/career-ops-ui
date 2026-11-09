@@ -159,7 +159,7 @@ async function main() {
 
       const clean = await sh('git status --porcelain');
       if (clean.out.trim()) throw new Error('working tree is not clean — aborting before pick');
-      await sh('git fetch origin -q && git checkout -q main && git reset --hard origin/main');
+      await sh('git fetch origin -q && git checkout -q --detach origin/main');
 
       const issue = await pickIssue();
       if (!issue) { log('queue empty — no Todo issues labeled `swarm`.'); break; }
@@ -179,7 +179,9 @@ async function main() {
         let round = 0;
         for (; round < MAX_ROUNDS; round++) {
           log(`-- round ${round + 1}/${MAX_ROUNDS}: develop`);
-          await sh(`git checkout -q -B ${branch} origin/main`);
+          // v1.5: reuse a task branch that already carries salvaged work — wiping it
+          // with -B destroyed an executor's committed round (the run-5 class of loss).
+          await sh(`git checkout -q ${branch} 2>/dev/null || git checkout -q -B ${branch} origin/main`);
           const dev = await worker('executor', {
             IDENTIFIER: issue.identifier, TITLE: issue.title, ROUND: String(round + 1),
             DESCRIPTION: '(fetch the full issue BODY via the linear MCP if needed; never read or judge the issue STATE — the orchestrator owns the lifecycle)',
@@ -292,7 +294,7 @@ async function main() {
         await sh(`gh pr merge ${prUrl.split('/').pop()} --squash --delete-branch`, { timeoutMs: 300_000 });
         log(`  merged: ${prUrl}`);
 
-        await sh('git checkout -q main && git pull -q');
+        await sh('git fetch origin -q && git checkout -q --detach origin/main');
         const verOut = await sh('npm version patch --no-git-tag-version');
         const ver = verOut.out.trim().replace(/^v/, '');
         log(`-- release manager: v${ver} (changelog ×19 + QA prompt)`);
