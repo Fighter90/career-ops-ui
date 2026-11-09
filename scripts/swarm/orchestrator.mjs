@@ -113,6 +113,8 @@ export function parsePickOutput(out) {
 }
 
 const PIN = process.env.SWARM_PIN_ISSUE || ''; // parallel instances pin their task
+// Big waves (parent-sync ports) outgrow the 25-minute default: raise via env.
+const EXEC_MS = (Number(process.env.SWARM_EXECUTOR_TIMEOUT_MIN) || 25) * 60_000;
 
 async function pickIssue() {
   const op = PIN
@@ -186,7 +188,7 @@ async function main() {
             IDENTIFIER: issue.identifier, TITLE: issue.title, ROUND: String(round + 1),
             DESCRIPTION: '(fetch the full issue BODY via the linear MCP if needed; never read or judge the issue STATE — the orchestrator owns the lifecycle)',
             REVIEW_NOTES: reviewNotes ? `\nREVIEWER RETURNED THIS CHANGE WITH NOTES — address every point:\n${reviewNotes}` : '',
-          });
+          }, { timeoutMs: EXEC_MS });
           const commits = parseInt((await sh('git rev-list --count origin/main..HEAD')).out.trim() || '0', 10);
           const dev1 = extractDev(dev.tail);
           // The tree is the truth: a committed branch goes to the gates even if the
