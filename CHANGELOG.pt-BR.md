@@ -3,6 +3,15 @@
 > **Nota** — este arquivo está integralmente traduzido para o português brasileiro. Cada entrada de versão foi reescrita em PT-BR técnico de qualidade editorial, preservando blocos de código, mensagens de commit, caminhos de arquivo, URLs, variáveis de ambiente, comandos e rótulos de link em sua forma original.
 > _As entradas a partir de [1.271.3] aguardam tradução — o original em inglês abaixo._
 
+## [1.271.4] — 2026-11-10
+
+### Fixed
+- **CodeQL alert wave closed at source (6 alerts)**: 2 high file-system-race patterns removed by review (`tests/robots-check.test.mjs` unused origin+import, `tests/sources-turbohire.test.mjs` unused import), `GET /api/pipeline` now rate-limited, a provably-true conjunct dropped in adp-workforcenow, URL-substring assertions switched to anchored regexes in posting-close tests.
+
+### Notas
+- Deliberately NOT changed: product behavior — every fix is lint/security-hygiene; tests 8126 unchanged.
+
+
 ## [1.271.3] — 2026-11-10
 
 ### Corrigido

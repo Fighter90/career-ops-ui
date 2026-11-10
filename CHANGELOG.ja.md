@@ -3,6 +3,15 @@
 > **翻訳ノート** — このファイルは全エントリが日本語本文で完全に翻訳済みです。コードブロック、コミットメッセージ、ファイルパス、URL、環境変数、コマンド、リンクラベルは原文のまま保持しています。
 > _[1.271.3]以降のエントリは翻訳待ちです — 英語の原文が下にあります。_
 
+## [1.271.4] — 2026-11-10
+
+### Fixed
+- **CodeQL alert wave closed at source (6 alerts)**: 2 high file-system-race patterns removed by review (`tests/robots-check.test.mjs` unused origin+import, `tests/sources-turbohire.test.mjs` unused import), `GET /api/pipeline` now rate-limited, a provably-true conjunct dropped in adp-workforcenow, URL-substring assertions switched to anchored regexes in posting-close tests.
+
+### メモ
+- Deliberately NOT changed: product behavior — every fix is lint/security-hygiene; tests 8126 unchanged.
+
+
 ## [1.271.3] — 2026-11-10
 
 ### 修正

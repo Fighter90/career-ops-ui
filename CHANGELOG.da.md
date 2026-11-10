@@ -2,6 +2,15 @@
 
 
 > **Oversættelsesnote.** Filen er oversat til dansk: de seneste poster (fra v1.77.0 og bagud, inkl. v1.76.0 / v1.75.2 / v1.75.1 / v1.75.0) er fuldt oversat til teknisk dansk. Ældre poster bevares på engelsk; versionsoverskrifter og datoer er identiske med den engelske kildefil.
+## [1.271.4] — 2026-11-10
+
+### Fixed
+- **CodeQL alert wave closed at source (6 alerts)**: 2 high file-system-race patterns removed by review (`tests/robots-check.test.mjs` unused origin+import, `tests/sources-turbohire.test.mjs` unused import), `GET /api/pipeline` now rate-limited, a provably-true conjunct dropped in adp-workforcenow, URL-substring assertions switched to anchored regexes in posting-close tests.
+
+### Noter
+- Deliberately NOT changed: product behavior — every fix is lint/security-hygiene; tests 8126 unchanged.
+
+
 ## [1.271.3] — 2026-11-10
 
 ### Rettet

@@ -3,6 +3,15 @@
 > **说明** — 本文件已完整翻译为出版级简体中文(中国大陆用语规范),包含全部历史版本条目。代码块、提交信息、文件路径、URL、环境变量、命令行片段以及 CSP / SSRF / TOCTOU / WCAG / ATS / JD / SSE / REST / API 等通用英文缩写按原文保留。
 > _自 [1.271.3] 起的条目待翻译——英文原文见下方。_
 
+## [1.271.4] — 2026-11-10
+
+### Fixed
+- **CodeQL alert wave closed at source (6 alerts)**: 2 high file-system-race patterns removed by review (`tests/robots-check.test.mjs` unused origin+import, `tests/sources-turbohire.test.mjs` unused import), `GET /api/pipeline` now rate-limited, a provably-true conjunct dropped in adp-workforcenow, URL-substring assertions switched to anchored regexes in posting-close tests.
+
+### 备注
+- Deliberately NOT changed: product behavior — every fix is lint/security-hygiene; tests 8126 unchanged.
+
+
 ## [1.271.3] — 2026-11-10
 
 ### 修复

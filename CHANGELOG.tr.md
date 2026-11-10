@@ -3,6 +3,15 @@
 > Bu changelog artık tüm sürüm geçmişini içerir. Türkçe yerelleştirmenin eklenmesinden (v1.85.0) önce yayınlanan girdiler aşağıda İngilizce özgün hâliyle yer alır — çeviri bekliyor; asıl kaynak [🇬🇧 CHANGELOG.md](CHANGELOG.md)'dir.
 > _[1.271.3]'ten itibaren girdiler çeviri bekliyor — İngilizce orijinal aşağıda._
 
+## [1.271.4] — 2026-11-10
+
+### Fixed
+- **CodeQL alert wave closed at source (6 alerts)**: 2 high file-system-race patterns removed by review (`tests/robots-check.test.mjs` unused origin+import, `tests/sources-turbohire.test.mjs` unused import), `GET /api/pipeline` now rate-limited, a provably-true conjunct dropped in adp-workforcenow, URL-substring assertions switched to anchored regexes in posting-close tests.
+
+### Notlar
+- Deliberately NOT changed: product behavior — every fix is lint/security-hygiene; tests 8126 unchanged.
+
+
 ## [1.271.3] — 2026-11-10
 
 ### Düzeltildi

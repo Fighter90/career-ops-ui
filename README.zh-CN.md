@@ -17,9 +17,10 @@ _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.271.3** — parent-sync 波次 (career-ops @ 298d2282):新增 3 个扫描 provider — TurboHire、ADP Recruiting Management (myjobs)、通用 sitemap 看板 — registry 由 **135 → 138 (133 EN + 5 RU)**;provider 修复波次(jobicy 全量 feed 遍历 + 过滤器、workday 真实看板规模、adp-workforcenow 语言、applicantpro 截止日期、mokahr robots、computrabajo 排序、apple 国家、dover/oraclecloud/platsbanken 对齐);scanner 波次(部分读取的看板报告 `partial`、瞬时错误在整轮遍历后重试、pipeline 中的职位截止日期、大写 ISO 代码在位置列表中区分大小写)。测试 7933 → 8126。
+> 补丁 v1.271.4 在源码层面关闭 CodeQL 告警波次(6 个告警:测试中未使用的变量/导入、缺失的限流、恒真条件、URL 子串断言)。
+> **🆕 最新版本 — v1.271.4** — 
 >
-> **上一版本 — v1.271.2** — /api/map/jobs 的 pipeline 段限制为最新的 1000 行 (CAR-250):真实数量在 `pipelineTotal`,`?pipeline=all` 恢复全部,titleFit 仅对已交付的段;补全 CAR-249 tracker 瘦身性能对。测试 7920 → 7922。
+> **上一版本 — v1.271.3** — parent-sync 波次 (career-ops @ 298d2282):新增 3 个扫描 provider — TurboHire、ADP Recruiting Management (myjobs)、通用 sitemap 看板 — registry 由 **135 → 138 (133 EN + 5 RU)**;provider 修复波次(jobicy 全量 feed 遍历 + 过滤器、workday 真实看板规模、adp-workforcenow 语言、applicantpro 截止日期、mokahr robots、computrabajo 排序、apple 国家、dover/oraclecloud/platsbanken 对齐);scanner 波次(部分读取的看板报告 `partial`、瞬时错误在整轮遍历后重试、pipeline 中的职位截止日期、大写 ISO 代码在位置列表中区分大小写)。测试 7933 → 8126。
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

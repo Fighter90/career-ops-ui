@@ -4,6 +4,15 @@
 > **Note i18n** — depuis la v1.12.0, les entrées sont localisées dans chaque langue. Les entrées plus anciennes (v1.11.x, v1.10.x) résident dans le [🇬🇧 CHANGELOG anglais](CHANGELOG.md), qui fait foi.
 > **Note de traduction (v1.61.0)** — le français a été ajouté comme 9e langue de l'interface. Ce fichier traduit les entrées récentes ; pour l'historique antérieur à la v1.55.0, voir le [🇬🇧 CHANGELOG anglais](CHANGELOG.md), qui reste la source normative.
 > ⏳ **Note de couverture** — ce fichier inclut désormais l'historique complet ; les entrées antérieures à la v1.61.0 figurent ci-dessous en anglais original, traduction en attente.
+## [1.271.4] — 2026-11-10
+
+### Fixed
+- **CodeQL alert wave closed at source (6 alerts)**: 2 high file-system-race patterns removed by review (`tests/robots-check.test.mjs` unused origin+import, `tests/sources-turbohire.test.mjs` unused import), `GET /api/pipeline` now rate-limited, a provably-true conjunct dropped in adp-workforcenow, URL-substring assertions switched to anchored regexes in posting-close tests.
+
+### Notes
+- Deliberately NOT changed: product behavior — every fix is lint/security-hygiene; tests 8126 unchanged.
+
+
 ## [1.271.3] — 2026-11-10
 
 ### Corrigé

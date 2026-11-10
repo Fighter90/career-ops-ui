@@ -3,6 +3,15 @@
 
 > **ملاحظة بشأن الترجمة (v1.70.0)** — أُضيفت العربية كإحدى ثلاث لغات واجهة جديدة. يترجم هذا الملف أحدث الإدخالات؛ السجل الكامل في [🇬🇧 CHANGELOG الإنجليزي](CHANGELOG.md) وهو المرجع المعتمد.
 > ⏳ **ملاحظة تغطية** — يتضمن هذا الملف الآن السجل الكامل؛ الإدخالات السابقة لإضافة العربية تظهر أدناه بالإنجليزية الأصلية بانتظار الترجمة.
+## [1.271.4] — 2026-11-10
+
+### Fixed
+- **CodeQL alert wave closed at source (6 alerts)**: 2 high file-system-race patterns removed by review (`tests/robots-check.test.mjs` unused origin+import, `tests/sources-turbohire.test.mjs` unused import), `GET /api/pipeline` now rate-limited, a provably-true conjunct dropped in adp-workforcenow, URL-substring assertions switched to anchored regexes in posting-close tests.
+
+### ملاحظات
+- Deliberately NOT changed: product behavior — every fix is lint/security-hygiene; tests 8126 unchanged.
+
+
 ## [1.271.3] — 2026-11-10
 
 ### أُصلح

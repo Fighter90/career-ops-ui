@@ -3,6 +3,15 @@
 > இந்த மாற்றப் பதிவு இப்போது முழு வெளியீட்டு வரலாற்றையும் கொண்டுள்ளது. தமிழ் மொழியாக்கம் (v1.245.0) சேர்க்கப்படுவதற்கு முன் வெளியிடப்பட்ட பதிவுகள் கீழே ஆங்கில அசல் வடிவில் உள்ளன — மொழிபெயர்ப்பு நிலுவையில் உள்ளது; அதிகாரப்பூர்வ ஆவணம் [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 > _[1.271.3] முதல் பதிவுகள் மொழிபெயர்ப்பு நிலுவையில் உள்ளன — ஆங்கில அசல் கீழே._
 
+## [1.271.4] — 2026-11-10
+
+### Fixed
+- **CodeQL alert wave closed at source (6 alerts)**: 2 high file-system-race patterns removed by review (`tests/robots-check.test.mjs` unused origin+import, `tests/sources-turbohire.test.mjs` unused import), `GET /api/pipeline` now rate-limited, a provably-true conjunct dropped in adp-workforcenow, URL-substring assertions switched to anchored regexes in posting-close tests.
+
+### குறிப்புகள்
+- Deliberately NOT changed: product behavior — every fix is lint/security-hygiene; tests 8126 unchanged.
+
+
 ## [1.271.3] — 2026-11-10
 
 ### சரி செய்யப்பட்டது

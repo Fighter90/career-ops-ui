@@ -51,7 +51,7 @@ function rememberRestoreToken(lines) {
 }
 
 export function registerPipelineRoutes(app) {
-  app.get('/api/pipeline', (_req, res) => {
+  app.get('/api/pipeline', writeRateLimit(), (_req, res) => {
     const urls = safeReadPipeline();
     // CAR-256 (#6597) — the posting close days recorded in scan-history
     // (closes_at), joined onto the queue by URL and keyed by the raw URL the

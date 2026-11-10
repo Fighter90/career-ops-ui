@@ -16,7 +16,6 @@ import assert from 'node:assert/strict';
 import {
   meta,
   TENANT_HOST_RE,
-  resolveTenant,
   resolveOrigin,
   assertTurbohireUrl,
   postingSegment,

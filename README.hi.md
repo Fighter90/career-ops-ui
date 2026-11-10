@@ -19,9 +19,10 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.271.3** — parent-sync लहर (career-ops @ 298d2282): 3 नए स्कैन प्रोवाइडर — TurboHire, ADP Recruiting Management (myjobs), जेनेरिक sitemap बोर्ड — रजिस्ट्री **135 → 138 (133 EN + 5 RU)**; प्रोवाइडर-फ़िक्स लहर (jobicy पूरा फीड वॉक + फ़िल्टर, workday असली बोर्ड साइज़, adp-workforcenow भाषा, applicantpro क्लोज़-डे, mokahr robots, computrabajo सॉर्ट, apple देश, dover/oraclecloud/platsbanken पैरिटी); स्कैनर लहर (आंशिक रूप से पढ़े बोर्ड `partial` रिपोर्ट करते हैं, ट्रांज़िएंट एरर पर स्वीप के बाद रीट्राई, pipeline में पोस्टिंग क्लोज़ डेट, लोकेशन लिस्ट में अपरकेस ISO कोड केस-सेंसिटिव)। टेस्ट 7933 → 8126।
+> पैच v1.271.4 सोर्स लेवल पर CodeQL अलर्ट लहर बंद करता है (6 अलर्ट: टेस्ट में अप्रयुक्त वेरिएबल/इंपोर्ट, एक गायब rate limit, हमेशा सही रहने वाला एक कंजंक्ट, URL-सबस्ट्रिंग असर्शन)।
+> **🆕 नवीनतम रिलीज़ — v1.271.4** — 
 >
-> **पिछला — v1.271.2** — /api/map/jobs का pipeline सेक्शन नवीनतम 1000 पंक्तियों तक सीमित (CAR-250): असली गिनती `pipelineTotal` में, `?pipeline=all` सब वापस लाता है, titleFit केवल शिप किए गए सेक्शन पर; CAR-249 ट्रैकर slim परफ़ॉर्मेंस जोड़ी पूरी करता है। टेस्ट 7920 → 7922।
+> **पिछला — v1.271.3** — parent-sync लहर (career-ops @ 298d2282): 3 नए स्कैन प्रोवाइडर — TurboHire, ADP Recruiting Management (myjobs), जेनेरिक sitemap बोर्ड — रजिस्ट्री **135 → 138 (133 EN + 5 RU)**; प्रोवाइडर-फ़िक्स लहर (jobicy पूरा फीड वॉक + फ़िल्टर, workday असली बोर्ड साइज़, adp-workforcenow भाषा, applicantpro क्लोज़-डे, mokahr robots, computrabajo सॉर्ट, apple देश, dover/oraclecloud/platsbanken पैरिटी); स्कैनर लहर (आंशिक रूप से पढ़े बोर्ड `partial` रिपोर्ट करते हैं, ट्रांज़िएंट एरर पर स्वीप के बाद रीट्राई, pipeline में पोस्टिंग क्लोज़ डेट, लोकेशन लिस्ट में अपरकेस ISO कोड केस-सेंसिटिव)। टेस्ट 7933 → 8126।
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

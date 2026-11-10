@@ -4,6 +4,15 @@
 > ⏳ **참고** — 이 파일은 이제 전체 릴리스 이력을 담고 있습니다. v1.12.0 이전의 6개 항목은 영어 원문 그대로 수록되어 있습니다(번역 대기).
 > _[1.271.3]부터의 항목은 번역 대기 중입니다 — 영어 원문은 아래에 있습니다._
 
+## [1.271.4] — 2026-11-10
+
+### Fixed
+- **CodeQL alert wave closed at source (6 alerts)**: 2 high file-system-race patterns removed by review (`tests/robots-check.test.mjs` unused origin+import, `tests/sources-turbohire.test.mjs` unused import), `GET /api/pipeline` now rate-limited, a provably-true conjunct dropped in adp-workforcenow, URL-substring assertions switched to anchored regexes in posting-close tests.
+
+### 참고
+- Deliberately NOT changed: product behavior — every fix is lint/security-hygiene; tests 8126 unchanged.
+
+
 ## [1.271.3] — 2026-11-10
 
 ### 수정

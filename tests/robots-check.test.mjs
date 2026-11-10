@@ -16,7 +16,6 @@ import {
   hasUndecodableRule,
   matchLength,
   percentDecode,
-  parseRobotsGroups,
   clearRobotsCache,
   ROBOTS_PRODUCT_TOKEN,
   ROBOTS_MAX_BYTES,
@@ -218,7 +217,6 @@ test('a body over the RFC 9309 parse floor denies instead of being truncated', a
 });
 
 test('redirects are followed by hand, up to the RFC floor', async () => {
-  const origin = 'https://example.com';
   const calls = [];
   const fetchImpl = async (url) => {
     calls.push(url);

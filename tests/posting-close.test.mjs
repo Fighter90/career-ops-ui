@@ -222,11 +222,11 @@ test('runEnScan writes the closes_at column on scan-history added rows', async (
     ALL_ADAPTERS.splice(ALL_ADAPTERS.indexOf(fake), 1);
   }
   const history = readFileSync(resolve(dir, 'data', 'scan-history.tsv'), 'utf8');
-  const rows = history.split('\n').filter((l) => l.includes('https://example.com/close/'));
+  const rows = history.split('\n').filter((l) => /https:\/\/example\.com\/close\//.test(l));
   assert.equal(rows.length, 3);
-  const withDay = rows.find((l) => l.includes('/close/1'));
-  const withoutDay = rows.find((l) => l.includes('/close/2'));
-  const endDateRow = rows.find((l) => l.includes('/close/3'));
+  const withDay = rows.find((l) => /\/close\/1/.test(l));
+  const withoutDay = rows.find((l) => /\/close\/2/.test(l));
+  const endDateRow = rows.find((l) => /\/close\/3/.test(l));
   assert.equal(withDay.split('\t')[6], '2026-12-24', 'the 7th cell carries the close day');
   assert.equal(withoutDay.split('\t')[6], '', 'a posting without a close day writes an empty cell');
   assert.equal(endDateRow.split('\t')[6], '2026-12-30',

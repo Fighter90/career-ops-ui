@@ -17,9 +17,10 @@ _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았�
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.271.3** — parent-sync 웨이브 (career-ops @ 298d2282): 신규 스캔 프로바이더 3개 — TurboHire, ADP Recruiting Management (myjobs), 범용 sitemap 보드 — 레지스트리 **135 → 138 (133 EN + 5 RU)**; 프로바이더 수정 웨이브 (jobicy 전체 피드 순회 + 필터, workday 실제 보드 크기, adp-workforcenow 언어, applicantpro 마감일, mokahr robots, computrabajo 정렬, apple 국가, dover/oraclecloud/platsbanken 패리티); 스캐너 웨이브 (부분적으로 읽힌 보드는 `partial`을 보고, 일시적 오류 시 전체 순회 후 재시도, 파이프라인의 공고 마감일, 위치 목록에서 대문자 ISO 코드는 대소문자를 구분). 테스트 7933 → 8126.
+> 패치 v1.271.4는 CodeQL 경고 웨이브를 소스 수준에서 닫습니다 (경고 6개: 테스트의 미사용 변수/임포트, 누락된 rate limit, 항상 참인 조건, URL 서브스트링 어서션).
+> **🆕 최신 릴리스 — v1.271.4** — 
 >
-> **이전 버전 — v1.271.2** — /api/map/jobs의 pipeline 섹션이 최신 1000개 행으로 제한 (CAR-250): 실제 개수는 `pipelineTotal`에서, `?pipeline=all`이 모든 것을 복원, titleFit은 전달된 섹션에만; CAR-249 트래커 slim 성능 페어를 완성합니다. 테스트 7920 → 7922.
+> **이전 버전 — v1.271.3** — parent-sync 웨이브 (career-ops @ 298d2282): 신규 스캔 프로바이더 3개 — TurboHire, ADP Recruiting Management (myjobs), 범용 sitemap 보드 — 레지스트리 **135 → 138 (133 EN + 5 RU)**; 프로바이더 수정 웨이브 (jobicy 전체 피드 순회 + 필터, workday 실제 보드 크기, adp-workforcenow 언어, applicantpro 마감일, mokahr robots, computrabajo 정렬, apple 국가, dover/oraclecloud/platsbanken 패리티); 스캐너 웨이브 (부분적으로 읽힌 보드는 `partial`을 보고, 일시적 오류 시 전체 순회 후 재시도, 파이프라인의 공고 마감일, 위치 목록에서 대문자 ISO 코드는 대소문자를 구분). 테스트 7933 → 8126.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

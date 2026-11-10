@@ -121,7 +121,8 @@ export function resolveTenant(entry) {
       if (foundHasExplicitLang) return found;
       continue;
     }
-    if (!foundHasExplicitLang && tenant.lang && found.cid === tenant.cid && found.ccId === tenant.ccId) {
+    // foundHasExplicitLang is provably false here (an explicit lang returned above)
+    if (tenant.lang && found.cid === tenant.cid && found.ccId === tenant.ccId) {
       found.lang = tenant.lang;
       return found;
     }
