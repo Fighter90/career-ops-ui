@@ -7,7 +7,7 @@
 
 _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
 
-[![tests](https://img.shields.io/badge/tests-7922%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-8126%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
@@ -17,9 +17,9 @@ _非公式 UI — career-ops / santifer とは提携しておらず、承認も�
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新リリース — v1.271.2** — /api/map/jobs の pipeline セクションを最新 1000 行に制限:真の件数は `pipelineTotal`、`?pipeline=all` ですべてを復元;トラッカー slim 化は v1.271.1 で出荷済み。テスト 7920 → 7922。
+> **🆕 最新リリース — v1.271.3** — parent-sync ウェーブ (career-ops @ 298d2282):新規スキャンプロバイダ 3 件 — TurboHire、ADP Recruiting Management (myjobs)、汎用 sitemap ボード — レジストリは **135 → 138 (133 EN + 5 RU)**;プロバイダ修正ウェーブ(jobicy の全フィード走査 + フィルタ、workday の実ボードサイズ、adp-workforcenow の言語、applicantpro の締切日、mokahr の robots、computrabajo のソート、apple の国、dover/oraclecloud/platsbanken のパリティ);スキャナウェーブ(部分的にしか読めなかったボードは `partial` を報告、一時的エラーは全走査後にリトライ、pipeline に求人締切日、大文字 ISO コードはロケーションリストで大文字小文字を区別)。テスト 7933 → 8126。
 >
-> **前バージョン — v1.271.1** — /api/map/jobs がデフォルトで slim 化 (CAR-249):プロダクション最重量のページロード(4.6 MB)が、マップが消費する 11 フィールドだけを送るように;`?full=1` で全列を復元;/api/pipeline は意図的に変更なし。テスト 7918 → 7920。
+> **前バージョン — v1.271.2** — /api/map/jobs の pipeline セクションを最新 1000 行に制限 (CAR-250):真の件数は `pipelineTotal`、`?pipeline=all` ですべてを復元、titleFit は出荷済みセクションのみ;CAR-249 のトラッカー slim 化パフォーマンスペアを完成。テスト 7920 → 7922。
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

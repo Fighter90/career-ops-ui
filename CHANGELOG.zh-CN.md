@@ -1,12 +1,26 @@
 # 变更日志
 
+> **说明** — 本文件已完整翻译为出版级简体中文(中国大陆用语规范),包含全部历史版本条目。代码块、提交信息、文件路径、URL、环境变量、命令行片段以及 CSP / SSRF / TOCTOU / WCAG / ATS / JD / SSE / REST / API 等通用英文缩写按原文保留。
+> _自 [1.271.3] 起的条目待翻译——英文原文见下方。_
+
+## [1.271.3] — 2026-11-10
+
+### 修复
+- **Parent-sync wave (career-ops @ 298d2282): 3 new scan providers — TurboHire, ADP Recruiting Management (myjobs), generic sitemap boards (#6712, #6678, #6631)** — registry 135 → 138 (133 EN + 5 RU): sources + adapters + CI-isolated suites; count gates regenerated from the live registry.
+- **Provider-fix wave:** jobicy walks the whole feed with geo/industry/tag filters (#6612); workday reads the true board size ignoring a slice's own applied facets (#6672); adp-workforcenow propagates careers_url lang (#6679); applicantpro reads the close day from the tenant's validThrough shape (#6716); mokahr reads tenants the old robots.txt rule skipped (#6726); computrabajo sends the newest-first sort on every path (#6739); apple keeps the country on a location (#6452); dover/oraclecloud/platsbanken diff-level parity.
+- **Scanner wave:** partly-read boards report `partial` instead of `reachable` (#6636); boards failed on a transient error retry once after the sweep (#6675); a posting's close date is kept and shown in the pipeline (#6597); uppercase ISO codes match case-sensitively in location lists (#6616); robots-check ported with its suite.
+
+### 备注
+- Deliberately NOT changed: /api/pipeline payload; the telegram providers (ADR-0002 fork divergences defended — Unicode LOCATIONISH_RE kept, telegram.mjs kept despite upstream deletion); community-asks / update-system / robots-policy rule 6 (parent-side, no web-ui counterpart).
+
+
 **career-ops-ui** 的所有重要变更均记录于此。格式遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/),版本号遵循 [SemVer](https://semver.org/lang/zh-CN/)。
 
 翻译版本:[🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHANGELOG.pt-BR.md) · [🇰🇷 한국어](CHANGELOG.ko-KR.md) · [🇯🇵 日本語](CHANGELOG.ja.md) · [🇷🇺 Русский](CHANGELOG.ru.md) · [🇹🇼 繁體中文](CHANGELOG.zh-TW.md) · [🇫🇷 Français](CHANGELOG.fr.md) · [🇵🇱 Polski](CHANGELOG.pl.md) · [🇺🇦 Українська](CHANGELOG.uk.md) · [🇩🇰 Dansk](CHANGELOG.da.md) · [🇸🇦 العربية](CHANGELOG.ar.md) · [🇩🇪 Deutsch](CHANGELOG.de.md) · [🇮🇹 Italiano](CHANGELOG.it.md) · [🇹🇷 Türkçe](CHANGELOG.tr.md) · [🇮🇳 हिन्दी](CHANGELOG.hi.md) · [🇻🇳 Tiếng Việt](CHANGELOG.vi.md)
 
-> **说明** — 本文件已完整翻译为出版级简体中文(中国大陆用语规范),包含全部历史版本条目。代码块、提交信息、文件路径、URL、环境变量、命令行片段以及 CSP / SSRF / TOCTOU / WCAG / ATS / JD / SSE / REST / API 等通用英文缩写按原文保留。
 
 ---
+
 
 ## [1.271.2] — 2026-11-08
 

@@ -1,12 +1,26 @@
 # 變更日誌
 
+> **i18n 註記** — 本檔案已完整翻譯為繁體中文(臺灣慣用語)。規範英文正文仍以 [🇬🇧 CHANGELOG.md](CHANGELOG.md) 為準。
+> _自 [1.271.3] 起的條目待翻譯——英文原文見下方。_
+
+## [1.271.3] — 2026-11-10
+
+### 修復
+- **Parent-sync wave (career-ops @ 298d2282): 3 new scan providers — TurboHire, ADP Recruiting Management (myjobs), generic sitemap boards (#6712, #6678, #6631)** — registry 135 → 138 (133 EN + 5 RU): sources + adapters + CI-isolated suites; count gates regenerated from the live registry.
+- **Provider-fix wave:** jobicy walks the whole feed with geo/industry/tag filters (#6612); workday reads the true board size ignoring a slice's own applied facets (#6672); adp-workforcenow propagates careers_url lang (#6679); applicantpro reads the close day from the tenant's validThrough shape (#6716); mokahr reads tenants the old robots.txt rule skipped (#6726); computrabajo sends the newest-first sort on every path (#6739); apple keeps the country on a location (#6452); dover/oraclecloud/platsbanken diff-level parity.
+- **Scanner wave:** partly-read boards report `partial` instead of `reachable` (#6636); boards failed on a transient error retry once after the sweep (#6675); a posting's close date is kept and shown in the pipeline (#6597); uppercase ISO codes match case-sensitively in location lists (#6616); robots-check ported with its suite.
+
+### 備註
+- Deliberately NOT changed: /api/pipeline payload; the telegram providers (ADR-0002 fork divergences defended — Unicode LOCATIONISH_RE kept, telegram.mjs kept despite upstream deletion); community-asks / update-system / robots-policy rule 6 (parent-side, no web-ui counterpart).
+
+
 **career-ops-ui** 的所有重要變更記錄於此。格式遵循 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),版本號遵循 [Semantic Versioning](https://semver.org/)。
 
 翻譯版本: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHANGELOG.pt-BR.md) · [🇰🇷 한국어](CHANGELOG.ko-KR.md) · [🇯🇵 日本語](CHANGELOG.ja.md) · [🇷🇺 Русский](CHANGELOG.ru.md) · [🇨🇳 简体中文](CHANGELOG.zh-CN.md) · [🇵🇱 Polski](CHANGELOG.pl.md) · [🇺🇦 Українська](CHANGELOG.uk.md) · [🇩🇰 Dansk](CHANGELOG.da.md) · [🇸🇦 العربية](CHANGELOG.ar.md) · [🇩🇪 Deutsch](CHANGELOG.de.md) · [🇮🇹 Italiano](CHANGELOG.it.md) · [🇹🇷 Türkçe](CHANGELOG.tr.md) · [🇮🇳 हिन्दी](CHANGELOG.hi.md) · [🇻🇳 Tiếng Việt](CHANGELOG.vi.md)
 
-> **i18n 註記** — 本檔案已完整翻譯為繁體中文(臺灣慣用語)。規範英文正文仍以 [🇬🇧 CHANGELOG.md](CHANGELOG.md) 為準。
 
 ---
+
 
 ## [1.271.2] — 2026-11-08
 

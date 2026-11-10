@@ -7,7 +7,7 @@
 
 _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve onlar tarafından onaylanmamıştır._
 
-[![tests](https://img.shields.io/badge/tests-7922%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-8126%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
@@ -17,9 +17,9 @@ _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve 
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Son sürüm — v1.271.2** — /api/map/jobs'un pipeline bölümü en yeni 1000 satırla sınırlı: gerçek sayı `pipelineTotal` içinde, `?pipeline=all` her şeyi geri getiriyor; tracker slim v1.271.1'de çıktı. Testler 7920 → 7922.
+> **🆕 Son sürüm — v1.271.3** — parent-sync dalgası (career-ops @ 298d2282): 3 yeni tarama sağlayıcısı — TurboHire, ADP Recruiting Management (myjobs), genel sitemap panoları — kayıt **135 → 138 (133 EN + 5 RU)**; sağlayıcı düzeltme dalgası (jobicy tam akış geçişi + filtreler, workday gerçek pano boyutu, adp-workforcenow dil, applicantpro kapanış günü, mokahr robots, computrabajo sıralama, apple ülke, dover/oraclecloud/platsbanken parite); tarayıcı dalgası (kısmen okunan panolar `partial` bildiriyor, geçici hatalarda tam taramadan sonra yeniden deneme, pipeline'da ilan kapanış tarihi, konum listelerinde büyük harfli ISO kodları büyük/küçük harfe duyarlı). Testler 7933 → 8126.
 >
-> **Önceki — v1.271.1** — /api/map/jobs varsayılan olarak slim (CAR-249): prod'daki en ağır sayfa yükleme (4.6 MB) artık haritanın tükettiği 11 alanı gönderiyor; `?full=1` tüm sütunları geri getiriyor; /api/pipeline bilinçli olarak dokunulmadı. Testler 7918 → 7920.
+> **Önceki — v1.271.2** — /api/map/jobs'un pipeline bölümü en yeni 1000 satırla sınırlı (CAR-250): gerçek sayı `pipelineTotal` içinde, `?pipeline=all` her şeyi geri getiriyor, titleFit yalnızca gönderilen bölümde; CAR-249 tracker slim performans çiftini tamamlıyor. Testler 7920 → 7922.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

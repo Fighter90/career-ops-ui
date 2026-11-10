@@ -10,7 +10,7 @@
 
 _Неофіційний інтерфейс — не пов'язаний із career-ops / santifer і не схвалений ними._
 
-[![tests](https://img.shields.io/badge/tests-7922%20passed-brightgreen)](#тести)
+[![tests](https://img.shields.io/badge/tests-8126%20passed-brightgreen)](#тести)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#тести)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
@@ -20,9 +20,9 @@ _Неофіційний інтерфейс — не пов'язаний із car
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Останній реліз — v1.271.2** — секція pipeline в /api/map/jobs обмежена 1000 найновішими рядками: справжня кількість у `pipelineTotal`, `?pipeline=all` повертає все; slim трекера вийшов у v1.271.1. Тести 7920 → 7922.
+> **🆕 Останній реліз — v1.271.3** — хвиля parent-sync (career-ops @ 298d2282): 3 нові провайдери сканування — TurboHire, ADP Recruiting Management (myjobs), generic-борди через sitemap — реєстр **135 → 138 (133 EN + 5 RU)**; хвиля виправлень провайдерів (jobicy повний обхід фіда + фільтри, workday справжній розмір борду, adp-workforcenow мова, applicantpro дата закриття, mokahr robots, computrabajo сортування, apple країна, паритет dover/oraclecloud/platsbanken); хвиля сканера (частково прочитані борди повідомляють `partial`, повтор після повного проходу за транзієнтних помилок, дата закриття вакансії в pipeline, великі ISO-коди у списках локацій чутливі до регістру). Тести 7933 → 8126.
 >
-> **Попередній реліз — v1.271.1** — /api/map/jobs віддає slim-формат за замовчуванням (CAR-249): найважче завантаження сторінки на проді (4.6 MB) тепер шле лише 11 полів, які споживає карта; `?full=1` повертає всі колонки; /api/pipeline навмисно не чіпана. Тести 7918 → 7920.
+> **Попередній реліз — v1.271.2** — секція pipeline в /api/map/jobs обмежена 1000 найновішими рядками (CAR-250): справжня кількість у `pipelineTotal`, `?pipeline=all` повертає все, titleFit лише на відвантаженій секції; завершує перф-пару CAR-249 slim трекера. Тести 7920 → 7922.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

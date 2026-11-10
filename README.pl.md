@@ -10,7 +10,7 @@
 
 _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich nieautoryzowany._
 
-[![tests](https://img.shields.io/badge/tests-7922%20passed-brightgreen)](#testy)
+[![tests](https://img.shields.io/badge/tests-8126%20passed-brightgreen)](#testy)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#testy)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
@@ -20,9 +20,9 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Najnowsze wydanie — v1.271.2** — sekcja pipeline w /api/map/jobs ograniczona do 1000 najnowszych wierszy: prawdziwa liczba w `pipelineTotal`, `?pipeline=all` przywraca wszystko; slim trackera wydany w v1.271.1. Testy 7920 → 7922.
+> **🆕 Najnowsze wydanie — v1.271.3** — fala parent-sync (career-ops @ 298d2282): 3 nowych dostawców skanowania — TurboHire, ADP Recruiting Management (myjobs), generyczne tablice przez sitemap — rejestr **135 → 138 (133 EN + 5 RU)**; fala poprawek dostawców (jobicy pełne przejście feedu + filtry, workday prawdziwy rozmiar tablicy, adp-workforcenow język, applicantpro dzień zamknięcia, mokahr robots, computrabajo sortowanie, apple kraj, parytet dover/oraclecloud/platsbanken); fala skanera (częściowo odczytane tablice raportują `partial`, ponowa po pełnym przejściu przy błędach przejściowych, data zamknięcia ogłoszenia w pipeline, wielkie kody ISO rozróżniają wielkość liter na listach lokalizacji). Testy 7933 → 8126.
 >
-> **Poprzednie wydanie — v1.271.1** — /api/map/jobs slim domyślnie (CAR-249): najcięższe ładowanie strony na produkcji (4.6 MB) wysyła teraz tylko 11 pól konsumowanych przez mapę; `?full=1` przywraca wszystkie kolumny; /api/pipeline świadomie nietknięte. Testy 7918 → 7920.
+> **Poprzednie wydanie — v1.271.2** — sekcja pipeline w /api/map/jobs ograniczona do 1000 najnowszych wierszy (CAR-250): prawdziwa liczba w `pipelineTotal`, `?pipeline=all` przywraca wszystko, titleFit tylko na wysłanej sekcji; zamyka parę wydajnościową CAR-249 slim trackera. Testy 7920 → 7922.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

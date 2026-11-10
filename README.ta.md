@@ -7,7 +7,7 @@
 
 _அதிகாரப்பூர்வமற்ற இடைமுகம் — career-ops / santifer உடன் எந்தத் தொடர்பும் அல்ல, அவர்களால் அங்கீகரிக்கப்படவும் இல்லை._
 
-[![tests](https://img.shields.io/badge/tests-7922%20passed-brightgreen)](#சோதனைகள்)
+[![tests](https://img.shields.io/badge/tests-8126%20passed-brightgreen)](#சோதனைகள்)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#சோதனைகள்)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#சோதனைகள்)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#தேவைகள்)
@@ -17,9 +17,9 @@ _அதிகாரப்பூர்வமற்ற இடைமுகம் �
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 சமீபத்திய வெளியீடு — v1.271.2** — /api/map/jobs-இன் pipeline section சமீபத்திய 1000 rows-ஆக cap: உண்மையான count `pipelineTotal`-இல், `?pipeline=all` எல்லாவற்றையும் மீட்டுத் தரும்; tracker slim v1.271.1-இல் வெளியானது. Test count 7920 → 7922.
+> **🆕 சமீபத்திய வெளியீடு — v1.271.3** — parent-sync wave (career-ops @ 298d2282): 3 புதிய scan providers — TurboHire, ADP Recruiting Management (myjobs), generic sitemap boards — registry **135 → 138 (133 EN + 5 RU)**; provider-fix wave (jobicy full-feed walk + filters, workday true-board-size, adp-workforcenow lang, applicantpro close-day, mokahr robots, computrabajo sort, apple country, dover/oraclecloud/platsbanken parity); scanner wave (பகுதியாக வாசிக்கப்பட்ட boards `partial` என report செய்யும், transient errors-க்கு sweep-க்குப் பிறகு retry, pipeline-இல் posting close date, location பட்டியல்களில் uppercase ISO codes case-sensitive). Test count 7933 → 8126.
 >
-> **முந்தைய வெளியீடு — v1.271.1** — /api/map/jobs default-ஆக slim (CAR-249): prod-இன் மிகக் கனமான page load (4.6 MB) இப்போது map consume செய்யும் 11 fields மட்டும் அனுப்புகிறது; `?full=1` எல்லா columns-ஐயும் மீட்டுத் தரும்; /api/pipeline வேண்டுமென்றே தொடப்படவில்லை. Test count 7918 → 7920.
+> **முந்தைய வெளியீடு — v1.271.2** — /api/map/jobs-இன் pipeline section சமீபத்திய 1000 rows-ஆக cap (CAR-250): உண்மையான count `pipelineTotal`-இல், `?pipeline=all` எல்லாவற்றையும் மீட்டுத் தரும், titleFit shipped section-இல் மட்டும்; CAR-249 tracker-slim perf ஜோடியை முழுமையாக்குகிறது. Test count 7920 → 7922.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

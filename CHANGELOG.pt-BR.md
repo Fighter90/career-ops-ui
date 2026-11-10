@@ -1,12 +1,26 @@
 # Histórico de mudanças
 
+> **Nota** — este arquivo está integralmente traduzido para o português brasileiro. Cada entrada de versão foi reescrita em PT-BR técnico de qualidade editorial, preservando blocos de código, mensagens de commit, caminhos de arquivo, URLs, variáveis de ambiente, comandos e rótulos de link em sua forma original.
+> _As entradas a partir de [1.271.3] aguardam tradução — o original em inglês abaixo._
+
+## [1.271.3] — 2026-11-10
+
+### Corrigido
+- **Parent-sync wave (career-ops @ 298d2282): 3 new scan providers — TurboHire, ADP Recruiting Management (myjobs), generic sitemap boards (#6712, #6678, #6631)** — registry 135 → 138 (133 EN + 5 RU): sources + adapters + CI-isolated suites; count gates regenerated from the live registry.
+- **Provider-fix wave:** jobicy walks the whole feed with geo/industry/tag filters (#6612); workday reads the true board size ignoring a slice's own applied facets (#6672); adp-workforcenow propagates careers_url lang (#6679); applicantpro reads the close day from the tenant's validThrough shape (#6716); mokahr reads tenants the old robots.txt rule skipped (#6726); computrabajo sends the newest-first sort on every path (#6739); apple keeps the country on a location (#6452); dover/oraclecloud/platsbanken diff-level parity.
+- **Scanner wave:** partly-read boards report `partial` instead of `reachable` (#6636); boards failed on a transient error retry once after the sweep (#6675); a posting's close date is kept and shown in the pipeline (#6597); uppercase ISO codes match case-sensitively in location lists (#6616); robots-check ported with its suite.
+
+### Notas
+- Deliberately NOT changed: /api/pipeline payload; the telegram providers (ADR-0002 fork divergences defended — Unicode LOCATIONISH_RE kept, telegram.mjs kept despite upstream deletion); community-asks / update-system / robots-policy rule 6 (parent-side, no web-ui counterpart).
+
+
 Todas as mudanças relevantes do **career-ops-ui** estão documentadas aqui. O formato segue [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e o projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
 Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.es.md) · [🇰🇷 한국어](CHANGELOG.ko-KR.md) · [🇯🇵 日本語](CHANGELOG.ja.md) · [🇷🇺 Русский](CHANGELOG.ru.md) · [🇨🇳 简体中文](CHANGELOG.zh-CN.md) · [🇹🇼 繁體中文](CHANGELOG.zh-TW.md) · [🇫🇷 Français](CHANGELOG.fr.md) · [🇵🇱 Polski](CHANGELOG.pl.md) · [🇺🇦 Українська](CHANGELOG.uk.md) · [🇩🇰 Dansk](CHANGELOG.da.md) · [🇸🇦 العربية](CHANGELOG.ar.md) · [🇩🇪 Deutsch](CHANGELOG.de.md) · [🇮🇹 Italiano](CHANGELOG.it.md) · [🇹🇷 Türkçe](CHANGELOG.tr.md) · [🇮🇳 हिन्दी](CHANGELOG.hi.md) · [🇻🇳 Tiếng Việt](CHANGELOG.vi.md)
 
-> **Nota** — este arquivo está integralmente traduzido para o português brasileiro. Cada entrada de versão foi reescrita em PT-BR técnico de qualidade editorial, preservando blocos de código, mensagens de commit, caminhos de arquivo, URLs, variáveis de ambiente, comandos e rótulos de link em sua forma original.
 
 ---
+
 
 ## [1.271.2] — 2026-11-08
 

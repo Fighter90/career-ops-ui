@@ -1,14 +1,28 @@
 # 변경 로그
 
+> **i18n 노트** — 이 파일은 완전히 한국어로 번역되었습니다. 모든 버전 항목의 본문이 출판 등급의 한국어로 제공되며, 영어 본문 임시 대체 표기는 더 이상 사용되지 않습니다.
+> ⏳ **참고** — 이 파일은 이제 전체 릴리스 이력을 담고 있습니다. v1.12.0 이전의 6개 항목은 영어 원문 그대로 수록되어 있습니다(번역 대기).
+> _[1.271.3]부터의 항목은 번역 대기 중입니다 — 영어 원문은 아래에 있습니다._
+
+## [1.271.3] — 2026-11-10
+
+### 수정
+- **Parent-sync wave (career-ops @ 298d2282): 3 new scan providers — TurboHire, ADP Recruiting Management (myjobs), generic sitemap boards (#6712, #6678, #6631)** — registry 135 → 138 (133 EN + 5 RU): sources + adapters + CI-isolated suites; count gates regenerated from the live registry.
+- **Provider-fix wave:** jobicy walks the whole feed with geo/industry/tag filters (#6612); workday reads the true board size ignoring a slice's own applied facets (#6672); adp-workforcenow propagates careers_url lang (#6679); applicantpro reads the close day from the tenant's validThrough shape (#6716); mokahr reads tenants the old robots.txt rule skipped (#6726); computrabajo sends the newest-first sort on every path (#6739); apple keeps the country on a location (#6452); dover/oraclecloud/platsbanken diff-level parity.
+- **Scanner wave:** partly-read boards report `partial` instead of `reachable` (#6636); boards failed on a transient error retry once after the sweep (#6675); a posting's close date is kept and shown in the pipeline (#6597); uppercase ISO codes match case-sensitively in location lists (#6616); robots-check ported with its suite.
+
+### 참고
+- Deliberately NOT changed: /api/pipeline payload; the telegram providers (ADR-0002 fork divergences defended — Unicode LOCATIONISH_RE kept, telegram.mjs kept despite upstream deletion); community-asks / update-system / robots-policy rule 6 (parent-side, no web-ui counterpart).
+
+
 **career-ops-ui** 의 모든 주요 변경 사항을 기록합니다. 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 를 따르며, 버전은 [Semantic Versioning](https://semver.org/) 을 준수합니다.
 
 번역: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHANGELOG.pt-BR.md) · [🇯🇵 日本語](CHANGELOG.ja.md) · [🇷🇺 Русский](CHANGELOG.ru.md) · [🇨🇳 简体中文](CHANGELOG.zh-CN.md) · [🇹🇼 繁體中文](CHANGELOG.zh-TW.md) · [🇫🇷 Français](CHANGELOG.fr.md) · [🇵🇱 Polski](CHANGELOG.pl.md) · [🇺🇦 Українська](CHANGELOG.uk.md) · [🇩🇰 Dansk](CHANGELOG.da.md) · [🇸🇦 العربية](CHANGELOG.ar.md) · [🇩🇪 Deutsch](CHANGELOG.de.md) · [🇮🇹 Italiano](CHANGELOG.it.md) · [🇹🇷 Türkçe](CHANGELOG.tr.md) · [🇮🇳 हिन्दी](CHANGELOG.hi.md) · [🇻🇳 Tiếng Việt](CHANGELOG.vi.md)
 
-> **i18n 노트** — 이 파일은 완전히 한국어로 번역되었습니다. 모든 버전 항목의 본문이 출판 등급의 한국어로 제공되며, 영어 본문 임시 대체 표기는 더 이상 사용되지 않습니다.
 
-> ⏳ **참고** — 이 파일은 이제 전체 릴리스 이력을 담고 있습니다. v1.12.0 이전의 6개 항목은 영어 원문 그대로 수록되어 있습니다(번역 대기).
 
 ---
+
 
 ## [1.271.2] — 2026-11-08
 

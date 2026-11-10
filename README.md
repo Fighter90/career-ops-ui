@@ -9,7 +9,7 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 🌐 **Website: [cvstart.org](https://cvstart.org)** — multilingual landing + user guide (source in [`site/`](site/)).
 
-[![tests](https://img.shields.io/badge/tests-7922%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-8126%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
@@ -19,10 +19,10 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Latest release — v1.271.2** — the `/api/map/jobs` pipeline section is capped at the newest 1000 rows: a prod-sized `pipeline.md` accumulated thousands of stale rows and made the map payload the heaviest page-load (4.4 MB post-tracker-slim) — `pipelineTotal` reports the true count, `?pipeline=all` restores everything, titleFit runs only on the shipped section; the tracker slim shipped in v1.271.1. Tests 7920 → 7922.
+> **🆕 Latest release — v1.271.3** — the parent-sync wave (career-ops @ 298d2282): 3 new scan providers — TurboHire, ADP Recruiting Management (myjobs), generic sitemap boards — registry **135 → 138 (133 EN + 5 RU)**; the provider-fix wave (jobicy full-feed walk + filters, workday true-board-size, adp-workforcenow lang, applicantpro close-day, mokahr robots, computrabajo sort, apple country, dover/oraclecloud/platsbanken parity); the scanner wave (partly-read boards report `partial`, transient-error retry-after-sweep, posting close date in the pipeline, uppercase ISO codes case-sensitive in location lists). Tests 7933 → 8126.
 
 >
-> **Previous — v1.271.1** — `/api/map/jobs` slim by default (CAR-249): the heaviest prod page-load (4.6 MB measured by the perf probe) now projects tracker rows to the 11 fields the map consumes (notes fold server-side into `workplace`); `?full=1` restores every column; `/api/pipeline` deliberately NOT changed. Tests 7918 → 7920.
+> **Previous — v1.271.2** — `/api/map/jobs` pipeline section capped at the newest 1000 rows (CAR-250): `pipelineTotal` reports the true count, `?pipeline=all` restores everything, titleFit only on the shipped section; completes the CAR-249 tracker-slim perf pair. Tests 7920 → 7922.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

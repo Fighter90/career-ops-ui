@@ -2,6 +2,11 @@
 
 This is the operating manual. Read it, then `PLAN.md` (order) and `BACKLOG.md` (what is left).
 
+## State (2026-11-10, v1.271.3)
+
+- Released: **v1.271.3** (2026-11-10) — the parent-sync wave (career-ops fork @ **298d2282**, upstream/main 24da28e8, PR #642): 3 new scan providers — **turbohire** (#6712), **adp-myjobs** (ADP Recruiting Management, #6678), **sitemap** (#6631) — registry **135 → 138 (133 EN + 5 RU)**; the provider-fix wave (jobicy full-feed walk + filters #6612, workday true-board-size #6672, adp-workforcenow lang #6679, applicantpro close-day #6716, mokahr robots #6726, computrabajo sort #6739, apple country #6452, dover/oraclecloud/platsbanken parity); the scanner wave (partly-read boards report `partial` #6636, transient-error retry-after-sweep #6675, posting close date in the pipeline #6597, uppercase ISO codes case-sensitive #6616, robots-check mirror). ADR-0002 divergences defended. Tests 7933 → **8126** (+193). Built by the **agent swarm** (v2.1 orchestrator, multi-round cycles in parallel worktrees).
+- Gates: test:ci **8126 tests / 8104+ pass / 0 fail** · browser **210 pass / 0 fail / 1 opt-in skip** · coverage re-ratcheted (**177 exempt files**, line 98 / branch 90) · parity ✓ ×19 · /api/health **1.271.3 / parent 1.39.0**.
+
 ## State (2026-11-08, v1.271.2)
 
 - Released: **v1.271.2** (2026-11-08) — the perf patch (CAR-250): `/api/map/jobs` **pipeline section capped at the newest 1000 rows by default** — a prod-sized pipeline.md accumulated ~19K rows (674 KB of file) and made the endpoint the heaviest page-load on prod (**4.4 MB** post-tracker-slim, the root of the CAR-249 weight left open); `pipelineTotal` reports the true count, `?pipeline=all` restores the full list, **titleFit is computed only on the shipped section** (the ×19K fit churn is gone with the cap). `/api/pipeline` deliberately NOT changed (the lazy/paging follow-up is tracked as CAR-250 data-owner design work). (+2 tests in the map-jobs-cache suite: cap+total, `?pipeline=all` opt-in.)

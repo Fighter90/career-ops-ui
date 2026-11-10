@@ -7,7 +7,7 @@
 
 _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。_
 
-[![tests](https://img.shields.io/badge/tests-7922%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-8126%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
@@ -17,9 +17,9 @@ _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.271.2** — /api/map/jobs 的 pipeline 段限制為最新的 1000 列:真實數量在 `pipelineTotal`,`?pipeline=all` 還原全部;tracker 瘦身已隨 v1.271.1 發布。測試 7920 → 7922。
+> **🆕 最新版本 — v1.271.3** — parent-sync 波次 (career-ops @ 298d2282):新增 3 個掃描 provider — TurboHire、ADP Recruiting Management (myjobs)、通用 sitemap 看板 — registry 由 **135 → 138 (133 EN + 5 RU)**;provider 修復波次(jobicy 全量 feed 走訪 + 篩選器、workday 真實看板規模、adp-workforcenow 語言、applicantpro 截止日期、mokahr robots、computrabajo 排序、apple 國家、dover/oraclecloud/platsbanken 對齊);scanner 波次(部分讀取的看板回報 `partial`、暫時性錯誤在整輪走訪後重試、pipeline 中的職缺截止日期、大寫 ISO 代碼在位置清單中區分大小寫)。測試 7933 → 8126。
 >
-> **前一版本 — v1.271.1** — /api/map/jobs 預設瘦身 (CAR-249):正式環境最重的頁面載入(4.6 MB)現在只送出地圖消費的 11 個欄位;`?full=1` 還原全部欄;/api/pipeline 特意保持不變。測試 7918 → 7920。
+> **前一版本 — v1.271.2** — /api/map/jobs 的 pipeline 段限制為最新的 1000 列 (CAR-250):真實數量在 `pipelineTotal`,`?pipeline=all` 還原全部,titleFit 僅對已交付的段;補完 CAR-249 tracker 瘦身效能對。測試 7920 → 7922。
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

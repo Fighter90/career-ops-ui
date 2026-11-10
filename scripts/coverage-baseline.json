@@ -168,7 +168,6 @@
     "server/lib/sources/telegram-channel.mjs",
     "server/lib/sources/telegram.mjs",
     "server/lib/sources/themuse.mjs",
-    "server/lib/sources/tkms.mjs",
     "server/lib/sources/trakstar.mjs",
     "server/lib/sources/turbohire.mjs",
     "server/lib/sources/ultipro.mjs",

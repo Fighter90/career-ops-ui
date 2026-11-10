@@ -7,7 +7,7 @@
 
 _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-7922%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-8126%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
@@ -17,9 +17,9 @@ _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santi
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Seneste udgivelse — v1.271.2** — pipeline-sektionen i /api/map/jobs begrænset til de 1000 nyeste rækker: den reelle optælling i `pipelineTotal`, `?pipeline=all` gendanner alt; tracker-slimmen udkom i v1.271.1. Test 7920 → 7922.
+> **🆕 Seneste udgivelse — v1.271.3** — parent-sync-bølgen (career-ops @ 298d2282): 3 nye scan-udbydere — TurboHire, ADP Recruiting Management (myjobs), generiske sitemap-tavler — registret **135 → 138 (133 EN + 5 RU)**; udbyder-fiks-bølgen (jobicy fuld feed-gennemgang + filtre, workday sand tavlestørrelse, adp-workforcenow sprog, applicantpro lukkedag, mokahr robots, computrabajo sortering, apple land, dover/oraclecloud/platsbanken paritet); scanner-bølgen (delvist læste tavler rapporterer `partial`, nyt forsøg efter fuld gennemløb ved forbigående fejl, opslagslukkedato i pipelinen, versal-ISO-koder er versalfølsomme i lokalitetslister). Test 7933 → 8126.
 >
-> **Tidligere — v1.271.1** — /api/map/jobs slim som standard (CAR-249): den tungeste sideindlæsning på prod (4.6 MB) sender nu kun de 11 felter, kortet forbruger; `?full=1` gendanner alle kolonner; /api/pipeline bevidst urørt. Test 7918 → 7920.
+> **Tidligere — v1.271.2** — pipeline-sektionen i /api/map/jobs begrænset til de 1000 nyeste rækker (CAR-250): den reelle optælling i `pipelineTotal`, `?pipeline=all` gendanner alt, titleFit kun på den afsendte sektion; fuldender CAR-249-perf-parret med tracker-slimmen. Test 7920 → 7922.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

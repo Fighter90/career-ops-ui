@@ -10,7 +10,7 @@
 
 _واجهة غير رسمية — لا علاقة لها بـ career-ops / santifer ولا تحظى بموافقتهما._
 
-[![tests](https://img.shields.io/badge/tests-7922%20passed-brightgreen)](#الاختبارات)
+[![tests](https://img.shields.io/badge/tests-8126%20passed-brightgreen)](#الاختبارات)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#الاختبارات)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
@@ -20,9 +20,9 @@ _واجهة غير رسمية — لا علاقة لها بـ career-ops / santi
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 أحدث إصدار — v1.271.2** — قسم pipeline في /api/map/jobs محدود بأحدث 1000 صف: العدد الحقيقي في `pipelineTotal`، و`?pipeline=all` يعيد كل شيء؛ ترشيع المتتبع صدر في v1.271.1. الاختبارات 7920 → 7922.
+> **🆕 أحدث إصدار — v1.271.3** — موجة parent-sync (career-ops @ 298d2282): ثلاثة مزودي مسح جدد — TurboHire و ADP Recruiting Management (myjobs) ولوحات sitemap عامة — السجل **135 → 138 (133 EN + 5 RU)**؛ موجة إصلاحات المزودين (jobicy اجتياز التغذية الكاملة + المرشحات، workday الحجم الحقيقي للوحة، adp-workforcenow اللغة، applicantpro يوم الإغلاق، mokahr robots، computrabajo الترتيب، apple الدولة، توازي dover/oraclecloud/platsbanken)؛ موجة الماسح (اللوحات المقروءة جزئيًا تُبلِّغ `partial`، إعادة المحاولة بعد المسح الكامل عند الأخطاء العابرة، تاريخ إغلاق الوظيفة في pipeline، رموز ISO الكبيرة حساسة لحالة الأحرف في قوائم المواقع). الاختبارات 7933 → 8126.
 >
-> **السابق — v1.271.1** — /api/map/jobs نحيف افتراضيًا (CAR-249): أخفّ تحميل صفحة على الإنتاج (4.6 MB) يرسل الآن الحقول الـ 11 التي تستهلكها الخريطة فقط؛ `?full=1` يعيد كل الأعمدة؛ /api/pipeline تُركت سليمة عن قصد. الاختبارات 7918 → 7920.
+> **السابق — v1.271.2** — قسم pipeline في /api/map/jobs محدود بأحدث 1000 صف (CAR-250): العدد الحقيقي في `pipelineTotal`، و`?pipeline=all` يعيد كل شيء، وtitleFit على القسم المُسلَّم فقط؛ يُكمل زوج الأداء CAR-249 لترشيع المتتبع. الاختبارات 7920 → 7922.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

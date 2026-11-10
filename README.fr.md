@@ -7,7 +7,7 @@
 
 _Interface non officielle — sans affiliation ni approbation de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-7922%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-8126%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
@@ -17,9 +17,9 @@ _Interface non officielle — sans affiliation ni approbation de career-ops / sa
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Dernière version — v1.271.2** — section pipeline de /api/map/jobs plafonnée aux 1000 lignes les plus récentes : le vrai compte dans `pipelineTotal`, `?pipeline=all` restaure tout ; l'allègement du tracker est sorti en v1.271.1. Tests 7920 → 7922.
+> **🆕 Dernière version — v1.271.3** — la vague parent-sync (career-ops @ 298d2282) : 3 nouveaux fournisseurs de scan — TurboHire, ADP Recruiting Management (myjobs), tableaux génériques via sitemap — le registre passe de **135 → 138 (133 EN + 5 RU)** ; la vague de corrections de fournisseurs (jobicy parcours complet du flux + filtres, workday taille réelle du tableau, adp-workforcenow langue, applicantpro jour de clôture, mokahr robots, computrabajo tri, apple pays, parité dover/oraclecloud/platsbanken) ; la vague du scanner (les tableaux partiellement lus signalent `partial`, nouvelle tentative après balayage en cas d'erreur transitoire, date de clôture de l'offre dans le pipeline, codes ISO majuscules sensibles à la casse dans les listes de localisations). Tests 7933 → 8126.
 >
-> **Précédente — v1.271.1** — /api/map/jobs allégé par défaut (CAR-249) : le chargement de page le plus lourd de la production (4.6 MB) n'expédie désormais que les 11 champs que la carte consomme ; `?full=1` restaure toutes les colonnes ; /api/pipeline délibérément laissée intacte. Tests 7918 → 7920.
+> **Précédente — v1.271.2** — section pipeline de /api/map/jobs plafonnée aux 1000 lignes les plus récentes (CAR-250) : le vrai compte dans `pipelineTotal`, `?pipeline=all` restaure tout, titleFit uniquement sur la section expédiée ; complète la paire de performance CAR-249 de l'allègement du tracker. Tests 7920 → 7922.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
