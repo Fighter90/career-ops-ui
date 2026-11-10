@@ -57,12 +57,22 @@ const short = (s, n = 400) => String(s).replace(/\s+/g, ' ').trim().slice(0, n);
 
 function run(cmd, args_, { timeoutMs = 600_000, cwd = ROOT } = {}) {
   return new Promise((res) => {
-    const p = spawn(cmd, args_, { cwd, env: process.env, stdio: ['ignore', 'pipe', 'pipe'] });
-    let out = '', err = '';
-    const t = setTimeout(() => { try { p.kill('SIGKILL'); } catch {} }, timeoutMs);
+    // detached: the worker gets its own process group, so the timeout can kill the
+    // whole tree (opencode + any children holding the stdio pipes).
+    const p = spawn(cmd, args_, { cwd, env: process.env, stdio: ['ignore', 'pipe', 'pipe'], detached: true });
+    let out = '', err = '', done = false;
+    const fin = (code) => { if (done) return; done = true; clearTimeout(t); res({ code, out, err, all: out + err }); };
+    const t = setTimeout(() => {
+      try { process.kill(-p.pid, 'SIGKILL'); } catch {}
+      try { p.kill('SIGKILL'); } catch {}
+      // v2.1: even if orphaned grandchildren keep the pipes open and 'close' never
+      // fires, resolve anyway — a hung worker must not hang the orchestrator.
+      setTimeout(() => fin(-999), 5000);
+    }, timeoutMs);
     p.stdout.on('data', (d) => { out += d; });
     p.stderr.on('data', (d) => { err += d; });
-    p.on('close', (code) => { clearTimeout(t); res({ code, out, err, all: out + err }); });
+    p.on('close', (code) => fin(code));
+    p.on('error', () => fin(-998));
   });
 }
 const sh = async (cmd, opts) => {
