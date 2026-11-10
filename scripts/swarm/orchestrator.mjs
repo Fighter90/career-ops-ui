@@ -261,7 +261,18 @@ async function main() {
             DESCRIPTION: '(the executor fetched the issue body; judge the diff below)',
             DIFF: `<DIFF>\n${diff.all.slice(0, 60_000)}\n</DIFF>`,
           }, { timeoutMs: 12 * 60_000 });
-          const v = extractVerdict(rev.all || rev.tail);
+          let v = extractVerdict(rev.all || rev.tail);
+          if (v.verdict === 'RETURN' && /no verdict/.test(v.notes)) {
+            // v1.9 meta-verdict: the reviewer analyzed but skipped the template —
+            // a tiny verdict-only worker turns the analysis into a machine verdict.
+            log('  verdict missing from the review — running the meta-verdict pass');
+            const meta = await worker('clerk', {
+              OP: `You are a VERDICT CLERK, not a reviewer. Another agent reviewed a code diff and produced this analysis:\n---\n${short(rev.all, 2200)}\n---\nThe deterministic test gates are GREEN. Decide: does the analysis name merge-blocking defects (logic errors, security, scope violations, broken tests), or does it read as an approving review?\nPrint EXACTLY one line as the last line:\nVERDICT: ACCEPT  (analysis is approving / no blocking defects)\nor\nVERDICT: RETURN  (analysis names blocking defects)\nNothing else after that line.`,
+            }, { timeoutMs: 6 * 60_000 });
+            const mv = extractVerdict(meta.all || meta.tail);
+            if (mv.verdict === 'ACCEPT') { v = { verdict: 'ACCEPT', notes: '' }; log('  meta-verdict: ACCEPT'); }
+            else if (!/no verdict/.test(mv.notes)) { v = mv; log('  meta-verdict: RETURN'); }
+          }
           if (v.verdict === 'ACCEPT') { accepted = true; log('  verdict: ACCEPT'); break; }
           accepted = false;
           reviewNotes = v.notes;
