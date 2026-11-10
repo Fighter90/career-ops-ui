@@ -309,6 +309,10 @@ async function main() {
 
         // ---- release manager
         log('-- release manager: PR');
+        // v2.0: the dev loop commits the branch but never pushes — gh pr create
+        // with --head needs the branch ON ORIGIN (all three run-15 cycles died here).
+        const pushBr = await sh(`git push -u origin ${branch}`, { timeoutMs: 300_000 });
+        if (pushBr.code !== 0) throw new Error(`branch push failed: ${short(pushBr.all)}`);
         const prBody = resolve(STATE, `pr-body-${issue.identifier}.md`);
         writeFileSync(prBody, `${story}\n\nSwarm cycle: dev(${MAX_ROUNDS} rounds max) → gates → review(ACCEPT) → release.`);
         const pr = await sh(`gh pr create --head ${branch} --title ${JSON.stringify(`${issue.identifier}: ${issue.title}`)} --body-file ${JSON.stringify(prBody)}`, { timeoutMs: 120_000 });
