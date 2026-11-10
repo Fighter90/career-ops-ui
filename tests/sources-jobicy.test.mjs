@@ -385,3 +385,111 @@ test('fetchJobicy: a title that decodes to whitespace drops the row', async () =
   const jobs = await fetchJobicy(FEED_URL, { fetchImpl: okJobicyJson(json) });
   assert.deepEqual(jobs, []);
 });
+
+// ── CAR-255 parity (upstream #6612) — entry filters + walk protections ──────
+
+test('jobicyFilters: valid geo/industry/tag slugs are kept, tag is trimmed', async () => {
+  const { jobicyFilters } = await import('../server/lib/sources/jobicy.mjs');
+  assert.deepEqual(jobicyFilters({ name: 'J', geo: 'LatAm', industry: 'Engineering', tag: ' Python ' }), {
+    geo: 'latam', industry: 'engineering', tag: 'Python',
+  });
+  assert.deepEqual(jobicyFilters({ name: 'J' }), {});
+  assert.deepEqual(jobicyFilters(undefined), {});
+});
+
+test('jobicyFilters: a malformed slug or tag throws naming the list to pick from', async () => {
+  const { jobicyFilters } = await import('../server/lib/sources/jobicy.mjs');
+  assert.throws(() => jobicyFilters({ name: 'J', geo: 'not a slug!' }), /get=locations/);
+  assert.throws(() => jobicyFilters({ name: 'J', industry: 'europe!' }), /get=industries/);
+  assert.throws(() => jobicyFilters({ name: 'J', tag: 'x'.repeat(101) }), /1-100/);
+  assert.throws(() => jobicyFilters({ name: 'J', tag: 'two\nlines' }), /one line/);
+});
+
+test('fetchJobicy: entry geo/industry/tag filters ride EVERY page request (#6612)', async () => {
+  const impl = cursorFake((page) => (page < 1
+    ? { jobs: [mkJobicy(page)], hasMore: true, nextCursor: 'next-1' }
+    : { jobs: [mkJobicy(page)], hasMore: false, nextCursor: null }));
+  const jobs = await fetchJobicy(FEED_URL, {
+    fetchImpl: impl,
+    company: { name: 'Jobicy', provider: 'jobicy', geo: 'europe', industry: 'dev', tag: 'python' },
+  });
+  assert.equal(jobs.length, 2);
+  for (const call of impl.calls) {
+    const u = new URL(call);
+    assert.equal(u.searchParams.get('geo'), 'europe');
+    assert.equal(u.searchParams.get('industry'), 'dev');
+    assert.equal(u.searchParams.get('tag'), 'python');
+  }
+});
+
+test('fetchJobicy: a malformed filter is a config error raised before any request', async () => {
+  let calls = 0;
+  const impl = async (url) => { calls += 1; return { ok: true, json: async () => ({ jobs: [], hasMore: false }) }; };
+  await assert.rejects(
+    () => fetchJobicy(FEED_URL, { fetchImpl: impl, company: { name: 'J', geo: 'nope nope' } }),
+    /slug/);
+  assert.equal(calls, 0, 'no request is made with a broken filter');
+});
+
+test('fetchJobicy: a repeated cursor is a broken page, not a longer board (#6612)', async () => {
+  const impl = cursorFake(() => ({ jobs: [mkJobicy(1)], hasMore: true, nextCursor: 'same' }));
+  const jobs = await fetchJobicy(FEED_URL, { fetchImpl: impl, company: { max_pages: 5 } });
+  assert.equal(impl.calls.length, 2, 'page 2 returns the same cursor — the walk stops there');
+  assert.deepEqual(jobs.truncated, { reason: 'unrecognised-page', fetched: jobs.length });
+});
+
+test('fetchJobicy: an oversized cursor stops the walk (#6612)', async () => {
+  const impl = cursorFake((page) => ({ jobs: [mkJobicy(page)], hasMore: true, nextCursor: 'x'.repeat(4097) }));
+  const jobs = await fetchJobicy(FEED_URL, { fetchImpl: impl, company: { max_pages: 5 } });
+  assert.equal(impl.calls.length, 1, 'the oversized cursor is refused before a second request');
+  assert.deepEqual(jobs.truncated, { reason: 'unrecognised-page', fetched: jobs.length });
+});
+
+test('fetchJobicy: a later-page failure marks the board partial (fetch-error)', async () => {
+  const impl = cursorFake((page) => {
+    if (page === 0) return { jobs: [mkJobicy(1), mkJobicy(2)], hasMore: true, nextCursor: '1' };
+    throw new Error('boom 500');
+  });
+  const jobs = await fetchJobicy(FEED_URL, { fetchImpl: impl });
+  assert.equal(jobs.length, 2);
+  assert.deepEqual(jobs.truncated, { reason: 'fetch-error', fetched: 2 });
+});
+
+test('fetchJobicy: a config cap stop marks the board partial (page-cap)', async () => {
+  const impl = cursorFake((page) => ({ jobs: [mkJobicy(1000 + page)], hasMore: true, nextCursor: String(page + 1) }));
+  const jobs = await fetchJobicy(FEED_URL, { fetchImpl: impl, company: { name: 'J', max_pages: 3 } });
+  assert.equal(impl.calls.length, 3);
+  assert.deepEqual(jobs.truncated, { reason: 'page-cap', fetched: 3 });
+});
+
+test('fetchJobicy: an explicit maxPages probe cap never reads as a cap stop', async () => {
+  const impl = cursorFake((page) => ({ jobs: [mkJobicy(1000 + page)], hasMore: true, nextCursor: String(page + 1) }));
+  const jobs = await fetchJobicy(FEED_URL, { fetchImpl: impl, maxPages: 2 });
+  assert.equal(impl.calls.length, 2);
+  assert.equal(jobs.truncated, undefined, 'a probe budget is not a partial read');
+});
+
+test('fetchJobicy: a natural end carries no truncation mark', async () => {
+  const impl = cursorFake((page) => (page < 1
+    ? { jobs: [mkJobicy(page)], hasMore: true, nextCursor: 'next-1' }
+    : { jobs: [mkJobicy(page)], hasMore: false, nextCursor: null }));
+  const jobs = await fetchJobicy(FEED_URL, { fetchImpl: impl });
+  assert.equal(jobs.truncated, undefined);
+});
+
+test('adapter: buildEndpoint carries the entry filters (#6612)', async () => {
+  const { FEED_URL: feed } = await import('../server/lib/sources/jobicy.mjs');
+  const endpoint = jobicyAdapter.buildEndpoint({
+    name: 'Jobicy', provider: 'jobicy', geo: 'europe', industry: 'dev', tag: 'python',
+  });
+  const u = new URL(endpoint);
+  assert.equal(u.origin + u.pathname, 'https://jobicy.com/api/v2/remote-jobs');
+  assert.equal(u.searchParams.get('geo'), 'europe');
+  assert.equal(u.searchParams.get('industry'), 'dev');
+  assert.equal(u.searchParams.get('tag'), 'python');
+  // A malformed filter falls back to the unfiltered feed at endpoint time
+  // (fetch() is the one that throws, before any request).
+  assert.equal(
+    jobicyAdapter.buildEndpoint({ name: 'Jobicy', provider: 'jobicy', geo: 'nope nope' }),
+    feed);
+});

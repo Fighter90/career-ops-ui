@@ -729,6 +729,8 @@ window.__I18N_DICT_JA = {
   'pipe.bulkRemove': "選択項目を削除",
   'pipe.selectedCount': "件選択済み",
   'pipe.removing': "削除中",
+  // CAR-256 (#6597) — the posting close day chip on #/pipeline
+  'pipe.closes': "締め切り",
   'pipe.bulkCancel': "キャンセル",
   'pipe.undo': "元に戻す",
   'pipe.undoDismiss': "閉じる",

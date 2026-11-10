@@ -14951,6 +14951,27 @@
     "ta": "அகற்றப்படுகிறது",
     "vi": "Đang xóa"
   },
+  "pipe.closes": {
+    "en": "Closes",
+    "es": "Cierra",
+    "pt-BR": "Encerra",
+    "ko": "마감",
+    "ja": "締め切り",
+    "ru": "Закрывается",
+    "zh-CN": "截止",
+    "zh-TW": "截止",
+    "fr": "Clôture",
+    "pl": "Zamyka się",
+    "uk": "Закривається",
+    "da": "Lukker",
+    "ar": "يُغلق",
+    "de": "Schließt",
+    "it": "Chiude",
+    "tr": "Kapanış",
+    "hi": "बंद होगा",
+    "ta": "முடிவடையும்",
+    "vi": "Đóng"
+  },
   "pipe.bulkCancel": {
     "en": "Cancel",
     "es": "Cancelar",

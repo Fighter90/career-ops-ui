@@ -11,8 +11,9 @@
  *       keywords: ["产品经理"]   # optional — server-side search
  *
  * The source-level `parseTenantUrl` is the SSRF guard: HTTPS-only, host pinned
- * to app.mokahr.com, a positive site ID, and two tenants refused outright
- * because their robots.txt excludes the careers path.
+ * to app.mokahr.com, and a positive site ID. Every tenant path it accepts is
+ * scannable — the old robots.txt refusal of two tenants was dropped when the
+ * parent stopped gating providers on robots.txt (#6691 → #6726).
  */
 import { fetchMokaHr, buildMokaHrUrl, parseTenantUrl } from '../../sources/mokahr.mjs';
 

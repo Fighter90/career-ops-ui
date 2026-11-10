@@ -11,11 +11,29 @@
  *       provider: jobicy
  *       enabled: true
  */
-import { fetchJobicy, FEED_URL } from '../../sources/jobicy.mjs';
+import { fetchJobicy, jobicyFilters, FEED_URL } from '../../sources/jobicy.mjs';
 import { pinnedOverride } from '../../sources/_override.mjs';
 
 // Exact host match — mirrors the source's assertJobicyUrl (both hosts allowed).
 const JOBICY_HOST_RE = /^(?:www\.)?jobicy\.com$/i;
+
+// CAR-255 parity (upstream #6612) — the entry's geo/industry/tag filters ride
+// the endpoint too, so a probe/health check reads the same filtered feed the
+// scan walks. A malformed filter falls back to the unfiltered feed here;
+// fetch() is the one that throws, before any request.
+function endpointWithFilters(company) {
+  let filters;
+  try {
+    filters = jobicyFilters(company);
+  } catch {
+    filters = {};
+  }
+  const base = new URL(FEED_URL);
+  for (const key of /** @type {const} */ (['geo', 'industry', 'tag'])) {
+    if (filters[key]) base.searchParams.set(key, filters[key]);
+  }
+  return base.href;
+}
 
 export const jobicyAdapter = {
   id: 'jobicy',
@@ -28,7 +46,7 @@ export const jobicyAdapter = {
   buildEndpoint(company) {
     return pinnedOverride(company?.jobicy, JOBICY_HOST_RE)
       || pinnedOverride(company?.api, JOBICY_HOST_RE)
-      || FEED_URL;
+      || endpointWithFilters(company);
   },
   fetch: fetchJobicy,
 };

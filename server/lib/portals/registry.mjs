@@ -208,6 +208,18 @@ import { germantechjobsAdapter } from './adapters/germantechjobs.mjs';
 import { kekaAdapter } from './adapters/keka.mjs';
 import { appleAdapter } from './adapters/apple.mjs';
 import { bulldogjobAdapter } from './adapters/bulldogjob.mjs';
+// CAR-254 — parent parity: TurboHire (single-company ATS,
+// <tenant>.turbohire.co; the careers page's three anonymous API requests,
+// org id cached per tenant).
+import { turbohireAdapter } from './adapters/turbohire.mjs';
+// CAR-254 — parent parity: ADP Recruiting Management "myjobs" career sites
+// (myjobs.adp.com/{site}/cx/...; orgoid header resolved from the site slug,
+// $top/$skip walk, opt-in detail enrichment).
+import { adpMyjobsAdapter } from './adapters/adp-myjobs.mjs';
+// CAR-254 — parent parity: generic employer job sitemap (provider: sitemap;
+// a sitemaps.org 0.9 sitemap from any public https employer host, gated by
+// the site's robots.txt).
+import { sitemapAdapter } from './adapters/sitemap.mjs';
 
 export const ALL_ADAPTERS = [
   builtinAdapter,
@@ -438,6 +450,17 @@ export const ALL_ADAPTERS = [
   // Parent #6392 — Remote's own ATS (apply.remote.com; fixed endpoint,
   // closed/not-accepting rows drop).
   remoteComAdapter,
+  // CAR-254 (parent #6712) — TurboHire (single-company ATS,
+  // <tenant>.turbohire.co; explicit `provider: turbohire` or host match).
+  turbohireAdapter,
+  // CAR-254 (parent #6678) — ADP Recruiting Management "myjobs" career
+  // sites (myjobs.adp.com/{site}/cx/...; explicit `provider: adp-myjobs`
+  // or first-path-segment site match).
+  adpMyjobsAdapter,
+  // CAR-254 (parent #6631) — generic employer job sitemap (explicit
+  // `provider: sitemap` only; sitemaps.org 0.9 urlset/index walk,
+  // robots.txt-gated).
+  sitemapAdapter,
 ];
 /**
  * Find the adapter that handles a given company entry. Returns

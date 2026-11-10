@@ -37,7 +37,7 @@ export const adpWorkforcenowAdapter = {
   /** @param {any} company @returns {string|null} */
   buildEndpoint(company) {
     const tenant = resolveTenant(company);
-    return tenant ? buildListUrl(tenant.cid, tenant.ccId, 1) : null;
+    return tenant ? buildListUrl(tenant.cid, tenant.ccId, 1, tenant.lang) : null;
   },
 
   fetch: fetchAdpWorkforcenow,

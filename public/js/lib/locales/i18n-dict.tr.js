@@ -729,6 +729,8 @@ window.__I18N_DICT_TR = {
   'pipe.bulkRemove': "Seçilenleri kaldır",
   'pipe.selectedCount': "seçildi",
   'pipe.removing': "Kaldırılıyor",
+  // CAR-256 (#6597) — the posting close day chip on #/pipeline
+  'pipe.closes': "Kapanış",
   'pipe.bulkCancel': "İptal",
   'pipe.undo': "Geri al",
   'pipe.undoDismiss': "Kapat",

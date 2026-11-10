@@ -79,8 +79,15 @@ function str(v) {
 /**
  * cid/ccId from an ADP recruitment or API URL (either query order). Host-pinned
  * (exact hostname), HTTPS-only. Exported for the adapter and tests.
+ *
+ * The URL's `lang` is carried through when present — some tenants' career
+ * centers are configured for a non-en_US locale and their job-requisitions
+ * endpoints return totalNumber 0 when lang/locale are missing or mismatched
+ * (CAR-255 parity, upstream #6679: three Canadian tenants answered 0 rows
+ * without lang=en_CA). Absent `lang` adds no key; the default is applied by
+ * buildListUrl/buildDetailUrl.
  * @param {unknown} raw
- * @returns {{ cid: string, ccId: string } | null}
+ * @returns {{ cid: string, ccId: string, lang?: string } | null}
  */
 export function parseTenantUrl(raw) {
   if (typeof raw !== 'string' || !raw.trim()) return null;
@@ -89,33 +96,60 @@ export function parseTenantUrl(raw) {
   if (parsed.protocol !== 'https:' || parsed.hostname.toLowerCase() !== ADP_HOST) return null;
   const cid = parsed.searchParams.get('cid');
   const ccId = parsed.searchParams.get('ccId');
-  return cid && ccId ? { cid, ccId } : null;
+  if (!cid || !ccId) return null;
+  const lang = parsed.searchParams.get('lang');
+  return lang ? { cid, ccId, lang } : { cid, ccId };
 }
 
-/** `api:` first, then `careers_url`. @param {any} entry */
+/**
+ * `api:` first, then `careers_url`. An api hit without `lang` is upgraded by
+ * a careers_url naming the SAME tenant with one — an api entry without lang
+ * must not silently pin an en_CA board to en_US. A different tenant's lang is
+ * never inherited; the en_US default stands.
+ * @param {any} entry
+ * @returns {{ cid: string, ccId: string, lang: string } | null}
+ */
 export function resolveTenant(entry) {
-  return parseTenantUrl(entry?.api) || parseTenantUrl(entry?.careers_url);
+  let found = null;
+  let foundHasExplicitLang = false;
+  for (const raw of [entry?.api, entry?.careers_url]) {
+    const tenant = parseTenantUrl(raw);
+    if (!tenant) continue;
+    if (!found) {
+      found = { ...tenant, lang: tenant.lang || 'en_US' };
+      foundHasExplicitLang = Boolean(tenant.lang);
+      if (foundHasExplicitLang) return found;
+      continue;
+    }
+    if (!foundHasExplicitLang && tenant.lang && found.cid === tenant.cid && found.ccId === tenant.ccId) {
+      found.lang = tenant.lang;
+      return found;
+    }
+  }
+  return found;
 }
 
-/** @param {string} cid @param {string} ccId @param {number} skip */
-export function buildListUrl(cid, ccId, skip) {
+/** @param {string} cid @param {string} ccId @param {number} skip @param {string} [lang] */
+export function buildListUrl(cid, ccId, skip, lang = 'en_US') {
   const u = new URL(`${API_BASE}/job-requisitions`);
   u.searchParams.set('cid', cid);
   u.searchParams.set('ccId', ccId);
   u.searchParams.set('$skip', String(skip));
   u.searchParams.set('$top', String(PAGE_SIZE));
+  u.searchParams.set('lang', lang);
+  u.searchParams.set('locale', lang);
   return u.href;
 }
 
-/** @param {string} itemId @param {string} cid @param {string} ccId */
-export function buildDetailUrl(itemId, cid, ccId) {
+/** @param {string} itemId @param {string} cid @param {string} ccId @param {string} [lang] */
+export function buildDetailUrl(itemId, cid, ccId, lang = 'en_US') {
   const enc = safeEncodeURIComponent(itemId);
   if (enc === null) return null;
   const u = new URL(`${API_BASE}/job-requisitions/${enc}`);
   u.searchParams.set('cid', cid);
   u.searchParams.set('ccId', ccId);
-  u.searchParams.set('lang', 'en_US');
-  u.searchParams.set('locale', 'en_US');
+  u.searchParams.set('lang', lang);
+  u.searchParams.set('locale', lang);
   return u.href;
 }
 
@@ -362,7 +396,7 @@ export async function fetchAdpWorkforcenow(endpoint, opts = {}) {
   const tenant = parseTenantUrl(endpoint) || resolveTenant(company);
   const name = str(company?.name);
   if (!tenant) throw new Error(`adp-workforcenow: cannot derive cid/ccId for ${name || endpoint}`);
-  const { cid, ccId } = tenant;
+  const { cid, ccId, lang } = tenant;
   const cfg = { cid, ccId, companyName: name };
   const io = { signal, sleep, retryDelayMs };
 
@@ -381,7 +415,7 @@ export async function fetchAdpWorkforcenow(endpoint, opts = {}) {
   for (let page = 0; page < pageLimit; page++) {
     if (signal?.aborted) break;
     if (page > 0) await sleep(INTER_PAGE_DELAY_MS, signal);
-    const json = await fetchJsonRetry(fetchImpl, assertAdpUrl(buildListUrl(cid, ccId, skip)), io);
+    const json = await fetchJsonRetry(fetchImpl, assertAdpUrl(buildListUrl(cid, ccId, skip, lang)), io);
     if (json && typeof json === 'object' && !Array.isArray(json.jobRequisitions) && json.meta === undefined) {
       throw new Error(`adp-workforcenow: unrecognized job-requisitions response for ${name} — keys: ${Object.keys(json).join(', ') || '(none)'}`);
     }
@@ -413,7 +447,7 @@ export async function fetchAdpWorkforcenow(endpoint, opts = {}) {
       if (signal?.aborted) break;
       await sleep(INTER_PAGE_DELAY_MS, signal);
       try {
-        const detailUrl = buildDetailUrl(job._itemId, cid, ccId);
+        const detailUrl = buildDetailUrl(job._itemId, cid, ccId, lang);
         if (!detailUrl) continue;
         const detail = await fetchJsonRetry(fetchImpl, assertAdpUrl(detailUrl), io);
         const description = htmlToText(detail?.requisitionDescription);

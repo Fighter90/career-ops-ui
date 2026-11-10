@@ -229,17 +229,16 @@ const PAGE_HEADERS = {
  * The URL of one results page. Newest first (the board's own "Fecha" sort).
  * Employers can pay Computrabajo to feature a posting ("Empleo destacado"),
  * and those cards are interleaved in every sort order; a `by=` the user put
- * in their URL wins. robots.txt disallows `/ofertas-de-trabajo/*by=`, so no
- * sort is sent there, not even one from the URL.
+ * in their URL wins. `/ofertas-de-trabajo/` used to drop the sort because
+ * robots.txt disallowed `*by=` there; robots.txt no longer gates a provider,
+ * so the sort is sent on every path (#6739 parity).
  * @param {URL} listUrl
  * @param {number} page
  * @returns {string}
  */
 export function buildPageUrl(listUrl, page) {
   const u = new URL(listUrl);
-  if (u.pathname.startsWith('/ofertas-de-trabajo/')) {
-    u.searchParams.delete('by');
-  } else if (!u.searchParams.has('by')) {
+  if (!u.searchParams.has('by')) {
     u.searchParams.set('by', 'publicationtime');
   }
   u.searchParams.set('p', String(page));

@@ -5,7 +5,9 @@
  * (is_published/is_sample drops, primary-first locations, "Remote
  * (International)" rendering, surrogate-safe id segment, hasNext), the
  * max_pages cap, and the pagination stop rules (first-page failure throws;
- * later-page failure keeps partials; cap tags doverTruncated; a short page
+ * later-page failure keeps partials and — CAR-255 parity — a page cap or a
+ * later-page fetch error marks the result `truncated`, the canonical
+ * partial-read shape; a short page
  * or a missing `next` ends the sweep). No network — parseDoverPage is pure;
  * fetchDover runs on a fake fetchImpl.
  */
@@ -177,7 +179,7 @@ test('dover: fetchDover — the first page failing means there is no board', asy
   assert.equal(calls, 1, 'a permanent 4xx is not retried');
 });
 
-test('dover: fetchDover — a later page failing keeps the collected jobs (partials, not a flag)', async () => {
+test('dover: fetchDover — a later page failing keeps the collected jobs and marks the board partial', async () => {
   let calls = 0;
   const fetchImpl = async () => {
     calls += 1;
@@ -187,10 +189,12 @@ test('dover: fetchDover — a later page failing keeps the collected jobs (parti
   const jobs = await fetchDover(apiUrlFor(UUID, 0), { fetchImpl, company: ENTRY, delayMs: 0, retries: 0 });
   assert.equal(calls, 2);
   assert.equal(jobs.length, PAGE_SIZE, 'page-1 jobs kept');
-  assert.equal(jobs.doverTruncated, undefined, 'an error stop is not a cap truncation');
+  // CAR-255 parity (upstream dover) — a fetch-error stop is a partial read,
+  // tagged in the canonical shape so the scan reports the board as partial.
+  assert.deepEqual(jobs.truncated, { reason: 'fetch-error', fetched: PAGE_SIZE });
 });
 
-test('dover: fetchDover — a later-page shape throw keeps the collected jobs (partials)', async () => {
+test('dover: fetchDover — a later-page shape throw keeps the collected jobs and marks the board partial', async () => {
   let calls = 0;
   const fetchImpl = async () => {
     calls += 1;
@@ -202,7 +206,7 @@ test('dover: fetchDover — a later-page shape throw keeps the collected jobs (p
   const jobs = await fetchDover(apiUrlFor(UUID, 0), { fetchImpl, company: ENTRY, delayMs: 0, retries: 0 });
   assert.equal(calls, 2);
   assert.equal(jobs.length, PAGE_SIZE, 'page-1 jobs kept');
-  assert.equal(jobs.doverTruncated, undefined, 'a shape stop is not a cap truncation');
+  assert.deepEqual(jobs.truncated, { reason: 'fetch-error', fetched: PAGE_SIZE }, 'a shape stop is a partial read too');
 });
 
 test('dover: fetchDover — a short page (raw count, before filtering) ends the sweep', async () => {
@@ -232,7 +236,7 @@ test('dover: fetchDover — a missing `next` ends the sweep on a full page', asy
   assert.equal(jobs.length, PAGE_SIZE);
 });
 
-test('dover: fetchDover — exhausting max_pages tags the array doverTruncated (partial board)', async () => {
+test('dover: fetchDover — exhausting max_pages marks the array truncated (partial board)', async () => {
   let calls = 0;
   const fetchImpl = async () => {
     calls += 1;
@@ -243,7 +247,7 @@ test('dover: fetchDover — exhausting max_pages tags the array doverTruncated (
   });
   assert.equal(calls, 2);
   assert.equal(jobs.length, PAGE_SIZE * 2);
-  assert.equal(jobs.doverTruncated, true, 'the cap stopped the sweep — the board is partial');
+  assert.deepEqual(jobs.truncated, { reason: 'page-cap', fetched: PAGE_SIZE * 2 }, 'the cap stopped the sweep — the board is partial');
 });
 
 test('dover: fetchDover — a short last-allowed page is a natural end, not a cap stop', async () => {
@@ -260,6 +264,7 @@ test('dover: fetchDover — a short last-allowed page is a natural end, not a ca
   assert.equal(calls, 2);
   assert.equal(jobs.length, PAGE_SIZE + 1);
   assert.equal(jobs.doverTruncated, undefined);
+  assert.equal(jobs.truncated, undefined, 'a short last-allowed page is a natural end, not a partial read');
 });
 
 test('dover: fetchDover — normalized rows carry the web-ui shape', async () => {

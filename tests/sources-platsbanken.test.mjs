@@ -124,6 +124,40 @@ test('platsbanken: parsePlatsbankenResponse — full row mapping', () => {
   assert.equal(jobs[1].postedAt, undefined, 'a null publication_date adds no postedAt');
 });
 
+// CAR-256 (parent parity, upstream #6597) — the API's `application_deadline`
+// is the posting close date: a real calendar day (folded from the API's
+// datetime shapes) is copied to `closesAt`; anything that is not a calendar
+// day adds no closesAt at all.
+test('platsbanken: parsePlatsbankenResponse — application_deadline becomes closesAt', () => {
+  // The API's own datetime shape (no zone) folds to its calendar day.
+  const datetime = parsePlatsbankenResponse({
+    total: { value: 1 },
+    hits: [hit(1, { application_deadline: '2026-11-11T23:59:59' })],
+  });
+  assert.equal(datetime[0].closesAt, '2026-11-11');
+  // A plain YYYY-MM-DD is already a day.
+  const plain = parsePlatsbankenResponse({
+    total: { value: 1 },
+    hits: [hit(1, { application_deadline: '2026-12-01' })],
+  });
+  assert.equal(plain[0].closesAt, '2026-12-01');
+  // A zoned instant folds to its UTC calendar day.
+  const zoned = parsePlatsbankenResponse({
+    total: { value: 1 },
+    hits: [hit(1, { application_deadline: '2026-11-11T23:59:00+02:00' })],
+  });
+  assert.equal(zoned[0].closesAt, '2026-11-11');
+  // Not a calendar day (2026-02-31 does not exist) → no closesAt key.
+  const bad = parsePlatsbankenResponse({
+    total: { value: 1 },
+    hits: [hit(1, { application_deadline: '2026-02-31T00:00:00' })],
+  });
+  assert.ok(!('closesAt' in bad[0]), 'an impossible day adds no closesAt');
+  // A missing deadline adds nothing.
+  const none = parsePlatsbankenResponse({ total: { value: 1 }, hits: [hit(1)] });
+  assert.ok(!('closesAt' in none[0]), 'no deadline adds no closesAt');
+});
+
 test('platsbanken: parsePlatsbankenResponse — malformed rows are skipped, empty hits is an empty board', () => {
   assert.deepEqual(parsePlatsbankenResponse({ hits: [] }), []);
   const jobs = parsePlatsbankenResponse({
@@ -210,6 +244,24 @@ test('platsbanken: fetchPlatsbanken — keyword from the entry, profile-keywords
   assert.equal(jobs[0].date, new Date(Date.parse('2026-10-01T06:00:00')).toISOString());
   assert.equal(jobs[0].snippet, 'Bygg saker');
   assert.equal(jobs[0].salary, '');
+});
+
+// CAR-256 (#6597) — the scanner's history writer reads `closesAtIso(j.closesAt)`
+// off the NORMALIZED row, so normalize must carry the day through or the
+// close-date storage is dead code for this board.
+test('platsbanken: fetchPlatsbanken — the web-ui row shape carries closesAt through normalize', async () => {
+  const closable = hitPage(0, 2).hits.map((h) => ({ ...h, application_deadline: '2026-11-11T23:59:59' }));
+  const fetchImpl = makeFetch({
+    'data engineer': [{ total: { value: 2 }, hits: closable }],
+  });
+  const jobs = await fetchPlatsbanken(SEARCH_URL, {
+    fetchImpl,
+    company: { name: 'Platsbanken — Data', provider: 'platsbanken', platsbanken: { keywords: ['data engineer'] } },
+    delayMs: 0,
+  });
+  assert.equal(jobs.length, 2);
+  assert.equal(jobs[0].closesAt, '2026-11-11');
+  assert.equal(jobs[1].closesAt, '2026-11-11');
 });
 
 test('platsbanken: fetchPlatsbanken — no entry keywords falls back to opts.profileKeywords', async () => {

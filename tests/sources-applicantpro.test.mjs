@@ -336,6 +336,78 @@ test('applicantpro: parseDetail takes the JSON-LD title and ignores validThrough
   assert.ok(!('employmentType' in odd));
   assert.ok(!('validThrough' in odd));
   assert.ok(!('salary' in odd));
+  // CAR-256 (parent parity, upstream #6597) — DETAIL_ODD's validThrough
+  // ("2099-11-02 00:00:00T23:59") is not an ISO datetime shape, so it stays
+  // unread: no closesAt key at all.
+  assert.ok(!('closesAt' in odd), 'a non-ISO validThrough adds no closesAt');
+});
+
+// CAR-256 (parent parity, upstream #6597) — a REAL ISO `validThrough` on the
+// JobPosting node is the posting close day: copied to `closesAt` (an ISO
+// datetime folds to its UTC calendar day), still not exposed as raw
+// validThrough.
+test('applicantpro: parseDetail copies a real ISO validThrough day to closesAt', () => {
+  const page = (validThrough) =>
+    `<html><head><script type="application/ld+json">{"@context":"http://schema.org/","@type":"JobPosting","title":"Analyst","datePosted":"2026-10-01 08:00:00","validThrough":"${validThrough}"}</script></head><body></body></html>`;
+  const plain = parseDetail(page('2026-11-02'));
+  assert.equal(plain.closesAt, '2026-11-02');
+  assert.ok(!('validThrough' in plain), 'validThrough is never exposed raw');
+  const datetime = parseDetail(page('2026-11-11T23:59:59Z'));
+  assert.equal(datetime.closesAt, '2026-11-11', 'an ISO datetime folds to its UTC calendar day');
+  // CAR-255 parity (upstream #6716) — the tenant shape is read as its date
+  // prefix, but "2099-…" sits 73 years past the posted date: the tenant's
+  // no-deadline default, so no close day.
+  const bad = parseDetail(page('2099-11-02 00:00:00T23:59'));
+  assert.ok(!('closesAt' in bad), 'a far-future tenant-shape validThrough adds no closesAt');
+});
+
+// CAR-255 parity (upstream #6716) — tenants write every `validThrough` as
+// "YYYY-MM-DD 00:00:00THH:MM". The date prefix is now read as the close day,
+// but a validThrough set years past the posted date is the tenant's
+// no-deadline default, not a deadline: anything more than two years out
+// records no closesAt. datePosted uses the tenants' space form ("2026-08-06
+// 00:00:00"), matching live data and the parent's fixtures.
+test('applicantpro: parseDetail reads the tenant validThrough shape as the close day when it is a real deadline', () => {
+  const page = (validThrough, datePosted = '2026-08-06 00:00:00') =>
+    `<html><head><script type="application/ld+json">{"@context":"http://schema.org/","@type":"JobPosting","title":"Analyst","datePosted":"${datePosted}","validThrough":"${validThrough}"}</script></head><body></body></html>`;
+  const tenant = parseDetail(page('2026-11-24 00:00:00T23:59'));
+  assert.equal(tenant.closesAt, '2026-11-24', 'the date prefix of the tenant shape becomes closesAt');
+  assert.ok(!('validThrough' in tenant), 'validThrough is never exposed raw');
+  const noDeadlineDefault = parseDetail(page('2036-08-06 00:00:00T23:59'));
+  assert.ok(!('closesAt' in noDeadlineDefault), 'a validThrough five years past the posted date is the tenant default, not a close day');
+  const withinTwoYears = parseDetail(page('2028-08-05 00:00:00T23:59'));
+  assert.equal(withinTwoYears.closesAt, '2028-08-05', 'a validThrough within two years of posting stays a close day');
+  const badDay = parseDetail(page('2026-02-31 00:00:00T23:59'));
+  assert.ok(!('closesAt' in badDay), 'the tenant shape with an impossible day gives no close day');
+  const noPosted = parseDetail('<html><head><script type="application/ld+json">{"@type":"JobPosting","title":"Analyst","validThrough":"2026-11-24 00:00:00T23:59"}</script></head><body></body></html>');
+  assert.equal(noPosted.closesAt, '2026-11-24', 'the tenant shape gives a close day when datePosted is missing');
+});
+
+// CAR-256 (#6597) — the opt-in detail fetch applies the close day, and
+// normalize carries it onto the scanner row (`closesAtIso(j.closesAt)` in the
+// history writer reads exactly that field).
+test('applicantpro: fetchDetails applies the JSON-LD close day to the scanner row', async () => {
+  // Serve a real ISO validThrough detail for job 9000001; the shipped
+  // DETAIL_FULL fixture carries a non-ISO shape that must stay unread.
+  const isoDetail = `<html><head><script type="application/ld+json">{"@context":"http://schema.org/","@type":"JobPosting","title":"Learning Coordinator","datePosted":"2026-09-02 00:00:00","validThrough":"2026-11-11T23:59:59"}</script></head><body></body></html>`;
+  const base = makeImpl();
+  const implIso = async (url, opts = {}) => {
+    if (url === `${ORIGIN}/jobs/9000001`) return { ok: true, status: 200, text: async () => isoDetail };
+    return base(url, opts);
+  };
+  const jobsIso = await fetchApplicantpro(`${ORIGIN}/jobs/`, {
+    fetchImpl: implIso,
+    sleep: async () => {},
+    company: { ...ENTRY, applicantpro: { fetchDetails: true, detailLimit: 1 } },
+  });
+  assert.equal(jobsIso[0].closesAt, '2026-11-11', 'the detail close day lands on the scanner row');
+  // The shipped fixtures' non-ISO validThrough keeps the row clean.
+  const jobs = await fetchApplicantpro(`${ORIGIN}/jobs/`, {
+    fetchImpl: makeImpl(),
+    sleep: async () => {},
+    company: { ...ENTRY, applicantpro: { fetchDetails: true, detailLimit: 2 } },
+  });
+  assert.ok(!('closesAt' in jobs[0]), 'a non-ISO validThrough adds no closesAt to the scanner row');
 });
 
 test('applicantpro: parseDetail tolerates pages with no or broken JSON-LD', () => {

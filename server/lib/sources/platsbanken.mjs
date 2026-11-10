@@ -47,6 +47,7 @@
 import { fetchJsonWithRetry, delay, BROWSER_LIKE_USER_AGENT } from '../http-json.mjs';
 import { safeEncodeURIComponent } from './_safe-url.mjs';
 import { resolveProfileKeywords } from './jobbankca.mjs';
+import { closesAtIso } from '../posting-close.mjs';
 
 const UA = BROWSER_LIKE_USER_AGENT;
 
@@ -232,6 +233,11 @@ export function parsePlatsbankenResponse(json) {
     const descriptionText = description && typeof description.text === 'string' ? description.text.trim() : '';
     const postedAt = toEpochMs(row.publication_date);
     const externalId = row.id === null || row.id === undefined ? '' : String(row.id).trim();
+    // CAR-256 (parent parity, upstream #6597) — the API's `application_deadline`
+    // is the posting close date: a real calendar day (folded from the datetime
+    // shapes the API ships) is copied to `closesAt`; anything that is not a
+    // calendar day adds no key at all.
+    const closesAt = closesAtIso(row.application_deadline);
 
     jobs.push({
       title,
@@ -240,6 +246,7 @@ export function parsePlatsbankenResponse(json) {
       location: formatLocation(row.workplace_address),
       ...(descriptionText ? { description: descriptionText } : {}),
       ...(postedAt === undefined ? {} : { postedAt: postedAt }),
+      ...(closesAt ? { closesAt } : {}),
       ...(externalId ? { externalId } : {}),
     });
   }
@@ -264,6 +271,9 @@ function normalize(row, entry) {
     relocates: false,
     date: row.postedAt != null ? new Date(row.postedAt).toISOString() : '',
     snippet: row.description ? String(row.description).slice(0, SNIPPET_CAP) : '',
+    // CAR-256 (#6597) — the close day the row mapper read off
+    // application_deadline; the scanner's history writer records it.
+    ...(row.closesAt ? { closesAt: row.closesAt } : {}),
     source: 'platsbanken',
   };
 }

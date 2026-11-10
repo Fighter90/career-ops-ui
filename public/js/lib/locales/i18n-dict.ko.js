@@ -729,6 +729,8 @@ window.__I18N_DICT_KO = {
   'pipe.bulkRemove': "선택 항목 삭제",
   'pipe.selectedCount': "개 선택됨",
   'pipe.removing': "삭제 중",
+  // CAR-256 (#6597) — the posting close day chip on #/pipeline
+  'pipe.closes': "마감",
   'pipe.bulkCancel': "취소",
   'pipe.undo': "실행 취소",
   'pipe.undoDismiss': "닫기",

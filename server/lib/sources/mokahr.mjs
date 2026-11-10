@@ -15,9 +15,9 @@
  * so the decryption is part of reading the board at all. A wrong-length key or
  * a missing field throws rather than yielding an empty list.
  *
- * Two tenants are deliberately NOT scannable: their robots.txt excludes the
- * careers path, and `ROBOTS_EXCLUDED_PATHS` refuses them at config time rather
- * than fetching and discarding.
+ * Every tenant path the regex accepts is scannable: the old robots.txt
+ * exclusion of two tenants was dropped when the parent stopped gating
+ * providers on robots.txt (#6691 → #6726).
  *
  * Ported from parent career-ops v1.31.0 (`providers/mokahr.mjs`).
  */
@@ -48,13 +48,6 @@ const INTER_PAGE_DELAY_MS = 400;
 
 const TENANT_PATH_RE = /^\/(?:social-recruitment|campus-recruitment|apply)\/([^/]+)\/(\d+)\/?$/;
 
-// Tenants whose robots.txt excludes the careers path. Refused at config time
-// rather than fetched and discarded.
-const ROBOTS_EXCLUDED_PATHS = new Set([
-  '/social-recruitment/lingjuninvest/46355',
-  '/social-recruitment/shopee/74378',
-]);
-
 /**
  * Parse a tenant careers URL into `{ orgId, siteId, baseUrl }`, or null when it
  * is not an allowed MokaHR tenant. HTTPS-only and the host pinned to
@@ -75,7 +68,6 @@ export function parseTenantUrl(url) {
   const siteId = Number(m[2]);
   if (!Number.isSafeInteger(siteId) || siteId <= 0) return null;
   const pathname = u.pathname.replace(/\/$/, '');
-  if (ROBOTS_EXCLUDED_PATHS.has(pathname)) return null;
   return { orgId: m[1], siteId, baseUrl: `${u.origin}${pathname}`, apiUrl: `${u.origin}${API_PATH}` };
 }
 

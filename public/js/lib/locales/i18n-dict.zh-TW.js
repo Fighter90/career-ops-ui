@@ -729,6 +729,8 @@ window.__I18N_DICT_ZH_TW = {
   'pipe.bulkRemove': "刪除所選項目",
   'pipe.selectedCount': "已選取",
   'pipe.removing': "正在刪除",
+  // CAR-256 (#6597) — the posting close day chip on #/pipeline
+  'pipe.closes': "截止",
   'pipe.bulkCancel': "取消",
   'pipe.undo': "復原",
   'pipe.undoDismiss': "關閉",

@@ -242,6 +242,17 @@
   color: var(--kazan-text);
 }
 
+/* CAR-256 — the posting close day (scan-history closes_at joined onto the
+   queue). A day already past or within a week reads as a soft warning. */
+.v2-chip-close {
+  color: var(--kazan-text);
+}
+
+.v2-chip-close.is-due {
+  color: var(--rausch-text, var(--err));
+  font-weight: 600;
+}
+
 /* ── undo bar (session discard undo; body-level, like the toast) ── */
 /* CAR-116 review — centered PHYSICALLY: left: 50% + translateX(-50%)
    is direction-agnostic. inset-inline-start: 50% mirrors to right: 50%

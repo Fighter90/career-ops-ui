@@ -127,6 +127,23 @@ test('fetchApple: honours entry.max_pages and clamps an oversized one to 50', as
   assert.equal(resolveMaxPages({}), 2);
 });
 
+// CAR-255 parity (upstream apple, delta b859214b..24da28e8) — a page-cap stop
+// is the canonical partial-read signal (board-truncation.mjs), not just a
+// stderr warning: scan.mjs reports the board `partial`, never silently as the
+// whole one.
+test('fetchApple: a page-cap stop marks the result truncated (canonical partial-read signal)', async () => {
+  const endless = recording(() => ok(hydration(Array.from({ length: 20 }, (_, i) => row(String(i), `R${i}`)), 100000)));
+  const capped = await fetchApple(ENTRY.careers_url, { fetchImpl: endless, company: { ...ENTRY, max_pages: 2 }, sleep: NO_SLEEP });
+  assert.deepEqual(capped.truncated, { reason: 'page-cap', fetched: capped.length }, 'the cap stop is reported');
+
+  const done = recording((call) => ok(hydration(
+    Array.from({ length: 20 }, (_, i) => row(`${call.n}-${i}`, `R${call.n}-${i}`)),
+    40, // the whole board fits the default 2-page cap — the walk completes
+  )));
+  const complete = await fetchApple(ENTRY.careers_url, { fetchImpl: done, company: ENTRY, sleep: NO_SLEEP });
+  assert.equal(complete.truncated, undefined, 'a complete board carries no truncation mark');
+});
+
 test('fetchApple: paces pages after the first (2 sleeps across 3 pages)', async () => {
   let slept = 0;
   const impl = recording(() => ok(hydration(Array.from({ length: 20 }, (_, i) => row(String(i), `R${i}`)), 100000)));
@@ -209,4 +226,31 @@ test('parseHydration: garbage inside the blob → null; edge rows behave', () =>
   assert.equal(edge.jobs[0].isRemote, true);
   assert.equal(edge.jobs[0].workplaceType, 'Remote');
   assert.equal(edge.jobs[0].date, '');
+});
+
+// CAR-255 parity (upstream #6452) — a city arrives as a bare `Cupertino` with
+// `countryName` beside it, and a location filter that names a country has only
+// this string to match. Level 1 entries are the country already, in a shorter
+// spelling (`United States` vs `United States of America`).
+test('locationOf keeps the country: a bare city joins its countryName (CAR-255 parity, upstream #6452)', () => {
+  const page = (search) => `<script>window.__staticRouterHydrationData = JSON.parse(${JSON.stringify(JSON.stringify({ loaderData: { search } }))});</script>`;
+  const parse = (locations) => parseSearchPage(
+    page({ searchResults: [{ id: 'p1', postingTitle: 'Place Role', locations, postDateInGMT: 'garbage' }], totalRecords: 1 }),
+    'https://jobs.apple.com/en-us/search?page=1',
+    'Apple',
+  );
+  // A bare city next to a country name joins them, so a country filter can match.
+  const city = parse([{ name: 'Cupertino', countryName: 'United States', level: 2 }]);
+  assert.equal(city.jobs[0].location, 'Cupertino, United States');
+  // Level 1 IS the country (in a shorter spelling) — it stays bare.
+  const country = parse([{ name: 'United States', countryName: 'United States of America', level: 1 }]);
+  assert.equal(country.jobs[0].location, 'United States');
+  // A name that already carries the country is not duplicated.
+  const full = parse([{ name: 'Cupertino, California, United States', countryName: 'United States', level: 2 }]);
+  assert.equal(full.jobs[0].location, 'Cupertino, California, United States');
+  // Back-compat: no countryName (or a non-string one) leaves the bare name.
+  const bare = parse([{ name: 'Santa Clara Valley' }]);
+  assert.equal(bare.jobs[0].location, 'Santa Clara Valley');
+  const junk = parse([{ name: 'Austin', countryName: 7, level: 2 }]);
+  assert.equal(junk.jobs[0].location, 'Austin');
 });

@@ -29,6 +29,7 @@ import { RU_CONFIG_KEYS } from './sources/registry.mjs';
 import { addPipelineUrl } from './parsers.mjs';
 import { sanitizeTsvField, normalizeScanUrl } from './scan-sanitize.mjs';
 import { normalizeUrl } from './url-key.mjs';
+import { closesAtIso } from './posting-close.mjs';
 import { makeTimeoutFetch } from './fetch-timeout.mjs';
 import { saveLastScan, snapshotKeepReason, loadSeenUrls as loadSeenUrlsShared } from './en-scanner.mjs';
 import { withFileLock, atomicWrite } from './file-lock.mjs';
@@ -249,6 +250,12 @@ export async function runRuScan(opts = {}) {
   const sourceFailures = {};
   // Per-call tally for the R-12 snapshot guard (every call failed → keep).
   const calls = { attempted: 0, failed: 0 };
+  // CAR-256 upstream wave — deliberate no-ports for THIS scanner:
+  //  - retry-after-sweep (#6675) is an EN-scanner mechanism: it re-runs boards
+  //    that lost a race against the CONCURRENT sweep. Queries here run one at
+  //    a time, so there is no burst for a retry to escape.
+  //  - partial-status (#6636) reads a board truncation signal; none of the
+  //    five RU sources tags its results, so there is nothing to read.
   let hhDisabled = false;
 
   // Compiled once, then applied per query. Previously this ran after the loop,
@@ -449,6 +456,9 @@ async function appendToPipeline(jobs) {
 function appendToHistory(jobs) {
   mkdirSync(PATHS.scanHistory.replace(/\/[^/]+$/, ''), { recursive: true });
   // v1.75.0 (#1098) — sanitize every TSV cell (newline-row-injection + formula).
+  // CAR-256 (#6597) — the same 7th `closes_at` cell the EN scanner appends
+  // (the posting's close day, YYYY-MM-DD, or empty), so both scanners store
+  // the day the pipeline surface joins back onto the queue.
   const lines = jobs.map((j) =>
     [
       new Date().toISOString().slice(0, 10),
@@ -457,6 +467,7 @@ function appendToHistory(jobs) {
       j.company,
       j.title,
       normalizeScanUrl(j.url),
+      closesAtIso(j.closesAt) || closesAtIso(j),
     ]
       .map(sanitizeTsvField)
       .join('\t')

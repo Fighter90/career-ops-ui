@@ -12,9 +12,11 @@ import {
   buildApiUrl,
   buildJobUrl,
   assertOraclecloudUrl,
+  resolveMaxPages,
   ORACLE_HOST_RE,
   PAGE_SIZE,
   MAX_PAGES,
+  HARD_MAX_PAGES,
 } from '../server/lib/sources/oraclecloud.mjs';
 import { oraclecloudAdapter } from '../server/lib/portals/adapters/oraclecloud.mjs';
 
@@ -307,8 +309,82 @@ test('fetchOraclecloud: honors max_pages from the entry, hard-capped at MAX_PAGE
   assert.equal(capped.calls.length, 2);
 
   const uncapped = fakeFetch(() => fullPage());
-  await fetchOraclecloud(CAREERS, { fetchImpl: uncapped, company: { max_pages: 9999 } });
-  assert.equal(uncapped.calls.length, MAX_PAGES);
+  await fetchOraclecloud(CAREERS, { fetchImpl: uncapped, company: { max_pages: 9999 }, sleep: async () => {} });
+  assert.equal(uncapped.calls.length, HARD_MAX_PAGES, 'an oversized opt-in clamps at the 100-page ceiling (upstream #6690)');
+
+  // Cheap cap-math pin: default unchanged, opt-in ceiling finite.
+  assert.equal(resolveMaxPages({}), MAX_PAGES);
+  assert.equal(resolveMaxPages({ max_pages: 30 }), 30);
+  assert.equal(resolveMaxPages({ max_pages: 9999 }), HARD_MAX_PAGES);
+  assert.equal(resolveMaxPages({ max_pages: 0 }), MAX_PAGES);
+  assert.equal(resolveMaxPages({ max_pages: '5' }), MAX_PAGES);
+});
+
+// CAR-255 parity (upstream #6690) — the opt-in ceiling is raised to
+// HARD_MAX_PAGES (100): JPMorgan Chase alone has 7000+ postings, which the old
+// 25-page opt-in cannot cover; the bound stays finite so a typo can't walk a
+// board forever. The default cap is unchanged.
+test('fetchOraclecloud: max_pages opts in up to the 100-page ceiling (CAR-255 parity, upstream #6690)', async () => {
+  const fullPage = () => makePage(
+    Array.from({ length: PAGE_SIZE }, (_, i) => makeReq({ Id: `${Math.random()}-${i}` })),
+    100000,
+    true,
+  );
+  const noSleep = async () => {};
+  // An entry may opt in past the old 25-page ceiling.
+  const optIn = fakeFetch(() => fullPage());
+  await fetchOraclecloud(CAREERS, { fetchImpl: optIn, company: { max_pages: 30 }, sleep: noSleep });
+  assert.equal(optIn.calls.length, 30);
+
+  // The opt-in bound is finite: 9999 clamps at the 100-page ceiling.
+  const ceiling = fakeFetch(() => fullPage());
+  await fetchOraclecloud(CAREERS, { fetchImpl: ceiling, company: { max_pages: 9999 }, sleep: noSleep });
+  assert.equal(ceiling.calls.length, 100);
+
+  // Without max_pages the default cap is unchanged (25).
+  const defaulted = fakeFetch(() => fullPage());
+  await fetchOraclecloud(CAREERS, { fetchImpl: defaulted, sleep: noSleep });
+  assert.equal(defaulted.calls.length, 25);
+});
+
+// CAR-255 parity (upstream oraclecloud) — a cap stop with the tenant still
+// reporting more is a partial read, reported in the canonical shape instead
+// of returning a silent prefix.
+test('fetchOraclecloud: a cap stop marks the board partial (canonical truncation signal)', async () => {
+  const fetchImpl = fakeFetch(() => makePage(
+    Array.from({ length: PAGE_SIZE }, (_, i) => makeReq({ Id: `${Math.random()}-${i}` })),
+    100000,
+    true,
+  ));
+  const jobs = await fetchOraclecloud(CAREERS, { fetchImpl, company: { max_pages: 2 } });
+  assert.equal(fetchImpl.calls.length, 2);
+  assert.deepEqual(jobs.truncated, { reason: 'page-cap', fetched: PAGE_SIZE * 2, total: 100000 });
+});
+
+test('fetchOraclecloud: a complete board carries no truncation mark', async () => {
+  const fetchImpl = fakeFetch((url) => {
+    const offset = parseInt(new URL(url).searchParams.get('offset') || '0', 10);
+    const len = offset < 400 ? PAGE_SIZE : 50;
+    return makePage(
+      Array.from({ length: len }, (_, i) => makeReq({ Id: `c${offset}-${i}`, Title: `Role ${i}` })),
+      450,
+      true,
+    );
+  });
+  const jobs = await fetchOraclecloud(CAREERS, { fetchImpl });
+  assert.equal(jobs.length, 450);
+  assert.equal(jobs.truncated, undefined, 'the walk ended on the tenant total — the board is whole');
+});
+
+test('fetchOraclecloud: an opts.maxPages probe costs one request and marks nothing', async () => {
+  const fetchImpl = fakeFetch(() => makePage(
+    Array.from({ length: PAGE_SIZE }, (_, i) => makeReq({ Id: `${Math.random()}-${i}` })),
+    100000,
+    true,
+  ));
+  const jobs = await fetchOraclecloud(CAREERS, { fetchImpl, company: { max_pages: 5 }, maxPages: 1 });
+  assert.equal(fetchImpl.calls.length, 1, 'the probe budget bounds the walk');
+  assert.equal(jobs.truncated, undefined, 'a probe never reads as a cap stop');
 });
 
 test('fetchOraclecloud: first-request failure throws; mid-run blip keeps collected jobs', async () => {

@@ -41,6 +41,7 @@
  */
 import { fetchTextWithRetry } from '../http-json.mjs';
 import { safeEncodeURIComponent } from './_safe-url.mjs';
+import { markTruncated } from '../board-truncation.mjs';
 
 const ALLOWED_HOST = 'jobs.apple.com';
 const BASE = 'https://jobs.apple.com';
@@ -94,10 +95,26 @@ export function parseHydration(html) {
   }
 }
 
+/**
+ * A city arrives as a bare `Cupertino` with `countryName` beside it, and a
+ * location filter that names a country has only this string to match
+ * (CAR-255 parity, upstream #6452). Level 1 entries are the country already,
+ * in a shorter spelling: `United States` against `United States of America`.
+ * @param {any} l
+ */
+function placeOf(l) {
+  const name = l?.name;
+  const country = l?.countryName;
+  // Only two strings are joined. Anything else passes through as it did
+  // before the join, where name.includes() would throw and fail the page.
+  if (typeof name !== 'string' || typeof country !== 'string') return name;
+  return name && country && l.level !== 1 && !name.includes(country) ? `${name}, ${country}` : name;
+}
+
 /** @param {any} r */
 function locationOf(r) {
   const names = (Array.isArray(r.locations) ? r.locations : [])
-    .map((l) => l?.name)
+    .map(placeOf)
     .filter(Boolean);
   const uniq = [...new Set(names)];
   if (uniq.length) return uniq.join('; ');
@@ -253,5 +270,10 @@ export async function fetchApple(apiUrl = `${BASE}/en-us/search`, opts = {}) {
     console.error(`⚠️  apple: ${company.name || 'Apple'} hit the ${maxPages}-page cap on at least one search — raise max_pages on this entry for more`);
   }
 
-  return [...byUrl.values()];
+  const result = [...byUrl.values()];
+  // CAR-255 parity (upstream, delta b859214b..24da28e8) — the canonical
+  // partial-read signal (board-truncation.mjs): the scan reports this board
+  // `partial` instead of presenting the cap-cut prefix as the whole one.
+  if (truncated) markTruncated(result, 'page-cap', { fetched: result.length });
+  return result;
 }

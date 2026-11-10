@@ -34,6 +34,9 @@ import { parseYearsRequirement, buildYearsMinFilter } from './jd-years.mjs';
 import { buildTrustValidator } from './trust-validator.mjs';
 import { buildTierFilter } from './classify-tier.mjs';
 import { loadQuarantine, isQuarantined, quarantineAdd, pruneQuarantine, saveQuarantine, isPermanentFailure, RETRY_AFTER_DAYS } from './scan-quarantine.mjs';
+import { boardTruncation, describeTruncation } from './board-truncation.mjs';
+import { isTransientFetchError } from './fetch-error-kind.mjs';
+import { closesAtIso } from './posting-close.mjs';
 import { withFileLock, atomicWrite } from './file-lock.mjs';
 import { makeTimeoutFetch } from './fetch-timeout.mjs';
 // #6582 — a portals.yml entry can raise its request timeout with `timeout_ms`.
@@ -498,10 +501,20 @@ export async function runEnScan(opts = {}) {
 
   let progressDone = 0;            // v1.63.2 — determinate % progress
   let fetchFailures = 0;           // sources whose fetch threw (snapshot guard)
-  // Sources whose fetcher flagged its result array (ultiproTruncated) — the
-  // flag lives on the array and is lost by the map/slice below, so it is
-  // collected here to flow into the scan result and the snapshot.
-  const truncatedSources = [];
+  // CAR-256 (parent parity, #6636) — boards read only PARTLY (page cap, 429,
+  // fetch error), one entry per source: {company, reason, fetched?, total?,
+  // source}. Any provider tag the board-truncation mirror recognizes lands
+  // here; truncatedSources keeps carrying the bare names for the snapshot
+  // shape. A partial read is reported, never silently presented as the whole
+  // board.
+  const partialSources = [];
+  // CAR-256 (parent parity, #6675) — boards whose fetch failed on a TRANSIENT
+  // error (network reset / timeout / HTTP 5xx). They are retried ONCE after
+  // the main concurrent sweep, one at a time (see retryTransientFailures in
+  // fetchAllBoards below): the provider's own retries run inside the same
+  // burst that caused the failure, so re-running the failed boards after the
+  // sweep removes the contention instead of repeating into it.
+  const transientFailures = [];
   // CAR-178 — one keyed limiter per run: the pool may hold scanConcurrency
   // companies in flight, but a single ATS host never takes more than the
   // resolved per-host limit concurrent fetches. Detection, quarantine, dedup
@@ -530,7 +543,10 @@ export async function runEnScan(opts = {}) {
   const fetchedPerCo = await withBoardResponseCache({ ttlMs: cacheTtlMs, disabled: !cacheEnabled }, async () => {
     // #6573 — per-run env read: CAREER_OPS_SCAN_CONCURRENCY (default 32).
     const scanConcurrency = resolveConcurrency(process.env.CAREER_OPS_SCAN_CONCURRENCY, DEFAULT_SCAN_CONCURRENCY);
-    const fetchAllBoards = () => pMap(withApi, async (c) => {
+    // CAR-256 (parent parity, #6675) — the gap between the sweep and the
+    // retry pass. Per-run env read so tests can shrink it.
+    const transientRetryGapMs = Math.max(0, Number.parseInt(process.env.CAREER_OPS_TRANSIENT_RETRY_GAP_MS ?? '', 10) || 3000);
+    const fetchCompany = async (c, { countProgress = true, idx = -1 } = {}) => {
     if (signal?.aborted) return [];
     const fetcher = fetcherFor(c._api.type);
     const label = String(c.name ?? '').padEnd(28);
@@ -588,12 +604,25 @@ export async function runEnScan(opts = {}) {
         ...(yearsMinConfigured ? { yearsMin: statedYearsMin(i) } : {}),
       }));
       log('stdout', `  ✓ ${label} ${c._api.type.padEnd(10)} ${items.length} jobs`);
+      // CAR-256 (parent parity, #6636) — ANY partial read (the canonical
+      // `truncated` shape or a legacy `<name>Truncated|Incomplete` tag) lands
+      // in partialSources so the scan result says which boards were read only
+      // partly. The two tags this file names explicitly keep their richer
+      // stderr lines below; every other shape gets the generic parent
+      // fragment. A source that stopped early is reported, never silently
+      // presented as the whole board.
+      const truncation = boardTruncation(items);
+      if (truncation) {
+        partialSources.push({ company: String(c.name ?? c._api.url), ...truncation });
+        if (!items.ultiproTruncated && !items.peoplesoftIncomplete) {
+          log('stderr', `  ⚠ ${describeTruncation(String(c.name ?? ''), truncation)} — board only partly read`);
+        }
+      }
       // A source that stopped early tags its result array; say so instead of
       // presenting a partial board as the whole one. The flag itself is lost
       // by the withCo map below, so the company name is collected for the
       // scan result (`truncatedSources`).
       if (items.ultiproTruncated) {
-        truncatedSources.push(String(c.name ?? c._api.url));
         log('stderr', `  ⚠ ${c.name}: result list truncated at the page cap — some postings were not read`);
       }
       const ps = items.peoplesoftIncomplete;
@@ -613,11 +642,42 @@ export async function runEnScan(opts = {}) {
         quarantineAdd(quarantine, c.name, { url: c._api.url, status: e.status || 'HTTP 404/410' });
         quarantineChanged = true;
       }
+      // CAR-256 (#6675) — a transient failure is queued for ONE retry after
+      // the sweep; a 4xx will not change in seconds and is not. The pMap
+      // index rides along so the retry result replaces the sweep's slot.
+      if (isTransientFetchError(e)) transientFailures.push({ company: c, idx });
       return [];
     } finally {
-      onProgress(++progressDone, withApi.length);
+      if (countProgress) onProgress(++progressDone, withApi.length);
     }
-  }, scanConcurrency);
+  };
+    // CAR-256 (parent parity, #6675) — the post-sweep retry pass. Failed
+    // boards run one at a time (the contention that broke them is gone), the
+    // sweep's error for a board that recovers is removed and it leaves the
+    // failed set, so its rows count normally and the R-12 snapshot guard no
+    // longer keeps its old rows. One extra attempt per board, never a second.
+    const retryTransientFailures = async (rows) => {
+      if (transientFailures.length === 0 || signal?.aborted) return;
+      const pending = transientFailures.splice(0);
+      log('stderr', `scan: retrying ${pending.length} board(s) that failed on a transient error, one at a time: ${pending.map((p) => p.company.name).join(', ')}`);
+      for (const { company, idx } of pending) {
+        if (signal?.aborted) break;
+        const prefix = `${company.name}: `;
+        const at = errors.findIndex((e) => typeof e === 'string' && e.startsWith(prefix));
+        if (at !== -1) errors.splice(at, 1);
+        fetchFailures -= 1;
+        failedCompanies.delete(company.name);
+        if (transientRetryGapMs > 0) await new Promise((r) => setTimeout(r, transientRetryGapMs));
+        // The retry's own catch re-records the error (and can quarantine) if
+        // it fails again; no third attempt is ever queued.
+        rows[idx] = await fetchCompany(company, { countProgress: false });
+      }
+    };
+    const fetchAllBoards = async () => {
+      const rows = await pMap(withApi, (c, idx) => fetchCompany(c, { idx }), scanConcurrency);
+      await retryTransientFailures(rows);
+      return rows;
+    };
     const rows = await fetchAllBoards();
     const stats = boardCacheStats();
     if (stats && (stats.hits > 0 || stats.revalidated > 0)) {
@@ -639,6 +699,9 @@ export async function runEnScan(opts = {}) {
   }
 
   const perCo = fetchedPerCo.map((list) => (Array.isArray(list) ? list : []));
+  // CAR-256 (#6636) — the bare names every snapshot consumer already reads;
+  // `partialSources` above carries the reason + counts.
+  const truncatedSources = partialSources.map((p) => p.company);
   const allRaw = perCo.flat();
   // v1.33.0 (WS4) — optional portals.yml location_filter. No key → pass-all.
   const locOk = buildLocationFilter(portals.location_filter);
@@ -751,6 +814,17 @@ export async function runEnScan(opts = {}) {
   log('stdout', `New offers added:      ${fresh.length}`);
   log('stdout', '━'.repeat(60));
 
+  // CAR-256 (parent parity, upstream #6636) — the run-summary call-out for
+  // boards read only PARTLY (page cap, 429, fetch error): postings beyond the
+  // cut were never scanned, so the run must say so rather than present the
+  // partial board as the whole one. The per-board fetch-time ⚠ lines above can
+  // drown in the concurrent sweep; this block is the one that survives.
+  if (partialSources.length > 0) {
+    log('stderr', `⚠️  ${partialSources.length} board(s) only PARTLY read — postings beyond the cut were not scanned:`);
+    for (const t of partialSources) log('stderr', `   • ${describeTruncation(t.company, t)}`);
+    log('stderr', `   For a page cap, raise max_pages on the entry or narrow its search; a fetch error or rate limit that repeats points at the board's host.`);
+  }
+
   if (writeFiles) {
     if (fresh.length) {
       await appendToPipeline(fresh);
@@ -797,6 +871,7 @@ export async function runEnScan(opts = {}) {
         filtered: afterCooldown, // v1.76.0 — full matched set, no cap; #/scan paginates client-side (v1.84.0: post-cooldown)
         errors,
         truncatedSources, // v1.242.0 — sources whose board hit the page cap
+        partialSources, // CAR-256 (#6636) — WHY each was partial (reason + counts)
       }, saveOpts);
     }
   }
@@ -812,6 +887,7 @@ export async function runEnScan(opts = {}) {
     fresh,
     errors,
     truncatedSources,
+    partialSources,
   };
 }
 
@@ -839,8 +915,13 @@ function appendToHistory(jobs) {
   mkdirSync(PATHS.scanHistory.replace(/\/[^/]+$/, ''), { recursive: true });
   // v1.75.0 (#1098) — sanitize every TSV cell so an external company/title with
   // a newline can't inject a row and a leading =+-@ can't become a formula.
+  // CAR-256 (#6597) — a 7th `closes_at` cell (the posting's close day,
+  // YYYY-MM-DD, or empty) is appended to every newer row: the day GET
+  // /api/pipeline joins back onto the queue for the #/pipeline close-date
+  // chip. Rows written before the column stop short at 6 cells; readers
+  // index positionally, so an appended column never moves an old field.
   const lines = jobs.map((j) =>
-    [new Date().toISOString().slice(0, 10), j.source, j.id, j.company, j.title, normalizeScanUrl(j.url)]
+    [new Date().toISOString().slice(0, 10), j.source, j.id, j.company, j.title, normalizeScanUrl(j.url), closesAtIso(j.closesAt) || closesAtIso(j)]
       .map(sanitizeTsvField)
       .join('\t')
   );

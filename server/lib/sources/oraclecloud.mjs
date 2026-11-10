@@ -52,6 +52,7 @@
  */
 import { fetchJson, delay, BROWSER_LIKE_USER_AGENT } from '../http-json.mjs';
 import { decodeEntities } from '../html-entities.mjs';
+import { markTruncated } from '../board-truncation.mjs';
 
 // `oraclecloud(?:[1-9][0-9]?)?` = the unnumbered apex plus the numbered family
 // oraclecloud1.com … oraclecloud99.com (some tenants live only on a numbered
@@ -61,7 +62,12 @@ import { decodeEntities } from '../html-entities.mjs';
 export const ORACLE_HOST_RE = /^[a-z0-9-]+\.fa\.(?:[a-z0-9-]+\.)?(?:ocs\.)?oraclecloud(?:[1-9][0-9]?)?\.com$/i;
 
 export const PAGE_SIZE = 200;
-export const MAX_PAGES = 25; // safety cap (~5000 jobs); hard ceiling like workday
+export const MAX_PAGES = 25; // default cap (~5000 jobs) when the entry sets no max_pages
+// Upper bound an entry may opt in to with `max_pages` (~20000 jobs, 100
+// requests of 200 rows at 250ms spacing). JPMorgan Chase alone has 7000+
+// postings, which the default cannot cover; the bound stays finite so a typo
+// can't walk a board forever (CAR-255 parity, upstream #6690).
+export const HARD_MAX_PAGES = 100;
 const INTER_PAGE_DELAY_MS = 250; // WAF-aware spacing between same-host pages
 const SNIPPET_CAP = 500;
 
@@ -265,10 +271,11 @@ export function parseOraclecloud(json, site, companyName) {
   return { jobs, total, listLen: list.length };
 }
 
-/** Resolve the page cap: a positive integer `max_pages` on the entry, capped. */
-function resolveMaxPages(company) {
+/** Resolve the page cap: a positive integer `max_pages` on the entry, capped
+ * at HARD_MAX_PAGES. Exported for unit tests. */
+export function resolveMaxPages(company) {
   const v = company && company.max_pages;
-  if (Number.isInteger(v) && v > 0) return Math.min(v, MAX_PAGES);
+  if (Number.isInteger(v) && v > 0) return Math.min(v, HARD_MAX_PAGES);
   return MAX_PAGES;
 }
 
@@ -284,21 +291,33 @@ function resolveMaxPages(company) {
  * @param {{ fetchImpl?: Function, signal?: AbortSignal, company?: object }} [opts]
  */
 export async function fetchOraclecloud(endpoint, opts = {}) {
-  const { fetchImpl = fetch, signal, company = {} } = opts;
+  const { fetchImpl = fetch, signal, company = {}, sleep: sleepOpt } = opts;
+  // Test seam (mirrors apple.mjs): an injectable sleep keeps a long-walk test
+  // instant; the default stays the signal-aware delay.
+  const sleep = sleepOpt || ((ms) => delay(ms, signal));
   assertOraclecloudUrl(endpoint);
   const site = resolveSite(endpoint, company);
   if (!site) throw new Error(`oraclecloud: cannot derive API URL from ${endpoint}`);
-  const maxPages = resolveMaxPages(company);
+  // CAR-255 parity (upstream) — `opts.maxPages` is the liveness-probe budget:
+  // honor it as a ceiling so a probe costs one request instead of the whole
+  // board, and never let a probe read as a cap stop below.
+  const probeBudget = Number(opts.maxPages);
+  const probing = Number.isInteger(probeBudget) && probeBudget > 0;
+  const maxPages = probing ? Math.min(resolveMaxPages(company), probeBudget) : resolveMaxPages(company);
   const companyName = (company && typeof company.name === 'string') ? company.name : '';
 
   /** @type {Map<string, object>} */
   const seen = new Map();
   let total = null;
+  // Set when the loop's own bound ended the walk on the last allowed page —
+  // the tenant still reported more (or reports no total at all), so the board
+  // is only partly read.
+  let capped = false;
   for (let page = 0; page < maxPages; page += 1) {
     const offset = page * PAGE_SIZE;
     const apiUrl = buildApiUrl(site, offset, PAGE_SIZE);
     assertOraclecloudUrl(apiUrl); // SSRF guard before every fetch
-    if (page > 0) await delay(INTER_PAGE_DELAY_MS, signal);
+    if (page > 0) await sleep(INTER_PAGE_DELAY_MS);
 
     let json;
     try {
@@ -353,6 +372,19 @@ export async function fetchOraclecloud(endpoint, opts = {}) {
     if (total !== null) {
       if (offset + PAGE_SIZE >= total) break;
     } else if (listLen < PAGE_SIZE) break;
+    if (page === maxPages - 1 && !probing) capped = true;
   }
-  return [...seen.values()];
+  const all = [...seen.values()];
+  if (capped) {
+    // Walked every allowed page and the tenant still reports more: say so
+    // (canonical partial-read shape, board-truncation.mjs) instead of
+    // returning a silent prefix, and tell the operator what to do next
+    // (upstream #6690's advice, naming the opt-in ceiling).
+    const advice = maxPages < HARD_MAX_PAGES
+      ? `raise max_pages on this entry for more (up to ${HARD_MAX_PAGES})`
+      : `max_pages is already at the ${HARD_MAX_PAGES}-page ceiling`;
+    console.error(`⚠️  oraclecloud: ${companyName || endpoint} stopped at max_pages=${maxPages} (${all.length}${total === null ? '' : ` of ${total}`} jobs) — the board is partial (${advice})`);
+    markTruncated(all, 'page-cap', { fetched: all.length, ...(total !== null ? { total } : {}) });
+  }
+  return all;
 }

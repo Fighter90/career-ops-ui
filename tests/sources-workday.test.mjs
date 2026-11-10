@@ -110,8 +110,12 @@ test('pagination walks offsets and stops on a short RAW page', async () => {
   assert.deepEqual(posts, [0, 100, 200], 'POSTs offset 0, 100, 200');
   assert.equal(jobs.length, 240);
   assert.equal(jobs.at(-1).title, 'Role 239');
+  assert.equal(jobs.truncated, undefined, 'a short page is the board\'s natural end, not a partial read');
 });
 
+// CAR-255 parity (upstream workday #6672) — the page cap leaving a full last
+// page behind is a partial read, reported in the canonical shape instead of
+// returning a silent prefix.
 test('pagination stops at the page cap when every page comes back full', async () => {
   const { impl, posts } = pagedTransport([
     Array.from({ length: 100 }, (_, i) => row(i)),
@@ -119,6 +123,16 @@ test('pagination stops at the page cap when every page comes back full', async (
   const jobs = await fetchWorkday(API, { fetchImpl: impl, resolveMultiLocation: false });
   assert.equal(posts.length, MAX_PAGES);
   assert.equal(jobs.length, MAX_PAGES * 100);
+  assert.deepEqual(jobs.truncated, { reason: 'page-cap', fetched: MAX_PAGES * 100 }, 'the cap stop is reported');
+});
+
+test('a later-page failure stop is not a cap stop — no truncation mark', async () => {
+  const { impl } = pagedTransport([
+    Array.from({ length: 100 }, (_, i) => row(i)),
+    { __status: 503 },
+  ]);
+  const jobs = await fetchWorkday(API, { fetchImpl: impl, resolveMultiLocation: false });
+  assert.equal(jobs.truncated, undefined, 'a fetch failure keeps partials without the cap mark');
 });
 
 test('a later-page HTTP failure keeps the collected pages and logs', async () => {

@@ -11,6 +11,7 @@ import assert from 'node:assert/strict';
 import {
   meta,
   parseTenantUrl,
+  resolveTenant,
   buildListUrl,
   buildDetailUrl,
   assertAdpUrl,
@@ -131,6 +132,66 @@ test('buildDetailUrl encodes the id once and drops lone surrogates', () => {
   assert.equal(u.searchParams.get('lang'), 'en_US');
   assert.equal(u.searchParams.get('locale'), 'en_US');
   assert.equal(buildDetailUrl('\uD800', CID, CCID), null);
+});
+
+// CAR-255 parity (upstream #6679) — some tenants' career centers are
+// configured for a non-en_US locale and their job-requisitions endpoints
+// return totalNumber 0 when lang/locale are missing or mismatched. The lang
+// is read from the careers_url (or api:) when present, default en_US.
+const LANG_URL = `https://workforcenow.adp.com${BASE}?cid=${CID}&ccId=${CCID}&lang=en_CA`;
+
+test('resolveTenant threads the URL lang; a lang-less api inherits the same tenant\'s explicit careers_url lang (#6679)', () => {
+  assert.deepEqual(resolveTenant({ name: 'X', careers_url: LANG_URL }), { cid: CID, ccId: CCID, lang: 'en_CA' });
+  assert.deepEqual(resolveTenant({ name: 'X', careers_url: CAREERS_URL }), { cid: CID, ccId: CCID, lang: 'en_US' });
+  // api: has precedence for cid/ccId, and an api without lang must not pin an
+  // en_CA board to en_US when the careers_url names the SAME tenant with one.
+  assert.deepEqual(
+    resolveTenant({ name: 'X', api: CAREERS_URL, careers_url: LANG_URL }),
+    { cid: CID, ccId: CCID, lang: 'en_CA' });
+  // A different tenant's lang is never inherited; the en_US default stands.
+  assert.deepEqual(
+    resolveTenant({
+      name: 'X',
+      api: CAREERS_URL,
+      careers_url: `https://workforcenow.adp.com${BASE}?cid=other-cid&ccId=${CCID}&lang=fr_CA`,
+    }),
+    { cid: CID, ccId: CCID, lang: 'en_US' });
+  assert.equal(resolveTenant({ name: 'X' }), null);
+});
+
+test('buildListUrl / buildDetailUrl thread lang into lang+locale (#6679)', () => {
+  const list = new URL(buildListUrl(CID, CCID, 1, 'en_CA'));
+  assert.equal(list.searchParams.get('lang'), 'en_CA');
+  assert.equal(list.searchParams.get('locale'), 'en_CA');
+  const detail = new URL(buildDetailUrl('id1', CID, CCID, 'fr_CA'));
+  assert.equal(detail.searchParams.get('lang'), 'fr_CA');
+  assert.equal(detail.searchParams.get('locale'), 'fr_CA');
+  // The default stays en_US.
+  assert.equal(new URL(buildListUrl(CID, CCID, 1)).searchParams.get('lang'), 'en_US');
+  assert.equal(new URL(buildListUrl(CID, CCID, 1)).searchParams.get('locale'), 'en_US');
+});
+
+test('adapter buildEndpoint carries the tenant lang (#6679)', () => {
+  const u = new URL(adapter.buildEndpoint({ name: 'X', careers_url: LANG_URL }));
+  assert.equal(u.searchParams.get('lang'), 'en_CA');
+  assert.equal(u.searchParams.get('locale'), 'en_CA');
+});
+
+test('fetch: an en_CA tenant sends lang=en_CA on the list and detail calls (#6679)', async () => {
+  const r = router((url) => (new URL(url).pathname === API_PATH
+    ? { jobRequisitions: fullPage(1), meta: { totalNumber: 20 } }
+    : { requisitionDescription: '<p>Canadian board</p>' }));
+  const jobs = await fetchAdpWorkforcenow(buildListUrl(CID, CCID, 1, 'en_CA'), {
+    fetchImpl: r.impl, company: { name: 'ExampleCo', careers_url: LANG_URL, adpWorkforcenow: { fetchDetails: true, detailLimit: 1 } },
+    ...noSleep,
+  });
+  assert.equal(jobs.length, 20);
+  const listUrl = new URL(r.calls[0].url);
+  assert.equal(listUrl.searchParams.get('lang'), 'en_CA', 'the list call carries the tenant lang');
+  assert.equal(listUrl.searchParams.get('locale'), 'en_CA');
+  const detailUrl = new URL(r.calls[1].url);
+  assert.equal(detailUrl.searchParams.get('lang'), 'en_CA', 'the detail call carries the tenant lang');
+  assert.equal(detailUrl.searchParams.get('locale'), 'en_CA');
 });
 
 test('extractExternalJobId reads the ExternalJobID entry; null when absent', () => {
