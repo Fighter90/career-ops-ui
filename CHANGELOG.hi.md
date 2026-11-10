@@ -4,7 +4,7 @@
 > यह परिवर्तन-सूची अब संपूर्ण रिलीज़-इतिहास रखती है। हिन्दी स्थानीयकरण (v1.122.0) से पहले प्रकाशित प्रविष्टियाँ नीचे अंग्रेज़ी मूल रूप में हैं — अनुवाद बाकी है; आधिकारिक स्रोत [🇬🇧 CHANGELOG.md](CHANGELOG.md) है।
 ## [1.271.4] — 2026-11-10
 
-### Fixed
+### ठीक किया गया
 - **CodeQL alert wave closed at source (6 alerts)**: 2 high file-system-race patterns removed by review (`tests/robots-check.test.mjs` unused origin+import, `tests/sources-turbohire.test.mjs` unused import), `GET /api/pipeline` now rate-limited, a provably-true conjunct dropped in adp-workforcenow, URL-substring assertions switched to anchored regexes in posting-close tests.
 
 ### नोट्स

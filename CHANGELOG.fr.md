@@ -6,7 +6,7 @@
 > ⏳ **Note de couverture** — ce fichier inclut désormais l'historique complet ; les entrées antérieures à la v1.61.0 figurent ci-dessous en anglais original, traduction en attente.
 ## [1.271.4] — 2026-11-10
 
-### Fixed
+### Corrigé
 - **CodeQL alert wave closed at source (6 alerts)**: 2 high file-system-race patterns removed by review (`tests/robots-check.test.mjs` unused origin+import, `tests/sources-turbohire.test.mjs` unused import), `GET /api/pipeline` now rate-limited, a provably-true conjunct dropped in adp-workforcenow, URL-substring assertions switched to anchored regexes in posting-close tests.
 
 ### Notes
