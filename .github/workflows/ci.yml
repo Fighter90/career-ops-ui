@@ -51,7 +51,10 @@ jobs:
 
   e2e:
     name: Playwright e2e
-    runs-on: ubuntu-latest
+    # Pinned with code-quality: ubuntu-latest migrated to Ubuntu 26 and
+    # `npx playwright install --with-deps chromium` fails there (apt exit 100 —
+    # the new image's package set is not yet covered by playwright's deps list).
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
     needs: unit
