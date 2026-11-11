@@ -1,3 +1,11 @@
+## [1.271.7] — 2026-11-11
+
+### 修復
+- **Added**: the Apple scan source now walks Apple's full careers board instead of only the newest page, so older-but-open roles surface in scans; expanded source tests lock in the new walk.
+
+### 備註
+- Deliberately NOT changed: scan filtering and dedup — full-board Apple rows still flow through the same title/location filters and dedup keys as every other source.
+
 # 變更日誌
 
 > **i18n 註記** — 本檔案已完整翻譯為繁體中文(臺灣慣用語)。規範英文正文仍以 [🇬🇧 CHANGELOG.md](CHANGELOG.md) 為準。

@@ -1,3 +1,11 @@
+## [1.271.7] — 2026-11-11
+
+### Corrigido
+- **Added**: the Apple scan source now walks Apple's full careers board instead of only the newest page, so older-but-open roles surface in scans; expanded source tests lock in the new walk.
+
+### Notas
+- Deliberately NOT changed: scan filtering and dedup — full-board Apple rows still flow through the same title/location filters and dedup keys as every other source.
+
 # Histórico de mudanças
 
 > **Nota** — este arquivo está integralmente traduzido para o português brasileiro. Cada entrada de versão foi reescrita em PT-BR técnico de qualidade editorial, preservando blocos de código, mensagens de commit, caminhos de arquivo, URLs, variáveis de ambiente, comandos e rótulos de link em sua forma original.

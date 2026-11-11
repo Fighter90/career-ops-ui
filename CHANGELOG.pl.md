@@ -1,3 +1,11 @@
+## [1.271.7] — 2026-11-11
+
+### Naprawiono
+- **Added**: the Apple scan source now walks Apple's full careers board instead of only the newest page, so older-but-open roles surface in scans; expanded source tests lock in the new walk.
+
+### Uwagi
+- Deliberately NOT changed: scan filtering and dedup — full-board Apple rows still flow through the same title/location filters and dedup keys as every other source.
+
 # Dziennik zmian
 
 > **Uwaga dot. tłumaczenia (v1.70.0)** — polski dodano jako jeden z trzech nowych języków interfejsu. Ten plik tłumaczy najnowsze wpisy; pełna historia znajduje się w [🇬🇧 angielskim CHANGELOG](CHANGELOG.md), który jest źródłem normatywnym.

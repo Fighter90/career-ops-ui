@@ -1,3 +1,11 @@
+## [1.271.7] — 2026-11-11
+
+### Виправлено
+- **Added**: the Apple scan source now walks Apple's full careers board instead of only the newest page, so older-but-open roles surface in scans; expanded source tests lock in the new walk.
+
+### Примітки
+- Deliberately NOT changed: scan filtering and dedup — full-board Apple rows still flow through the same title/location filters and dedup keys as every other source.
+
 # Журнал змін
 
 > **Примітка щодо перекладу (v1.70.0)** — українську додано як одну з трьох нових мов інтерфейсу. Цей файл перекладає найновіші записи; повна історія — в [🇬🇧 англійському CHANGELOG](CHANGELOG.md), який є нормативним джерелом.
