@@ -113,6 +113,25 @@ export function splitTitle(raw) {
 }
 
 /**
+ * Return the location clause of a feed teaser: the text after "This is a
+ * {full-time|part-time|contract} position that", without its final period.
+ * Live shapes (2026-11-09): "is 100% remote with no geographical
+ * restrictions. Work remotely from anywhere", "is based in New York NY",
+ * "can be done remotely anywhere in the United States, or Canada". Returns
+ * '' when the teaser has no such clause (8 of 54 live items end at
+ * "This is a full-time position").
+ *
+ * CAR-268 parity (upstream #6765+#6747). Exported for unit tests.
+ *
+ * @param {string} teaser
+ * @returns {string}
+ */
+export function teaserLocationClause(teaser) {
+  const m = String(teaser ?? '').match(/\bThis is an? [\w-]+(?: [\w-]+)? position that\s+([\s\S]+?)\s*\.?\s*$/i);
+  return m ? m[1].replace(/\s+/g, ' ').trim() : '';
+}
+
+/**
  * Parse a Cryptocurrency Jobs RSS document into the web-ui rich job shape.
  * Exported for unit tests; `fetchCryptocurrencyJobs()` wraps it around an HTTP
  * fetch. Items without a usable https cryptocurrencyjobs.co URL (link, falling
@@ -140,23 +159,31 @@ export function parseCryptocurrencyJobsRss(xml, maxResults) {
       const { title, company } = splitTitle(rawTitle);
       if (!title) continue;
 
-      // CAR-257 (parent parity, upstream #6746) — NO snippet: the feed's
-      // <description> is not the job description. Every item carries the same
-      // one-sentence teaser template ("{Company} is looking to hire a {Role}
-      // to join their team. This is a full-time position that …", verified
-      // upstream 2026-11-09: 54 of 54 live items, 96-253 characters) and
-      // never names a stack. The en-scanner's content filter reads
+      // CAR-257 (parent parity, upstream #6746) — NO snippet/description: the
+      // feed's <description> is not the job description. Every item carries the
+      // same one-sentence teaser template ("{Company} is looking to hire a
+      // {Role} to join their team. This is a full-time position that …",
+      // verified upstream 2026-11-09: 54 of 54 live items, 96-253 characters)
+      // and never names a stack. The en-scanner's content filter reads
       // `description ?? snippet`, so the teaser would drop EVERY posting from
       // this board for a user with `content_filter.positive` set. Same
       // decision as the parent's _wp-job-feed.mjs, which refuses WordPress's
       // excerpt. The title filter is untouched by this — the teaser only
       // ever repeated the title it already matched.
       //
+      // CAR-268 parity (upstream #6747) — the teaser's location clause ("can
+      // be done remotely anywhere in the United States, or Canada") is the
+      // feed's only country signal, so it survives as `eligibilityText`
+      // below, which no description-like consumer reads (web-ui has no
+      // country_eligibility_filter — the field rides the job object for
+      // consumers that do). Only the clause goes there: the rest of the
+      // teaser names the company, and a company called "Canada Crypto"
+      // would pass a candidate-country check.
+      //
       // Location stays '' (the remote signal lives in isRemote/workplaceType),
       // although some teasers name an on-site city ("is based in New York
-      // NY") — that clause is the feed's only location signal and carrying it
-      // would need an input other than the description-like field the content
-      // filter reads.
+      // NY") — that clause now travels via eligibilityText instead.
+      const eligibilityText = teaserLocationClause(decodeFeedText(extractTag(item, 'description')));
 
       jobs.push({
         id: `cryptocurrencyjobs-${url}`,
@@ -171,6 +198,7 @@ export function parseCryptocurrencyJobsRss(xml, maxResults) {
         date: toIsoDate(extractTag(item, 'pubDate')),
         snippet: '',
         source: 'cryptocurrencyjobs',
+        ...(eligibilityText ? { eligibilityText } : {}),
       });
     } catch {
       // Malformed item — skip, don't abort the whole feed.

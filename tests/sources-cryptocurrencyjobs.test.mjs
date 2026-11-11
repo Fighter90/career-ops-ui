@@ -9,6 +9,7 @@ import {
   parseCryptocurrencyJobsRss,
   fetchCryptocurrencyJobs,
   splitTitle,
+  teaserLocationClause,
   assertCryptocurrencyJobsUrl,
   FEED_URL,
   meta,
@@ -103,6 +104,93 @@ test('parseCryptocurrencyJobsRss: a teaser template item still parses (title/com
   assert.equal(jobs[0].company, 'Acme Protocol');
   assert.equal(jobs[0].date, '2026-11-09');
   assert.equal(jobs[0].snippet, '', 'the teaser must not become the snippet');
+});
+
+// CAR-268 (parent parity, upstream #6765+#6747) — the teaser's location clause
+// ("can be done remotely anywhere in the United States, or Canada") is the
+// feed's ONLY country signal. After CAR-257 stopped emitting the teaser as
+// description-like text, that clause was lost with it. It now travels as
+// `eligibilityText` — a field NO description-like consumer reads (web-ui's
+// content filter reads `description ?? snippet`; eligibilityText is never
+// either), so carrying the clause cannot make a posting look like it has a
+// JD. Only the clause goes there: the rest of the teaser names the company,
+// and a company called "Canada Crypto" would pass a candidate-country check.
+// Live feed verified 2026-11-11: teasers are plain text (no HTML wrappers).
+const TEASER_FEED = `<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel>
+  <item>
+    <title>Protocol Engineer at Acme Protocol</title>
+    <link>https://cryptocurrencyjobs.co/engineering/acme-protocol/</link>
+    <description>Acme Protocol is looking to hire a Protocol Engineer to join their team. This is a full-time position that can be done remotely anywhere in the United States, or Canada.</description>
+  </item>
+  <item>
+    <title>Platform Engineer at Beta Labs</title>
+    <link>https://cryptocurrencyjobs.co/engineering/beta-platform/</link>
+    <description>Beta Labs is looking to hire a Platform Engineer to join their team. This is a contract position that is 100% remote with no geographical restrictions. Work remotely from anywhere.</description>
+  </item>
+  <item>
+    <title>Data Engineer at Gamma Chain</title>
+    <link>https://cryptocurrencyjobs.co/engineering/gamma-data/</link>
+    <description>Gamma Chain is looking to hire a Data Engineer to join their team. This is a full-time position</description>
+  </item>
+  <item>
+    <title>Security Engineer at Delta Labs</title>
+    <link>https://cryptocurrencyjobs.co/engineering/delta-security/</link>
+  </item>
+</channel></rss>`;
+
+test('parseCryptocurrencyJobsRss: the teaser location clause travels as eligibilityText, a separate signal', () => {
+  const jobs = parseCryptocurrencyJobsRss(TEASER_FEED);
+  assert.equal(jobs.length, 4);
+  assert.equal(
+    jobs[0].eligibilityText,
+    'can be done remotely anywhere in the United States, or Canada',
+    'the "that …" clause must become eligibilityText',
+  );
+  assert.equal(
+    jobs[1].eligibilityText,
+    'is 100% remote with no geographical restrictions. Work remotely from anywhere',
+    'a multi-sentence clause keeps its inner sentence, final period stripped',
+  );
+  // The teaser is STILL never description-like text (CAR-257 invariant).
+  for (const j of jobs) {
+    assert.equal(j.description, undefined, 'no description field may be emitted');
+    assert.equal(j.snippet, '', 'no snippet may be emitted');
+  }
+});
+
+test('parseCryptocurrencyJobsRss: no eligibilityText key when the teaser has no clause (or no teaser)', () => {
+  const jobs = parseCryptocurrencyJobsRss(TEASER_FEED);
+  // Item 2's teaser ends at "This is a full-time position" (8 of 54 live items
+  // upstream); item 3 has no <description> at all. Neither may carry the key.
+  assert.equal('eligibilityText' in jobs[2], false, 'a clause-less teaser must omit the key');
+  assert.equal('eligibilityText' in jobs[3], false, 'a missing teaser must omit the key');
+});
+
+test('teaserLocationClause: extracts every live clause shape, "" without one', () => {
+  const teaser = (rest) => `Acme is looking to hire a Rust Engineer to join their team. ${rest}`;
+  const cases = [
+    ['This is a full-time position that is 100% remote with no geographical restrictions. Work remotely from anywhere.',
+      'is 100% remote with no geographical restrictions. Work remotely from anywhere'],
+    ['This is a full-time position that can be done remotely anywhere in the United States, or Canada.',
+      'can be done remotely anywhere in the United States, or Canada'],
+    ['This is a contract position that can be done remotely anywhere in Philippines or Vietnam.',
+      'can be done remotely anywhere in Philippines or Vietnam'],
+    ['This is a part-time position that is based in New York NY.', 'is based in New York NY'],
+    ['This is a full-time position that can be based in London, or New York NY.', 'can be based in London, or New York NY'],
+    ['This is a full-time position that can be done remotely anywhere in the United States or on-site in New York NY, or San Francisco CA.',
+      'can be done remotely anywhere in the United States or on-site in New York NY, or San Francisco CA'],
+    // Live 2026-11-11 shape.
+    ['This is a full-time position that is remote or can be based in Palo Alto CA.',
+      'is remote or can be based in Palo Alto CA'],
+    // Clause-less teaser ends at "This is a full-time position".
+    ['This is a full-time position', ''],
+  ];
+  for (const [rest, want] of cases) {
+    assert.equal(teaserLocationClause(teaser(rest)), want, `clause shape: "${rest.slice(0, 60)}…"`);
+  }
+  assert.equal(teaserLocationClause(''), '');
+  assert.equal(teaserLocationClause(null), '');
+  assert.equal(teaserLocationClause(undefined), '');
 });
 
 test('parseCryptocurrencyJobsRss: every listing is flagged remote', () => {
