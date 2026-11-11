@@ -1,3 +1,11 @@
+## [1.271.6] — 2026-11-11
+
+### Naprawiono
+- **Added** scanner-wave parent-sync: repost detection folds regional title variants, scans re-admit seen postings after a recheck_after_days window, reverse-pipeline writes gain a lock, and HTML entities decode in attribute mode via a new shared entity table.
+
+### Uwagi
+- Deliberately NOT changed: scan filtering, scoring, portals.yml, or any user-layer configuration — this wave touches scanner internals and shared decoding only; existing scan history, snapshots and tracker data are untouched.
+
 # Dziennik zmian
 
 > **Uwaga dot. tłumaczenia (v1.70.0)** — polski dodano jako jeden z trzech nowych języków interfejsu. Ten plik tłumaczy najnowsze wpisy; pełna historia znajduje się w [🇬🇧 angielskim CHANGELOG](CHANGELOG.md), który jest źródłem normatywnym.

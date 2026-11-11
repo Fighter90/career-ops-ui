@@ -1,3 +1,11 @@
+## [1.271.6] — 2026-11-11
+
+### Corregido
+- **Added** scanner-wave parent-sync: repost detection folds regional title variants, scans re-admit seen postings after a recheck_after_days window, reverse-pipeline writes gain a lock, and HTML entities decode in attribute mode via a new shared entity table.
+
+### Notas
+- Deliberately NOT changed: scan filtering, scoring, portals.yml, or any user-layer configuration — this wave touches scanner internals and shared decoding only; existing scan history, snapshots and tracker data are untouched.
+
 # Registro de cambios
 
 > **Nota i18n** — desde v1.12.0 en adelante las entradas están localizadas en cada idioma. Las entradas anteriores (v1.11.x, v1.10.x) permanecen en ruso por convención del proyecto; el contenido normativo inglés está en [🇬🇧 CHANGELOG.md](CHANGELOG.md).
