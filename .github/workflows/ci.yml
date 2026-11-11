@@ -75,7 +75,18 @@ jobs:
           # twice in a row on both ubuntu-latest and ubuntu-24.04). 1.64.1 is
           # the local node_modules version — known-good in every green run.
           npm install --no-save playwright@1.64.1
-          npx playwright install --with-deps chromium
+          # 2026-11-11: GitHub Actions runners had intermittent DNS failures
+          # resolving azure.archive.ubuntu.com ("Temporary failure resolving"
+          # — apt exit 100). apt-get update + a retry loop rides the blip out.
+          sudo apt-get update -o Acquire::Retries=5
+          for i in 1 2 3 4; do
+            npx playwright install --with-deps chromium && exit 0
+            echo "::warning::playwright install attempt $i failed (apt resolver flake) — retrying in 45s"
+            sleep 45
+            sudo apt-get update -o Acquire::Retries=5
+          done
+          echo "::error::playwright install failed after 4 attempts"
+          exit 1
       - name: Run smoke e2e
         run: node tests/e2e.mjs
       - name: Run comprehensive e2e
