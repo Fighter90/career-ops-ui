@@ -1,15 +1,20 @@
-## [1.271.5] — 2026-11-11
-
-### Đã sửa
-- **Fixed**: three scan sources ported from the parent — startup-jobs no longer stops at its teaser listing, hackernews fetches through the shared HTTP context, and platsbanken reports truncated boards instead of silently ending early.
-
-### Ghi chú
-- Deliberately NOT changed: the source registry itself — no new scan sources were added; the three existing boards were only corrected, and the map/scan-layout test edits are test-only coverage.
-
 # Nhật ký thay đổi (Tiếng Việt)
 
 > Nhật ký này nay chứa đầy đủ lịch sử các bản phát hành. Các mục phát hành trước khi có bản địa hóa tiếng Việt (v1.254.0) xuất hiện bên dưới bằng bản gốc tiếng Anh — bản dịch còn đang chờ; bản chính thức là [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 > _Các mục từ [1.271.3] đang chờ dịch — bản gốc tiếng Anh bên dưới._
+
+## [1.271.5] — 2026-11-11
+
+### Đã thêm
+- Nguồn quét **Tes** (parent #6685, CAR-257) — việc làm giảng dạy ở Anh và quốc tế (tes.com/jobs): mục `provider: tes` toàn board duyệt endpoint tìm kiếm tRPC công khai (50 tin/trang, theo thứ tự ngày, dedup theo id), các khóa mục tùy chọn `keywords`/`max_pages`, ghim host SSRF + `redirect:'error'`, thẻ cắt ngắn chuẩn. Registry **138 → 139 = 134 EN + 5 RU · 134 adapters**; các count gate được tái sinh từ registry trực tiếp; số đếm trong help §17 + CONTEXT.md cập nhật ×19.
+
+### Đã sửa
+- **cryptocurrencyjobs** (parent #6746, CAR-257): mẫu tóm tắt một câu của feed không còn được phát ra như văn bản kiểu mô tả — bộ lọc nội dung của en-scanner đọc `description ?? snippet`, nên tóm tắt đó sẽ làm rơi MỌI tin đăng khỏi board với người dùng có đặt `content_filter.positive`.
+- **Ba nguồn quét** (CAR-265): startup-jobs không còn dừng ở listing tóm tắt, hackernews lấy dữ liệu qua ngữ cảnh HTTP dùng chung, và platsbanken báo board bị cắt ngắn thay vì kết thúc sớm một cách âm thầm.
+- **Hạ tầng swarm** (công cụ phát hành): prompt develop của executor giờ chốt đúng định danh issue Linear (diff sai issue sẽ bị review RETURN tự động — regression thực địa của CAR-258), và orchestrator tiếp quản lock single-flight cũ có PID holder đã chết thay vì hủy mọi lần khởi chạy tiếp theo.
+
+### Ghi chú
+- Deliberately NOT changed: các bản sửa parent oraclecloud (#6690) và apple (#6452) được xác nhận đã có sẵn từ v1.271.3 (parent 298d2282 — không có delta); các sửa map/scan-layout trong CAR-265 chỉ là coverage thuần test; CAR-258/262/263/264/266/267/268 vẫn nằm trong hàng đợi cho các chu kỳ swarm tiếp theo.
 
 ## [1.271.4] — 2026-11-10
 

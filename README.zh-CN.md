@@ -7,20 +7,19 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-8126%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-8140%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.269.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.269.2)
+[![release](https://img.shields.io/badge/release-v1.271.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.5)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> 补丁 v1.271.4 在源码层面关闭 CodeQL 告警波次(6 个告警:测试中未使用的变量/导入、缺失的限流、恒真条件、URL 子串断言)。
-> **🆕 最新版本 — v1.271.4** — 
+> **🆕 最新版本 — v1.271.5** — 新增 Tes 英国及国际教学职位扫描源 (CAR-257) — 注册表 **138 → 139 = 134 EN + 5 RU · 134 adapters**;修复 cryptocurrencyjobs 单句摘要丢弃职位的问题、三个扫描源(startup-jobs、hackernews、platsbanken)以及 swarm 基础设施加固。
 >
-> **上一版本 — v1.271.3** — parent-sync 波次 (career-ops @ 298d2282):新增 3 个扫描 provider — TurboHire、ADP Recruiting Management (myjobs)、通用 sitemap 看板 — registry 由 **135 → 138 (133 EN + 5 RU)**;provider 修复波次(jobicy 全量 feed 遍历 + 过滤器、workday 真实看板规模、adp-workforcenow 语言、applicantpro 截止日期、mokahr robots、computrabajo 排序、apple 国家、dover/oraclecloud/platsbanken 对齐);scanner 波次(部分读取的看板报告 `partial`、瞬时错误在整轮遍历后重试、pipeline 中的职位截止日期、大写 ISO 代码在位置列表中区分大小写)。测试 7933 → 8126。
+> **上一版本 — v1.271.4** — 补丁 v1.271.4 在源码层面关闭 CodeQL 告警波次(6 个告警:测试中未使用的变量/导入、缺失的限流、恒真条件、URL 子串断言)。
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

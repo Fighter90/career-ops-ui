@@ -1,17 +1,25 @@
-## [1.271.5] — 2026-11-11
-
-### Corregido
-- **Fixed**: three scan sources ported from the parent — startup-jobs no longer stops at its teaser listing, hackernews fetches through the shared HTTP context, and platsbanken reports truncated boards instead of silently ending early.
-
-### Notas
-- Deliberately NOT changed: the source registry itself — no new scan sources were added; the three existing boards were only corrected, and the map/scan-layout test edits are test-only coverage.
-
 # Registro de cambios
 
 > **Nota i18n** — desde v1.12.0 en adelante las entradas están localizadas en cada idioma. Las entradas anteriores (v1.11.x, v1.10.x) permanecen en ruso por convención del proyecto; el contenido normativo inglés está en [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 > **Nota de traducción (v1.22.0)** — este archivo está ahora íntegramente traducido al español técnico. Se han retirado los avisos provisionales "ver CHANGELOG.md en inglés" que aparecían en las entradas v1.13.0 a v1.21.0.
 > ⏳ **Nota de cobertura** — este archivo incluye ahora el historial completo; las entradas anteriores a la v1.12.0 aparecen en el original inglés a la espera de traducción.
 > _Las entradas a partir de [1.271.3] están pendientes de traducción — el original en inglés aparece abajo._
+
+## [1.271.5] — 2026-11-11
+
+### Añadido
+
+- **Tes, nueva fuente de escaneo (padre #6685, CAR-257)** — empleos de docencia del Reino Unido e internacionales (tes.com/jobs): una entrada de tablero completo `provider: tes` que recorre el endpoint público de búsqueda tRPC (50/página, orden por fecha, dedup por id), claves de entrada opcionales `keywords`/`max_pages`, anclaje SSRF al host + `redirect:'error'`, etiquetas canónicas de truncamiento. Registro **138 → 139 = 134 EN + 5 RU · 134 adapters**; las puertas de recuento regeneradas desde el registro vivo; los recuentos de la ayuda §17 + CONTEXT.md actualizados ×19.
+
+### Corregido
+
+- **cryptocurrencyjobs** (padre #6746, CAR-257): la plantilla de teaser de una frase del feed ya no se emite como texto tipo descripción — el filtro de contenido del en-scanner lee `description ?? snippet`, así que el teaser habría descartado TODAS las vacantes del tablero para un usuario con `content_filter.positive` configurado.
+- **Tres fuentes de escaneo** (CAR-265): startup-jobs ya no se detiene en su listado de teaser, hackernews obtiene a través del contexto HTTP compartido y platsbanken informa los tableros truncados en lugar de terminar antes en silencio.
+- **Infraestructura de swarm** (herramientas de release): el prompt de develop del executor ahora fija la identidad exacta del issue de Linear (un diff de un issue equivocado es un RETURN automático de revisión — la regresión en vivo de CAR-258), y el orquestador toma el control de un bloqueo single-flight obsoleto cuyo PID titular está muerto en lugar de abortar cada lanzamiento siguiente.
+
+### Notas
+
+- Deliberadamente NO se cambió: las correcciones del padre oraclecloud (#6690) y apple (#6452) se verificaron ya presentes desde v1.271.3 (padre 298d2282 — sin delta); las ediciones de los tests de mapa/scan-layout en CAR-265 son cobertura solo de tests; CAR-258/262/263/264/266/267/268 siguen en cola para los próximos ciclos del swarm.
 
 ## [1.271.4] — 2026-11-10
 

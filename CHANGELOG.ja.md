@@ -1,15 +1,20 @@
-## [1.271.5] — 2026-11-11
-
-### 修正
-- **Fixed**: three scan sources ported from the parent — startup-jobs no longer stops at its teaser listing, hackernews fetches through the shared HTTP context, and platsbanken reports truncated boards instead of silently ending early.
-
-### メモ
-- Deliberately NOT changed: the source registry itself — no new scan sources were added; the three existing boards were only corrected, and the map/scan-layout test edits are test-only coverage.
-
 # 変更履歴
 
 > **翻訳ノート** — このファイルは全エントリが日本語本文で完全に翻訳済みです。コードブロック、コミットメッセージ、ファイルパス、URL、環境変数、コマンド、リンクラベルは原文のまま保持しています。
 > _[1.271.3]以降のエントリは翻訳待ちです — 英語の原文が下にあります。_
+
+## [1.271.5] — 2026-11-11
+
+### 追加
+- **Tes** スキャンソース (parent #6685、CAR-257) — 英国および国際的な教員求人 (tes.com/jobs):公開 tRPC 検索エンドポイントを辿る board 全域の `provider: tes` エントリ (1 ページ 50 件、日付順、id による重複排除)、オプションの `keywords`/`max_pages` エントリキー、SSRF ホストピン + `redirect:'error'`、正規の切り詰めタグ。レジストリは **138 → 139 = 134 EN + 5 RU · 134 アダプタ**;カウントゲートはライブレジストリから再生成;help §17 と CONTEXT.md のカウントを ×19 で更新。
+
+### 修正
+- **cryptocurrencyjobs** (parent #6746、CAR-257):フィードの一文ティーザー テンプレートは、説明文のようなテキストとして出力されなくなりました — en-scanner のコンテンツ フィルタは `description ?? snippet` を読むため、`content_filter.positive` を設定しているユーザーでは、このティーザーがボード上のすべての求人を落としてしまう原因になっていました。
+- **3 つのスキャンソース** (CAR-265):startup-jobs はティーザー一覧で止まらなくなり、hackernews は共有 HTTP コンテキスト経由でフェッチし、platsbanken は早々に終了する代わりに切り詰められたボードを報告するようになりました。
+- **スウォームインフラ** (リリース ツール):executor の develop プロンプトは正確な Linear イシュー同一性を固定するようになりました (誤ったイシューの diff は自動的なレビュー RETURN — CAR-258 のライブ リグレッション)。さらにオーケストレータは、保持 PID が死んでいる陳腐化した single-flight ロックを引き継ぎ、次の起動をすべて中断することはなくなりました。
+
+### メモ
+- 意図的に変更していない点:oraclecloud (#6690) と apple (#6452) の parent 修正は、v1.271.3 以降すでに存在することが確認済みです (parent 298d2282 — 差分なし);CAR-265 の map/scan-layout テスト編集はテストのみのカバレッジです;CAR-258/262/263/264/266/267/268 は次のスウォーム サイクルのためにキューに残っています。
 
 ## [1.271.4] — 2026-11-10
 

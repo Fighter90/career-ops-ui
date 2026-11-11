@@ -9,20 +9,20 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 🌐 **Website: [cvstart.org](https://cvstart.org)** — multilingual landing + user guide (source in [`site/`](site/)).
 
-[![tests](https://img.shields.io/badge/tests-8126%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-8140%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.269.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.269.2)
+[![release](https://img.shields.io/badge/release-v1.271.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.5)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Latest release — v1.271.4** — patch release closing the CodeQL alert wave at source (6 alerts: unused vars/imports in tests, a missing rate limit on `GET /api/pipeline`, a provably-true conjunct in adp-workforcenow, URL-substring assertions). Tests 8126.
+> **🆕 Latest release — v1.271.5** — new **Tes** scan source (UK & international teaching jobs; registry **139 = 134 EN + 5 RU · 134 adapters**), cryptocurrencyjobs teaser fix, three provider fixes (startup-jobs teaser listings, hackernews shared HTTP context, platsbanken honest truncation), and swarm-orchestrator hardening (executor issue-identity pin, stale-lock takeover). Tests 8140.
 
 >
-> **Previous — v1.271.3** — the parent-sync wave (career-ops @ 298d2282): 3 new scan providers — TurboHire, ADP Recruiting Management (myjobs), generic sitemap boards — registry **135 → 138 (133 EN + 5 RU)**; provider-fix wave (jobicy full-feed walk + filters, workday true-board-size, adp-workforcenow lang, applicantpro close-day, mokahr robots, computrabajo sort, apple country, dover/oraclecloud/platsbanken parity); scanner wave (partly-read boards report `partial`, transient-error retry-after-sweep, posting close date in the pipeline, uppercase ISO codes case-sensitive in location lists). Tests 7933 → 8126.
+> **Previous — v1.271.4** — patch release closing the CodeQL alert wave at source (6 alerts: unused vars/imports in tests, a missing rate limit on `GET /api/pipeline`, a provably-true conjunct in adp-workforcenow, URL-substring assertions). Tests 8126.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

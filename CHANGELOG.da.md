@@ -1,15 +1,21 @@
-## [1.271.5] — 2026-11-11
-
-### Rettet
-- **Fixed**: three scan sources ported from the parent — startup-jobs no longer stops at its teaser listing, hackernews fetches through the shared HTTP context, and platsbanken reports truncated boards instead of silently ending early.
-
-### Noter
-- Deliberately NOT changed: the source registry itself — no new scan sources were added; the three existing boards were only corrected, and the map/scan-layout test edits are test-only coverage.
-
 # Ændringslog
 
 
 > **Oversættelsesnote.** Filen er oversat til dansk: de seneste poster (fra v1.77.0 og bagud, inkl. v1.76.0 / v1.75.2 / v1.75.1 / v1.75.0) er fuldt oversat til teknisk dansk. Ældre poster bevares på engelsk; versionsoverskrifter og datoer er identiske med den engelske kildefil.
+## [1.271.5] — 2026-11-11
+
+### Tilføjet
+- **Tes**-scankilde (parent #6685, CAR-257) — britiske og internationale undervisningsjobs (tes.com/jobs): en tavleomfattende `provider: tes`-entry, der gennemløber det offentlige tRPC-søgeendpoint (50 pr. side, datoorden, id-dedup), valgfrie `keywords`/`max_pages`-entry-nøgler, SSRF host-pin + `redirect:'error'`, kanoniske truncation-tags. Registeret **138 → 139 = 134 EN + 5 RU · 134 adapters**; count-gates regenereret fra det levende register; hjælp §17 + CONTEXT.md-tal opdateret ×19.
+
+### Rettet
+- **cryptocurrencyjobs** (parent #6746, CAR-257): feedets teaser-skabelon på én sætning udsendes ikke længere som beskrivelseslignende tekst — en-scannerens indholdsfilter læser `description ?? snippet`, så teasern ville droppe ALLE opslag fra tavlen for en bruger med `content_filter.positive` sat.
+- **Tre scankilder** (CAR-265): startup-jobs stopper ikke længere ved sin teaser-listing, hackernews henter gennem den delte HTTP-kontekst, og platsbanken rapporterer afkortede tavler i stedet for at afslutte tidligt i stilhed.
+- **Swarminfrastruktur** (release-værktøj): eksekverens develop-prompt pinner nu den præcise Linear-issue-identitet (et forkert-issue-diff er en automatisk review-RETURN — CAR-258-live-regressionen), og orkestratoren overtager en forældet single-flight-lås, hvis holder-PID er død, i stedet for at afbryde hver næste start.
+
+### Noter
+- Deliberately NOT changed: oraclecloud-fiksen (#6690) og apple-fiksen (#6452) fra parent er verificeret allerede til stede siden v1.271.3 (parent 298d2282 — ingen delta); map/scan-layout-test-redigeringerne i CAR-265 er kun testdækning; CAR-258/262/263/264/266/267/268 står fortsat i kø til de næste swarm-cykler.
+
+
 ## [1.271.4] — 2026-11-10
 
 ### Rettet

@@ -1,16 +1,21 @@
-## [1.271.5] — 2026-11-11
-
-### Naprawiono
-- **Fixed**: three scan sources ported from the parent — startup-jobs no longer stops at its teaser listing, hackernews fetches through the shared HTTP context, and platsbanken reports truncated boards instead of silently ending early.
-
-### Uwagi
-- Deliberately NOT changed: the source registry itself — no new scan sources were added; the three existing boards were only corrected, and the map/scan-layout test edits are test-only coverage.
-
 # Dziennik zmian
 
 > **Uwaga dot. tłumaczenia (v1.70.0)** — polski dodano jako jeden z trzech nowych języków interfejsu. Ten plik tłumaczy najnowsze wpisy; pełna historia znajduje się w [🇬🇧 angielskim CHANGELOG](CHANGELOG.md), który jest źródłem normatywnym.
 > ⏳ **Uwaga o zakresie** — plik zawiera obecnie pełną historię wydań; wpisy sprzed dodania polskiego znajdują się poniżej w angielskim oryginale (tłumaczenie w toku).
 > _Wpisy od [1.271.3] czekają na tłumaczenie — angielski oryginał poniżej._
+
+## [1.271.5] — 2026-11-11
+
+### Dodano
+- **Tes** — nowe źródło skanowania (parent #6685, CAR-257): oferty pracy dla nauczycieli z UK i ze świata (tes.com/jobs) — wpis całej tablicy `provider: tes` przechodzący publiczny endpoint wyszukiwania tRPC (50/stronę, porządek wg daty, deduplikacja po id), opcjonalne klucze wpisu `keywords`/`max_pages`, przypięcie hosta SSRF + `redirect:'error'`, kanoniczne znaczniki obcięcia. Rejestr **138 → 139 = 134 EN + 5 RU · 134 adapters**; bramki licznikowe zregenerowane z żywego rejestru; liczniki w pomocy §17 + CONTEXT.md zaktualizowane ×19.
+
+### Naprawiono
+- **cryptocurrencyjobs** (parent #6746, CAR-257): szablon jednozdaniowego teaseru z feedu nie jest już emitowany jako tekst podszywający się pod opis — filtr treści en-scannera czyta `description ?? snippet`, więc teaser usuwałby KAŻDE ogłoszenie z tej tablicy u użytkownika z ustawionym `content_filter.positive`.
+- **Trzy źródła skanowania** (CAR-265): startup-jobs nie zatrzymuje się już na swojej liście teaserów, hackernews pobiera przez współdzielony kontekst HTTP, a platsbanken uczciwie raportuje obcięte tablice zamiast po cichu kończyć wcześniej.
+- **Infrastruktura swarm** (narzędzia wydawnicze): prompt develop executora przypina teraz dokładną tożsamość issue z Linear (diff niewłaściwego issue to automatyczny RETURN z review — regresja live CAR-258), a orkiestrator przejmuje nieaktualną blokadę single-flight, której PID holdera już nie żyje, zamiast przerywać każde kolejne uruchomienie.
+
+### Uwagi
+- Świadomie NIE zmieniono: poprawki parent dla oraclecloud (#6690) i apple (#6452) zweryfikowano jako już obecne od v1.271.3 (parent 298d2282 — brak delty); edycje testów mapy/układu skanowania w CAR-265 to wyłącznie pokrycie testowe; CAR-258/262/263/264/266/267/268 pozostają w kolejce na kolejne cykle swarm.
 
 ## [1.271.4] — 2026-11-10
 

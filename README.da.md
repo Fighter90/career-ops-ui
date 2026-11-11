@@ -7,20 +7,19 @@
 
 _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-8126%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-8140%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.269.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.269.2)
+[![release](https://img.shields.io/badge/release-v1.271.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.5)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> Patch v1.271.4 lukker CodeQL-alert-bølgen ved kilden (6 alerts: ubrugte variabler/imports i test, en manglende rate limit, et altid sandt konjunktionsled og assertioner på URL-delstrenge).
-> **🆕 Seneste udgivelse — v1.271.4** — 
+> **🆕 Seneste udgivelse — v1.271.5** — ny Tes-scankilde til britiske og internationale undervisningsjobs (registeret 138 → 139), plus rettelser: cryptocurrencyjobs-teasern dropper ikke længere opslag, tre scankilder (startup-jobs, hackernews, platsbanken) og swarm-release-værktøjet.
 >
-> **Tidligere — v1.271.3** — parent-sync-bølgen (career-ops @ 298d2282): 3 nye scan-udbydere — TurboHire, ADP Recruiting Management (myjobs), generiske sitemap-tavler — registret **135 → 138 (133 EN + 5 RU)**; udbyder-fiks-bølgen (jobicy fuld feed-gennemgang + filtre, workday sand tavlestørrelse, adp-workforcenow sprog, applicantpro lukkedag, mokahr robots, computrabajo sortering, apple land, dover/oraclecloud/platsbanken paritet); scanner-bølgen (delvist læste tavler rapporterer `partial`, nyt forsøg efter fuld gennemløb ved forbigående fejl, opslagslukkedato i pipelinen, versal-ISO-koder er versalfølsomme i lokalitetslister). Test 7933 → 8126.
+> **Tidligere — v1.271.4** — patch-release, der lukker CodeQL-alert-bølgen ved kilden (6 alerts: ubrugte variabler/imports i test, en manglende rate limit, et altid sandt konjunktionsled og assertioner på URL-delstrenge).
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

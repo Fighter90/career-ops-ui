@@ -7,20 +7,19 @@
 
 _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
 
-[![tests](https://img.shields.io/badge/tests-8126%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-8140%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.269.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.269.2)
+[![release](https://img.shields.io/badge/release-v1.271.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.5)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> パッチ v1.271.4 は CodeQL アラート波をソースレベルで解消します (アラート 6 件:テスト内の未使用変数/インポート、欠落していたレートリミット、恒真となる条件、URL 部分文字列アサーション)。
-> **🆕 最新リリース — v1.271.4** — 
+> **🆕 最新リリース — v1.271.5** — 新しい **Tes** スキャンソース(英国および国際的な教員求人;レジストリ 139 = 134 EN + 5 RU · 134 アダプタ)、cryptocurrencyjobs のティーザー修正、スキャンソース修正 3 件(startup-jobs のティーザー一覧、hackernews の共有 HTTP コンテキスト、platsbanken の正直な切り詰め報告)、スウォームオーケストレータの強化(executor でのイシュー同一性の固定、陳腐化したロックの引き継ぎ)。
 >
-> **前バージョン — v1.271.3** — parent-sync ウェーブ (career-ops @ 298d2282):新規スキャンプロバイダ 3 件 — TurboHire、ADP Recruiting Management (myjobs)、汎用 sitemap ボード — レジストリは **135 → 138 (133 EN + 5 RU)**;プロバイダ修正ウェーブ(jobicy の全フィード走査 + フィルタ、workday の実ボードサイズ、adp-workforcenow の言語、applicantpro の締切日、mokahr の robots、computrabajo のソート、apple の国、dover/oraclecloud/platsbanken のパリティ);スキャナウェーブ(部分的にしか読めなかったボードは `partial` を報告、一時的エラーは全走査後にリトライ、pipeline に求人締切日、大文字 ISO コードはロケーションリストで大文字小文字を区別)。テスト 7933 → 8126。
+> **前バージョン — v1.271.4** — パッチ v1.271.4 は CodeQL アラート波をソースレベルで解消します (アラート 6 件:テスト内の未使用変数/インポート、欠落していたレートリミット、恒真となる条件、URL 部分文字列アサーション)。
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

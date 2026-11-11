@@ -7,20 +7,19 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-8126%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-8140%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.269.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.269.2)
+[![release](https://img.shields.io/badge/release-v1.271.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.5)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> 패치 v1.271.4는 CodeQL 경고 웨이브를 소스 수준에서 닫습니다 (경고 6개: 테스트의 미사용 변수/임포트, 누락된 rate limit, 항상 참인 조건, URL 서브스트링 어서션).
-> **🆕 최신 릴리스 — v1.271.4** — 
+> **🆕 최신 릴리스 — v1.271.5** — 신규 스캔 소스 **Tes** 추가 (영국 및 국제 교직 구인, parent #6685/CAR-257, 레지스트리 **138 → 139 = 134 EN + 5 RU**); cryptocurrencyjobs 티저가 콘텐츠 필터로 보드의 모든 공고를 탈락시키던 문제 수정; 스캔 소스 세 곳 수정 (startup-jobs/hackernews/platsbanken, CAR-265); 스웜 릴리스 인프라 개선.
 >
-> **이전 버전 — v1.271.3** — parent-sync 웨이브 (career-ops @ 298d2282): 신규 스캔 프로바이더 3개 — TurboHire, ADP Recruiting Management (myjobs), 범용 sitemap 보드 — 레지스트리 **135 → 138 (133 EN + 5 RU)**; 프로바이더 수정 웨이브 (jobicy 전체 피드 순회 + 필터, workday 실제 보드 크기, adp-workforcenow 언어, applicantpro 마감일, mokahr robots, computrabajo 정렬, apple 국가, dover/oraclecloud/platsbanken 패리티); 스캐너 웨이브 (부분적으로 읽힌 보드는 `partial`을 보고, 일시적 오류 시 전체 순회 후 재시도, 파이프라인의 공고 마감일, 위치 목록에서 대문자 ISO 코드는 대소문자를 구분). 테스트 7933 → 8126.
+> **이전 버전 — v1.271.4** — 패치 v1.271.4는 CodeQL 경고 웨이브를 소스 수준에서 닫습니다 (경고 6개: 테스트의 미사용 변수/임포트, 누락된 rate limit, 항상 참인 조건, URL 서브스트링 어서션).
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

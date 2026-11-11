@@ -1,15 +1,20 @@
-## [1.271.5] — 2026-11-11
-
-### Corrigido
-- **Fixed**: three scan sources ported from the parent — startup-jobs no longer stops at its teaser listing, hackernews fetches through the shared HTTP context, and platsbanken reports truncated boards instead of silently ending early.
-
-### Notas
-- Deliberately NOT changed: the source registry itself — no new scan sources were added; the three existing boards were only corrected, and the map/scan-layout test edits are test-only coverage.
-
 # Histórico de mudanças
 
 > **Nota** — este arquivo está integralmente traduzido para o português brasileiro. Cada entrada de versão foi reescrita em PT-BR técnico de qualidade editorial, preservando blocos de código, mensagens de commit, caminhos de arquivo, URLs, variáveis de ambiente, comandos e rótulos de link em sua forma original.
 > _As entradas a partir de [1.271.3] aguardam tradução — o original em inglês abaixo._
+
+## [1.271.5] — 2026-11-11
+
+### Adicionado
+- **Tes** — nova fonte de scan de vagas de ensino no Reino Unido e internacionais (pai #6685, CAR-257; tes.com/jobs): uma entrada `provider: tes` válida para o quadro inteiro que percorre o endpoint público de busca tRPC (50 por página, ordem por data, dedupe por id), chaves opcionais por entrada `keywords`/`max_pages`, host-pin SSRF + `redirect:'error'`, tags canônicas de truncamento. Registro **138 → 139 = 134 EN + 5 RU · 134 adapters**; count gates regenerados a partir do registro vivo; contagens da ajuda §17 + do CONTEXT.md atualizadas ×19.
+
+### Corrigido
+- **cryptocurrencyjobs** (pai #6746, CAR-257): o template de teaser de uma frase do feed não é mais emitido como texto com aparência de description — o filtro de conteúdo do en-scanner lê `description ?? snippet`, então o teaser derrubaria TODAS as vagas do quadro para um usuário com `content_filter.positive` configurado.
+- **Três fontes de scan** (CAR-265): startup-jobs não para mais em seu listing de teaser, hackernews busca por meio do contexto HTTP compartilhado, e platsbanken relata quadros truncados em vez de terminar antecipadamente em silêncio.
+- **Infraestrutura do swarm** (ferramentas de release): o prompt de develop do executor agora fixa a identidade exata da issue do Linear (um diff da issue errada é um RETURN automático da review — a regressão ao vivo do CAR-258), e o orquestrador assume um lock single-flight obsoleto cujo PID detentor está morto em vez de abortar cada lançamento seguinte.
+
+### Notas
+- Deliberadamente NÃO alterado: as correções do pai oraclecloud (#6690) e apple (#6452) foram verificadas como já presentes desde a v1.271.3 (pai 298d2282 — sem delta); as edições de testes de map/scan-layout no CAR-265 são apenas cobertura de testes; CAR-258/262/263/264/266/267/268 permanecem na fila para os próximos ciclos do swarm.
 
 ## [1.271.4] — 2026-11-10
 

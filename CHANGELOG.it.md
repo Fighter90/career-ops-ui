@@ -1,15 +1,21 @@
-## [1.271.5] — 2026-11-11
-
-### Corretto
-- **Fixed**: three scan sources ported from the parent — startup-jobs no longer stops at its teaser listing, hackernews fetches through the shared HTTP context, and platsbanken reports truncated boards instead of silently ending early.
-
-### Note
-- Deliberately NOT changed: the source registry itself — no new scan sources were added; the three existing boards were only corrected, and the map/scan-layout test edits are test-only coverage.
-
 # Changelog (Italiano)
 
 
 > Questo changelog contiene ora la cronologia completa delle versioni. Le voci pubblicate prima della localizzazione italiana (v1.85.0) compaiono sotto nell'originale inglese — traduzione in attesa; il riferimento resta [🇬🇧 CHANGELOG.md](CHANGELOG.md).
+## [1.271.5] — 2026-11-11
+
+### Aggiunto
+- **Tes** nuova sorgente di scansione (parent #6685, CAR-257) — offerte didattiche del Regno Unito e internazionali (tes.com/jobs): voce `provider: tes` a livello di board che percorre l'endpoint pubblico di ricerca tRPC (50 per pagina, ordine per data, dedup per id), chiavi di voce opzionali `keywords`/`max_pages`, host-pin SSRF + `redirect:'error'`, tag di troncamento canonici. Registro **138 → 139 = 134 EN + 5 RU · 134 adapter**; count gate rigenerati dal registro live; conteggi di help §17 + CONTEXT.md aggiornati ×19.
+
+### Corretto
+- **cryptocurrencyjobs** (parent #6746, CAR-257): il teaser di una frase del feed non viene più emesso come testo simile a una descrizione — il filtro contenuti dell'en-scanner legge `description ?? snippet`, quindi il teaser avrebbe scartato OGNI annuncio dalla board per un utente con `content_filter.positive` impostato.
+- **Tre sorgenti di scansione** (CAR-265): startup-jobs non si ferma più al suo annuncio-teaser, hackernews scarica attraverso il contesto HTTP condiviso e platsbanken segnala le board troncate invece di terminare in anticipo in silenzio.
+- **Infrastruttura dello swarm** (tooling di rilascio): il prompt develop dell'executor ora vincola l'identità esatta della issue Linear (una diff sulla issue sbagliata è un RETURN automatico della review — la regressione live CAR-258), e l'orchestratore subentra a un lock single-flight stantio il cui PID detentore è morto invece di abortire ogni lancio successivo.
+
+### Note
+- Non fatto deliberatamente: le correzioni parent oraclecloud (#6690) e apple (#6452) risultano già presenti dalla v1.271.3 (parent 298d2282 — nessun delta); le modifiche ai test map/scan-layout in CAR-265 sono solo copertura di test; CAR-258/262/263/264/266/267/268 restano in coda per i prossimi cicli dello swarm.
+
+
 ## [1.271.4] — 2026-11-10
 
 ### Corretto

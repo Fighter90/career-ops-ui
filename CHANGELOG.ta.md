@@ -1,15 +1,20 @@
-## [1.271.5] — 2026-11-11
-
-### சரி செய்யப்பட்டது
-- **Fixed**: three scan sources ported from the parent — startup-jobs no longer stops at its teaser listing, hackernews fetches through the shared HTTP context, and platsbanken reports truncated boards instead of silently ending early.
-
-### குறிப்புகள்
-- Deliberately NOT changed: the source registry itself — no new scan sources were added; the three existing boards were only corrected, and the map/scan-layout test edits are test-only coverage.
-
 # மாற்றப் பதிவு (தமிழ்)
 
 > இந்த மாற்றப் பதிவு இப்போது முழு வெளியீட்டு வரலாற்றையும் கொண்டுள்ளது. தமிழ் மொழியாக்கம் (v1.245.0) சேர்க்கப்படுவதற்கு முன் வெளியிடப்பட்ட பதிவுகள் கீழே ஆங்கில அசல் வடிவில் உள்ளன — மொழிபெயர்ப்பு நிலுவையில் உள்ளது; அதிகாரப்பூர்வ ஆவணம் [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 > _[1.271.3] முதல் பதிவுகள் மொழிபெயர்ப்பு நிலுவையில் உள்ளன — ஆங்கில அசல் கீழே._
+
+## [1.271.5] — 2026-11-11
+
+### சேர்க்கப்பட்டது
+- **Tes** scan source (parent #6685, CAR-257) — ஐக்கிய இராச்சியம் மற்றும் சர்வதேச ஆசிரியர் வேலைவாய்ப்புகள் (tes.com/jobs): board-அகல வேட்டைக்கான `provider: tes` entry — public tRPC search endpoint-ஐ முழுமையாக நடத்துகிறது (ஒரு page-க்கு 50, date order, id dedup), விருப்பத் தேர்வான `keywords`/`max_pages` entry keys, SSRF host-pin + `redirect:'error'`, canonical truncation tags. Registry **138 → 139 = 134 EN + 5 RU · 134 adapters**; count gates live registry-இலிருந்து மீண்டும் உருவாக்கப்பட்டன; help §17 + CONTEXT.md counts ×19 புதுப்பிக்கப்பட்டன.
+
+### சரி செய்யப்பட்டது
+- **cryptocurrencyjobs** (parent #6746, CAR-257): feed-இன் ஒரு-வாக்கிய teaser template இனி description போன்ற text-ஆக வழங்கப்படாது — en-scanner content filter `description ?? snippet`-ஐப் படிக்கிறது, எனவே `content_filter.positive` அமைத்திருக்கும் user-க்கு teaser board-இன் ஒவ்வொரு posting-ஐயும் விழுங்கிவிடும்.
+- **மூன்று scan source-கள்** (CAR-265): startup-jobs தன் teaser listing-இல் நிற்பதில்லை, hackernews shared HTTP context வழியாக fetch செய்கிறது, platsbanken அமைதியாக முன்கூட்டி முடிப்பதற்குப் பதிலாக truncated boards-ஐ report செய்கிறது.
+- **Swarm உள்கட்டமைப்பு** (release tooling): executor-இன் develop prompt இப்போது சரியான Linear issue அடையாளத்தையே pin செய்கிறது (தவறான issue-இன் diff என்பது review-இல் தானியங்கி RETURN — CAR-258 live regression), மேலும் orchestrator அதன் holder PID இறந்துவிட்ட stale single-flight lock-ஐ, அடுத்த ஒவ்வொரு launch-ஐயும் abort செய்வதற்குப் பதிலாக, ஏற்றுக்கொள்கிறது.
+
+### குறிப்புகள்
+- வேண்டுமென்றே மாற்றவில்லை: oraclecloud (#6690) மற்றும் apple (#6452) parent fixes v1.271.3-இலிருந்தே இருப்பதாக உறுதிப்படுத்தப்பட்டது (parent 298d2282 — delta இல்லை); CAR-265-இன் map/scan-layout test edits test-only coverage மட்டுமே; CAR-258/262/263/264/266/267/268 அடுத்த swarm cycles-க்காக வரிசையில் உள்ளன.
 
 ## [1.271.4] — 2026-11-10
 

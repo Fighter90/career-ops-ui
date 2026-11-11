@@ -1,10 +1,15 @@
 ## [1.271.5] — 2026-11-11
 
+### Added
+- **Tes** scan source (parent #6685, CAR-257) — UK and international teaching jobs (tes.com/jobs): board-wide `provider: tes` entry that walks the public tRPC search endpoint (50/page, date order, id dedup), optional `keywords`/`max_pages` entry keys, SSRF host-pin + `redirect:'error'`, canonical truncation tags. Registry **138 → 139 = 134 EN + 5 RU · 134 adapters**; count gates regenerated from the live registry; help §17 + CONTEXT.md counts updated ×19.
+
 ### Fixed
-- **Fixed**: three scan sources ported from the parent — startup-jobs no longer stops at its teaser listing, hackernews fetches through the shared HTTP context, and platsbanken reports truncated boards instead of silently ending early.
+- **cryptocurrencyjobs** (parent #6746, CAR-257): the feed's one-sentence teaser template is no longer emitted as description-like text — the en-scanner content filter reads `description ?? snippet`, so the teaser would drop EVERY posting from the board for a user with `content_filter.positive` set.
+- **Three scan sources** (CAR-265): startup-jobs no longer stops at its teaser listing, hackernews fetches through the shared HTTP context, and platsbanken reports truncated boards instead of silently ending early.
+- **Swarm infrastructure** (release tooling): the executor's develop prompt now pins the exact Linear issue identity (a wrong-issue diff is an automatic review RETURN — the CAR-258 live regression), and the orchestrator takes over a stale single-flight lock whose holder PID is dead instead of aborting every next launch.
 
 ### Notes
-- Deliberately NOT changed: the source registry itself — no new scan sources were added; the three existing boards were only corrected, and the map/scan-layout test edits are test-only coverage.
+- Deliberately NOT changed: the oraclecloud (#6690) and apple (#6452) parent fixes were verified already present since v1.271.3 (parent 298d2282 — no delta); the map/scan-layout test edits in CAR-265 are test-only coverage; CAR-258/262/263/264/266/267/268 remain queued for the next swarm cycles.
 
 ## [1.271.4] — 2026-11-10
 

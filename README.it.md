@@ -7,20 +7,19 @@
 
 _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-8126%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-8140%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.269.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.269.2)
+[![release](https://img.shields.io/badge/release-v1.271.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.5)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> La patch v1.271.4 chiude l'ondata di avvisi CodeQL alla fonte (6 avvisi: variabili e import inutilizzati nei test, un rate limit mancante, un congiunto sempre vero e asserzioni su sottostringhe di URL).
-> **🆕 Ultima release — v1.271.4** — 
+> **🆕 Ultima release — v1.271.5** — nuova sorgente di scansione **Tes** (offerte didattiche del Regno Unito e internazionali, registro 138 → 139 = 134 EN + 5 RU · 134 adapter) e l'ondata di fix: il teaser di cryptocurrencyjobs non viene più emesso come descrizione, tre sorgenti di scansione corrette (startup-jobs, hackernews, platsbanken) e l'infrastruttura dello swarm di rilascio più robusta (identità della issue Linear vincolata, recupero dei lock single-flight stanti).
 >
-> **Precedente — v1.271.3** — l'ondata parent-sync (career-ops @ 298d2282): 3 nuovi provider di scansione — TurboHire, ADP Recruiting Management (myjobs), board generici via sitemap — il registro passa da **135 → 138 (133 EN + 5 RU)**; l'ondata di fix dei provider (jobicy attraversamento completo del feed + filtri, workday dimensione reale della board, adp-workforcenow lingua, applicantpro giorno di chiusura, mokahr robots, computrabajo ordinamento, apple paese, parità dover/oraclecloud/platsbanken); l'ondata dello scanner (le board lette parzialmente riportano `partial`, ritento dopo la scansione in caso di errori transitori, data di chiusura dell'annuncio nel pipeline, codici ISO maiuscoli case-sensitive negli elenchi di località). Test 7933 → 8126.
+> **Precedente — v1.271.4** — la patch chiude l'ondata di avvisi CodeQL alla fonte (6 avvisi: variabili e import inutilizzati nei test, un rate limit mancante, un congiunto sempre vero e asserzioni su sottostringhe di URL).
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

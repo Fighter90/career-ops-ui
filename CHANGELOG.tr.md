@@ -1,15 +1,20 @@
-## [1.271.5] — 2026-11-11
-
-### Düzeltildi
-- **Fixed**: three scan sources ported from the parent — startup-jobs no longer stops at its teaser listing, hackernews fetches through the shared HTTP context, and platsbanken reports truncated boards instead of silently ending early.
-
-### Notlar
-- Deliberately NOT changed: the source registry itself — no new scan sources were added; the three existing boards were only corrected, and the map/scan-layout test edits are test-only coverage.
-
 # Changelog (Türkçe)
 
 > Bu changelog artık tüm sürüm geçmişini içerir. Türkçe yerelleştirmenin eklenmesinden (v1.85.0) önce yayınlanan girdiler aşağıda İngilizce özgün hâliyle yer alır — çeviri bekliyor; asıl kaynak [🇬🇧 CHANGELOG.md](CHANGELOG.md)'dir.
 > _[1.271.3]'ten itibaren girdiler çeviri bekliyor — İngilizce orijinal aşağıda._
+
+## [1.271.5] — 2026-11-11
+
+### Eklendi
+- **Tes** tarama kaynağı (parent #6685, CAR-257) — Birleşik Krallık ve uluslararası öğretmenlik işleri (tes.com/jobs): genel tRPC arama uç noktasını gezen panolar geneli `provider: tes` girişi (sayfa başına 50, tarih sırası, kimlik tekrar engelleme), isteğe bağlı `keywords`/`max_pages` giriş anahtarları, SSRF ana makine sabitlemesi + `redirect:'error'`, standart kırpma etiketleri. Kayıt **138 → 139 = 134 EN + 5 RU · 134 adaptör**; sayım kapıları canlı kayıttan yeniden üretildi; help §17 + CONTEXT.md sayıları ×19 güncellendi.
+
+### Düzeltildi
+- **cryptocurrencyjobs** (parent #6746, CAR-257): akışın tek cümlelik tanıtım şablonu artık açıklama benzeri metin olarak gönderilmiyor — en-scanner içerik filtresi `description ?? snippet` okuduğundan tanıtım metni, `content_filter.positive` ayarlı bir kullanıcı için panodaki TÜM ilanları düşürüyordu.
+- **Üç tarama kaynağı** (CAR-265): startup-jobs artık tanıtım listesinde durmuyor, hackernews paylaşılan HTTP bağlamı üzerinden istek atıyor, platsbanken ise sessizce erken bitmek yerine kırpılmış panoları raporluyor.
+- **Swarm altyapısı** (sürüm araçları): yürütücünün develop istemi artık kesin Linear sorun kimliğini sabitliyor (yanlış soruna ait bir diff otomatik inceleme RETURN — CAR-258 canlı regresyonu) ve orkestratör, sahibi ölü PID olan bayat bir single-flight kilidini bir sonraki her başlatmayı iptal etmek yerine devralıyor.
+
+### Notlar
+- Bilinçli olarak DEĞİŞTİRİLMEDİ: oraclecloud (#6690) ve apple (#6452) parent düzeltmeleri v1.271.3'ten beri zaten mevcut olarak doğrulandı (parent 298d2282 — fark yok); CAR-265'teki harita/tarama-düzeni test düzenlemeleri yalnızca test kapsamı; CAR-258/262/263/264/266/267/268 sonraki swarm döngüleri için sıraya alındı.
 
 ## [1.271.4] — 2026-11-10
 

@@ -1,16 +1,21 @@
-## [1.271.5] — 2026-11-11
-
-### أُصلح
-- **Fixed**: three scan sources ported from the parent — startup-jobs no longer stops at its teaser listing, hackernews fetches through the shared HTTP context, and platsbanken reports truncated boards instead of silently ending early.
-
-### ملاحظات
-- Deliberately NOT changed: the source registry itself — no new scan sources were added; the three existing boards were only corrected, and the map/scan-layout test edits are test-only coverage.
-
 # سجل التغييرات
 
 
 > **ملاحظة بشأن الترجمة (v1.70.0)** — أُضيفت العربية كإحدى ثلاث لغات واجهة جديدة. يترجم هذا الملف أحدث الإدخالات؛ السجل الكامل في [🇬🇧 CHANGELOG الإنجليزي](CHANGELOG.md) وهو المرجع المعتمد.
 > ⏳ **ملاحظة تغطية** — يتضمن هذا الملف الآن السجل الكامل؛ الإدخالات السابقة لإضافة العربية تظهر أدناه بالإنجليزية الأصلية بانتظار الترجمة.
+## [1.271.5] — 2026-11-11
+
+### أُضيف
+- **Tes** مصدر مسح جديد (الأب #6685، CAR-257) — وظائف التدريس في المملكة المتحدة وعالميًا (tes.com/jobs): مدخل على مستوى اللوحة عبر `provider: tes` يجتاز نقطة نهاية البحث العامة tRPC‏ (50/صفحة، بترتيب التاريخ، إزالة تكرار بالمعرّف)، ومفاتيح مدخل اختيارية `keywords`/`max_pages`، وتثبيت مضيف SSRF + ‏`redirect:'error'`، ووسوم اقتطاع معيارية. السجل **138 → 139 = 134 EN + 5 RU · 134 adapters**؛ أُعيد توليد بوابات العدّ من السجل الحي؛ وأُحدّثت أعداد §17 من الدليل وCONTEXT.md ×19.
+
+### أُصلح
+- **cryptocurrencyjobs** (الأب #6746، CAR-257): لم يعُد قالب الملخص المكوَّن من جملة واحدة في التغذية يُصدر كنصٍ يشبه الوصف — يقرأ مرشّح المحتوى في en-scanner‏ `description ?? snippet`، فكان الملخص سيُسقط كل وظيفة من اللوحة على مستخدم ضبط `content_filter.positive`.
+- **ثلاثة مصادر مسح** (CAR-265): startup-jobs لم تعد تتوقف عند قائمة الملخصات خاصتها، وhackernews تجلب عبر سياق HTTP المشترك، وplatsbanken تُبلّغ عن لوحات مقتطعة بدل الانتهاء مبكرًا بصمت.
+- **بنية السرب** (أدوات الإصدار): تثبّت prompt التطوير في المنفّذ هوية مسألة Linear بدقة (diff لمسألة خاطئة عودته RETURN تلقائية من المراجعة — انحدار CAR-258 الحي)، ويتولى المنسّق قفل single-flight العالق الذي مالكه PID ميت بدل إحباط كل إطلاق لاحق.
+
+### ملاحظات
+- لم يُغيَّر عن قصد: إصلاحا الأب oraclecloud (#6690) وapple (#6452) تبيّن وجودهما منذ v1.271.3 (الأب 298d2282 — لا فرق)؛ وتعديلات اختبارات map/scan-layout في CAR-265 تغطية اختبارية فقط؛ وCAR-258/262/263/264/266/267/268 ما تزال في الطابور لدورات السرب القادمة.
+
 ## [1.271.4] — 2026-11-10
 
 ### أُصلح

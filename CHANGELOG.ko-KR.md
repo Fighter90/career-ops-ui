@@ -1,16 +1,21 @@
-## [1.271.5] — 2026-11-11
-
-### 수정
-- **Fixed**: three scan sources ported from the parent — startup-jobs no longer stops at its teaser listing, hackernews fetches through the shared HTTP context, and platsbanken reports truncated boards instead of silently ending early.
-
-### 참고
-- Deliberately NOT changed: the source registry itself — no new scan sources were added; the three existing boards were only corrected, and the map/scan-layout test edits are test-only coverage.
-
 # 변경 로그
 
 > **i18n 노트** — 이 파일은 완전히 한국어로 번역되었습니다. 모든 버전 항목의 본문이 출판 등급의 한국어로 제공되며, 영어 본문 임시 대체 표기는 더 이상 사용되지 않습니다.
 > ⏳ **참고** — 이 파일은 이제 전체 릴리스 이력을 담고 있습니다. v1.12.0 이전의 6개 항목은 영어 원문 그대로 수록되어 있습니다(번역 대기).
 > _[1.271.3]부터의 항목은 번역 대기 중입니다 — 영어 원문은 아래에 있습니다._
+
+## [1.271.5] — 2026-11-11
+
+### 추가
+- **Tes** 스캔 소스 (parent #6685, CAR-257) — 영국 및 국제 교직 구인 공고 (tes.com/jobs): 공개 tRPC 검색 엔드포인트를 순회하는 보드 전체 `provider: tes` 항목 (페이지당 50건, 날짜 순 정렬, id 중복 제거), 선택적 `keywords`/`max_pages` 항목 키, SSRF 호스트 핀 + `redirect:'error'`, 표준 잘림 태그. 레지스트리 **138 → 139 = 134 EN + 5 RU · 어댑터 134**; 카운트 게이트는 라이브 레지스트리에서 재생성; 도움말 §17 + CONTEXT.md 카운트 ×19 갱신.
+
+### 수정
+- **cryptocurrencyjobs** (parent #6746, CAR-257): 피드의 한 문장 티저 템플릿이 더 이상 설명 비슷한 텍스트로 내보내지지 않습니다 — en-scanner 콘텐츠 필터는 `description ?? snippet`을 읽으므로, `content_filter.positive`를 설정한 사용자에게는 티저가 보드의 모든 공고를 탈락시키는 원인이 됩니다.
+- **스캔 소스 세 곳** (CAR-265): startup-jobs는 더 이상 티저 목록에서 멈추지 않고, hackernews는 공유 HTTP 컨텍스트를 통해 가져오며, platsbanken는 조용히 일찍 끝내는 대신 잘린 보드를 보고합니다.
+- **스웜 인프라** (릴리스 도구): 실행자의 develop 프롬프트가 이제 정확한 Linear 이슈 식별자를 고정합니다(잘못된 이슈의 diff는 자동 리뷰 RETURN — CAR-258 라이브 회귀), 그리고 오케스트레이터는 홀더 PID가 죽어 있는 오래된 single-flight 잠금을 다음 모든 실행을 중단하는 대신 인수합니다.
+
+### 참고
+- 의도적으로 변경하지 않음: oraclecloud (#6690)와 apple (#6452) 부모 수정은 v1.271.3부터 이미 존재함이 확인되었습니다 (parent 298d2282 — 델타 없음); CAR-265의 map/scan-layout 테스트 편집은 테스트 전용 커버리지입니다; CAR-258/262/263/264/266/267/268은 다음 스웜 주기를 위해 대기열에 남아 있습니다.
 
 ## [1.271.4] — 2026-11-10
 

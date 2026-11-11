@@ -1,17 +1,22 @@
-## [1.271.5] — 2026-11-11
-
-### Corrigé
-- **Fixed**: three scan sources ported from the parent — startup-jobs no longer stops at its teaser listing, hackernews fetches through the shared HTTP context, and platsbanken reports truncated boards instead of silently ending early.
-
-### Notes
-- Deliberately NOT changed: the source registry itself — no new scan sources were added; the three existing boards were only corrected, and the map/scan-layout test edits are test-only coverage.
-
 # Journal des modifications
 
 
 > **Note i18n** — depuis la v1.12.0, les entrées sont localisées dans chaque langue. Les entrées plus anciennes (v1.11.x, v1.10.x) résident dans le [🇬🇧 CHANGELOG anglais](CHANGELOG.md), qui fait foi.
 > **Note de traduction (v1.61.0)** — le français a été ajouté comme 9e langue de l'interface. Ce fichier traduit les entrées récentes ; pour l'historique antérieur à la v1.55.0, voir le [🇬🇧 CHANGELOG anglais](CHANGELOG.md), qui reste la source normative.
 > ⏳ **Note de couverture** — ce fichier inclut désormais l'historique complet ; les entrées antérieures à la v1.61.0 figurent ci-dessous en anglais original, traduction en attente.
+## [1.271.5] — 2026-11-11
+
+### Ajouté
+- **Source de scan Tes** (parent #6685, CAR-257) — les offres d'enseignement au Royaume-Uni et à l'international (tes.com/jobs) : une entrée à l'échelle du tableau `provider: tes` qui parcourt l'endpoint public de recherche tRPC (50 par page, ordre par date, dédup par id), clés d'entrée optionnelles `keywords`/`max_pages`, épingle d'hôte SSRF + `redirect:'error'`, balises de troncature canoniques. Registre **138 → 139 = 134 EN + 5 RU · 134 adaptateurs** ; garde-fous de comptage régénérés depuis le registre réel ; comptes de l'aide §17 et de CONTEXT.md mis à jour ×19.
+
+### Corrigé
+- **cryptocurrencyjobs** (parent #6746, CAR-257) : le gabarit d'aperçu d'une phrase du flux n'est plus émis comme texte de type description — le filtre de contenu de l'en-scanner lit `description ?? snippet`, l'aperçu aurait donc écarté TOUTES les offres du tableau pour un utilisateur ayant défini `content_filter.positive`.
+- **Trois sources de scan** (CAR-265) : startup-jobs ne s'arrête plus à son listing d'aperçu, hackernews passe par le contexte HTTP partagé, et platsbanken signale les tableaux tronqués au lieu de se terminer silencieusement en cours de route.
+- **Infrastructure du swarm** (outillage de release) : le prompt develop de l'exécuteur épingle désormais l'identité exacte de l'issue Linear (un diff sur la mauvaise issue est un RETURN automatique de la revue — la régression en direct de CAR-258), et l'orchestrateur reprend un verrou single-flight périmé dont le PID détenteur est mort au lieu d'abandonner chaque lancement suivant.
+
+### Notes
+- Délibérément NON modifié : les correctifs parent oraclecloud (#6690) et apple (#6452) ont été vérifiés comme déjà présents depuis la v1.271.3 (parent 298d2282 — aucun delta) ; les modifications de tests carte/scan-layout dans CAR-265 ne sont que de la couverture de tests ; CAR-258/262/263/264/266/267/268 restent en file pour les prochains cycles du swarm.
+
 ## [1.271.4] — 2026-11-10
 
 ### Corrigé

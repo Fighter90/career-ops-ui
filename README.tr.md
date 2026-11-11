@@ -7,20 +7,19 @@
 
 _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve onlar tarafından onaylanmamıştır._
 
-[![tests](https://img.shields.io/badge/tests-8126%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-8140%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.269.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.269.2)
+[![release](https://img.shields.io/badge/release-v1.271.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.5)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> v1.271.4 yaması, CodeQL uyarı dalgasını kaynak düzeyinde kapatıyor (6 uyarı: testlerdeki kullanılmayan değişkenler/importlar, eksik bir rate limit, daima doğru bir bağlaç, URL alt dizesi iddiaları).
-> **🆕 Son sürüm — v1.271.4** — 
+> **🆕 Son sürüm — v1.271.5** — **Tes** tarama kaynağı ekleniyor (parent #6685, CAR-257 — Birleşik Krallık ve uluslararası öğretmenlik işleri; kayıt **138 → 139 = 134 EN + 5 RU · 134 adaptör**); cryptocurrencyjobs'un akış tanıtım metni, üç tarama kaynağı ve sürüm (swarm) altyapısı düzeltiliyor; oraclecloud ve apple parent düzeltmeleri zaten mevcut olduğu için doğrulandı.
 >
-> **Önceki — v1.271.3** — parent-sync dalgası (career-ops @ 298d2282): 3 yeni tarama sağlayıcısı — TurboHire, ADP Recruiting Management (myjobs), genel sitemap panoları — kayıt **135 → 138 (133 EN + 5 RU)**; sağlayıcı düzeltme dalgası (jobicy tam akış geçişi + filtreler, workday gerçek pano boyutu, adp-workforcenow dil, applicantpro kapanış günü, mokahr robots, computrabajo sıralama, apple ülke, dover/oraclecloud/platsbanken parite); tarayıcı dalgası (kısmen okunan panolar `partial` bildiriyor, geçici hatalarda tam taramadan sonra yeniden deneme, pipeline'da ilan kapanış tarihi, konum listelerinde büyük harfli ISO kodları büyük/küçük harfe duyarlı). Testler 7933 → 8126.
+> **Önceki — v1.271.4** — CodeQL uyarı dalgasını kaynak düzeyinde kapatıyor (6 uyarı: testlerdeki kullanılmayan değişkenler/importlar, eksik bir rate limit, daima doğru bir bağlaç, URL alt dizesi iddiaları).
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

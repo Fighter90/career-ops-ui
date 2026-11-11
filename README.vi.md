@@ -7,20 +7,19 @@
 
 _Giao diện không chính thức — không liên kết với career-ops / santifer, cũng không được họ chứng thực._
 
-[![tests](https://img.shields.io/badge/tests-8126%20passed-brightgreen)](#kiểm-thử)
+[![tests](https://img.shields.io/badge/tests-8140%20passed-brightgreen)](#kiểm-thử)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#kiểm-thử)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#kiểm-thử)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#yêu-cầu)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.269.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.269.2)
+[![release](https://img.shields.io/badge/release-v1.271.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.5)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> Bản vá v1.271.4 đóng đợt cảnh báo CodeQL ngay tại mã nguồn (6 cảnh báo: biến/import không dùng trong test, một rate limit bị thiếu, một vế hợp luôn đúng và các khẳng định URL-substring).
-> **🆕 Bản phát hành mới nhất — v1.271.4** — 
+> **🆕 Bản phát hành mới nhất — v1.271.5** — nguồn quét **Tes** mới (việc làm giảng dạy ở Anh và quốc tế; registry **139 = 134 EN + 5 RU · 134 adapters**), sửa tóm tắt một câu của cryptocurrencyjobs, ba sửa nhà cung cấp (listing tóm tắt của startup-jobs, ngữ cảnh HTTP dùng chung của hackernews, platsbanken báo cắt ngắn trung thực) và gia cố orchestrator swarm (chốt định danh issue Linear ở executor, tiếp quản lock cũ có holder đã chết).
 >
-> **Bản trước — v1.271.3** — đợt parent-sync (career-ops @ 298d2282): 3 nhà cung cấp quét mới — TurboHire, ADP Recruiting Management (myjobs), board sitemap dùng chung — registry **135 → 138 (133 EN + 5 RU)**; đợt sửa nhà cung cấp (jobicy duyệt toàn bộ feed + bộ lọc, workday kích thước board thực, adp-workforcenow ngôn ngữ, applicantpro ngày đóng, mokahr robots, computrabajo sắp xếp, apple quốc gia, đối chiếu dover/oraclecloud/platsbanken); đợt scanner (board đọc một phần báo `partial`, thử lại sau cả lượt quét khi lỗi tạm thời, ngày đóng tin trong pipeline, mã ISO chữ hoa phân biệt chữ hoa/thường trong danh sách địa điểm). Test 7933 → 8126.
+> **Bản trước — v1.271.4** — bản vá đóng đợt cảnh báo CodeQL ngay tại mã nguồn (6 cảnh báo: biến/import không dùng trong test, một rate limit bị thiếu, một vế hợp luôn đúng và các khẳng định URL-substring).
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

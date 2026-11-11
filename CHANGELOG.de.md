@@ -1,15 +1,22 @@
-## [1.271.5] — 2026-11-11
-
-### Behoben
-- **Fixed**: three scan sources ported from the parent — startup-jobs no longer stops at its teaser listing, hackernews fetches through the shared HTTP context, and platsbanken reports truncated boards instead of silently ending early.
-
-### Hinweise
-- Deliberately NOT changed: the source registry itself — no new scan sources were added; the three existing boards were only corrected, and the map/scan-layout test edits are test-only coverage.
-
 # Changelog (Deutsch)
 
 
 > Dieses Changelog enthält die vollständige Versionsgeschichte. Einträge, die vor der deutschen Lokalisierung (v1.85.0) veröffentlicht wurden, stehen unten im englischen Original — Übersetzung ausstehend; maßgeblich bleibt [🇬🇧 CHANGELOG.md](CHANGELOG.md).
+
+## [1.271.5] — 2026-11-11
+
+### Neu
+
+- **Tes**-Scan-Quelle (parent #6685, CAR-257) — Lehrkräfte-Stellen aus UK und international (tes.com/jobs): ein board-weiter `provider: tes`-Eintrag, der den öffentlichen tRPC-Such-Endpoint durchläuft (50 pro Seite, Datumsreihenfolge, ID-Dedup), optionale Eintrags-Schlüssel `keywords`/`max_pages`, SSRF-Host-Pin + `redirect:'error'`, kanonische Truncation-Tags. Registry **138 → 139 = 134 EN + 5 RU · 134 Adapter**; Zähler-Gates aus der Live-Registry neu generiert; Hilfe §17 + CONTEXT.md-Zähler ×19 aktualisiert.
+
+### Behoben
+- **cryptocurrencyjobs** (parent #6746, CAR-257): die Ein-Satz-Teaser-Vorlage des Feeds wird nicht mehr als beschreibungsartiger Text ausgegeben — der Inhaltsfilter des en-scanners liest `description ?? snippet`, sodass der Teaser sonst JEDE Stelle vom Board geworfen hätte, wenn `content_filter.positive` gesetzt war.
+- **Drei Scan-Quellen** (CAR-265): startup-jobs stoppt nicht mehr an seiner Teaser-Auflistung, hackernews holt über den gemeinsamen HTTP-Kontext, und platsbanken meldet abgeschnittene Boards, statt lautlos früh zu enden.
+- **Swarm-Infrastruktur** (Release-Werkzeug): der Entwicklungs-Prompt des Executors pinnt jetzt die exakte Linear-Issue-Identität (ein Diff zum falschen Issue ist ein automatischer Review-RETURN — die CAR-258-Live-Regression), und der Orchestrator übernimmt ein veraltetes Single-Flight-Lock, dessen haltende PID tot ist, statt jeden nächsten Start abzubrechen.
+
+### Hinweise
+- Bewusst NICHT geändert: die Parent-Fixes für oraclecloud (#6690) und apple (#6452) wurden als seit v1.271.3 bereits vorhanden verifiziert (parent 298d2282 — kein Delta); die Karten-/Scan-Layout-Test-Änderungen in CAR-265 sind reine Test-Abdeckung; CAR-258/262/263/264/266/267/268 bleiben für die nächsten Swarm-Zyklen eingeplant.
+
 ## [1.271.4] — 2026-11-10
 
 ### Behoben

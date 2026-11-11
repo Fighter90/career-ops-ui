@@ -1,15 +1,23 @@
-## [1.271.5] — 2026-11-11
-
-### 修复
-- **Fixed**: three scan sources ported from the parent — startup-jobs no longer stops at its teaser listing, hackernews fetches through the shared HTTP context, and platsbanken reports truncated boards instead of silently ending early.
-
-### 备注
-- Deliberately NOT changed: the source registry itself — no new scan sources were added; the three existing boards were only corrected, and the map/scan-layout test edits are test-only coverage.
-
 # 变更日志
 
 > **说明** — 本文件已完整翻译为出版级简体中文(中国大陆用语规范),包含全部历史版本条目。代码块、提交信息、文件路径、URL、环境变量、命令行片段以及 CSP / SSRF / TOCTOU / WCAG / ATS / JD / SSE / REST / API 等通用英文缩写按原文保留。
 > _自 [1.271.3] 起的条目待翻译——英文原文见下方。_
+
+## [1.271.5] — 2026-11-11
+
+### 新增
+
+- **Tes 扫描源(parent #6685, CAR-257)— 英国及国际教学职位 (tes.com/jobs)**:看板级 `provider: tes` 条目,遍历公开的 tRPC 搜索端点(每页 50 条、按日期排序、id 去重);可选的 `keywords`/`max_pages` 条目键;SSRF 主机钉扎 + `redirect:'error'`;规范的截断标签。注册表 **138 → 139 = 134 EN + 5 RU · 134 adapters**;计数门禁自活跃注册表重新生成;help §17 与 CONTEXT.md 计数更新 ×19。
+
+### 修复
+
+- **cryptocurrencyjobs(parent #6746, CAR-257)**:feed 的单句摘要模板不再被当作类似描述的文本发出 — en-scanner 内容过滤器读取 `description ?? snippet`,因此设置了 `content_filter.positive` 的用户会因这条摘要把整个看板上的每一个职位全部丢弃。
+- **三个扫描源(CAR-265)**:startup-jobs 不再停在它的摘要列表上,hackernews 经共享的 HTTP 上下文取回,platsbanken 在看板被截断时如实报告而不是静默提前结束。
+- **Swarm 基础设施(发布工具链)**:执行器的 develop 提示现在钉住确切的 Linear issue 身份(错误的 issue 差异会触发自动评审 RETURN — 即 CAR-258 的线上回归);编排器会接管持有者 PID 已死的过期 single-flight 锁,而不是中止之后的每一次启动。
+
+### 备注
+
+- 特意未改动:oraclecloud (#6690) 与 apple (#6452) 的父项目修复经核实自 v1.271.3 起就已存在(parent 298d2282 — 无差异);CAR-265 中的 map/scan-layout 测试改动仅为测试覆盖;CAR-258/262/263/264/266/267/268 仍在排队,等待下一轮 swarm 周期。
 
 ## [1.271.4] — 2026-11-10
 

@@ -1,15 +1,21 @@
-## [1.271.5] — 2026-11-11
-
-### ठीक किया गया
-- **Fixed**: three scan sources ported from the parent — startup-jobs no longer stops at its teaser listing, hackernews fetches through the shared HTTP context, and platsbanken reports truncated boards instead of silently ending early.
-
-### नोट्स
-- Deliberately NOT changed: the source registry itself — no new scan sources were added; the three existing boards were only corrected, and the map/scan-layout test edits are test-only coverage.
-
 # परिवर्तन-सूची (हिन्दी)
 
 
 > यह परिवर्तन-सूची अब संपूर्ण रिलीज़-इतिहास रखती है। हिन्दी स्थानीयकरण (v1.122.0) से पहले प्रकाशित प्रविष्टियाँ नीचे अंग्रेज़ी मूल रूप में हैं — अनुवाद बाकी है; आधिकारिक स्रोत [🇬🇧 CHANGELOG.md](CHANGELOG.md) है।
+## [1.271.5] — 2026-11-11
+
+### जोड़ा गया
+- **Tes** स्कैन सोर्स (parent #6685, CAR-257) — UK और अंतरराष्ट्रीय शिक्षण नौकरियाँ (tes.com/jobs): बोर्ड-व्यापी `provider: tes` एंट्री जो सार्वजनिक tRPC सर्च एंडपॉइंट पर चलती है (50/पेज, तारीख-क्रम, id डीडुप), वैकल्पिक `keywords`/`max_pages` एंट्री कीज़, SSRF होस्ट-पिन + `redirect:'error'`, कैनोनिकल ट्रंकेशन टैग। रजिस्ट्री **138 → 139 = 134 EN + 5 RU · 134 adapters**; काउंट गेट्स लाइव रजिस्ट्री से फिर जनरेट हुए; हेल्प §17 + CONTEXT.md की गिनतियाँ ×19 अपडेट।
+
+### ठीक किया गया
+- **cryptocurrencyjobs** (parent #6746, CAR-257): फीड का एक-वाक्य टीज़र टेम्पलेट अब description-जैसे टेक्स्ट के रूप में बाहर नहीं जाता — en-scanner का कंटेंट फ़िल्टर `description ?? snippet` पढ़ता है, इसलिए `content_filter.positive` सेट करने वाले किसी उपयोगकर्ता के लिए टीज़र बोर्ड की हर पोस्टिंग गिरा देता था।
+- **तीन स्कैन सोर्स** (CAR-265): startup-jobs अब अपनी टीज़र लिस्टिंग पर नहीं रुकता, hackernews शेयर्ड HTTP कॉन्टेक्स्ट से फ़ेच करता है, और platsbanken चुपचाप जल्दी ख़त्म होने के बजाय ट्रंकेटेड बोर्ड रिपोर्ट करता है।
+- **Swarm इंफ़्रास्ट्रक्चर** (release tooling): executor का develop प्रॉम्प्ट अब सही Linear issue पहचान पिन करता है (ग़लत issue का diff स्वचालित review RETURN है — CAR-258 की लाइव रिग्रेशन), और ऑर्केस्ट्रेटर हर अगली लॉन्च रोकने के बजाय उस stale single-flight लॉक को अपने ले लेता है जिसका होल्डर PID मृत हो चुका है।
+
+### नोट्स
+- जानबूझकर नहीं बदला गया: oraclecloud (#6690) और apple (#6452) के parent फ़िक्स v1.271.3 से पहले से मौजूद सत्यापित हुए (parent 298d2282 — कोई delta नहीं); CAR-265 के map/scan-layout टेस्ट बदलाव केवल टेस्ट कवरेज हैं; CAR-258/262/263/264/266/267/268 अगले swarm चक्रों के लिए कतार में हैं।
+
+
 ## [1.271.4] — 2026-11-10
 
 ### ठीक किया गया
