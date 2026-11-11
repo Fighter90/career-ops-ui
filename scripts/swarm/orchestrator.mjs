@@ -159,17 +159,48 @@ const extractVerdict = (all) => {
   return { verdict: 'RETURN', notes: 'reviewer produced no verdict — treat as RETURN' };
 };
 
-async function main() {
-  if (!existsSync(resolve(ROOT, 'package.json'))) throw new Error('run from the web-ui repo root');
-  mkdirSync(LOGS, { recursive: true });
-  const lock = resolve(STATE, 'lock');
-  try {
+/**
+ * Single-instance lock with stale-holder takeover (live-run regression ×2: a
+ * SIGKILLed orchestrator never runs its cleanup unlink, and every next launch
+ * aborted until a human removed the file). Exclusive-create first (no
+ * exists/write race); on an existing lock, take it over ONLY when the recorded
+ * holder PID is provably dead. A live holder — or a lock whose PID cannot be
+ * read — still refuses.
+ *
+ * @param {string} lock absolute lock-file path
+ * @returns {true} when this process holds the lock
+ */
+export function acquireLock(lock) {
+  const claims = () => {
     const fd = openSync(lock, 'wx'); // exclusive create — no exists/write race
     writeSync(fd, String(process.pid));
     closeSync(fd);
+  };
+  try {
+    claims();
+    return true;
   } catch {
-    throw new Error('another swarm instance holds the lock (.task-board/lock)');
+    // exists → who holds it?
   }
+  let holder = 0;
+  try {
+    holder = parseInt(readFileSync(lock, 'utf8').trim(), 10);
+  } catch { /* unreadable → treated as no holder */ }
+  const alive = holder > 0 && (() => {
+    try { process.kill(holder, 0); return true; } catch (e) { return /** @type {any} */ (e).code === 'EPERM'; }
+  })();
+  if (!alive) {
+    unlinkSync(lock); // dead holder (or no readable PID): take over
+    claims();
+    return true;
+  }
+  throw new Error(`another swarm instance holds the lock (.task-board/lock) — holder PID ${holder}`);
+}
+
+async function main() {
+  if (!existsSync(resolve(ROOT, 'package.json'))) throw new Error('run from the web-ui repo root');
+  mkdirSync(LOGS, { recursive: true });
+  acquireLock(resolve(STATE, 'lock'));
 
   try {
     for (let n = 0; n < MAX_TASKS; n++) {

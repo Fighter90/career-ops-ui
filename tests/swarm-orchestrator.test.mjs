@@ -6,7 +6,11 @@
 // refuse anything that is not a real Linear identifier (e.g. CAR-252).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { parsePickOutput } from '../scripts/swarm/orchestrator.mjs';
+import { spawnSync } from 'node:child_process';
+import { mkdtempSync, writeFileSync, readFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { parsePickOutput, acquireLock } from '../scripts/swarm/orchestrator.mjs';
 
 test('parses a real pick line', () => {
   const issue = parsePickOutput('blah\nSWARM_PICK::uuid-1::CAR-252::#/health: FIX_TARGETS keys\ntrailer');
@@ -63,4 +67,28 @@ test('executor role prompt: rule 7 pins the issue identity', async () => {
     /never fetch or implement any other issue['’s ]* body/i,
     'rule 7 must forbid fetching/implementing another issue’s body',
   );
+});
+
+// ── stale-lock takeover (live-run regression ×2: a SIGKILLed orchestrator never
+// runs its cleanup unlink, and every next launch aborted with "another swarm
+// instance holds the lock" until a human removed the file). A lock whose PID is
+// dead must be taken over; a lock held by a live process must still refuse. ──
+
+test('acquireLock: takes over a lock whose holder PID is dead', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'swarm-lock-'));
+  const lock = join(dir, 'lock');
+  // A genuinely dead PID: spawn `true`, which has exited by the time this runs.
+  const deadPid = spawnSync('true').pid;
+  writeFileSync(lock, String(deadPid));
+  assert.equal(acquireLock(lock), true, 'a dead holder must be taken over');
+  assert.equal(readFileSync(lock, 'utf8'), String(process.pid), 'the lock must record the new holder');
+  rmSync(dir, { recursive: true, force: true });
+});
+
+test('acquireLock: still refuses a lock held by a live process', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'swarm-lock-'));
+  const lock = join(dir, 'lock');
+  writeFileSync(lock, String(process.pid)); // this test process is alive
+  assert.throws(() => acquireLock(lock), /holds the lock/);
+  rmSync(dir, { recursive: true, force: true });
 });
