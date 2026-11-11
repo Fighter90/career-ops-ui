@@ -77,3 +77,12 @@ test('custom suspicious_domains/ats_allowlist overrides honoured', () => {
   const v = buildTrustValidator({ enabled: true, suspicious_domains: ['evil.test'] })({ url: 'https://evil.test/x', company: 'evil' });
   assert.ok(v.flags.includes('suspicious_domain'));
 });
+
+test('recruitmentplatform.com (TalentLink) is in the default ATS allowlist — parent PR #6790 parity', () => {
+  // A TalentLink tenant posting (acme.recruitmentplatform.com) must not be
+  // penalised for a company↔domain mismatch: the employer's brand and the
+  // vendor's tenant host never share a name.
+  const v = buildTrustValidator({ enabled: true })({ url: 'https://acme.recruitmentplatform.com/details.html?jobId=1', company: 'Acme Co' });
+  assert.equal(v.flags.includes('company_domain_mismatch'), false);
+  assert.equal(v.level, 'high');
+});

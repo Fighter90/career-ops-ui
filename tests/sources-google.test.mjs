@@ -17,12 +17,19 @@ import {
   buildQueryUrl,
   assertGoogleUrl,
   fetchGoogle,
+  resolveMaxPages,
   BASE,
   DEFAULT_QUERIES,
   DEFAULT_LOCATION,
   ALLOWED_HOST,
+  PAGE_SIZE,
+  DEFAULT_MAX_PAGES,
+  MAX_PAGES_CAP,
 } from '../server/lib/sources/google.mjs';
 import { googleAdapter } from '../server/lib/portals/adapters/google.mjs';
+
+/** Never sleep in tests; the real seam paces between page requests. */
+const noSleep = async () => {};
 
 /** One results card: markup (h3 + employer line) followed by its closing anchor. */
 const card = ({ id, slug, title, aria, employerLine }) => {
@@ -115,6 +122,26 @@ test('google: assertGoogleUrl — HTTPS on the results host only, default port o
   assert.equal(ALLOWED_HOST, 'www.google.com');
 });
 
+test('google: resolveMaxPages — default 10, entry opt-in clamped to the 50-page cap', () => {
+  assert.equal(resolveMaxPages({}), DEFAULT_MAX_PAGES);
+  assert.equal(resolveMaxPages(null), DEFAULT_MAX_PAGES);
+  assert.equal(resolveMaxPages({ max_pages: 3 }), 3);
+  assert.equal(resolveMaxPages({ max_pages: 1000 }), MAX_PAGES_CAP, 'a max_pages override is clamped to the hard ceiling');
+  assert.equal(resolveMaxPages({ max_pages: 0 }), DEFAULT_MAX_PAGES);
+  assert.equal(resolveMaxPages({ max_pages: '5' }), DEFAULT_MAX_PAGES, 'a non-integer is the default, never a crash');
+  assert.equal(MAX_PAGES_CAP, 50);
+});
+
+test('google: buildQueryUrl — page 1 omits the param, later pages carry it', () => {
+  assert.equal(
+    buildQueryUrl('business strategy', 'United States', 1),
+    `${BASE}?q=business+strategy&location=United+States&sort_by=date`,
+    'the first page is the param-less URL the robots note historically served');
+  assert.equal(
+    buildQueryUrl('business strategy', 'United States', 2),
+    `${BASE}?q=business+strategy&location=United+States&sort_by=date&page=2`);
+});
+
 test('google: fetchGoogle — dedupes by id across queries; the card employer wins over the entry', async () => {
   const shared = card({
     id: '42', slug: 'shared-role', title: 'Shared Role',
@@ -131,9 +158,10 @@ test('google: fetchGoogle — dedupes by id across queries; the card employer wi
   };
   const jobs = await fetchGoogle(BASE, {
     fetchImpl,
+    sleep: noSleep,
     company: { name: 'Google', provider: 'google', google: { queries: ['strategy', 'ops'] } },
   });
-  assert.equal(calls.length, 2, 'one request per query');
+  assert.equal(calls.length, 2, 'one request per query — both fixture pages are short, so each walk is one page');
   assert.ok(calls[0].includes('q=strategy'));
   assert.ok(calls[1].includes('q=ops'));
   assert.equal(jobs.length, 2, 'the shared posting appears once');
@@ -142,25 +170,129 @@ test('google: fetchGoogle — dedupes by id across queries; the card employer wi
   assert.equal(jobs[0].url, `${BASE}42-shared-role`);
   assert.equal(jobs[0].source, 'google');
   assert.equal(jobs[0].date, '', 'the results page carries no posting date');
+  assert.equal(jobs.truncated, undefined, 'a walk that reached its natural end is not partial');
 });
 
-test('google: fetchGoogle — one failed query is tolerated (recall-first), all failing throws', async () => {
+test('google: fetchGoogle — one failed query is tolerated (recall-first), all failing throws the first error', async () => {
   let calls = 0;
   const mixed = async () => {
     calls += 1;
-    if (calls === 1) throw new Error('HTTP 503');
+    if (calls === 1) throw Object.assign(new Error('HTTP 400'), { status: 400 }); // 4xx: never retried
     return { ok: true, status: 200, text: async () => page([card({ id: '9', slug: 'ok', title: 'Kept' })]) };
   };
   const kept = await fetchGoogle(BASE, {
     fetchImpl: mixed,
+    sleep: noSleep,
     company: { name: 'Google', google: { queries: ['bad', 'good'] } },
   });
   assert.equal(kept.length, 1, 'the surviving query still contributes');
+  assert.deepEqual(kept.truncated, { reason: 'fetch-error', fetched: 1 }, 'a query lost to a fetch error marks the board partial');
 
-  const always = async () => ({ ok: false, status: 500, text: async () => '' });
+  const errA = Object.assign(new Error('alpha failed'), { status: 400 });
+  const errB = Object.assign(new Error('beta failed'), { status: 400 });
+  const always = async (url) => {
+    if (String(url).includes('q=alpha')) throw errA;
+    throw errB;
+  };
   await assert.rejects(
-    () => fetchGoogle(BASE, { fetchImpl: always, company: { name: 'Google', google: { queries: ['a', 'b'] } } }),
-    /all 2 query request\(s\) failed/);
+    () => fetchGoogle(BASE, { fetchImpl: always, sleep: noSleep, company: { name: 'Google', google: { queries: ['alpha', 'beta'] } } }),
+    (err) => err === errA,
+    'every query failing on page 1 is a total outage: the FIRST error propagates');
+});
+
+test('google: fetchGoogle — a full page walks on, a short page ends the walk', async () => {
+  // PAGE_SIZE cards per page: page 1 full → page=2 requested; page 2 short → stop.
+  const full = Array.from({ length: PAGE_SIZE }, (_, i) => card({ id: String(100 + i), slug: `r${i}`, title: `Role ${i}` }));
+  const short = [card({ id: '999', slug: 'last', title: 'Last Role' })];
+  const calls = [];
+  const fetchImpl = async (url) => {
+    calls.push(String(url));
+    const isPage2 = /[?&]page=2/.test(String(url));
+    return { ok: true, status: 200, text: async () => page(isPage2 ? short : full) };
+  };
+  const jobs = await fetchGoogle(BASE, {
+    fetchImpl,
+    sleep: noSleep,
+    company: { name: 'Google', google: { queries: ['strategy'] } },
+  });
+  assert.equal(calls.length, 2, 'a full first page is followed by exactly one more request');
+  assert.ok(calls[0].includes('sort_by=date') && !/[?&]page=/.test(calls[0]), 'page 1 carries no page param');
+  assert.ok(/[?&]page=2/.test(calls[1]), 'page 2 carries the page param');
+  assert.equal(jobs.length, PAGE_SIZE + 1);
+  assert.equal(jobs.truncated, undefined, 'a short page is the walk\'s natural end, not a truncation');
+});
+
+test('google: fetchGoogle — a page adding no new ids stops that query (re-served page)', async () => {
+  const same = Array.from({ length: PAGE_SIZE }, (_, i) => card({ id: String(200 + i), slug: `r${i}`, title: `Role ${i}` }));
+  const calls = [];
+  const fetchImpl = async (url) => {
+    calls.push(String(url));
+    return { ok: true, status: 200, text: async () => page(same) };
+  };
+  const jobs = await fetchGoogle(BASE, {
+    fetchImpl,
+    sleep: noSleep,
+    company: { name: 'Google', google: { queries: ['strategy'] } },
+  });
+  // Page 1 is full and fresh, so the walk probes page 2; that page repeats
+  // the same ids (Google re-serving an earlier page past the end) and stops.
+  assert.equal(calls.length, 2);
+  assert.equal(jobs.length, PAGE_SIZE);
+  assert.equal(jobs.truncated, undefined, 'a re-served page is the board\'s end, not a truncation');
+});
+
+test('google: fetchGoogle — max_pages bounds each query and a cap stop marks page-cap', async () => {
+  const capture = [];
+  const origError = console.error;
+  console.error = (...a) => capture.push(a.join(' '));
+  try {
+    // Every page is FULL and carries fresh ids, so only max_pages can stop the walk.
+    const calls = [];
+    const fetchImpl = async (url) => {
+      calls.push(String(url));
+      const p = Number((String(url).match(/[?&]page=(\d+)/) || [])[1] || 1);
+      const full = Array.from({ length: PAGE_SIZE }, (_, i) => card({ id: String(p * 100 + i), slug: `r${i}`, title: `Role ${i}` }));
+      return { ok: true, status: 200, text: async () => page(full) };
+    };
+    const jobs = await fetchGoogle(BASE, {
+      fetchImpl,
+      sleep: noSleep,
+      company: { name: 'Google', google: { queries: ['a', 'b'] }, max_pages: 2 },
+    });
+    assert.equal(calls.length, 4, '2 queries × max_pages 2');
+    assert.equal(jobs.length, PAGE_SIZE * 2);
+    assert.ok(capture.some((w) => /hit the 2-page cap on at least one query — raise max_pages/.test(w)), 'the cap warning names the entry cap');
+    assert.deepEqual(jobs.truncated, { reason: 'page-cap', fetched: PAGE_SIZE * 2 }, 'the canonical partial-read shape (board-truncation.mjs)');
+  } finally {
+    console.error = origError;
+  }
+});
+
+test('google: fetchGoogle — a later-page failure keeps the pages collected and marks fetch-error', async () => {
+  const capture = [];
+  const origError = console.error;
+  console.error = (...a) => capture.push(a.join(' '));
+  try {
+    const full = Array.from({ length: PAGE_SIZE }, (_, i) => card({ id: String(400 + i), slug: `r${i}`, title: `Role ${i}` }));
+    const calls = [];
+    const fetchImpl = async (url) => {
+      calls.push(String(url));
+      if (/[?&]page=2/.test(String(url))) throw Object.assign(new Error('HTTP 400'), { status: 400 }); // 4xx: never retried
+      return { ok: true, status: 200, text: async () => page(full) };
+    };
+    const jobs = await fetchGoogle(BASE, {
+      fetchImpl,
+      sleep: noSleep,
+      company: { name: 'Google', google: { queries: ['strategy'] } },
+    });
+    assert.equal(calls.length, 2);
+    assert.equal(jobs.length, PAGE_SIZE, 'page 1 is kept');
+    assert.ok(capture.some((w) => /stopped "strategy" at page 2/.test(w)), 'the stop is named');
+    assert.ok(!capture.some((w) => /raise max_pages/.test(w)), 'a fetch failure never blames the entry cap');
+    assert.deepEqual(jobs.truncated, { reason: 'fetch-error', fetched: PAGE_SIZE });
+  } finally {
+    console.error = origError;
+  }
 });
 
 test('google: fetchGoogle — every query answering 200 with zero cards throws (markup change)', async () => {
@@ -169,7 +301,7 @@ test('google: fetchGoogle — every query answering 200 with zero cards throws (
     text: async () => '<html><body><div>consent wall</div></body></html>',
   });
   await assert.rejects(
-    () => fetchGoogle(BASE, { fetchImpl, company: { name: 'Google', google: { queries: ['a', 'b'] } } }),
+    () => fetchGoogle(BASE, { fetchImpl, sleep: noSleep, company: { name: 'Google', google: { queries: ['a', 'b'] } } }),
     /answered 200 but parsed 0 postings/,
     'a silent empty board on every query is a markup change, not an outage-free board');
 });

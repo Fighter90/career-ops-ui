@@ -15,6 +15,7 @@
  *       google:
  *         location: "United States"      # optional
  *         queries: ["business strategy", "business operations", ...]
+ *       max_pages: 10                     # optional, per query
  *
  * Each card carries the posting's real title (<h3>) and an "Employer | location;
  * location; +2 more" line. The EMPLOYER is not always Google: the same results
@@ -23,38 +24,39 @@
  * A card without that markup falls back to the entry name, the link's
  * aria-label or slug for the title, and a blank location.
  *
- * FIRST PAGE ONLY, and that is a robots.txt constraint, not an oversight.
- * google.com/robots.txt disallows the paginated results URLs for every crawler:
+ * PAGINATION (parent PR #6761 / #6694 parity). The results are paged with a
+ * 1-based `page` query parameter (omitted on page 1), PAGE_SIZE cards per full
+ * page, newest first under `sort_by=date`. Until 2026-11-08 this source read
+ * only the first page because `google.com/robots.txt` disallows the `page=`
+ * results URLs; rule 6 of the parent's Source Indexing Policy stopped treating
+ * robots.txt as a gate (#6691, #6694), so the walk now continues page by page
+ * (upstream `providers/google.mjs`). A query ends on the first empty page, a
+ * page that repeats an id already seen in the same walk, or a short page
+ * (fewer than PAGE_SIZE cards), and is otherwise bounded by `max_pages` per
+ * query (resolveMaxPages: DEFAULT_MAX_PAGES, hard ceiling MAX_PAGES_CAP).
  *
- *   Disallow: /about/careers/applications/jobs/results?page=
- *   Disallow: /about/careers/applications/jobs/results/?page=
- *   Disallow: /about/careers/applications/jobs/results?*&page=
- *   Disallow: /about/careers/applications/jobs/results/?*&page=
+ * A walk stopped by the page cap or by a failed request marks the returned
+ * array with the canonical partial-read shape (markTruncated,
+ * board-truncation.mjs), so a scan reports the board `partial` instead of
+ * presenting a cut prefix as the whole one. One failed query never loses the
+ * queries already collected (recall-first); only a total outage — every query
+ * failing on its first page — throws, and it throws the FIRST error.
  *
- * with no Allow under /about/careers that could take precedence (RFC 9309 §2.2.2
- * longest-match). career-ops declines Lagou for the same reason — see the
- * parent's docs/SUPPORTED_JOB_BOARDS.md: "The project does not route around that
- * stated restriction." So this source never sends `page`, which leaves one
- * results page per query (~20 postings). `sort_by=date` makes that page the
- * NEWEST postings, which is what a scanner run on a schedule wants; pages beyond
- * the first are unreachable without the disallowed parameter, so `max_pages`
- * does not apply to this source (and there is no truncation flag: one page per
- * query is the complete first-page result, by design).
- *
- * Ported from the parent's providers/google.mjs (parity v1.253.0).
  * Deviations from the parent, per the web-ui source contract:
- *   - the parent's ctx transport (ctx.fetchText) does not exist here; the
- *     source fetches through the injected fetchImpl (redirect:'error',
- *     browser User-Agent), and web-ui's scanner has no probe path (the
- *     parent's ctx.maxPages one-query probe), so every query always runs;
- *   - the parent lets one failed query abort the whole board; here a failed
- *     query is warned and skipped (recall-first — the mycareersfuture
- *     keyword-loop pattern) and only an all-queries failure throws;
+ *   - the parent's ctx transport (ctx.fetchText / ctx.maxPages probe seam)
+ *     does not exist here; the source fetches through the shared
+ *     fetchTextWithRetry (injected fetchImpl, redirect:'error', browser
+ *     User-Agent). Web-ui has no probe path, so the ctx.maxPages one-query
+ *     probe is deliberately not ported (the apple full_board precedent,
+ *     CAR-268).
  *   - card text goes through the shared web-ui html-to-text helper (the same
  *     strip-before-decode pipeline the parent's shared helper implements).
+ *
+ * Ported from the parent's providers/google.mjs (parity v1.253.0 + PR #6761).
  */
 import { htmlToText } from '../html-to-text.mjs';
-import { fetchText, BROWSER_LIKE_USER_AGENT } from '../http-json.mjs';
+import { fetchTextWithRetry, delay, BROWSER_LIKE_USER_AGENT } from '../http-json.mjs';
+import { markTruncated } from '../board-truncation.mjs';
 
 const UA = BROWSER_LIKE_USER_AGENT;
 
@@ -73,12 +75,18 @@ export const DEFAULT_QUERIES = [
   'corporate development', 'financial planning',
 ];
 
-// One request per query: no `page` parameter exists in any URL this source builds.
+// A full results page carries PAGE_SIZE cards; a shorter page is the last one
+// for that query. Observed live upstream 2026-11-08.
+export const PAGE_SIZE = 20;
+export const DEFAULT_MAX_PAGES = 10; // 200 postings per query
+export const MAX_PAGES_CAP = 50; // hard ceiling even for a max_pages override
+export const INTER_PAGE_DELAY_MS = 400;
+
 // The anchor that closes each card; the markup since the previous anchor is that
 // card. Google serves the href relative ("jobs/results/…"); a path prefix is
 // tolerated, and the URL is rebuilt from BASE either way.
 // [spec, review round CAR-86 #20] ANCHOR_RE is O(k·n) backtracking (no
-// catastrophic case found — bounded input, one page per query); cap the HTML
+// catastrophic case found — bounded input, one page per request); cap the HTML
 // length here if a live page ever grows past the scanner's sanity size.
 const ANCHOR_RE = /<a\b[^>]*?\bhref="(?:[^"]*\/)?jobs\/results\/(\d+)-([a-z0-9-]+)[^"]*"[^>]*>/g;
 const H3_RE = /<h3\b[^>]*>([^<]+)<\/h3>/g;
@@ -133,15 +141,33 @@ export function parseGoogleConfig(entry) {
 }
 
 /**
- * The URL of one query's first (and only — see the robots.txt note) results page.
- * URLSearchParams, not hand-built encodeURIComponent: q and location come from
- * portals.yml, and URLSearchParams never throws on a malformed string.
+ * Resolve the per-query page cap: a positive integer `max_pages` on the entry,
+ * capped at MAX_PAGES_CAP; the default otherwise. Exported for unit tests
+ * (parent parity — PR #6761 / #6694).
+ * @param {any} entry
+ * @returns {number}
+ */
+export function resolveMaxPages(entry) {
+  const v = entry?.max_pages;
+  if (Number.isInteger(v) && v > 0) return Math.min(v, MAX_PAGES_CAP);
+  return DEFAULT_MAX_PAGES;
+}
+
+/**
+ * The URL of one query's results page. Page 1 is the param-less URL (the shape
+ * the robots file historically served, and what the adapter's endpoint uses);
+ * later pages carry the 1-based `page` parameter. URLSearchParams, not
+ * hand-built encodeURIComponent: q and location come from portals.yml, and
+ * URLSearchParams never throws on a malformed string.
  * @param {string} query
  * @param {string} location
+ * @param {number} [page] 1-based; 1 (or anything below 2) omits the param
  * @returns {string}
  */
-export function buildQueryUrl(query, location) {
-  return `${BASE}?${new URLSearchParams({ q: String(query), location: String(location), sort_by: 'date' })}`;
+export function buildQueryUrl(query, location, page = 1) {
+  const params = new URLSearchParams({ q: String(query), location: String(location), sort_by: 'date' });
+  if (page > 1) params.set('page', String(page));
+  return `${BASE}?${params}`;
 }
 
 /** @param {string} slug */
@@ -214,15 +240,20 @@ function normalize(card, entry) {
 }
 
 /**
- * Fetch + normalize the Google Careers results across the entry's queries
- * (one first-page request per query — see the robots.txt note).
- * Mirrors the parent's fetch(): results are deduplicated by posting id across
- * queries, and a card's employer wins over the entry name.
+ * Fetch + normalize the Google Careers results across the entry's queries,
+ * PAGE_SIZE cards a page per query (see the pagination note).
+ * Mirrors the parent's fetch() (PR #6761): postings are deduplicated by id
+ * across queries AND within one query's walk, a card's employer wins over the
+ * entry name, a page that repeats ids is past the end, and a failed page keeps
+ * everything collected so far (marking the result partial) rather than losing
+ * it — only a total outage (every query failing on its first page) throws the
+ * first error.
  *
  * @param {string} endpoint - a results URL on www.google.com (asserted here;
  *   the query actually fetched is rebuilt per query, the endpoint only pins
  *   the host).
- * @param {{ fetchImpl?: Function, signal?: AbortSignal, company?: object }} [opts]
+ * @param {{ fetchImpl?: Function, signal?: AbortSignal, company?: object,
+ *           sleep?: (ms: number) => Promise<void> }} [opts]
  * @returns {Promise<Array<object>>} normalized job rows
  */
 export async function fetchGoogle(endpoint, opts = {}) {
@@ -232,42 +263,78 @@ export async function fetchGoogle(endpoint, opts = {}) {
   // endpoint from the fixed BASE; re-validate it here.
   assertGoogleUrl(endpoint);
   const { queries, location } = parseGoogleConfig(entry);
+  const maxPages = resolveMaxPages(entry);
+  const name = String(entry?.name ?? 'Google');
+  // Test seam; the default honors the abort signal while pacing between pages.
+  const sleep = opts.sleep || ((ms) => delay(ms, signal));
 
   const byId = new Map();
-  let succeeded = 0; // queries whose request completed (i.e. the source answered)
+  let requestsMade = 0;
+  let succeeded = 0; // queries whose first page answered (i.e. the source answered)
   let sawNoResults = false; // a page said outright it has no results
-  const errors = [];
+  let truncated = false; // a query ran out of pages on a full, fresh page
+  let fetchFailed = false; // a query stopped on a failed request
+  let firstPageFailures = 0;
+  let firstPageError;
   for (const [qi, q] of queries.entries()) {
     // A scan aborted before the first query must fail loud, not report an
     // empty board; past the first query a break keeps the partials.
     if (qi === 0) signal?.throwIfAborted();
     else if (signal?.aborted) break;
-    let html;
-    try {
-      html = await fetchText(fetchImpl, buildQueryUrl(q, location), {
-        signal,
-        redirect: 'error',
-        headers: { 'User-Agent': UA, Accept: 'text/html' },
-      });
-      succeeded++;
-    } catch (err) {
-      // Recall-first: tolerate a single failed query and keep going; a query
-      // that answered with zero cards is not an outage.
-      if (signal?.aborted) break;
-      errors.push(`"${q}": ${(err && err.message) || err}`);
-      continue;
+    // IDs seen in THIS query's walk: a page that adds none is Google
+    // re-serving an earlier page past the end, so the walk for this query
+    // stops — but a later query whose first page overlaps an earlier query
+    // still walks its own deeper pages (parent parity).
+    const seenThisQuery = new Set();
+    let queryAnswered = false;
+    for (let page = 1; page <= maxPages; page++) {
+      if (requestsMade > 0) await sleep(INTER_PAGE_DELAY_MS);
+      const url = buildQueryUrl(q, location, page);
+      assertGoogleUrl(url);
+      let html;
+      try {
+        html = await fetchTextWithRetry(fetchImpl, url, {
+          signal,
+          redirect: 'error',
+          headers: { 'User-Agent': UA, Accept: 'text/html' },
+        });
+      } catch (err) {
+        // Recall-first: tolerate a failed query (or page) and keep going. A
+        // page-1 failure counts toward the total-outage check below; a later
+        // failure marks the board partial instead of a cap stop.
+        if (signal?.aborted) break;
+        fetchFailed = true;
+        if (page === 1) {
+          if (firstPageFailures === 0) firstPageError = err;
+          firstPageFailures += 1;
+        }
+        const cause = err instanceof Error ? err.message : String(err);
+        console.error(`⚠️  google: ${name} stopped "${q}" at page ${page} (${byId.size} jobs so far): ${cause}`);
+        break;
+      }
+      requestsMade += 1;
+      queryAnswered = true;
+      if (!POSTING_LINK_RE.test(html) && NO_RESULTS_RE.test(html)) {
+        sawNoResults = true;
+      }
+      const cards = parseResultsPage(html);
+      let newThisQuery = 0;
+      for (const c of cards) {
+        if (!seenThisQuery.has(c.id)) { seenThisQuery.add(c.id); newThisQuery += 1; }
+        if (!byId.has(c.id)) byId.set(c.id, c);
+      }
+      // Stop at this query's last page: empty, re-served (no new ids), or
+      // short (a full page is PAGE_SIZE cards).
+      if (cards.length === 0 || newThisQuery === 0 || cards.length < PAGE_SIZE) break;
+      if (page === maxPages) truncated = true;
     }
-    if (!POSTING_LINK_RE.test(html) && NO_RESULTS_RE.test(html)) {
-      sawNoResults = true;
-    }
-    for (const card of parseResultsPage(html)) {
-      if (!byId.has(card.id)) byId.set(card.id, card);
-    }
+    if (queryAnswered) succeeded += 1;
   }
 
-  // Total outage = every query failed.
-  if (succeeded === 0 && errors.length) {
-    throw new Error(`google: all ${queries.length} query request(s) failed — ${errors[0]}`);
+  // Total outage = every query failed on its first page: throw the FIRST
+  // error (parent PR #6761 — an empty board would read as "no postings").
+  if (firstPageFailures === queries.length && firstPageError) {
+    throw firstPageError;
   }
 
   // Every query answered 200 but not a single card parsed anywhere: a markup
@@ -277,5 +344,13 @@ export async function fetchGoogle(endpoint, opts = {}) {
     throw new Error(`google: ${succeeded} query page(s) answered 200 but parsed 0 postings across ${queries.length} quer${queries.length === 1 ? 'y' : 'ies'} — results markup changed?`);
   }
 
-  return [...byId.values()].map((card) => normalize(card, entry));
+  let jobs = [...byId.values()].map((card) => normalize(card, entry));
+  if (truncated) {
+    console.error(`⚠️  google: ${name} hit the ${maxPages}-page cap on at least one query — raise max_pages on this entry for more`);
+    jobs = markTruncated(jobs, 'page-cap', { fetched: jobs.length });
+  }
+  if (fetchFailed) {
+    jobs = markTruncated(jobs, 'fetch-error', { fetched: jobs.length });
+  }
+  return jobs;
 }

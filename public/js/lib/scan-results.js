@@ -127,6 +127,7 @@ window.ScanResults = (function () {
     { value: 'softgarden', label: 'softgarden' },
     { value: 'solidjobs', label: 'SolidJobs' },
     { value: 'startup-jobs', label: 'Startup Jobs' },
+    { value: 'talentlink', label: 'TalentLink' },
     { value: 'taleo', label: 'Taleo' },
     { value: 'teamtailor', label: 'Teamtailor' },
     { value: 'tes', label: 'Tes' },

@@ -229,7 +229,7 @@ test('trudvsem.normalizeTrudvsem drops a bad id without a vac_url, keeps a good 
 const CONVERTED = [
   'alibaba.mjs', 'arbeitsagentur.mjs', 'bamboohr.mjs', 'deel.mjs', 'feishu-jobs.mjs', 'garena.mjs',
   'jibeapply.mjs', 'manfred.mjs', 'meituan.mjs', 'mokahr.mjs', 'paylocity.mjs', 'phenom.mjs',
-  'thehub.mjs', 'tkms.mjs', 'trakstar.mjs', 'vdab.mjs',
+  'talentlink.mjs', 'thehub.mjs', 'tkms.mjs', 'trakstar.mjs', 'vdab.mjs',
   // web-ui-only, surfaced by the guard below on its first run
   'jobstreet.mjs', 'trudvsem.mjs',
 ];

@@ -55,6 +55,8 @@ import { weworkremotelyAdapter } from './adapters/weworkremotely.mjs';
 // v1.80.0 — Teamtailor per-tenant ATS (public /jobs.rss feed).
 import { teamtailorAdapter } from './adapters/teamtailor.mjs';
 import { tesAdapter } from './adapters/tes.mjs';
+// CAR-258 (parent parity, upstream PR #6790) — Lumesse TalentLink career sites.
+import { talentlinkAdapter } from './adapters/talentlink.mjs';
 // v1.81.0 — 13 new job-board providers.
 // Board-wide public APIs (provider-selected, fixed endpoint):
 import { thehubAdapter } from './adapters/thehub.mjs';
@@ -282,6 +284,10 @@ export const ALL_ADAPTERS = [
   // CAR-257 (parent parity, #6685) — Tes, UK and international teaching jobs,
   // board-wide via provider: tes.
   tesAdapter,
+  // CAR-258 (parent parity, upstream PR #6790) — Lumesse TalentLink
+  // (Cornerstone) "FO widget" career sites on <tenant>.recruitmentplatform.com
+  // (explicit provider: talentlink for branded employer domains).
+  talentlinkAdapter,
   // v1.81.0 — 13 new job-board providers.
   // Board-wide public APIs, provider-selected (like RemoteOK / Remotive):
   thehubAdapter,
