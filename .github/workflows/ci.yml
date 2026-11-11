@@ -88,7 +88,11 @@ jobs:
 
   code-quality:
     name: Code quality (syntax · coverage · audit)
-    runs-on: ubuntu-latest
+    # Pinned: ubuntu-latest migrated to Ubuntu 26 (2026-10-19, actions/runner-images#14748)
+    # and its newer V8 records branch coverage differently — marginal per-file
+    # baselines (states.mjs, posting-close.mjs) flipped red with no code change.
+    # Un-pin only after re-measuring scripts/coverage-baseline.json on the new runner.
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
     steps:
