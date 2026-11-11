@@ -1,3 +1,11 @@
+## [1.271.5] — 2026-11-11
+
+### Corrigido
+- **Fixed**: three scan sources ported from the parent — startup-jobs no longer stops at its teaser listing, hackernews fetches through the shared HTTP context, and platsbanken reports truncated boards instead of silently ending early.
+
+### Notas
+- Deliberately NOT changed: the source registry itself — no new scan sources were added; the three existing boards were only corrected, and the map/scan-layout test edits are test-only coverage.
+
 # Histórico de mudanças
 
 > **Nota** — este arquivo está integralmente traduzido para o português brasileiro. Cada entrada de versão foi reescrita em PT-BR técnico de qualidade editorial, preservando blocos de código, mensagens de commit, caminhos de arquivo, URLs, variáveis de ambiente, comandos e rótulos de link em sua forma original.

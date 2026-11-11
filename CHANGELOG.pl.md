@@ -1,3 +1,11 @@
+## [1.271.5] — 2026-11-11
+
+### Naprawiono
+- **Fixed**: three scan sources ported from the parent — startup-jobs no longer stops at its teaser listing, hackernews fetches through the shared HTTP context, and platsbanken reports truncated boards instead of silently ending early.
+
+### Uwagi
+- Deliberately NOT changed: the source registry itself — no new scan sources were added; the three existing boards were only corrected, and the map/scan-layout test edits are test-only coverage.
+
 # Dziennik zmian
 
 > **Uwaga dot. tłumaczenia (v1.70.0)** — polski dodano jako jeden z trzech nowych języków interfejsu. Ten plik tłumaczy najnowsze wpisy; pełna historia znajduje się w [🇬🇧 angielskim CHANGELOG](CHANGELOG.md), który jest źródłem normatywnym.

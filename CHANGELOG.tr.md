@@ -1,3 +1,11 @@
+## [1.271.5] — 2026-11-11
+
+### Düzeltildi
+- **Fixed**: three scan sources ported from the parent — startup-jobs no longer stops at its teaser listing, hackernews fetches through the shared HTTP context, and platsbanken reports truncated boards instead of silently ending early.
+
+### Notlar
+- Deliberately NOT changed: the source registry itself — no new scan sources were added; the three existing boards were only corrected, and the map/scan-layout test edits are test-only coverage.
+
 # Changelog (Türkçe)
 
 > Bu changelog artık tüm sürüm geçmişini içerir. Türkçe yerelleştirmenin eklenmesinden (v1.85.0) önce yayınlanan girdiler aşağıda İngilizce özgün hâliyle yer alır — çeviri bekliyor; asıl kaynak [🇬🇧 CHANGELOG.md](CHANGELOG.md)'dir.

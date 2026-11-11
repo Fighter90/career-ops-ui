@@ -1,3 +1,11 @@
+## [1.271.5] — 2026-11-11
+
+### Виправлено
+- **Fixed**: three scan sources ported from the parent — startup-jobs no longer stops at its teaser listing, hackernews fetches through the shared HTTP context, and platsbanken reports truncated boards instead of silently ending early.
+
+### Примітки
+- Deliberately NOT changed: the source registry itself — no new scan sources were added; the three existing boards were only corrected, and the map/scan-layout test edits are test-only coverage.
+
 # Журнал змін
 
 > **Примітка щодо перекладу (v1.70.0)** — українську додано як одну з трьох нових мов інтерфейсу. Цей файл перекладає найновіші записи; повна історія — в [🇬🇧 англійському CHANGELOG](CHANGELOG.md), який є нормативним джерелом.

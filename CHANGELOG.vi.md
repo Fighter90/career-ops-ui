@@ -1,3 +1,11 @@
+## [1.271.5] — 2026-11-11
+
+### Đã sửa
+- **Fixed**: three scan sources ported from the parent — startup-jobs no longer stops at its teaser listing, hackernews fetches through the shared HTTP context, and platsbanken reports truncated boards instead of silently ending early.
+
+### Ghi chú
+- Deliberately NOT changed: the source registry itself — no new scan sources were added; the three existing boards were only corrected, and the map/scan-layout test edits are test-only coverage.
+
 # Nhật ký thay đổi (Tiếng Việt)
 
 > Nhật ký này nay chứa đầy đủ lịch sử các bản phát hành. Các mục phát hành trước khi có bản địa hóa tiếng Việt (v1.254.0) xuất hiện bên dưới bằng bản gốc tiếng Anh — bản dịch còn đang chờ; bản chính thức là [🇬🇧 CHANGELOG.md](CHANGELOG.md).

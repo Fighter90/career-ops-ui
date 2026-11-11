@@ -1,3 +1,11 @@
+## [1.271.5] — 2026-11-11
+
+### சரி செய்யப்பட்டது
+- **Fixed**: three scan sources ported from the parent — startup-jobs no longer stops at its teaser listing, hackernews fetches through the shared HTTP context, and platsbanken reports truncated boards instead of silently ending early.
+
+### குறிப்புகள்
+- Deliberately NOT changed: the source registry itself — no new scan sources were added; the three existing boards were only corrected, and the map/scan-layout test edits are test-only coverage.
+
 # மாற்றப் பதிவு (தமிழ்)
 
 > இந்த மாற்றப் பதிவு இப்போது முழு வெளியீட்டு வரலாற்றையும் கொண்டுள்ளது. தமிழ் மொழியாக்கம் (v1.245.0) சேர்க்கப்படுவதற்கு முன் வெளியிடப்பட்ட பதிவுகள் கீழே ஆங்கில அசல் வடிவில் உள்ளன — மொழிபெயர்ப்பு நிலுவையில் உள்ளது; அதிகாரப்பூர்வ ஆவணம் [🇬🇧 CHANGELOG.md](CHANGELOG.md).

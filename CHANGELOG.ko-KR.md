@@ -1,3 +1,11 @@
+## [1.271.5] — 2026-11-11
+
+### 수정
+- **Fixed**: three scan sources ported from the parent — startup-jobs no longer stops at its teaser listing, hackernews fetches through the shared HTTP context, and platsbanken reports truncated boards instead of silently ending early.
+
+### 참고
+- Deliberately NOT changed: the source registry itself — no new scan sources were added; the three existing boards were only corrected, and the map/scan-layout test edits are test-only coverage.
+
 # 변경 로그
 
 > **i18n 노트** — 이 파일은 완전히 한국어로 번역되었습니다. 모든 버전 항목의 본문이 출판 등급의 한국어로 제공되며, 영어 본문 임시 대체 표기는 더 이상 사용되지 않습니다.
