@@ -203,7 +203,7 @@ async function main() {
           await sh(`git checkout -q ${branch} 2>/dev/null || git checkout -q -B ${branch} origin/main`);
           const dev = await worker('executor', {
             IDENTIFIER: issue.identifier, TITLE: issue.title, ROUND: String(round + 1),
-            DESCRIPTION: '(fetch the full issue BODY via the linear MCP if needed; never read or judge the issue STATE — the orchestrator owns the lifecycle)',
+            DESCRIPTION: `(fetch the full issue BODY of EXACTLY ${issue.identifier} — the issue named in this prompt's ISSUE header; never fetch or implement any other issue's body, even if a Linear search surfaces one; never read or judge the issue STATE — the orchestrator owns the lifecycle)`,
             REVIEW_NOTES: reviewNotes ? `\nREVIEWER RETURNED THIS CHANGE WITH NOTES — address every point:\n${reviewNotes}` : '',
           }, { timeoutMs: EXEC_MS });
           const commits = parseInt((await sh('git rev-list --count origin/main..HEAD')).out.trim() || '0', 10);
