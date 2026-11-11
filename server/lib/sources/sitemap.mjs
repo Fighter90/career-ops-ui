@@ -396,8 +396,9 @@ function normalize(row) {
  *   one so no robots.txt is fetched over the network. `maxPages` (a positive
  *   integer) is the probe budget: one request on a urlset, one child of an
  *   index, no detail pages. `titleWanted` is the parent scan ctx hook; the
- *   web-ui scanner passes none today, so enrichment without it considers
- *   every row.
+ *   scanner threads its compiled title filter as the hook since CAR-264
+ *   (#6673), so opt-in detail enrichment narrows to the postings this scan
+ *   keeps.
  * @returns {Promise<Array<object>>} normalized job rows
  */
 export async function fetchSitemap(endpoint, opts = {}) {

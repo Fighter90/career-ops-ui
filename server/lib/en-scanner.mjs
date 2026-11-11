@@ -711,6 +711,13 @@ export async function runEnScan(opts = {}) {
       const coFetch = applyEntryTimeout(fetchImpl, c);
       const items = await withHostSlot(hostKeyFor(c), () => fetcher(c._api.url, {
         fetchImpl: coFetch, signal, company: c,
+        // CAR-264 (parent #6673) — the parent scan ctx's title hook. A source
+        // with an expensive per-posting enrichment (greenhouse's oversized-
+        // board detail fetches; sitemap's detail pages) narrows it to the
+        // postings this scan keeps. Sources that ignore the opt are unaffected.
+        // The same predicate is applied again post-fetch below — reading a
+        // title twice is free next to the request it saves.
+        titleWanted: titleOk,
         // CAR-223 — a provider that serves extra language versions of a
         // posting at extra cost fetches them only when the scan will keep
         // them; one that returns versions selectively also returns the

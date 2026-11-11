@@ -203,3 +203,165 @@ test('fetchGreenhouse: drops rows whose absolute_url is not https (scheme unchec
   const out = await fetchGreenhouse('https://boards-api.greenhouse.io/v1/boards/acme/jobs', { fetchImpl });
   assert.deepEqual(out.map((j) => j.id), ['gh-1'], 'a non-https absolute_url has no safe dedup key — row dropped');
 });
+
+// ── CAR-264 (parent #6673) — oversized board ────────────────────────────────
+// content=true overflows the body cap → the plain list; with the entry's
+// `greenhouse: { fetchDetails: true, detailLimit: N }` opt-in, bodies are then
+// fetched one posting at a time for just the title-kept postings (titleWanted),
+// capped at detailLimit, paced, retried on transient failures only, never
+// during a health probe (maxPages), never off-host, never following a redirect.
+
+const tooLarge = () => Object.assign(new Error('HTTP body exceeded maxBytes of 10485760'), { code: 'response_too_large' });
+
+const GH_OVERSIZE_LISTING = () => ({
+  jobs: [
+    { id: 1, title: 'Strategy Manager', absolute_url: 'https://job-boards.greenhouse.io/big/jobs/1', location: { name: 'Costa Mesa' } },
+    { id: 2, title: 'Welder', absolute_url: 'https://job-boards.greenhouse.io/big/jobs/2', location: { name: 'Costa Mesa' } },
+    { id: 3, title: 'Strategy Lead', absolute_url: 'https://job-boards.greenhouse.io/big/jobs/3', location: { name: 'Costa Mesa' } },
+  ],
+});
+
+/** Fake transport: content=true throws the coded size refusal; details + plain list served. */
+function ghOversizeFake(extra = {}) {
+  const calls = [];
+  const impl = async (url, opts) => {
+    calls.push({ url: String(url), opts });
+    if (String(url).includes('content=true')) throw tooLarge();
+    if (/\/jobs\/\d+$/.test(String(url))) {
+      if (extra.detail) return extra.detail(url);
+      return okRes({ id: 1, content: '&lt;p&gt;Lead strategy.&lt;/p&gt;' });
+    }
+    // A fresh copy per call: the source writes bodies onto the jobs it was
+    // given, and one run must never see another run's bodies.
+    return okRes(GH_OVERSIZE_LISTING());
+  };
+  impl.calls = calls;
+  impl.sleeps = [];
+  return impl;
+}
+
+const GH_OPT_IN = { name: 'Big', careers_url: 'https://job-boards.greenhouse.io/big', greenhouse: { fetchDetails: true } };
+
+async function ghOversizeRun(company, extra = {}) {
+  const impl = ghOversizeFake(extra);
+  const ow = console.warn;
+  const oe = console.error;
+  console.warn = () => {};
+  console.error = () => {};
+  try {
+    const rows = await fetchGreenhouse(extra.api || 'https://boards-api.greenhouse.io/v1/boards/big/jobs', {
+      fetchImpl: impl,
+      company,
+      titleWanted: (t) => /strategy/i.test(t),
+      sleep: async (ms) => { impl.sleeps.push(ms); },
+      ...(extra.opts || {}),
+    });
+    return { rows, calls: impl.calls, sleeps: impl.sleeps };
+  } finally {
+    console.warn = ow;
+    console.error = oe;
+  }
+}
+
+const detailCalls = (calls) => calls.filter((c) => /\/jobs\/\d+$/.test(c.url));
+
+test('fetchGreenhouse: an oversized board reads the plain list and, with fetchDetails, fetches bodies for title-matched postings only', async () => {
+  const on = await ghOversizeRun(GH_OPT_IN);
+  const strat = on.rows.find((r) => r.title === 'Strategy Manager');
+  const welder = on.rows.find((r) => r.title === 'Welder');
+  assert.equal(on.rows.length, 3);
+  assert.equal(strat.description, 'Lead strategy.');
+  assert.equal(welder.description, '', 'a non-matching title keeps no body');
+  assert.equal(detailCalls(on.calls).length, 2, 'detail requests only for the title-kept postings');
+  assert.ok(!detailCalls(on.calls).some((c) => c.url.endsWith('/jobs/2')), 'the welder posting is never fetched');
+  assert.ok(
+    on.calls.some((c) => c.url === 'https://boards-api.greenhouse.io/v1/boards/big/jobs'),
+    'the fallback re-reads the SAME board without content=true',
+  );
+  assert.ok(on.calls.every((c) => c.opts?.redirect === 'error'), 'list, plain-list fallback and details all refuse redirects');
+});
+
+test('fetchGreenhouse: keeps a percent-encoded board slug encoded once in detail URLs', async () => {
+  const run = await ghOversizeRun(
+    { name: 'Big', greenhouse: { fetchDetails: true } },
+    { api: 'https://boards-api.greenhouse.io/v1/boards/%62ig/jobs' },
+  );
+  const urls = detailCalls(run.calls).map((c) => c.url);
+  assert.equal(urls.length, 2);
+  assert.ok(
+    urls.every((u) => u.startsWith('https://boards-api.greenhouse.io/v1/boards/%62ig/jobs/')),
+    `double-encoded slug: ${JSON.stringify(urls)}`,
+  );
+});
+
+test('fetchGreenhouse: fetches no detail without the fetchDetails opt-in (warn instead)', async () => {
+  const off = await ghOversizeRun({ name: 'Big', careers_url: 'https://job-boards.greenhouse.io/big' });
+  assert.equal(off.rows.length, 3);
+  assert.equal(detailCalls(off.calls).length, 0);
+  const warns = [];
+  const ow = console.warn;
+  console.warn = (m) => warns.push(String(m));
+  try {
+    await fetchGreenhouse('https://boards-api.greenhouse.io/v1/boards/big/jobs', {
+      fetchImpl: ghOversizeFake(),
+      company: { name: 'Big' },
+      titleWanted: (t) => true,
+    });
+  } finally {
+    console.warn = ow;
+  }
+  assert.ok(
+    warns.some((w) => w.includes('board too large for content=true') && w.includes('greenhouse.fetchDetails')),
+    `warn must name the opt-in: ${JSON.stringify(warns)}`,
+  );
+});
+
+test('fetchGreenhouse: fetches no detail during a health probe (maxPages)', async () => {
+  const probe = await ghOversizeRun(GH_OPT_IN, { opts: { maxPages: 1 } });
+  assert.equal(probe.rows.length, 3);
+  assert.equal(detailCalls(probe.calls).length, 0);
+});
+
+test('fetchGreenhouse: caps detail requests at detailLimit', async () => {
+  const capped = await ghOversizeRun({ ...GH_OPT_IN, greenhouse: { fetchDetails: true, detailLimit: 1 } });
+  assert.equal(detailCalls(capped.calls).length, 1);
+});
+
+test('fetchGreenhouse: retries a transient detail failure before giving up the body', async () => {
+  const perUrl = new Map();
+  const run = await ghOversizeRun(GH_OPT_IN, {
+    detail: (url) => {
+      const n = (perUrl.get(url) || 0) + 1;
+      perUrl.set(url, n);
+      if (url.endsWith('/jobs/1') && n === 1) throw Object.assign(new Error('HTTP 503'), { status: 503 });
+      return okRes({ content: 'ok' });
+    },
+  });
+  assert.equal(run.rows.find((r) => r.title === 'Strategy Manager')?.description, 'ok');
+  assert.equal(perUrl.get('https://boards-api.greenhouse.io/v1/boards/big/jobs/1'), 2, 'a 503 is retried once');
+  assert.equal(perUrl.get('https://boards-api.greenhouse.io/v1/boards/big/jobs/3'), 1, 'the sibling candidate is fetched once');
+});
+
+test('fetchGreenhouse: keeps postings whose detail fetch failed (404 not retried), paced between attempts', async () => {
+  let notFound = 0;
+  const run = await ghOversizeRun(GH_OPT_IN, {
+    detail: () => {
+      notFound += 1;
+      throw Object.assign(new Error('HTTP 404'), { status: 404 });
+    },
+  });
+  assert.equal(run.rows.length, 3);
+  assert.equal(notFound, 2, 'a 404 is deterministic — one attempt per candidate, no retry');
+  assert.ok(run.sleeps.includes(200), `pacing sleep between attempts: ${JSON.stringify(run.sleeps)}`);
+  const bodies = run.rows.filter((r) => /strategy/i.test(r.title)).map((r) => r.description);
+  assert.ok(bodies.length === 2 && bodies.every((d) => d === ''), 'failed enrichments keep empty descriptions');
+});
+
+test('fetchGreenhouse: still throws a non-size list error (only an oversized body changes the plan)', async () => {
+  await assert.rejects(
+    () => fetchGreenhouse('https://boards-api.greenhouse.io/v1/boards/big/jobs', {
+      fetchImpl: async () => { throw Object.assign(new Error('HTTP 404'), { status: 404 }); },
+    }),
+    /404/,
+  );
+});

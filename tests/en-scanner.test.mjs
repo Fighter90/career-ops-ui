@@ -28,6 +28,8 @@ before(async () => {
     '    careers_url: https://job-boards.greenhouse.io/ghco',
     '    api: https://boards-api.greenhouse.io/v1/boards/ghco/jobs',
     '    enabled: true',
+    '    greenhouse:',
+    '      fetchDetails: true',
     '  - name: Ash-Co',
     '    careers_url: https://jobs.ashbyhq.com/ashco',
     '    enabled: true',
@@ -184,6 +186,48 @@ test('runEnScan: continues when one company returns 500', async () => {
   assert.match(result.errors[0], /500/);
   assert.equal(result.counts.fresh, 1, 'the Greenhouse job survives the sibling failure');
   assert.equal(result.fresh[0].url, 'https://ok.example/99');
+});
+
+// CAR-264 (parent #6673) — an oversized greenhouse board falls back to the
+// plain list and the scan's titleWanted hook drives per-posting detail
+// enrichment (the opt-in rides the portals entry). This is the integration
+// half of the oversized-board port: it proves the scanner threads
+// `titleWanted` into the source fetcher, because greenhouse fetches detail
+// bodies only when the hook arrives.
+test('runEnScan: an oversized greenhouse board still yields descriptions for title-matched postings', async () => {
+  const listing = {
+    jobs: [
+      { id: 1, title: 'Senior PHP Backend', company_name: 'GH-Co', absolute_url: 'https://gh.example/1', location: { name: 'Remote - EU' }, offices: [], first_published: '2026-01-01' },
+      { id: 2, title: 'Junior PHP', company_name: 'GH-Co', absolute_url: 'https://gh.example/2', location: { name: 'Berlin' }, offices: [], first_published: '2026-01-01' },
+    ],
+  };
+  const fakeFetch = async (url) => {
+    if (url.includes('greenhouse')) {
+      if (url.includes('content=true')) throw Object.assign(new Error('HTTP body exceeded maxBytes of 10485760'), { code: 'response_too_large' });
+      if (/\/jobs\/\d+$/.test(url)) {
+        return new Response(JSON.stringify({ id: 1, content: '&lt;p&gt;Lead strategy.&lt;/p&gt;' }), { status: 200, headers: { 'content-type': 'application/json' } });
+      }
+      return new Response(JSON.stringify(listing), { status: 200, headers: { 'content-type': 'application/json' } });
+    }
+    if (url.includes('ashbyhq')) {
+      return new Response(JSON.stringify({ jobs: [] }), { status: 200 });
+    }
+    throw new Error('unknown URL ' + url);
+  };
+  const ow = console.warn;
+  const oe = console.error;
+  console.warn = () => {};
+  console.error = () => {};
+  let result;
+  try {
+    result = await runEnScan({ writeFiles: false, fetchImpl: fakeFetch, onLog: () => {} });
+  } finally {
+    console.warn = ow;
+    console.error = oe;
+  }
+  const senior = result.fresh.find((j) => j.title === 'Senior PHP Backend');
+  assert.ok(senior, 'the title-matched posting survives the scan: ' + JSON.stringify(result.errors));
+  assert.equal(senior.description, 'Lead strategy.', 'the detail body was fetched for the posting this scan keeps');
 });
 
 // ───────────────────────── progress (v1.63.2) ─────────────────────────
