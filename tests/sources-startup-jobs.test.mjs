@@ -132,11 +132,12 @@ test('parse: company/title split, entities, location, utm stripped, date', () =>
   assert.equal(a.source, 'startup-jobs');
   assert.equal(a.isRemote, false);
   assert.equal(a.workplaceType, '');
-  assert.equal(
-    a.description,
-    'Own the platform that powers the whole engineering org. Amsterdam, Netherlands · €130,000 – €160,000 per year',
-  );
-  assert.equal(a.snippet, a.description);
+  // The feed's <description> is a one-sentence teaser plus the location line,
+  // not the JD (upstream #6774). Carried as description/snippet, the scanner's
+  // content_filter (`description ?? snippet`) would drop every posting whose
+  // teaser lacks a required keyword — an empty text passes, a teaser doesn't.
+  assert.equal('description' in a, false, 'the teaser is not the JD — no description');
+  assert.equal(a.snippet, '', 'the teaser must not reach the content filter via snippet either');
 
   assert.equal(b.title, 'Remote SRE');
   assert.equal(b.company, 'Beta Labs');
@@ -168,16 +169,17 @@ test('parse: entity-encoded "&amp;" in the title decodes', () => {
   assert.ok(jobs[0].title.toLowerCase().includes('r&d'), 'a positive "r&d" title filter would match');
 });
 
-test('parse: description markup is stripped; missing/empty description keeps the row', () => {
+test('parse: a keyword-bearing teaser still sets no description; location reads the last line', () => {
   const jobs = parseStartupJobsFeed(wrap(
     item('Backend Engineer at Gamma', 'https://startup.jobs/backend-engineer-gamma-10260827',
-      '<description>&lt;p&gt;We sponsor &lt;strong&gt;visas&lt;/strong&gt; for this role.&lt;/p&gt;\n\nBerlin, Germany</description>'),
+      '<description>&lt;p&gt;Run &lt;strong&gt;Kubernetes&lt;/strong&gt; clusters; we offer visa sponsorship.&lt;/p&gt;\n\nBerlin, Germany</description>'),
     item('Data Engineer at Delta', 'https://startup.jobs/data-engineer-delta-10260828'),
     item('Designer at Epsilon', 'https://startup.jobs/designer-epsilon-10260829', '<description></description>'),
   ));
   assert.equal(jobs.length, 3);
-  assert.equal(jobs[0].description, 'We sponsor visas for this role. Berlin, Germany');
-  assert.equal(jobs[0].location, 'Berlin, Germany');
+  assert.equal('description' in jobs[0], false, 'even a keyword-bearing teaser sets no description');
+  assert.equal(jobs[0].snippet, '');
+  assert.equal(jobs[0].location, 'Berlin, Germany', 'the location still reads the teaser\'s last line');
   for (const j of jobs.slice(1)) {
     assert.equal('description' in j, false);
     assert.equal(j.location, '');
@@ -185,11 +187,11 @@ test('parse: description markup is stripped; missing/empty description keeps the
   }
 });
 
-test('parse: snippet is capped at 500 chars while description stays whole', () => {
+test('parse: a long <description> teaser never lands in description or snippet', () => {
   const long = 'word '.repeat(300).trim();
   const jobs = parseStartupJobsFeed(wrap(item('Eng at Co', 'https://startup.jobs/eng-co-1', `<description>${long}</description>`)));
-  assert.equal(jobs[0].snippet.length, 500);
-  assert.equal(jobs[0].description, long);
+  assert.equal('description' in jobs[0], false);
+  assert.equal(jobs[0].snippet, '');
 });
 
 test('parse: bad dates give an empty date, never throw', () => {
@@ -245,8 +247,8 @@ test('CDATA containing <item>/</item> text neither trips truncation nor cuts the
   const jobs = parseStartupJobsFeed(xml);
   assert.equal(jobs.length, 1);
   assert.equal(jobs[0].company, 'Eta');
-  assert.equal(jobs[0].description, 'Experience with elements and closing tags in RSS feeds. Remote, Canada');
-  assert.equal(jobs[0].location, 'Remote, Canada');
+  assert.equal('description' in jobs[0], false);
+  assert.equal(jobs[0].location, 'Remote, Canada', 'the location after the embedded </item> survives intact');
 });
 
 test('cleanUrl / parse: off-host or non-HTTPS links are dropped', () => {

@@ -8,8 +8,10 @@
  * country location), the host/port pin, the 21-page source ceiling, and the
  * pagination rules (a pre-aborted scan throws; a page-1 failure marks the
  * keyword failed while ALL keywords failing throws; a later-page failure or
- * envelope throw keeps the partials; a short RAW page ends the walk; a cap
- * stop tags platsbankenTruncated). No network — parsePlatsbankenResponse is
+ * envelope throw keeps the partials AND marks the board partial (the canonical
+ * `truncated` marker, upstream #6804); a short RAW page ends the walk unmarked;
+ * a cap stop marks it page-cap or source-cap — first cause seen wins).
+ * No network — parsePlatsbankenResponse is
  * pure; fetchPlatsbanken runs on a fake fetchImpl.
  */
 import { test } from 'node:test';
@@ -305,7 +307,7 @@ test('platsbanken: fetchPlatsbanken — every keyword failing page 1 throws (nev
   );
 });
 
-test('platsbanken: fetchPlatsbanken — a later-page failure keeps the collected jobs', async () => {
+test('platsbanken: fetchPlatsbanken — a later-page failure keeps the collected jobs and marks the board partial', async () => {
   const calls = [];
   const fetchImpl = makeFetch({ 'backend developer': [hitPage(0), { error: Object.assign(new Error('HTTP 500'), { status: 500 }) }] }, calls);
   const jobs = await fetchPlatsbanken(SEARCH_URL, {
@@ -316,10 +318,13 @@ test('platsbanken: fetchPlatsbanken — a later-page failure keeps the collected
   });
   assert.equal(calls.length, 2);
   assert.equal(jobs.length, PAGE_SIZE, 'page-1 jobs kept');
-  assert.equal(jobs.platsbankenTruncated, undefined, 'an error stop is not a cap truncation');
+  // Upstream #6804 — a walk that stopped on a failed later page is a partly
+  // read board: the canonical `truncated` marker says so (the warn alone
+  // logged the board as complete).
+  assert.deepEqual(jobs.truncated, { reason: 'fetch-error', fetched: PAGE_SIZE });
 });
 
-test('platsbanken: fetchPlatsbanken — a later-page envelope throw keeps the collected jobs', async () => {
+test('platsbanken: fetchPlatsbanken — a later-page envelope throw keeps the collected jobs and marks the board partial', async () => {
   const fetchImpl = makeFetch({ 'backend developer': [hitPage(0), { total: 5 }] });
   const jobs = await fetchPlatsbanken(SEARCH_URL, {
     fetchImpl,
@@ -328,7 +333,7 @@ test('platsbanken: fetchPlatsbanken — a later-page envelope throw keeps the co
     retries: 0,
   });
   assert.equal(jobs.length, PAGE_SIZE, 'page-1 jobs kept');
-  assert.equal(jobs.platsbankenTruncated, undefined, 'a shape stop is not a cap truncation');
+  assert.deepEqual(jobs.truncated, { reason: 'fetch-error', fetched: PAGE_SIZE }, 'a shape stop on a later page is still a short read');
 });
 
 test('platsbanken: fetchPlatsbanken — a short RAW page ends the keyword walk', async () => {
@@ -337,10 +342,10 @@ test('platsbanken: fetchPlatsbanken — a short RAW page ends the keyword walk',
   const jobs = await fetchPlatsbanken(SEARCH_URL, { fetchImpl, company: KW, delayMs: 0 });
   assert.equal(calls.length, 1);
   assert.equal(jobs.length, 12);
-  assert.equal(jobs.platsbankenTruncated, undefined);
+  assert.equal(jobs.truncated, undefined, 'a walk that reached the keyword\'s own end is complete');
 });
 
-test('platsbanken: fetchPlatsbanken — a full page at max_pages tags the array platsbankenTruncated', async () => {
+test('platsbanken: fetchPlatsbanken — a full page at max_pages marks the board truncated (page-cap)', async () => {
   const fetchImpl = makeFetch({ 'backend developer': [hitPage(0), hitPage(PAGE_SIZE)] });
   const jobs = await fetchPlatsbanken(SEARCH_URL, {
     fetchImpl,
@@ -348,7 +353,7 @@ test('platsbanken: fetchPlatsbanken — a full page at max_pages tags the array 
     delayMs: 0,
   });
   assert.equal(jobs.length, PAGE_SIZE * 2);
-  assert.equal(jobs.platsbankenTruncated, true, 'the cap stopped the walk — the board is partial');
+  assert.deepEqual(jobs.truncated, { reason: 'page-cap', fetched: PAGE_SIZE * 2 }, 'the cap stopped the walk — the board is partial');
 });
 
 test('platsbanken: fetchPlatsbanken — max_pages above 21 is clamped to the source ceiling (21 calls)', async () => {
@@ -362,7 +367,23 @@ test('platsbanken: fetchPlatsbanken — max_pages above 21 is clamped to the sou
   });
   assert.equal(calls.length, MAX_PAGES_CAP, 'the 2000-offset ceiling, not the configured 99, is the cap');
   assert.equal(jobs.length, PAGE_SIZE * MAX_PAGES_CAP);
-  assert.equal(jobs.platsbankenTruncated, true);
+  assert.deepEqual(jobs.truncated, { reason: 'source-cap', fetched: PAGE_SIZE * MAX_PAGES_CAP }, "the source's own ceiling is a distinct cause");
+});
+
+test('platsbanken: fetchPlatsbanken — the first truncation cause seen wins', async () => {
+  // Keyword 1 caps on max_pages (page-cap); keyword 2 then loses a later page
+  // (fetch-error). The marker keeps the first cause.
+  const fetchImpl = makeFetch({
+    'backend developer': [hitPage(0), hitPage(PAGE_SIZE)],
+    'systemutvecklare': [hitPage(0), { error: Object.assign(new Error('HTTP 500'), { status: 500 }) }],
+  });
+  const jobs = await fetchPlatsbanken(SEARCH_URL, {
+    fetchImpl,
+    company: { platsbanken: { keywords: ['backend developer', 'systemutvecklare'] }, max_pages: 2 },
+    delayMs: 0,
+    retries: 0,
+  });
+  assert.deepEqual(jobs.truncated, { reason: 'page-cap', fetched: PAGE_SIZE * 2 });
 });
 
 test('platsbanken: fetchPlatsbanken — an aborted scan mid-walk throws, never returns partials silently', async () => {
