@@ -209,6 +209,10 @@ function headerValue(headers, name) {
  */
 async function loadJsonBoard(fetchImpl, url, opts, conditional) {
   const { method = 'GET', headers = {}, body, signal, redirect = 'error' } = opts;
+  // CAR-264 — the per-call body ceiling (see readJsonBodyCapped below).
+  // Validates the caller's value up front: a bad maxBytes is a TypeError,
+  // never a silently disabled cap.
+  const maxBytes = resolveMaxBytes(opts.maxBytes);
   const inm = conditional?.ifNoneMatch;
   const requestHeaders = inm && headerValue(headers, 'if-none-match') == null
     ? { ...headers, 'if-none-match': inm }
@@ -232,7 +236,9 @@ async function loadJsonBoard(fetchImpl, url, opts, conditional) {
     throw err;
   }
   try {
-    const data = await res.json();
+    const data = Number.isFinite(maxBytes)
+      ? await readJsonBodyCapped(res, maxBytes, url)
+      : await res.json();
     const cacheControl = res.headers?.get?.('cache-control') || '';
     return {
       body: data,
@@ -240,9 +246,97 @@ async function loadJsonBoard(fetchImpl, url, opts, conditional) {
       noStore: cacheControl.toLowerCase().includes('no-store'),
     };
   } catch (e) {
+    // A size refusal is the cap working, not a parse failure — rethrow it
+    // unchanged so the oversized-board fallbacks can key on `.code`.
+    if (e?.code === 'response_too_large') throw e;
     // A 2xx that isn't JSON (e.g. an HTML error/maintenance page served with
     // status 200) would otherwise surface as a bare SyntaxError. Wrap it so the
     // scanner's per-source error log says which endpoint misbehaved.
+    throw new Error(`non-JSON 2xx response from ${url}: ${e.message}`);
+  }
+}
+
+// ── CAR-264 (parent parity, providers/_http.mjs) — the per-call body ceiling ──
+// The parent's scanner transport caps every board response at
+// DEFAULT_MAX_BODY_BYTES (10 MB) and refuses a bigger body with a
+// `response_too_large` error, because the inline body grows with board size
+// (parent #6673: Anduril, 2026-11-07 — 45.7 MB with content=true for one
+// board) and an uncapped read is a memory incident in a 32-company sweep.
+// Here the ceiling is OPT-IN per call (`opts.maxBytes`) so only the sources
+// that have an oversized-board fallback ask for it; every other caller keeps
+// the historic uncapped read. Exported default + builder for tests.
+export const DEFAULT_MAX_BODY_BYTES = 10 * 1024 * 1024;
+
+/** The coded refusal an over-cap body produces. Exported for tests. */
+export function bodyTooLargeError(size, maxBytes) {
+  const err = new Error(`HTTP body exceeded maxBytes of ${maxBytes}${size != null ? ` (content-length ${size})` : ''}`);
+  err.code = 'response_too_large';
+  err.maxBytes = maxBytes;
+  return err;
+}
+
+/**
+ * Resolve the ceiling for one call. Absent → uncapped (Infinity) — unlike the
+ * parent, whose transport caps by default, web-ui opts in per source. An
+ * explicit value must be a positive finite number: a NaN or a negative would
+ * silently DISABLE the cap (`total > NaN` is never true), which is exactly the
+ * hole the cap exists to close — so a bad value is refused rather than ignored.
+ */
+function resolveMaxBytes(value) {
+  if (value === undefined || value === null) return Infinity;
+  const n = Number(value);
+  if (!Number.isFinite(n) || n <= 0) {
+    throw new TypeError(`maxBytes must be a positive finite number, got ${JSON.stringify(value)}`);
+  }
+  return n;
+}
+
+function concatChunks(chunks, total) {
+  const out = new Uint8Array(total);
+  let at = 0;
+  for (const c of chunks) {
+    out.set(c, at);
+    at += c.byteLength;
+  }
+  return out;
+}
+
+/**
+ * Read a 2xx response's body up to `maxBytes` bytes, then parse it as JSON.
+ * A declared content-length over the cap refuses before any read; a streamed
+ * body stops at the first chunk that crosses the cap. An injected test stub
+ * that answers only `json()` keeps that path — the tests that need the cap
+ * throw the coded refusal themselves, exactly like the parent's suites.
+ * A leading UTF-8 BOM is stripped (TextDecoder's default), matching res.json().
+ */
+async function readJsonBodyCapped(res, maxBytes, url) {
+  const declared = Number(res.headers?.get?.('content-length'));
+  if (Number.isFinite(declared) && declared > maxBytes) throw bodyTooLargeError(declared, maxBytes);
+  const reader = typeof res.body?.getReader === 'function' ? res.body.getReader() : null;
+  if (!reader) return res.json();
+  const chunks = [];
+  let total = 0;
+  try {
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      total += value.byteLength;
+      if (total > maxBytes) throw bodyTooLargeError(total, maxBytes);
+      chunks.push(value);
+    }
+  } finally {
+    // Release the connection whether we read it all or refused partway.
+    try { await reader.cancel(); } catch { /* already closed */ }
+  }
+  let text;
+  try {
+    text = new TextDecoder().decode(concatChunks(chunks, total));
+  } catch (e) {
+    throw new Error(`non-JSON 2xx response from ${url}: ${e.message}`);
+  }
+  try {
+    return JSON.parse(text);
+  } catch (e) {
     throw new Error(`non-JSON 2xx response from ${url}: ${e.message}`);
   }
 }
@@ -477,9 +571,15 @@ export async function fetchJsonWithRetry(fetchImpl, url, opts = {}) {
       // A request that already spent its whole timeout is not worth the same
       // budget again (upstream #6132).
       const spentTimeout = spentRequestTimeout(err);
+      // CAR-264 (parent _http.mjs isRetryable) — a body over the cap is not a
+      // transient failure: the same response would be refused again, so
+      // retrying only downloads the oversize body a second and third time.
+      // The refusal carries no status, so without this it would fall through
+      // to the network-error case below.
+      const tooLarge = err?.code === 'response_too_large';
       // Transient = 429, any 5xx, or a network/timeout error (no HTTP status).
       // A permanent 4xx is not worth retrying — rethrow now.
-      const transient = !redirectRefusal && !ssrfRefusal && !spentTimeout
+      const transient = !redirectRefusal && !ssrfRefusal && !spentTimeout && !tooLarge
         && (status === undefined || status === 429 || status >= 500);
       if (!transient || attempt === retries || signal?.aborted) throw err;
       // Exponential backoff + jitter, honouring a (clamped) Retry-After when the

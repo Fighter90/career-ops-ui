@@ -143,3 +143,151 @@ test('fetchJibeapply: company.max_pages caps the walk', async () => {
   assert.equal(calls.length, 3); // capped despite totalCount=999
   assert.equal(jobs.length, 3);
 });
+
+// ---------------------------------------------------------------------------
+// CAR-264 (parent #6692) — opt-in page_size, accurate cap warning, canonical
+// truncation shape, probe behavior
+// ---------------------------------------------------------------------------
+
+test('fetchJibeapply: page_size opt-in sends limit=N on every request', async () => {
+  const calls = [];
+  const impl = async (url) => {
+    calls.push(String(url));
+    const page = Number(new URL(url).searchParams.get('page') || 1);
+    const n = page === 3 ? 50 : 100;
+    return {
+      ok: true,
+      json: async () => makePage(
+        Array.from({ length: n }, (_, i) => mkRow(`j${page}-${i}`)),
+        { totalCount: 250, count: 250 },
+      ),
+    };
+  };
+  const jobs = await fetchJibeapply(API, { fetchImpl: impl, company: { name: 'PetCo', page_size: 100 } });
+  assert.equal(calls.length, 3);
+  assert.equal(jobs.length, 250);
+  assert.ok(calls.every((u) => new URL(u).searchParams.get('limit') === '100'), calls.join(' | '));
+  assert.equal(new URL(calls[0]).searchParams.get('page'), null, 'the first request carries limit only');
+  assert.equal(new URL(calls[1]).searchParams.get('page'), '2');
+  assert.equal(new URL(calls[2]).searchParams.get('page'), '3');
+});
+
+test('fetchJibeapply: page_size is capped at 100', async () => {
+  let firstUrl = '';
+  const impl = async (url) => {
+    firstUrl = String(url);
+    return { ok: true, json: async () => makePage([mkRow('a')], { totalCount: 1 }) };
+  };
+  await fetchJibeapply(API, { fetchImpl: impl, company: { name: 'X', page_size: 5000 } });
+  assert.equal(new URL(firstUrl).searchParams.get('limit'), '100');
+});
+
+test('fetchJibeapply: no limit param without page_size (default unchanged)', async () => {
+  let firstUrl = '';
+  const impl = async (url) => {
+    firstUrl = String(url);
+    return { ok: true, json: async () => makePage([mkRow('a')], { totalCount: 1 }) };
+  };
+  await fetchJibeapply(API, { fetchImpl: impl, company: { name: 'X' } });
+  assert.equal(new URL(firstUrl).searchParams.get('limit'), null);
+});
+
+test('fetchJibeapply: at MAX_PAGES_CAP the warning names the provider ceiling, not max_pages, and the board is marked truncated', async () => {
+  const warns = [];
+  const ow = console.warn;
+  console.warn = (m) => warns.push(String(m));
+  let jobs;
+  try {
+    jobs = await fetchJibeapply(API, {
+      fetchImpl: async () => ({
+        ok: true,
+        json: async () => makePage(Array.from({ length: 10 }, (_, i) => mkRow(`x${i}`)), { totalCount: 10_000_000, count: 10 }),
+      }),
+      company: { name: 'Absurd', max_pages: 500 },
+    });
+  } finally {
+    console.warn = ow;
+  }
+  assert.ok(
+    warns.some((w) => /provider ceiling/.test(w) && /5000 of 10000000/.test(w) && /page_size/.test(w)),
+    `ceiling warning wrong: ${JSON.stringify(warns)}`,
+  );
+  assert.ok(!warns.some((w) => /raise max_pages/.test(w)), 'raising max_pages cannot help at the ceiling');
+  assert.deepEqual(jobs.truncated, { reason: 'page-cap', fetched: 5000, total: 10000000 });
+});
+
+test('fetchJibeapply: below the ceiling the warning still names max_pages, with the canonical truncation shape', async () => {
+  const warns = [];
+  const ow = console.warn;
+  console.warn = (m) => warns.push(String(m));
+  let jobs;
+  try {
+    jobs = await fetchJibeapply(API, {
+      fetchImpl: async () => ({ ok: true, json: async () => makePage([mkRow('y')], { totalCount: 999, count: 1 }) }),
+      company: { name: 'Y', max_pages: 3 },
+    });
+  } finally {
+    console.warn = ow;
+  }
+  assert.ok(warns.some((w) => /exceeds max_pages/.test(w)), JSON.stringify(warns));
+  assert.deepEqual(jobs.truncated, { reason: 'page-cap', fetched: 3, total: 999 });
+});
+
+test('fetchJibeapply: a page failure marks fetch-error and suppresses ceiling guidance', async () => {
+  const warns = [];
+  const ow = console.warn;
+  console.warn = (m) => warns.push(String(m));
+  let jobs;
+  try {
+    jobs = await fetchJibeapply(API, {
+      fetchImpl: async (url) => {
+        if (new URL(url).searchParams.get('page') === '2') throw new Error('boom 503');
+        return { ok: true, json: async () => makePage([mkRow('z')], { totalCount: 10_000_000, count: 1 }) };
+      },
+      company: { name: 'Z', max_pages: 500 },
+    });
+  } finally {
+    console.warn = ow;
+  }
+  assert.equal(jobs.length, 1, 'the first page is kept');
+  assert.ok(warns.some((w) => /page 2 fetch failed/.test(w)), JSON.stringify(warns));
+  assert.ok(!warns.some((w) => /provider ceiling|exceeds max_pages/.test(w)), `cap guidance must not fire on a fetch error: ${JSON.stringify(warns)}`);
+  assert.deepEqual(jobs.truncated, { reason: 'fetch-error', fetched: 1, total: 10000000 });
+});
+
+test('fetchJibeapply: a probe (opts.maxPages) caps the walk — maxPages 1 requests only page 1', async () => {
+  const calls = [];
+  const impl = async (url) => {
+    calls.push(String(url));
+    return {
+      ok: true,
+      json: async () => makePage(Array.from({ length: 10 }, (_, i) => mkRow(`p${i}`)), { totalCount: 40, count: 10 }),
+    };
+  };
+  const jobs = await fetchJibeapply(API, { fetchImpl: impl, company: { name: 'P' }, maxPages: 1 });
+  assert.equal(calls.length, 1);
+  assert.equal(jobs.length, 10);
+  assert.equal(jobs.truncated, undefined, 'a probe cap is a budget, not a truncation');
+});
+
+test('fetchJibeapply: a probe allowed more pages rethrows the original page error', async () => {
+  const page2Error = new Error('HTTP 503');
+  const impl = async (url) => {
+    if (new URL(url).searchParams.get('page') === '2') throw page2Error;
+    return {
+      ok: true,
+      json: async () => makePage(Array.from({ length: 10 }, (_, i) => mkRow(`p${i}`)), { totalCount: 40, count: 10 }),
+    };
+  };
+  const ow = console.warn;
+  console.warn = () => {};
+  let caught = null;
+  try {
+    await fetchJibeapply(API, { fetchImpl: impl, company: { name: 'P' }, maxPages: 2 });
+  } catch (e) {
+    caught = e;
+  } finally {
+    console.warn = ow;
+  }
+  assert.equal(caught, page2Error, 'a probe must see the original failure, not first-page jobs as success');
+});

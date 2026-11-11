@@ -9,7 +9,7 @@
  * board passed that filter blind.
  */
 import { htmlToText } from '../html-to-text.mjs';
-import { fetchJson, labeledHttpError } from '../http-json.mjs';
+import { fetchJson, fetchJsonWithRetry, labeledHttpError, delay } from '../http-json.mjs';
 import { requireArray, requireContainer } from './_shape.mjs';
 
 const UA = 'career-ops-web-ui/1.0';
@@ -26,6 +26,41 @@ const ALLOWED_GREENHOUSE_HOSTS = new Set([
   'job-boards.greenhouse.io',
   'job-boards.eu.greenhouse.io',
 ]);
+
+// ── CAR-264 (parent #6673) — the oversized-board plan ───────────────────────
+// A board too big to read with every body inline (content=true) is read as the
+// plain list instead: the response cap is a board-size limit in disguise,
+// because the inline body grows with board size × description length (parent
+// measurement, Anduril 2026-11-07: 2,600 jobs; 45.7 MB with content=true,
+// 2.7 MB without, ~10 KB per posting detail). Greenhouse documents both
+// shapes: "GET /v1/boards/{board_token}/jobs" lists jobs, `?content=true` adds
+// each job's full description, and "GET /v1/boards/{board_token}/jobs/{id}"
+// returns one job with its content
+// (https://developers.greenhouse.io/job-board.html#list-jobs,
+// #retrieve-a-job). With the entry's opt-in
+// (`greenhouse: { fetchDetails: true, detailLimit: 25 }`), bodies are then
+// fetched one posting at a time for just the postings this scan keeps
+// (titleWanted), up to detailLimit, and never during a health probe (maxPages).
+// MAX_BODY_BYTES is the parent transport's DEFAULT_MAX_BODY_BYTES — web-ui's
+// ceiling is opt-in per call, so greenhouse asks for it explicitly.
+const MAX_BODY_BYTES = 10 * 1024 * 1024;
+const DETAIL_DELAY_MS = 200; // ADDING_A_PROVIDER.md: 150-250 ms between sequential requests
+
+/** parent _config-utils.mjs::intInRange — non-finite → def, else clamped trunc. */
+function intInRange(val, def, min, max) {
+  const n = Number(val);
+  if (!Number.isFinite(n)) return def;
+  return Math.min(max, Math.max(min, Math.trunc(n)));
+}
+
+/** Entry opt-in: `greenhouse: { fetchDetails: true, detailLimit: N }`. */
+function parseDetailConfig(company) {
+  const cfg = company?.greenhouse || {};
+  return {
+    fetchDetails: cfg.fetchDetails === true,
+    detailLimit: intInRange(cfg.detailLimit, 25, 1, 100),
+  };
+}
 
 /** https + exact Greenhouse host, or throws. Exported for tests. @param {string} url */
 export function assertGreenhouseUrl(url) {
@@ -136,14 +171,80 @@ function hasHttpsJobUrl(j) {
 export async function fetchGreenhouse(apiUrl, opts = {}) {
   const { fetchImpl = fetch, signal } = opts; // REVIEW-B3
   assertGreenhouseUrl(apiUrl);
-  const data = await fetchJson(fetchImpl, withContent(apiUrl), {
+  // CAR-264 — every list/detail request reads through the body cap, so an
+  // oversized board is REFUSED instead of buffered whole.
+  const listOpts = {
     signal,
     headers: { 'User-Agent': UA, Accept: 'application/json' },
-  }).catch((e) => { throw labeledHttpError(e, 'Greenhouse'); });
+    maxBytes: MAX_BODY_BYTES,
+  };
+  // Only an oversized body changes the plan; every other failure is the
+  // board's, and stays loud. The size refusal carries no `.status`, so it is
+  // checked on the RAW error — labeledHttpError re-labels into a new Error
+  // and would drop `.code`.
+  let data;
+  let bodiesInline = true;
+  try {
+    data = await fetchJson(fetchImpl, withContent(apiUrl), listOpts);
+  } catch (e) {
+    if (e?.code !== 'response_too_large') {
+      throw labeledHttpError(e, 'Greenhouse');
+    }
+    // A board with thousands of postings (SpaceX, Anduril) exceeds the body cap
+    // once every posting body is embedded. Fall back to titles, URLs and dates:
+    // the same list without content=true.
+    const bare = new URL(apiUrl);
+    bare.searchParams.delete('content');
+    data = await fetchJson(fetchImpl, bare.href, listOpts)
+      .catch((e2) => { throw labeledHttpError(e2, 'Greenhouse'); });
+    bodiesInline = false;
+  }
   // Phase-2: a 200 without the jobs container is a broken/changed board, not
   // an empty one — say so instead of reading it as [] and "succeeding".
   requireContainer(data, 'Greenhouse board', 'jobs');
   const jobs = requireArray(data.jobs, 'Greenhouse jobs').filter(hasHttpsJobUrl);
+
+  if (!bodiesInline) {
+    const { fetchDetails, detailLimit } = parseDetailConfig(opts.company);
+    const probing = Number.isInteger(opts.maxPages) && opts.maxPages > 0;
+    const titleWanted = typeof opts.titleWanted === 'function' ? opts.titleWanted : null;
+    const boardSlug = new URL(apiUrl).pathname.match(/^\/v1\/boards\/([^/]+)\/jobs\/?$/)?.[1] || '';
+    if (!fetchDetails || probing || !titleWanted || !boardSlug) {
+      // No opt-in, a probe, or no title filter to narrow the reads to: the
+      // board stays readable, but description-based filters (content_filter,
+      // visa, country eligibility) cannot judge these postings. Say so.
+      if (!probing) {
+        console.warn(`[greenhouse] ${opts.company?.name || 'board'}: board too large for content=true; read without descriptions, so description-based filters (content_filter, visa, country eligibility) cannot judge these postings.${fetchDetails ? '' : ' Set greenhouse.fetchDetails: true on this entry to fetch bodies for title-matched postings.'}`);
+      }
+    } else {
+      const wanted = jobs.filter((j) => j.id != null && titleWanted(j.title || ''));
+      const candidates = wanted.slice(0, detailLimit);
+      const sleepFn = opts.sleep || delay;
+      let attempted = 0;
+      let filled = 0;
+      for (const j of candidates) {
+        // Paced on attempts, not successes, so a run of failures is no burst.
+        if (attempted > 0) await sleepFn(DETAIL_DELAY_MS, signal);
+        attempted += 1;
+        try {
+          // Built on the list URL's own path, so a board slug that arrived
+          // percent-encoded stays encoded once rather than twice.
+          const detailRef = new URL(apiUrl);
+          detailRef.search = '';
+          detailRef.pathname = `${detailRef.pathname.replace(/\/+$/, '')}/${encodeURIComponent(String(j.id))}`;
+          const detailUrl = assertGreenhouseUrl(detailRef.href);
+          // Same guarded transport as the list requests (retries transient
+          // failures only; a 404 is deterministic and rethrown immediately).
+          const detail = await fetchJsonWithRetry(fetchImpl, detailUrl, { ...listOpts, sleep: sleepFn });
+          if (detail && typeof detail.content === 'string') { j.content = detail.content; filled += 1; }
+        } catch {
+          // One posting's body is enrichment: after the retries, keep the
+          // posting without it rather than lose it, and never the board.
+        }
+      }
+      console.error(`ℹ️  greenhouse: ${opts.company?.name || 'board'} board too large to read with bodies inline; read the plain list (${jobs.length} jobs) and fetched bodies for ${filled} of ${wanted.length} title-matched${wanted.length > detailLimit ? ` (capped at detailLimit ${detailLimit})` : ''}`);
+    }
+  }
 
   // Only pay for /offices when this board actually hides its cities there.
   let officeMap = null;
@@ -155,9 +256,11 @@ export async function fetchGreenhouse(apiUrl, opts = {}) {
       try {
         // Same guarded transport as the /jobs request above — the enrichment
         // request stays pinned to the boards-api host and never follows a 3xx.
+        // Capped like them, too: a refusal is fail-soft (enrichment off).
         const officesJson = await fetchJson(fetchImpl, officesUrl, {
           signal,
           headers: { 'User-Agent': UA, Accept: 'application/json' },
+          maxBytes: MAX_BODY_BYTES,
         });
         officeMap = buildOfficeMap(officesJson);
       } catch {
