@@ -145,7 +145,10 @@ test('fetchApple: full_board walks the whole location unsearched, to Apple\'s ow
   });
   const jobs = await fetchApple(ENTRY.careers_url, {
     fetchImpl: impl,
-    company: { ...ENTRY, apple: { full_board: true } }, // queries/teams present but IGNORED
+    // queries/teams present ALONGSIDE full_board — the URL assertions below
+    // then genuinely prove they are IGNORED (a fixture without them would
+    // only prove absence-because-unconfigured).
+    company: { ...ENTRY, apple: { full_board: true, queries: ['business operations'], teams: ['business-process-management-OPMFG-BPM'] } },
     sleep: NO_SLEEP,
   });
   assert.equal(jobs.length, 41);
@@ -161,12 +164,16 @@ test('fetchApple: full_board walks the whole location unsearched, to Apple\'s ow
 test('fetchApple: full_board clamps max_pages to its own ceiling (300, not the search-mode 50)', async () => {
   const endless = () => ok(hydration(Array.from({ length: 20 }, (_, i) => row(String(i), `R${i}`)), 100000));
   const impl = recording(endless);
-  await fetchApple(ENTRY.careers_url, {
+  const jobs = await fetchApple(ENTRY.careers_url, {
     fetchImpl: impl,
     company: { ...ENTRY, max_pages: 9999, apple: { full_board: true } },
     sleep: NO_SLEEP,
   });
   assert.equal(impl.calls.length, 300, '9999 clamps to the full-board 300-page ceiling');
+  // The full-board cap stop carries the same canonical partial-read signal as
+  // the search-mode cap (CAR-255): the scan reports the board `partial`, not
+  // silently as the whole one.
+  assert.deepEqual(jobs.truncated, { reason: 'page-cap', fetched: jobs.length }, 'the full-board cap stop is reported');
 
   assert.equal(resolveMaxPages({ max_pages: 9999 }, { fullBoard: true }), 300);
   assert.equal(resolveMaxPages({}, { fullBoard: true }), 300, 'the ceiling is also the default');
