@@ -1,10 +1,15 @@
 ## [1.271.7] — 2026-11-11
 
 ### Fixed
-- **Added**: the Apple scan source now walks Apple's full careers board instead of only the newest page, so older-but-open roles surface in scans; expanded source tests lock in the new walk.
+- **Apple scan source walks the full careers board** (parent #6634, CAR-268): instead of only the newest page, so older-but-open roles surface in scans; the full-board walk clamps `max_pages` to its own ceiling (300, not the search-mode 50); expanded source tests lock in the new walk.
+- **CryptocurrencyJobs carries the feed teaser's location clause as `eligibilityText`** (parent #6765+#6747, CAR-268): the eligibility sentence of the teaser ("…is based in New York NY", "…is 100% remote…") is parsed separately from the description — it never was the JD, but its location/eligibility signal is now usable without polluting the description field.
+- **IBM rejects an impossible dcdate** (parent #6802, CAR-267): dates like 2026-02-30 no longer become "real" postings; **the tracker-addition score summary reads bulleted (`•`) keys** (parent #6754, CAR-267).
+- **Greenhouse fetches bodies for title-matched postings on oversized boards** (parent #6673) and **JibeApply reports an accurate truncation warning at the page cap with opt-in `page_size`** (parent #6692) — CAR-264; **http-json maxBytes applies with the fetch-method receiver preserved**.
+- **CI infrastructure**: the Code-quality and Playwright jobs are pinned to ubuntu-24.04 (the ubuntu-26 runner migration broke the coverage ratchet and `playwright install --with-deps`), CI installs `playwright@1.64.1` (the fresh release's deps fail apt), and the install step rides out runner DNS flakes with `apt-get update` + a 4-attempt retry.
+- **Swarm orchestrator**: the executor's develop prompt pins the exact Linear issue identity (wrong-issue diffs are an automatic review RETURN), stale single-flight locks with a dead holder PID are taken over, and the release-manager's detached-HEAD push class is completed by the babysitter.
 
 ### Notes
-- Deliberately NOT changed: scan filtering and dedup — full-board Apple rows still flow through the same title/location filters and dedup keys as every other source.
+- Deliberately NOT changed: scan filtering and dedup — full-board Apple rows still flow through the same title/location filters and dedup keys as every other source. The ×18 locale changelog bodies carry EN-identical text for this release — covered by the preambles' translation-pending notes; a translation sweep is follow-up work.
 
 ## [1.271.6] — 2026-11-11
 

@@ -1,3 +1,10 @@
+# Journal des modifications
+
+
+> **Note i18n** — depuis la v1.12.0, les entrées sont localisées dans chaque langue. Les entrées plus anciennes (v1.11.x, v1.10.x) résident dans le [🇬🇧 CHANGELOG anglais](CHANGELOG.md), qui fait foi.
+> **Note de traduction (v1.61.0)** — le français a été ajouté comme 9e langue de l'interface. Ce fichier traduit les entrées récentes ; pour l'historique antérieur à la v1.55.0, voir le [🇬🇧 CHANGELOG anglais](CHANGELOG.md), qui reste la source normative.
+> ⏳ **Note de couverture** — ce fichier inclut désormais l'historique complet ; les entrées antérieures à la v1.61.0 figurent ci-dessous en anglais original, traduction en attente.
+
 ## [1.271.7] — 2026-11-11
 
 ### Corrigé
@@ -5,13 +12,6 @@
 
 ### Notes
 - Deliberately NOT changed: scan filtering and dedup — full-board Apple rows still flow through the same title/location filters and dedup keys as every other source.
-
-# Journal des modifications
-
-
-> **Note i18n** — depuis la v1.12.0, les entrées sont localisées dans chaque langue. Les entrées plus anciennes (v1.11.x, v1.10.x) résident dans le [🇬🇧 CHANGELOG anglais](CHANGELOG.md), qui fait foi.
-> **Note de traduction (v1.61.0)** — le français a été ajouté comme 9e langue de l'interface. Ce fichier traduit les entrées récentes ; pour l'historique antérieur à la v1.55.0, voir le [🇬🇧 CHANGELOG anglais](CHANGELOG.md), qui reste la source normative.
-> ⏳ **Note de couverture** — ce fichier inclut désormais l'historique complet ; les entrées antérieures à la v1.61.0 figurent ci-dessous en anglais original, traduction en attente.
 
 ## [1.271.6] — 2026-11-11
 

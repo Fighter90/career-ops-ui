@@ -1,3 +1,8 @@
+# Nhật ký thay đổi (Tiếng Việt)
+
+> Nhật ký này nay chứa đầy đủ lịch sử các bản phát hành. Các mục phát hành trước khi có bản địa hóa tiếng Việt (v1.254.0) xuất hiện bên dưới bằng bản gốc tiếng Anh — bản dịch còn đang chờ; bản chính thức là [🇬🇧 CHANGELOG.md](CHANGELOG.md).
+> _Các mục từ [1.271.3] đang chờ dịch — bản gốc tiếng Anh bên dưới._
+
 ## [1.271.7] — 2026-11-11
 
 ### Đã sửa
@@ -5,11 +10,6 @@
 
 ### Ghi chú
 - Deliberately NOT changed: scan filtering and dedup — full-board Apple rows still flow through the same title/location filters and dedup keys as every other source.
-
-# Nhật ký thay đổi (Tiếng Việt)
-
-> Nhật ký này nay chứa đầy đủ lịch sử các bản phát hành. Các mục phát hành trước khi có bản địa hóa tiếng Việt (v1.254.0) xuất hiện bên dưới bằng bản gốc tiếng Anh — bản dịch còn đang chờ; bản chính thức là [🇬🇧 CHANGELOG.md](CHANGELOG.md).
-> _Các mục từ [1.271.3] đang chờ dịch — bản gốc tiếng Anh bên dưới._
 
 ## [1.271.6] — 2026-11-11
 

@@ -7,19 +7,19 @@
 
 _Interface non officielle — sans affiliation ni approbation de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-8181%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-8220%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.271.6-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.6)
+[![release](https://img.shields.io/badge/release-v1.271.7-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.7)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Dernière version — v1.271.6** — vague scanner du parent-sync : la détection des reposts fusionne les variantes régionales des titres, les scans ré-admettent les offres déjà vues après une fenêtre `recheck_after_days`, les écritures du reverse-pipeline gagnent un verrou partagé, et les entités HTML sont décodées en mode attribut via une nouvelle table d'entités partagée.
+> **🆕 Dernière version — v1.271.7** — la source de scan Apple parcourt désormais l'intégralité du tableau des carrières d'Apple au lieu de la seule dernière page, si bien que les offres plus anciennes mais toujours ouvertes remontent dans les scans ; les tests de source élargis verrouillent ce nouveau parcours.
 >
-> **Précédente — v1.271.5** — nouvelle source de scan **Tes** (offres d'enseignement au Royaume-Uni et à l'international ; registre **139 = 134 EN + 5 RU · 134 adaptateurs**), correction de l'aperçu cryptocurrencyjobs, trois correctifs de fournisseurs (listings d'aperçu startup-jobs, contexte HTTP partagé hackernews, troncature honnête platsbanken) et durcissement de l'orchestrateur du swarm (épingle d'identité d'issue côté exécuteur, reprise des verrous périmés).
+> **Précédente — v1.271.6** — vague scanner du parent-sync : la détection des reposts fusionne les variantes régionales des titres, les scans ré-admettent les offres déjà vues après une fenêtre `recheck_after_days`, les écritures du reverse-pipeline gagnent un verrou partagé, et les entités HTML sont décodées en mode attribut via une nouvelle table d'entités partagée.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

@@ -1,3 +1,10 @@
+# Registro de cambios
+
+> **Nota i18n** — desde v1.12.0 en adelante las entradas están localizadas en cada idioma. Las entradas anteriores (v1.11.x, v1.10.x) permanecen en ruso por convención del proyecto; el contenido normativo inglés está en [🇬🇧 CHANGELOG.md](CHANGELOG.md).
+> **Nota de traducción (v1.22.0)** — este archivo está ahora íntegramente traducido al español técnico. Se han retirado los avisos provisionales "ver CHANGELOG.md en inglés" que aparecían en las entradas v1.13.0 a v1.21.0.
+> ⏳ **Nota de cobertura** — este archivo incluye ahora el historial completo; las entradas anteriores a la v1.12.0 aparecen en el original inglés a la espera de traducción.
+> _Las entradas a partir de [1.271.3] están pendientes de traducción — el original en inglés aparece abajo._
+
 ## [1.271.7] — 2026-11-11
 
 ### Corregido
@@ -5,13 +12,6 @@
 
 ### Notas
 - Deliberately NOT changed: scan filtering and dedup — full-board Apple rows still flow through the same title/location filters and dedup keys as every other source.
-
-# Registro de cambios
-
-> **Nota i18n** — desde v1.12.0 en adelante las entradas están localizadas en cada idioma. Las entradas anteriores (v1.11.x, v1.10.x) permanecen en ruso por convención del proyecto; el contenido normativo inglés está en [🇬🇧 CHANGELOG.md](CHANGELOG.md).
-> **Nota de traducción (v1.22.0)** — este archivo está ahora íntegramente traducido al español técnico. Se han retirado los avisos provisionales "ver CHANGELOG.md en inglés" que aparecían en las entradas v1.13.0 a v1.21.0.
-> ⏳ **Nota de cobertura** — este archivo incluye ahora el historial completo; las entradas anteriores a la v1.12.0 aparecen en el original inglés a la espera de traducción.
-> _Las entradas a partir de [1.271.3] están pendientes de traducción — el original en inglés aparece abajo._
 
 ## [1.271.6] — 2026-11-11
 

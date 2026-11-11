@@ -1,3 +1,8 @@
+# 變更日誌
+
+> **i18n 註記** — 本檔案已完整翻譯為繁體中文(臺灣慣用語)。規範英文正文仍以 [🇬🇧 CHANGELOG.md](CHANGELOG.md) 為準。
+> _自 [1.271.3] 起的條目待翻譯——英文原文見下方。_
+
 ## [1.271.7] — 2026-11-11
 
 ### 修復
@@ -5,11 +10,6 @@
 
 ### 備註
 - Deliberately NOT changed: scan filtering and dedup — full-board Apple rows still flow through the same title/location filters and dedup keys as every other source.
-
-# 變更日誌
-
-> **i18n 註記** — 本檔案已完整翻譯為繁體中文(臺灣慣用語)。規範英文正文仍以 [🇬🇧 CHANGELOG.md](CHANGELOG.md) 為準。
-> _自 [1.271.3] 起的條目待翻譯——英文原文見下方。_
 
 ## [1.271.6] — 2026-11-11
 

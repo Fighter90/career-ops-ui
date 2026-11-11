@@ -1,3 +1,9 @@
+# Dziennik zmian
+
+> **Uwaga dot. tłumaczenia (v1.70.0)** — polski dodano jako jeden z trzech nowych języków interfejsu. Ten plik tłumaczy najnowsze wpisy; pełna historia znajduje się w [🇬🇧 angielskim CHANGELOG](CHANGELOG.md), który jest źródłem normatywnym.
+> ⏳ **Uwaga o zakresie** — plik zawiera obecnie pełną historię wydań; wpisy sprzed dodania polskiego znajdują się poniżej w angielskim oryginale (tłumaczenie w toku).
+> _Wpisy od [1.271.3] czekają na tłumaczenie — angielski oryginał poniżej._
+
 ## [1.271.7] — 2026-11-11
 
 ### Naprawiono
@@ -5,12 +11,6 @@
 
 ### Uwagi
 - Deliberately NOT changed: scan filtering and dedup — full-board Apple rows still flow through the same title/location filters and dedup keys as every other source.
-
-# Dziennik zmian
-
-> **Uwaga dot. tłumaczenia (v1.70.0)** — polski dodano jako jeden z trzech nowych języków interfejsu. Ten plik tłumaczy najnowsze wpisy; pełna historia znajduje się w [🇬🇧 angielskim CHANGELOG](CHANGELOG.md), który jest źródłem normatywnym.
-> ⏳ **Uwaga o zakresie** — plik zawiera obecnie pełną historię wydań; wpisy sprzed dodania polskiego znajdują się poniżej w angielskim oryginale (tłumaczenie w toku).
-> _Wpisy od [1.271.3] czekają na tłumaczenie — angielski oryginał poniżej._
 
 ## [1.271.6] — 2026-11-11
 
