@@ -1,3 +1,8 @@
+# Changelog (Türkçe)
+
+> Bu changelog artık tüm sürüm geçmişini içerir. Türkçe yerelleştirmenin eklenmesinden (v1.85.0) önce yayınlanan girdiler aşağıda İngilizce özgün hâliyle yer alır — çeviri bekliyor; asıl kaynak [🇬🇧 CHANGELOG.md](CHANGELOG.md)'dir.
+> _[1.271.3]'ten itibaren girdiler çeviri bekliyor — İngilizce orijinal aşağıda._
+
 ## [1.271.6] — 2026-11-11
 
 ### Düzeltildi
@@ -5,11 +10,6 @@
 
 ### Notlar
 - Deliberately NOT changed: scan filtering, scoring, portals.yml, or any user-layer configuration — this wave touches scanner internals and shared decoding only; existing scan history, snapshots and tracker data are untouched.
-
-# Changelog (Türkçe)
-
-> Bu changelog artık tüm sürüm geçmişini içerir. Türkçe yerelleştirmenin eklenmesinden (v1.85.0) önce yayınlanan girdiler aşağıda İngilizce özgün hâliyle yer alır — çeviri bekliyor; asıl kaynak [🇬🇧 CHANGELOG.md](CHANGELOG.md)'dir.
-> _[1.271.3]'ten itibaren girdiler çeviri bekliyor — İngilizce orijinal aşağıda._
 
 ## [1.271.5] — 2026-11-11
 

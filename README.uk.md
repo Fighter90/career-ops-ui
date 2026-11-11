@@ -10,19 +10,19 @@
 
 _Неофіційний інтерфейс — не пов'язаний із career-ops / santifer і не схвалений ними._
 
-[![tests](https://img.shields.io/badge/tests-8140%20passed-brightgreen)](#тести)
+[![tests](https://img.shields.io/badge/tests-8181%20passed-brightgreen)](#тести)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#тести)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.271.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.5)
+[![release](https://img.shields.io/badge/release-v1.271.6-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.6)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Останній реліз — v1.271.5** — нове джерело сканування **Tes** (parent #6685, CAR-257) — викладацькі вакансії у Великобританії та на міжнародному ринку (tes.com/jobs), реєстр **138 → 139 (134 EN + 5 RU · 134 адаптерів)**; виправлення — cryptocurrencyjobs більше не видає тизер фіда як текст опису (за наявності `content_filter` він відкидав би кожну вакансію борду), три джерела сканування (startup-jobs, hackernews, platsbanken) та інфраструктура swarm-релізів.
+> **🆕 Останній реліз — v1.271.6** — сканерна хвиля parent-sync: детектування репостів згортає регіональні варіанти назв, сканування знову допускає вже побачені вакансії після вікна `recheck_after_days`, записи reverse-pipeline отримують спільний лок, а HTML-сутності декодуються в режимі атрибутів за допомогою нової спільної таблиці сутностей.
 >
-> **Попередній реліз — v1.271.4** — патч закриває хвилю CodeQL-алертів у вихідному коді (6 алертів: невикористані змінні/імпорти в тестах, відсутній rate limit, завідомо істинна умова, перевірки на підрядках URL).
+> **Попередній реліз — v1.271.5** — нове джерело сканування **Tes** (parent #6685, CAR-257) — викладацькі вакансії у Великобританії та на міжнародному ринку (tes.com/jobs), реєстр **138 → 139 (134 EN + 5 RU · 134 адаптерів)**; виправлення — cryptocurrencyjobs більше не видає тизер фіда як текст опису (за наявності `content_filter` він відкидав би кожну вакансію борду), три джерела сканування (startup-jobs, hackernews, platsbanken) та інфраструктура swarm-релізів.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

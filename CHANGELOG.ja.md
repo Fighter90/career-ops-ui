@@ -1,3 +1,8 @@
+# 変更履歴
+
+> **翻訳ノート** — このファイルは全エントリが日本語本文で完全に翻訳済みです。コードブロック、コミットメッセージ、ファイルパス、URL、環境変数、コマンド、リンクラベルは原文のまま保持しています。
+> _[1.271.3]以降のエントリは翻訳待ちです — 英語の原文が下にあります。_
+
 ## [1.271.6] — 2026-11-11
 
 ### 修正
@@ -5,11 +10,6 @@
 
 ### メモ
 - Deliberately NOT changed: scan filtering, scoring, portals.yml, or any user-layer configuration — this wave touches scanner internals and shared decoding only; existing scan history, snapshots and tracker data are untouched.
-
-# 変更履歴
-
-> **翻訳ノート** — このファイルは全エントリが日本語本文で完全に翻訳済みです。コードブロック、コミットメッセージ、ファイルパス、URL、環境変数、コマンド、リンクラベルは原文のまま保持しています。
-> _[1.271.3]以降のエントリは翻訳待ちです — 英語の原文が下にあります。_
 
 ## [1.271.5] — 2026-11-11
 

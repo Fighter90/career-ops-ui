@@ -1,3 +1,8 @@
+# 變更日誌
+
+> **i18n 註記** — 本檔案已完整翻譯為繁體中文(臺灣慣用語)。規範英文正文仍以 [🇬🇧 CHANGELOG.md](CHANGELOG.md) 為準。
+> _自 [1.271.3] 起的條目待翻譯——英文原文見下方。_
+
 ## [1.271.6] — 2026-11-11
 
 ### 修復
@@ -5,11 +10,6 @@
 
 ### 備註
 - Deliberately NOT changed: scan filtering, scoring, portals.yml, or any user-layer configuration — this wave touches scanner internals and shared decoding only; existing scan history, snapshots and tracker data are untouched.
-
-# 變更日誌
-
-> **i18n 註記** — 本檔案已完整翻譯為繁體中文(臺灣慣用語)。規範英文正文仍以 [🇬🇧 CHANGELOG.md](CHANGELOG.md) 為準。
-> _自 [1.271.3] 起的條目待翻譯——英文原文見下方。_
 
 ## [1.271.5] — 2026-11-11
 

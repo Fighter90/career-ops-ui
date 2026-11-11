@@ -1,3 +1,8 @@
+# Changelog (Italiano)
+
+
+> Questo changelog contiene ora la cronologia completa delle versioni. Le voci pubblicate prima della localizzazione italiana (v1.85.0) compaiono sotto nell'originale inglese — traduzione in attesa; il riferimento resta [🇬🇧 CHANGELOG.md](CHANGELOG.md).
+
 ## [1.271.6] — 2026-11-11
 
 ### Corretto
@@ -6,10 +11,6 @@
 ### Note
 - Deliberately NOT changed: scan filtering, scoring, portals.yml, or any user-layer configuration — this wave touches scanner internals and shared decoding only; existing scan history, snapshots and tracker data are untouched.
 
-# Changelog (Italiano)
-
-
-> Questo changelog contiene ora la cronologia completa delle versioni. Le voci pubblicate prima della localizzazione italiana (v1.85.0) compaiono sotto nell'originale inglese — traduzione in attesa; il riferimento resta [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 ## [1.271.5] — 2026-11-11
 
 ### Aggiunto

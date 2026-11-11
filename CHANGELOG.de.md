@@ -1,3 +1,8 @@
+# Changelog (Deutsch)
+
+
+> Dieses Changelog enthält die vollständige Versionsgeschichte. Einträge, die vor der deutschen Lokalisierung (v1.85.0) veröffentlicht wurden, stehen unten im englischen Original — Übersetzung ausstehend; maßgeblich bleibt [🇬🇧 CHANGELOG.md](CHANGELOG.md).
+
 ## [1.271.6] — 2026-11-11
 
 ### Behoben
@@ -5,11 +10,6 @@
 
 ### Hinweise
 - Deliberately NOT changed: scan filtering, scoring, portals.yml, or any user-layer configuration — this wave touches scanner internals and shared decoding only; existing scan history, snapshots and tracker data are untouched.
-
-# Changelog (Deutsch)
-
-
-> Dieses Changelog enthält die vollständige Versionsgeschichte. Einträge, die vor der deutschen Lokalisierung (v1.85.0) veröffentlicht wurden, stehen unten im englischen Original — Übersetzung ausstehend; maßgeblich bleibt [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
 ## [1.271.5] — 2026-11-11
 

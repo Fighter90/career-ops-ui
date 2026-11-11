@@ -1,3 +1,8 @@
+# परिवर्तन-सूची (हिन्दी)
+
+
+> यह परिवर्तन-सूची अब संपूर्ण रिलीज़-इतिहास रखती है। हिन्दी स्थानीयकरण (v1.122.0) से पहले प्रकाशित प्रविष्टियाँ नीचे अंग्रेज़ी मूल रूप में हैं — अनुवाद बाकी है; आधिकारिक स्रोत [🇬🇧 CHANGELOG.md](CHANGELOG.md) है।
+
 ## [1.271.6] — 2026-11-11
 
 ### ठीक किया गया
@@ -6,10 +11,6 @@
 ### नोट्स
 - Deliberately NOT changed: scan filtering, scoring, portals.yml, or any user-layer configuration — this wave touches scanner internals and shared decoding only; existing scan history, snapshots and tracker data are untouched.
 
-# परिवर्तन-सूची (हिन्दी)
-
-
-> यह परिवर्तन-सूची अब संपूर्ण रिलीज़-इतिहास रखती है। हिन्दी स्थानीयकरण (v1.122.0) से पहले प्रकाशित प्रविष्टियाँ नीचे अंग्रेज़ी मूल रूप में हैं — अनुवाद बाकी है; आधिकारिक स्रोत [🇬🇧 CHANGELOG.md](CHANGELOG.md) है।
 ## [1.271.5] — 2026-11-11
 
 ### जोड़ा गया

@@ -7,19 +7,19 @@
 
 _அதிகாரப்பூர்வமற்ற இடைமுகம் — career-ops / santifer உடன் எந்தத் தொடர்பும் அல்ல, அவர்களால் அங்கீகரிக்கப்படவும் இல்லை._
 
-[![tests](https://img.shields.io/badge/tests-8140%20passed-brightgreen)](#சோதனைகள்)
+[![tests](https://img.shields.io/badge/tests-8181%20passed-brightgreen)](#சோதனைகள்)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#சோதனைகள்)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#சோதனைகள்)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#தேவைகள்)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.271.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.5)
+[![release](https://img.shields.io/badge/release-v1.271.6-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.6)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 சமீபத்திய வெளியீடு — v1.271.5** — புதிய **Tes** scan source (parent #6685, CAR-257) — ஐக்கிய இராச்சியம் மற்றும் சர்வதேச ஆசிரியர் வேலைகள் (tes.com/jobs), public tRPC search endpoint walk — registry **138 → 139 = 134 EN + 5 RU · 134 adapters**; cryptocurrencyjobs teaser fix (content filter இனி board-இன் ஒவ்வொரு posting-ஐயும் விழுங்காது); மூன்று scan source fixes (startup-jobs, hackernews, platsbanken); swarm release-infra fixes (Linear issue identity pin, stale single-flight lock takeover).
+> **🆕 சமீபத்திய வெளியீடு — v1.271.6** — scanner-wave parent-sync fixes: repost detection regional title variants-ஐ fold செய்கிறது, scans `recheck_after_days` window-க்குப் பிறகு ஏற்கனவே பார்த்த postings-ஐ மீண்டும் ஏற்கின்றன, reverse-pipeline writes ஒரு lock பெறுகின்றன, மேலும் HTML entities புதிய shared entity table வழியாக attribute mode-இல் decode ஆகின்றன.
 >
-> **முந்தைய வெளியீடு — v1.271.4** — பேட்ச் v1.271.4 CodeQL alert wave-ஐ source நிலையில் மூடுகிறது (6 alerts: tests-இல் பயன்படுத்தப்படாத variables/imports, ஒரு missing rate limit, எப்போதும் true ஆக இருக்கும் ஒரு conjunct, URL-substring assertions).
+> **முந்தைய வெளியீடு — v1.271.5** — புதிய **Tes** scan source (parent #6685, CAR-257) — ஐக்கிய இராச்சியம் மற்றும் சர்வதேச ஆசிரியர் வேலைகள் (tes.com/jobs), public tRPC search endpoint walk — registry **138 → 139 = 134 EN + 5 RU · 134 adapters**; cryptocurrencyjobs teaser fix (content filter இனி board-இன் ஒவ்வொரு posting-ஐயும் விழுங்காது); மூன்று scan source fixes (startup-jobs, hackernews, platsbanken); swarm release-infra fixes (Linear issue identity pin, stale single-flight lock takeover).
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

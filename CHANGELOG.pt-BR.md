@@ -1,3 +1,8 @@
+# Histórico de mudanças
+
+> **Nota** — este arquivo está integralmente traduzido para o português brasileiro. Cada entrada de versão foi reescrita em PT-BR técnico de qualidade editorial, preservando blocos de código, mensagens de commit, caminhos de arquivo, URLs, variáveis de ambiente, comandos e rótulos de link em sua forma original.
+> _As entradas a partir de [1.271.3] aguardam tradução — o original em inglês abaixo._
+
 ## [1.271.6] — 2026-11-11
 
 ### Corrigido
@@ -5,11 +10,6 @@
 
 ### Notas
 - Deliberately NOT changed: scan filtering, scoring, portals.yml, or any user-layer configuration — this wave touches scanner internals and shared decoding only; existing scan history, snapshots and tracker data are untouched.
-
-# Histórico de mudanças
-
-> **Nota** — este arquivo está integralmente traduzido para o português brasileiro. Cada entrada de versão foi reescrita em PT-BR técnico de qualidade editorial, preservando blocos de código, mensagens de commit, caminhos de arquivo, URLs, variáveis de ambiente, comandos e rótulos de link em sua forma original.
-> _As entradas a partir de [1.271.3] aguardam tradução — o original em inglês abaixo._
 
 ## [1.271.5] — 2026-11-11
 

@@ -1,3 +1,8 @@
+# Ændringslog
+
+
+> **Oversættelsesnote.** Filen er oversat til dansk: de seneste poster (fra v1.77.0 og bagud, inkl. v1.76.0 / v1.75.2 / v1.75.1 / v1.75.0) er fuldt oversat til teknisk dansk. Ældre poster bevares på engelsk; versionsoverskrifter og datoer er identiske med den engelske kildefil.
+
 ## [1.271.6] — 2026-11-11
 
 ### Rettet
@@ -6,10 +11,6 @@
 ### Noter
 - Deliberately NOT changed: scan filtering, scoring, portals.yml, or any user-layer configuration — this wave touches scanner internals and shared decoding only; existing scan history, snapshots and tracker data are untouched.
 
-# Ændringslog
-
-
-> **Oversættelsesnote.** Filen er oversat til dansk: de seneste poster (fra v1.77.0 og bagud, inkl. v1.76.0 / v1.75.2 / v1.75.1 / v1.75.0) er fuldt oversat til teknisk dansk. Ældre poster bevares på engelsk; versionsoverskrifter og datoer er identiske med den engelske kildefil.
 ## [1.271.5] — 2026-11-11
 
 ### Tilføjet

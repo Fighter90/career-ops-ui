@@ -9,19 +9,19 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-8140%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-8181%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.271.5-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.5)
+[![release](https://img.shields.io/badge/release-v1.271.6-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.6)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.271.5** — नया **Tes** स्कैन सोर्स (parent #6685, CAR-257) — tes.com/jobs पर UK और अंतरराष्ट्रीय शिक्षण नौकरियाँ, रजिस्ट्री **138 → 139 (134 EN + 5 RU · 134 adapters)**; फ़िक्स: cryptocurrencyjobs का टीज़र टेम्पलेट अब `content_filter` सेट करने वाले उपयोगकर्ता के लिए बोर्ड की हर पोस्टिंग गिरा देने वाला description-जैसा टेक्स्ट नहीं बनता (parent #6746), तीन स्कैन सोर्स (startup-jobs टीज़र पर नहीं रुकता, hackernews शेयर्ड HTTP कॉन्टेक्स्ट से फ़ेच करता है, platsbanken ट्रंकेटेड बोर्ड रिपोर्ट करता है — CAR-265), और swarm इंफ़्रास्ट्रक्चर (release tooling): executor का develop प्रॉम्प्ट सही Linear issue पहचान पिन करता है, ऑर्केस्ट्रेटर मृत PID वाला stale single-flight लॉक अपने लेता है।
+> **🆕 नवीनतम रिलीज़ — v1.271.6** — scanner-wave parent-sync फ़िक्स: repost डिटेक्शन अब क्षेत्रीय टाइटल वेरिएंट्स को भी जोड़ता है, स्कैन `recheck_after_days` विंडो के बाद देखी गई पोस्टिंग्स को दोबारा स्वीकार करते हैं, reverse-pipeline राइट्स को लॉक मिलता है, और HTML एंटिटीज़ नई शेयर्ड एंटिटी टेबल के ज़रिए attribute मोड में डिकोड होती हैं।
 >
-> **पिछला — v1.271.4** — पैच v1.271.4 सोर्स लेवल पर CodeQL अलर्ट लहर बंद करता है (6 अलर्ट: टेस्ट में अप्रयुक्त वेरिएबल/इंपोर्ट, एक गायब rate limit, हमेशा सही रहने वाला एक कंजंक्ट, URL-सबस्ट्रिंग असर्शन)।
+> **पिछला — v1.271.5** — नया **Tes** स्कैन सोर्स (parent #6685, CAR-257) — tes.com/jobs पर UK और अंतरराष्ट्रीय शिक्षण नौकरियाँ, रजिस्ट्री **138 → 139 (134 EN + 5 RU · 134 adapters)**; फ़िक्स: cryptocurrencyjobs का टीज़र टेम्पलेट अब `content_filter` सेट करने वाले उपयोगकर्ता के लिए बोर्ड की हर पोस्टिंग गिरा देने वाला description-जैसा टेक्स्ट नहीं बनता (parent #6746), तीन स्कैन सोर्स (startup-jobs टीज़र पर नहीं रुकता, hackernews शेयर्ड HTTP कॉन्टेक्स्ट से फ़ेच करता है, platsbanken ट्रंकेटेड बोर्ड रिपोर्ट करता है — CAR-265), और swarm इंफ़्रास्ट्रक्चर (release tooling): executor का develop प्रॉम्प्ट सही Linear issue पहचान पिन करता है, ऑर्केस्ट्रेटर मृत PID वाला stale single-flight लॉक अपने लेता है।
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
