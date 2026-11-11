@@ -44,7 +44,18 @@ const POSTINGS = [
 ];
 const ROLES = ['Senior PHP Developer', 'Go Developer', 'Platform Engineer', 'Software Engineer'];
 
-const SKIP_TOKENS = resolvePlaywright() === null;
+// Probe by LAUNCHING, not by checking a path: the default headless run uses
+// the headless-shell build, which chromium.executablePath() does not name, so
+// a path probe can lie in both directions. The file is opt-in on the browser
+// binary — a failed launch skips every `{ skip: SKIP_TOKENS }` test with a
+// true SKIP_TOKENS instead of failing them all from before() (2026-11-11
+// gate: the Playwright update left build 1248 undownloaded). The probe
+// browser is reused; before() never re-launches.
+const pw = resolvePlaywright();
+if (pw) {
+  try { browser = await pw.chromium.launch({ headless: process.env.PWDEBUG !== '1' }); } catch { /* binary not installed */ }
+}
+const SKIP_TOKENS = !pw || !browser;
 const REPO = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 // Triage 2026-10-26 — the whole file failed 5/5 on clean checkouts with
@@ -99,7 +110,7 @@ before(async () => {
   const { createApp } = await import('../server/index.mjs');
   const app = createApp();
   await new Promise((r) => { server = app.listen(0, '127.0.0.1', () => { baseUrl = `http://127.0.0.1:${server.address().port}`; r(); }); });
-  browser = await resolvePlaywright().chromium.launch({ headless: process.env.PWDEBUG !== '1' });
+  // `browser` is the load-time probe's launch — already up, do not launch again.
   context = await browser.newContext();
 });
 

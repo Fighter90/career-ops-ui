@@ -36,9 +36,20 @@ function resolvePlaywright() {
   return null;
 }
 const playwright = resolvePlaywright();
-const SKIP = !playwright;
 
 let server, baseUrl, browser, context;
+
+// Probe by LAUNCHING, not by checking a path: the default headless run uses
+// the headless-shell build, which chromium.executablePath() does not name, so
+// a path probe can lie in both directions. The file is opt-in on the browser
+// binary — a failed launch skips every `{ skip: SKIP }` test with a false
+// SKIP instead of failing them all from before() (2026-11-11 gate: the
+// Playwright update left build 1248 undownloaded). The probe browser is
+// reused; before() never re-launches.
+if (playwright) {
+  try { browser = await playwright.chromium.launch({ headless: process.env.PWDEBUG !== '1' }); } catch { /* binary not installed */ }
+}
+const SKIP = !playwright || !browser;
 
 // Both scan rows carry the same «related» fit band → the ring cluster's
 // number is the seven-character word «related» (the P3 repro) and its
@@ -88,7 +99,7 @@ before(async () => {
   const { createApp } = await import('../server/index.mjs');
   const app = createApp();
   await new Promise((r) => { server = app.listen(0, '127.0.0.1', () => { baseUrl = `http://127.0.0.1:${server.address().port}`; r(); }); });
-  browser = await playwright.chromium.launch({ headless: process.env.PWDEBUG !== '1' });
+  // `browser` is the load-time probe's launch — already up, do not launch again.
   context = await browser.newContext();
   await context.route('**/api/geocode?**', (route) => {
     const company = new URL(route.request().url()).searchParams.get('company') || '';

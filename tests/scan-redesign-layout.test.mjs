@@ -76,12 +76,26 @@ function resolvePlaywright() {
 const playwright = resolvePlaywright();
 
 const CAPTURE = process.env.SCAN_REDESIGN_CAPTURE === '1';
-const SKIP = !playwright
-  ? 'Playwright not installed (set CAREER_OPS_PLAYWRIGHT_PATH to the parent node_modules/playwright)'
-  : false;
 
 let server, baseUrl, browser;
 const fixture = loadScanRedesignFixture();
+
+// Probe by LAUNCHING, not by checking a path: the default headless run uses
+// the headless-shell build, which chromium.executablePath() does not name, so
+// a path probe can lie in both directions. This file is opt-in on the browser
+// binary (see the header) — a failed launch skips it with the install hint,
+// the same contract as the missing-module case, instead of failing every test
+// from before() (2026-11-11 gate: the Playwright update left build 1248
+// undownloaded and 5/6 tests red). The probe browser is reused; before()
+// never re-launches.
+if (playwright) {
+  try {
+    browser = await playwright.chromium.launch({ headless: process.env.PWDEBUG !== '1' });
+  } catch { /* binary not installed — the SKIP reason below says so */ }
+}
+const SKIP = !playwright
+  ? 'Playwright not installed (set CAREER_OPS_PLAYWRIGHT_PATH to the parent node_modules/playwright)'
+  : (!browser ? 'Playwright chromium binary not installed (npx playwright install chromium)' : false);
 
 before(async () => {
   if (SKIP) return;
@@ -94,7 +108,7 @@ before(async () => {
   await new Promise((r) => {
     server = app.listen(0, '127.0.0.1', () => { baseUrl = `http://127.0.0.1:${server.address().port}`; r(); });
   });
-  browser = await playwright.chromium.launch({ headless: process.env.PWDEBUG !== '1' });
+  // `browser` is the load-time probe's launch — already up, do not launch again.
 });
 
 after(async () => {
