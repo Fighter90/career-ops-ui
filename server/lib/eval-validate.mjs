@@ -261,11 +261,11 @@ export function validateEvaluationReport(text) {
   if (!summaryBlock) {
     issues.push('missing SCORE_SUMMARY block');
   } else {
-    // [ \t]*, not \s*: \s crosses newlines, so an EMPTY `ROLE:` line would
-    // capture the next line ("SCORE: 4.1") as its value and pass.
+    // Upstream #6848 — a bulleted/emphasised key (`• COMPANY: Acme`) reads
+    // through the shared summaryFieldValue; a plain-key report behaves
+    // identically (see the reader's doc for the CAR-92 line anchoring).
     for (const key of ['COMPANY', 'ROLE', 'ARCHETYPE', 'LEGITIMACY']) {
-      const field = summaryBlock.match(new RegExp(`^[ \\t]*${key}:[ \\t]*(.+)$`, 'mi'));
-      const value = field?.[1]?.trim() ?? '';
+      const value = summaryFieldValue(summaryBlock, key) ?? '';
       // COMPANY may legitimately be "unknown"; the others may not.
       if (!value || (key !== 'COMPANY' && value.toLowerCase() === 'unknown')) {
         issues.push(`SCORE_SUMMARY ${key} is required`);
@@ -279,9 +279,9 @@ export function validateEvaluationReport(text) {
       // v1.248.2 (da regression) — when the score check fails, the server log
       // gets ONLY the SCORE: line itself (trimmed, capped). CI logs are public:
       // no other report content (JD/CV quotes, company prose) may be printed.
-      const scoreLine = summaryBlock.match(/^[ \t]*(?:\*\*)?[ \t]*SCORE[ \t]*(?:\*\*)?[ \t]*:[ \t]*(.*)$/mi);
-      if (scoreLine) {
-        console.warn(`[eval-validate] invalid score — SCORE line: ${JSON.stringify(scoreLine[0].trim().slice(0, 120))}`);
+      const scoreRaw = summaryFieldValue(summaryBlock, 'SCORE');
+      if (scoreRaw != null) {
+        console.warn(`[eval-validate] invalid score — SCORE line: ${JSON.stringify(`SCORE: ${scoreRaw}`.slice(0, 120))}`);
       }
     }
   }
@@ -315,6 +315,32 @@ export function scoreSummaryBlock(text) {
   const end = s.indexOf('---END_SUMMARY---', from);
   if (end === -1) return null;
   return s.slice(from, end);
+}
+
+/**
+ * Read ONE ---SCORE_SUMMARY--- field's line value (`COMPANY`, `ROLE`,
+ * `SCORE`, `ARCHETYPE`, `LEGITIMACY`). A model may bullet or emphasise the
+ * key (`• SCORE: 4.2`, `- **COMPANY:** Acme`, `**LEGITIMACY:** High`) —
+ * upstream #6848: a standard `•` bullet left the line unread, so a fully
+ * bulleted block failed validation and the tracker row lost every field.
+ * The marker set mirrors the parent's SUMMARY_LINE regex (bullets `- + • *`,
+ * emphasis `*_`); the line stays anchored on `[ \t]`, never `\s` — `\s`
+ * crosses newlines, so an EMPTY `ROLE:` line would capture the next line
+ * ("SCORE: 4.1") as its value (CAR-92). Returns the trimmed value, or null
+ * when the key has no line in the block. Shared by the validator, the score
+ * parser and the auto-pipeline's extractors, so a report the validator
+ * accepts can never be read with different field values.
+ * @param {string} summaryBlock a scoreSummaryBlock() result
+ * @param {string} key one of the five summary keys (regex-safe literals)
+ * @returns {string | null}
+ */
+export function summaryFieldValue(summaryBlock, key) {
+  const m = String(summaryBlock ?? '').match(new RegExp(
+    `^[ \\t]*(?:[-+\\u2022][ \\t]+|\\*[ \\t]+)?[*_]*[ \\t]*${key}[ \\t]*[*_]*[ \\t]*`
+    + `:[ \\t]*[*_]*(.*?)[*_ \\t]*$`,
+    'mi',
+  ));
+  return m ? m[1].trim() : null;
 }
 
 export function extractSummaryScore(text) {
@@ -356,9 +382,9 @@ export function extractBodyScore(text) {
 
 /** SCORE line → 0–5 number or null. Callers pass the summary block's text. */
 function summaryScoreValue(summaryBlock) {
-  const scoreLine = summaryBlock.match(/^[ \t]*(?:\*\*)?[ \t]*SCORE[ \t]*(?:\*\*)?[ \t]*:[ \t]*(.*)$/mi);
-  if (!scoreLine) return null;
-  const m = asciiNumber(scoreLine[1]).match(/^[*_ \t]*([0-9]+(?:\.[0-9]+)?)/);
+  const raw = summaryFieldValue(summaryBlock, 'SCORE');
+  if (raw == null) return null;
+  const m = asciiNumber(raw).match(/^[*_ \t]*([0-9]+(?:\.[0-9]+)?)/);
   const value = m ? Number(m[1]) : NaN;
   return Number.isFinite(value) && value >= 0 && value <= 5 ? value : null;
 }

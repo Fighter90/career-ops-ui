@@ -18,6 +18,7 @@
  * Used by the ibm adapter (server/lib/portals/adapters/ibm.mjs).
  */
 import { fetchJsonWithRetry } from '../http-json.mjs';
+import { parseDate } from '../parse-date.mjs';
 
 export const API_URL = 'https://www-api.ibm.com/search/api/v2';
 const PAGE_SIZE = 30;
@@ -136,14 +137,17 @@ export function parseIbmResponse(json) {
  * `dcdate` is a plain YYYY-MM-DD (Date.parse reads that as UTC midnight); it
  * tracks the job ids (newer id, later date), so it reads as the posting date.
  * It is the only date the API's _source allowlist accepts. Absent or
- * unparseable → '' (undated). (#6274)
+ * unparseable → '' (undated). (#6274) An impossible calendar day like
+ * 2026-02-30 must NOT become a "real" date: Date.parse would roll it over to
+ * 2 March, so the parse round-trips and rejects it like any other
+ * unparseable value. (#6802)
  * @param {unknown} value
  * @returns {string}
  */
 function toIsoDate(value) {
-  if (typeof value !== 'string' || !value.trim()) return '';
-  const s = value.trim();
-  return Number.isNaN(Date.parse(s)) ? '' : s;
+  if (typeof value !== 'string') return '';
+  const date = parseDate(value);
+  return date ? date.toISOString().slice(0, 10) : '';
 }
 
 /**

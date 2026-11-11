@@ -44,7 +44,7 @@ import { saveReportExclusive } from '../report-save.mjs';
 import { evalTimeoutMs, evalMaxTokens, geminiEvalArgs } from './llm.mjs';
 import { providerOrder } from '../env-config.mjs';
 import { stripDangerousMarkdown } from '../security.mjs';
-import { stripScoreSummary, validateEvaluationReport, cutRepeatedBlockHeadings, extractSummaryScore, extractBodyScore, fixReportDate, scoreSummaryBlock } from '../eval-validate.mjs';
+import { stripScoreSummary, validateEvaluationReport, cutRepeatedBlockHeadings, extractSummaryScore, extractBodyScore, fixReportDate, scoreSummaryBlock, summaryFieldValue } from '../eval-validate.mjs';
 import { parseReportHeader } from '../parsers.mjs';
 // v1.248.7 — the language check is a pure module shared with remote-qa.
 import { languageOk } from '../../../scripts/remote-qa/lang-check.mjs';
@@ -404,11 +404,12 @@ const LEGITIMACY_TIERS = [
 export function extractLegitimacy(md) {
   // Review v1.268.1 — linear helper (CodeQL polynomial-ReDoS cluster #739/#740:
   // the old `\s*([\s\S]*?)---END_SUMMARY---` regex rescanned uncontrolled
-  // model output from every position).
+  // model output from every position). Upstream #6848 — the key itself may
+  // be bulleted (`• LEGITIMACY: High Confidence`), so the read goes through
+  // the shared summaryFieldValue.
   const summaryBlock = scoreSummaryBlock(md);
   if (!summaryBlock) return '';
-  const field = summaryBlock.match(/^[ \t]*(?:\*\*)?[ \t]*LEGITIMACY[ \t]*(?:\*\*)?[ \t]*:[ \t]*(.*)$/mi);
-  const value = (field?.[1] || '').trim().toLowerCase();
+  const value = (summaryFieldValue(summaryBlock, 'LEGITIMACY') || '').toLowerCase();
   const tier = LEGITIMACY_TIERS.find(([prefix]) => value.startsWith(prefix));
   return tier ? tier[1] : '';
 }

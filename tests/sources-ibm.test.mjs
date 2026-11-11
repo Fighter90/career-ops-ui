@@ -89,6 +89,26 @@ test('parseIbmResponse: dcdate fills date (#6274) — unparseable or absent stay
   assert.deepEqual(jobs.map((j) => j.date), ['2026-10-05', '', '']);
 });
 
+// ── #6802: an impossible dcdate must not become a "real" posting date.
+// `Date.parse('2026-02-30')` rolls over to 2 March, so the row carried a
+// date that never existed and the "Posted within" age filter judged it
+// against a fictional calendar day. The parse round-trips the date, so an
+// impossible one stays '' (undated) like any other unparseable value.
+test('parseIbmResponse: an impossible dcdate like 2026-02-30 stays "" (no rollover, #6802)', () => {
+  const jobs = parseIbmResponse({ hits: { hits: [
+    mkHit({ dcdate: '2026-02-30', url: 'https://www.ibm.com/careers/job/imp' }),  // impossible day
+    mkHit({ dcdate: '2026-04-31', url: 'https://www.ibm.com/careers/job/apr' }),  // impossible day
+    mkHit({ dcdate: '2026-13-05', url: 'https://www.ibm.com/careers/job/mth' }),  // impossible month
+    mkHit({ dcdate: '2026-02-28', url: 'https://www.ibm.com/careers/job/ok' }),   // real calendar day — kept
+    mkHit({ dcdate: '2026-10-5', url: 'https://www.ibm.com/careers/job/sh' }),    // not strict YYYY-MM-DD
+  ] } });
+  assert.deepEqual(
+    jobs.map((j) => j.date),
+    ['', '', '', '2026-02-28', ''],
+    `impossible dates must stay undated: ${JSON.stringify(jobs.map((j) => j.date))}`,
+  );
+});
+
 test('fetchIbm: the POST body requests dcdate in _source (#6274)', async () => {
   const sources = [];
   const impl = async (url, opts) => {

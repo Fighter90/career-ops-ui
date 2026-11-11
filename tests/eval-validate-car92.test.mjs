@@ -143,6 +143,58 @@ test('CAR-92.9: a missing summary yields no tier', () => {
   assert.equal(extractLegitimacy(''), '');
 });
 
+// ── Upstream #6848 — a bulleted summary block still reads ───────────────────
+
+// Blocks A–G WITHOUT the summary (a bullet variant is appended per test).
+const blocksNoSummary = ['A', 'B', 'C', 'D', 'E', 'F', 'G'].map((L) => `## Block ${L} — x`).join('\nbody\n') + '\n';
+
+const summaryOf = (marker) => (score = '4.2', legitimacy = 'High Confidence') => `
+---SCORE_SUMMARY---
+${marker} COMPANY: Acme
+${marker} ROLE: Engineer
+${marker} SCORE: ${score}
+${marker} ARCHETYPE: Platform
+${marker} LEGITIMACY: ${legitimacy}
+---END_SUMMARY---
+`;
+
+test('#6848: a `•`-bulleted summary validates and extracts like a plain one', () => {
+  const md = blocksNoSummary + summaryOf('•')();
+  assert.deepEqual(validateEvaluationReport(md), [],
+    'every bulleted key must be read, not reported missing');
+  assert.equal(extractSummaryScore(md), 4.2);
+  assert.equal(extractLegitimacy(md), 'High Confidence');
+});
+
+test('#6848: mixed bullet + bold (`• **SCORE**: 4.3/5`) reads, /5 dropped', () => {
+  const md = `${blocksNoSummary}
+---SCORE_SUMMARY---
+• **COMPANY:** Acme
+• **ROLE:** Engineer
+• **SCORE**: 4.3/5
+• **ARCHETYPE:** Platform
+• **LEGITIMACY:** High Confidence
+---END_SUMMARY---
+`;
+  assert.deepEqual(validateEvaluationReport(md), []);
+  assert.equal(extractSummaryScore(md), 4.3);
+  assert.equal(extractLegitimacy(md), 'High Confidence');
+});
+
+test('#6848: `-` and `+` bullets read too (the parent marker set)', () => {
+  for (const marker of ['-', '+', '*']) {
+    const md = blocksNoSummary + summaryOf(marker)();
+    assert.deepEqual(validateEvaluationReport(md), [], `marker "${marker}"`);
+    assert.equal(extractSummaryScore(md), 4.2, `marker "${marker}" score`);
+  }
+});
+
+test('#6848: a bulleted summary with a broken score is still rejected (no false accept)', () => {
+  const md = blocksNoSummary + summaryOf('•')('9.9');
+  assert.ok(validateEvaluationReport(md).some((i) => i.includes('score must be a number')),
+    'the 0–5 gate must survive bullet tolerance');
+});
+
 // ── Finding 10 — the Ukrainian ordinal sequence ─────────────────────────────
 
 test('CAR-92.10: Russian word-initial headings (Анализ/Бюджет/…) do NOT clear blocks A–D', () => {
