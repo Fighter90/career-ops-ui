@@ -34,6 +34,17 @@
  *   - location: the description's last non-empty line, anything after " · "
  *     (a trailing comp range) stripped.
  *
+ * The feed's <description> is a one-sentence TEASER plus the location line
+ * (18-340 characters across the whole live feed), not the JD. It is NOT
+ * carried as `description` or `snippet` (upstream #6774, the cryptocurrencyjobs
+ * #6746 bug class): the scanner's content_filter and years_min reader match on
+ * `description ?? snippet`, and content_filter drops a posting whose text
+ * lacks a required keyword but passes one with no text — so the teaser would
+ * drop every posting whose single sentence doesn't happen to name the stack.
+ * (The parent additionally flattens the teaser into `visaText` for its
+ * visa_filter; web-ui's scanner has no visa_filter reader, so the teaser goes
+ * nowhere here — a deliberate deviation, nothing is lost.)
+ *
  * Defensive parsing (parent 08fe5d06): a malformed envelope (empty body, HTML
  * error page, non-string, bare `<item>`, or open/close `<item>` tag counts that
  * differ = truncation) THROWS instead of reading as zero jobs. CDATA sections
@@ -47,7 +58,6 @@
  */
 import { fetchText, BROWSER_LIKE_USER_AGENT } from '../http-json.mjs';
 import { decodeEntities } from '../html-entities.mjs';
-import { htmlToText } from '../html-to-text.mjs';
 
 export const meta = {
   value: 'startup-jobs',
@@ -57,7 +67,6 @@ export const meta = {
 
 export const FEED_HOST = 'startup.jobs';
 export const FEED_PATH = '/feeds/jobs';
-const SNIPPET_CAP = 500;
 
 /** Exact-host pin. Anchored on both ends: no subdomain, no suffix spoof. */
 const TRUSTED_HOST_RE = /^startup\.jobs$/i;
@@ -215,7 +224,6 @@ export function parseStartupJobsFeed(xml) {
     const rawDesc = tagText(item, 'description');
     const location = extractLocation(rawDesc);
     const isRemote = /\bremote\b/i.test(location);
-    const description = htmlToText(rawDesc);
 
     /** @type {Record<string, any>} */
     const job = {
@@ -229,10 +237,12 @@ export function parseStartupJobsFeed(xml) {
       workplaceType: isRemote ? 'Remote' : '',
       relocates: false,
       date: toIsoDate(tagText(item, 'pubDate')),
-      snippet: description.slice(0, SNIPPET_CAP),
+      // No teaser here: it is not the JD (see the header), and carrying it
+      // would feed the scanner's content_filter/years_min readers a
+      // one-sentence summary that drops keyword-gated postings.
+      snippet: '',
       source: 'startup-jobs',
     };
-    if (description) job.description = description;
     jobs.push(job);
   }
   return jobs;

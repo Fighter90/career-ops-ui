@@ -219,6 +219,80 @@ test('fetchHackerNews: throws on non-ok search response', async () => {
   );
 });
 
+// --- Shared HTTP context contract (upstream #6680) ---
+
+test('fetchHackerNews: a 503 HTML page names the HTTP status, never a JSON parse error', async () => {
+  // Upstream #6680: with a raw caller-side fetch context, a non-2xx HTML page
+  // surfaced as a bare SyntaxError ("Unexpected token '<'") with no status.
+  // The shared transport's non-2xx guard throws FIRST — the status must be
+  // what the error says, and the parse failure must never leak.
+  const fetchImpl = async () => ({
+    ok: false,
+    status: 503,
+    headers: { get: () => null },
+    // If a regression ever reads the body before the status guard, THIS is
+    // the failure that would leak into the message.
+    json: async () => {
+      throw new SyntaxError('Unexpected token \'<\', "<html><body>Service Unavailable" is not valid JSON');
+    },
+    text: async () => '<html><body>Service Unavailable</body></html>',
+  });
+  await assert.rejects(
+    () => fetchHackerNews('https://hn.algolia.com', { fetchImpl }),
+    (err) => {
+      assert.match(err.message, /503/, `the HTTP status should be named: ${err.message}`);
+      assert.doesNotMatch(err.message, /Unexpected token/, `the raw JSON parse error leaked: ${err.message}`);
+      assert.equal(err.status, 503);
+      return true;
+    },
+  );
+});
+
+test('fetchHackerNews: a 503 thread-item page names the status and the labeled step', async () => {
+  // Second hop of the two-step fetch: search OK, the thread item 503s. The
+  // labeledHttpError re-label must keep the status AND say which step failed.
+  let call = 0;
+  const fetchImpl = async () => {
+    call += 1;
+    if (call === 1) return { ok: true, json: async () => SEARCH_JSON };
+    return {
+      ok: false,
+      status: 503,
+      headers: { get: () => null },
+      json: async () => { throw new SyntaxError('Unexpected token \'<\''); },
+      text: async () => '<html><body>Service Unavailable</body></html>',
+    };
+  };
+  await assert.rejects(
+    () => fetchHackerNews('https://hn.algolia.com', { fetchImpl }),
+    (err) => {
+      assert.match(err.message, /503/, `the HTTP status should be named: ${err.message}`);
+      assert.match(err.message, /items/, `the failed step should be named: ${err.message}`);
+      assert.doesNotMatch(err.message, /Unexpected token/, `the raw JSON parse error leaked: ${err.message}`);
+      assert.equal(err.status, 503);
+      return true;
+    },
+  );
+});
+
+test('fetchHackerNews: both fetches reach the transport with redirect:"error" (upstream #6680)', async () => {
+  // Upstream #6680's second contract point: the provider's declared redirect
+  // policy must survive the shared HTTP context — it reaches the transport on
+  // every call, so a server-side 3xx can never be followed into a redirect.
+  const inits = [];
+  const fetchImpl = async (_url, init) => {
+    inits.push(init);
+    const call = inits.length;
+    return { ok: true, json: async () => (call === 1 ? SEARCH_JSON : ITEMS_JSON) };
+  };
+  const jobs = await fetchHackerNews('https://hn.algolia.com', { fetchImpl });
+  assert.equal(jobs.length, 3);
+  assert.equal(inits.length, 2, 'two fetches: search + thread item');
+  for (const init of inits) {
+    assert.equal(init.redirect, 'error', 'redirect:"error" was dropped on the way to fetch');
+  }
+});
+
 // --- SEARCH_URL lookup strategy (parent #3aa5e15) ---
 
 test('SEARCH_URL filters by the whoishiring account tag, not a free-text query', () => {

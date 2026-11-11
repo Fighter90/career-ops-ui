@@ -37,9 +37,12 @@
  *     health-probe path) does not exist here; the source fetches through the
  *     injected fetchImpl via the shared fetchJsonWithRetry, and web-ui's
  *     scanner has no probe path;
- *   - a keyword that ends on a full last-allowed page tags the result array
- *     `platsbankenTruncated` — the web-ui partial-board convention (the parent
- *     only warns, and distinguishes entry-vs-source ceilings in prose);
+ *   - a walk that stops short of a keyword's own end — the entry's max_pages
+ *     cap, the source's 2000-offset ceiling, or a failed later page — marks
+ *     the result array with the canonical `truncated` shape (markTruncated,
+ *     reason page-cap | source-cap | fetch-error, upstream #6804; the parent
+ *     pre-fix only warned to stderr) so the scanner logs the board `partial`
+ *     instead of complete. The first cause seen wins.
  *   - rows normalize into the web-ui 12-field shape: `publication_date`
  *     becomes `date`, `description.text` becomes a capped `snippet`, and the
  *     ad id becomes the row id.
@@ -48,6 +51,7 @@ import { fetchJsonWithRetry, delay, BROWSER_LIKE_USER_AGENT } from '../http-json
 import { safeEncodeURIComponent } from './_safe-url.mjs';
 import { resolveProfileKeywords } from './jobbankca.mjs';
 import { closesAtIso } from '../posting-close.mjs';
+import { markTruncated } from '../board-truncation.mjs';
 
 const UA = BROWSER_LIKE_USER_AGENT;
 
@@ -284,8 +288,9 @@ function normalize(row, entry) {
  * 2,100-row window), a page-1 failure marks that keyword failed while a
  * later-page failure keeps the pages already collected, and only when EVERY
  * keyword's first request failed does the fetch throw (a keyword that answered
- * with zero rows is not an outage — recall-first). A keyword that stops on the
- * max_pages cap with a full page tags the result array `platsbankenTruncated`.
+ * with zero rows is not an outage — recall-first). A walk that stops short of
+ * a keyword's own end (max_pages cap, the source ceiling, a failed later page)
+ * marks the result array with the canonical `truncated` marker.
  *
  * @param {string} endpoint - the search API URL (asserted here).
  * @param {{ fetchImpl?: Function, signal?: AbortSignal, company?: object,
@@ -315,7 +320,11 @@ export async function fetchPlatsbanken(endpoint, opts = {}) {
   const byUrl = new Map();
   const errors = [];
   let succeeded = 0;
-  let truncated = false;
+  // Why the walk stopped short of a keyword's own end, if it did: the
+  // canonical `truncated` marker (upstream #6804) makes the scanner log the
+  // board `partial` instead of complete. The first cause seen wins.
+  /** @type {'page-cap'|'source-cap'|'fetch-error'|null} */
+  let truncatedReason = null;
 
   for (const keyword of keywords) {
     if (signal?.aborted) break; // keeps the keywords already collected
@@ -345,6 +354,10 @@ export async function fetchPlatsbanken(endpoint, opts = {}) {
           keywordFailed = true;
           errors.push(`"${keyword}": ${(err && err.message) || err}`);
         } else {
+          // A later page failing keeps the pages already collected: recall-first,
+          // the same trade arbeitsagentur.mjs and jobbankca.mjs make. The board
+          // is then only partly read.
+          truncatedReason ??= 'fetch-error';
           console.error(`⚠️  platsbanken: "${keyword}" truncated at page ${page} of ${maxPages} — ${err.message}`);
         }
         break;
@@ -365,8 +378,9 @@ export async function fetchPlatsbanken(endpoint, opts = {}) {
       // source. Which ceiling decides the advice — raising max_pages cannot
       // buy a page the source does not serve past offset 2000.
       if (page === maxPages) {
-        truncated = true;
-        if (maxPages >= MAX_PAGES_CAP) {
+        const ceiling = maxPages >= MAX_PAGES_CAP ? 'source' : 'entry';
+        truncatedReason ??= ceiling === 'source' ? 'source-cap' : 'page-cap';
+        if (ceiling === 'source') {
           console.error(`⚠️  platsbanken: "${keyword}" hit the source's 2000-offset ceiling at ${byUrl.size} rows (${maxPages} pages) — narrow the keyword for the rest`);
         } else {
           console.error(`⚠️  platsbanken: ${entry.name || '(unnamed)'} truncated at max_pages=${maxPages} for "${keyword}" — raise max_pages on this entry for more`);
@@ -382,6 +396,6 @@ export async function fetchPlatsbanken(endpoint, opts = {}) {
   }
 
   const out = [...byUrl.values()].map((row) => normalize(row, entry));
-  if (truncated) out.platsbankenTruncated = true;
+  if (truncatedReason) markTruncated(out, truncatedReason, { fetched: out.length });
   return out;
 }
