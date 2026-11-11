@@ -204,10 +204,83 @@ function loadPortals() {
 // listing) must still come through here too.
 const OBSERVATIONAL_HISTORY_STATUSES = new Set(['skipped_location', 'skipped_age', 'skipped_experience']);
 
-function isObservationalHistoryRow(line) {
-  const cells = line.split('\t');
-  return /^https?:\/\//i.test(cells[0] || '')
-    && OBSERVATIONAL_HISTORY_STATUSES.has(String(cells[5] || '').trim());
+// CAR-263 (upstream #5905) — the `scan_history.recheck_after_days` window.
+// Statuses the TTL is allowed to release. `added` is the row a live posting
+// leaves behind; `skipped_expired` is the row a dead one leaves, and it belongs
+// here because a posting can be re-listed — pinning the retirement for good
+// would put the recheck the user configured out of reach for exactly the URLs
+// most likely to come back. `skipped_dup` says a scanner met a seen URL again,
+// so it can pin no longer than whatever made the URL seen (collectSeenUrls
+// resolves it against the URL's other rows). Everything else keeps its
+// permanent pin: the distinction is whether the status describes a POSTING,
+// which can change, or the URL itself — an invalid URL does not become valid
+// and a blocked host does not become reachable because a window elapsed.
+// web-ui's cooldown never writes scan-history rows (it reads the tracker), so
+// the parent's `cooldown:` status branch has no counterpart here.
+const PERMANENT_SCAN_HISTORY_STATUSES = new Set(['skipped_invalid_url', 'skipped_blocked_host']);
+const RECHECKABLE_SCAN_HISTORY_STATUSES = new Set(['added', 'skipped_expired', 'skipped_dup']);
+
+/**
+ * The `scan_history` recheck policy portals.yml sets, in the shape
+ * collectSeenUrls and loadSeenUrls take. Passed by every scanner that builds a
+ * seen set, so a policy left out reads as "dedup forever" only where no config
+ * was read at all.
+ * @param {object|null} [config] - Parsed portals.yml.
+ * @returns {{recheckAfterDays: number|null}}
+ */
+export function scanHistoryPolicy(config = {}) {
+  const raw = config?.scan_history?.recheck_after_days;
+  const parsed = Number.parseInt(raw, 10);
+  return {
+    recheckAfterDays: Number.isFinite(parsed) && parsed >= 0 ? parsed : null,
+  };
+}
+
+/**
+ * Whole-calendar days between two ISO dates, else null. A date that rolls over
+ * (`2026-02-30`) and a date outside the calendar (`2026-13-01`) both read as no
+ * date: `new Date()` returns an Invalid Date for the latter and toISOString()
+ * throws on one, so a single such scan-history row used to abort the whole
+ * seen-set build — and with it the scan.
+ */
+function daysBetweenIsoDates(start, end) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(start) || !/^\d{4}-\d{2}-\d{2}$/.test(end)) return null;
+  const startDate = new Date(`${start}T00:00:00Z`);
+  const endDate = new Date(`${end}T00:00:00Z`);
+  if (Number.isNaN(startDate.getTime()) || Number.isNaN(endDate.getTime())) return null;
+  if (startDate.toISOString().slice(0, 10) !== start || endDate.toISOString().slice(0, 10) !== end) return null;
+  return Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24));
+}
+
+/**
+ * Whether a scan-history row still pins its URL. `today` defaults to the UTC
+ * calendar day — the day appendToHistory / appendSkippedHistory stamp rows
+ * with (`toISOString().slice(0, 10)`), so a west-of-Greenwich evening run does
+ * not read the window one day high against its own writer.
+ * @param {{firstSeen: string, status?: string}} row
+ * @param {{recheckAfterDays?: number|null, today?: string}} [policy]
+ * @returns {boolean} true = the row pins (the URL counts as seen)
+ */
+export function shouldDedupScanHistoryRow({ firstSeen, status = 'added' }, { recheckAfterDays = null, today = new Date().toISOString().slice(0, 10) } = {}) {
+  if (PERMANENT_SCAN_HISTORY_STATUSES.has(status)) return true;
+  if (OBSERVATIONAL_HISTORY_STATUSES.has(status)) return false;
+  if (!RECHECKABLE_SCAN_HISTORY_STATUSES.has(status)) return true;
+  if (recheckAfterDays == null) return true;
+  const ageDays = daysBetweenIsoDates(firstSeen, today);
+  if (ageDays == null) return true;
+  return ageDays < recheckAfterDays;
+}
+
+// Heading depth decides which pipeline rows are finished work. `## Processed`
+// (`## Procesadas`) and a checked box are finished. A deeper heading is a
+// subdivision, and a shallower heading ends the section — collectSeenUrls and
+// the pipeline write share this, so a row one of them releases is a row the
+// other can write.
+function processedSectionAfter(line, inProcessed) {
+  const heading = line.match(/^(#+)\s+(.*)$/);
+  if (!heading || heading[1].length > 2) return inProcessed;
+  return heading[1].length === 2
+    && /^(processed|procesadas)\b/i.test(heading[2].trim());
 }
 
 /**
@@ -270,27 +343,100 @@ function scanHistoryRowContext(line) {
  * Shared by the EN and RU scanners.
  * @returns {{ seen: Set<string>, variants: Map<string, Array<{languages: string[], title: string}>> }}
  */
-export function collectSeenUrls() {
+export function collectSeenUrls(policy = {}) {
   const seen = new Set();
   // Which language versions each seen URL key stands for — read by the
   // dedup filter behind scan_history.dedup_include_language.
   const variants = new Map();
-  for (const p of [PATHS.scanHistory, PATHS.pipeline, PATHS.applications]) {
+  // CAR-263 (upstream #5905) — history rows the recheck window has released.
+  // Held rather than dropped silently: a pipeline.md entry below can re-pin a
+  // released URL while it is still actionable (a fence / `- [ ]` row is the
+  // pending inbox — re-scanning it would append a SECOND queue copy), so the
+  // pipeline pass must know which URLs the TTL freed.
+  const recheckCandidates = new Set();
+  // `skipped_dup` rows wait for all of the URL's history rows: under a window a
+  // repeat takes its verdict from whatever made the URL seen, which can sit
+  // anywhere in the file.
+  const dupRows = [];
+
+  // scan-history.tsv — a per-ROW walk: the recheck window reads a row's status
+  // and first_seen, which only a shape-aware parse can find. Two shapes share
+  // the file: web-ui's own (`date | source | id | company | title | url [ |
+  // closes_at]`, every row an `added` equivalent) and the parent format
+  // (`url | first_seen | portal | title | company | status …`).
+  let historyText = '';
+  try { historyText = readFileSync(PATHS.scanHistory, 'utf8'); } catch {}
+  for (const line of historyText.split('\n')) {
+    const cells = line.split('\t');
+    const parentFormat = /^https?:\/\//i.test(cells[0] || '');
+    if (!parentFormat && cells.length < 6) continue;
+    const url = (parentFormat ? cells[0] : cells[5] || '').trim();
+    if (!/^https?:\/\//i.test(url)) continue;
+    const status = parentFormat ? (String(cells[5] || '').trim() || 'added') : 'added';
+    const firstSeen = (parentFormat ? cells[1] : cells[0] || '').trim();
+    // Observational rows record a config rejection, not a seen posting — the
+    // URL was never queued, so it neither pins nor counts as a recheck
+    // candidate (counting it would overstate what the TTL released).
+    if (parentFormat && OBSERVATIONAL_HISTORY_STATUSES.has(status)) continue;
+    // Under a window a repeat sighting waits for the URL's other rows (next
+    // loop). With no window it pins like any other row.
+    if (status === 'skipped_dup' && policy.recheckAfterDays != null) {
+      dupRows.push({ url, firstSeen, line });
+      continue;
+    }
+    const token = normalizeUrl(url) || url;
+    if (shouldDedupScanHistoryRow({ firstSeen, status }, policy)) {
+      seen.add(token);
+      const ctx = scanHistoryRowContext(line);
+      const recorded = languageFormsForDedup(ctx.language);
+      recordUrlVariant(variants, token, recorded.length ? recorded : languageFormsFromUrl(url), ctx.title);
+    } else {
+      recheckCandidates.add(token);
+    }
+  }
+
+  // A `skipped_dup` row is dated the day of the repeat — a scanner writes one
+  // every run that lists the URL — so reading that date would restart the
+  // clock each scan. The URL's own rows decide instead, whatever the repeat's
+  // age: one still pinned keeps it seen, and once they are all released the
+  // repeat goes with them. Only a row with no original here falls back on its
+  // own `first_seen`; an aged orphan stops pinning, and it never becomes a
+  // recheck candidate, so it cannot un-pin the pipeline entry it repeats.
+  for (const { url, firstSeen, line } of dupRows) {
+    const token = normalizeUrl(url) || url;
+    if (!seen.has(token) && recheckCandidates.has(token)) continue;
+    if (seen.has(token) || shouldDedupScanHistoryRow({ firstSeen, status: 'skipped_dup' }, policy)) {
+      seen.add(token);
+      const ctx = scanHistoryRowContext(line);
+      const recorded = languageFormsForDedup(ctx.language);
+      recordUrlVariant(variants, token, recorded.length ? recorded : languageFormsFromUrl(url), ctx.title);
+    }
+  }
+
+  // pipeline.md + applications.md — per-line URL extraction. The pipeline pass
+  // carried no age policy, which is what made recheck_after_days a no-op: on
+  // an install that has been scanning for a while every URL the TTL releases
+  // above is listed here too, so it was re-pinned immediately. What may be
+  // released is decided by whether the row is still ACTIONABLE. A fence line
+  // or an unchecked `- [ ]` row is work the user can still pull from — it
+  // re-pins. A checked `- [x]` row, or any row under `## Processed`
+  // (`## Procesadas`), is finished: no queue entry can be duplicated, so the
+  // scan-history TTL governs alone. Release also requires the URL to be a
+  // recheck candidate, so a pipeline-only URL is never un-pinned.
+  for (const p of [PATHS.pipeline, PATHS.applications]) {
     let text = '';
     try { text = readFileSync(p, 'utf8'); } catch { continue; }
+    let inProcessed = false;
     for (const line of text.split('\n')) {
-      if (p === PATHS.scanHistory && isObservationalHistoryRow(line)) continue;
+      inProcessed = processedSectionAfter(line, inProcessed);
       for (const m of line.matchAll(/https?:\/\/\S+/g)) {
         const token = normalizeUrl(m[0]) || m[0];
+        if (p === PATHS.pipeline && recheckCandidates.has(token)
+          && (inProcessed || /^-\s*\[[xX]\]/.test(line.trim()))) continue;
         seen.add(token);
         let languages;
         let title = '';
-        if (p === PATHS.scanHistory) {
-          const ctx = scanHistoryRowContext(line);
-          const recorded = languageFormsForDedup(ctx.language);
-          languages = recorded.length ? recorded : languageFormsFromUrl(m[0]);
-          title = ctx.title;
-        } else if (p === PATHS.pipeline) {
+        if (p === PATHS.pipeline) {
           languages = languageFormsFromUrl(m[0]);
           title = pipelineRowTitle(line);
         } else {
@@ -309,8 +455,8 @@ export function collectSeenUrls() {
  * the EN and RU scanners.
  * @returns {Set<string>}
  */
-export function loadSeenUrls() {
-  return collectSeenUrls().seen;
+export function loadSeenUrls(policy = {}) {
+  return collectSeenUrls(policy).seen;
 }
 
 async function pMap(items, mapper, concurrency) {
@@ -427,7 +573,10 @@ export async function runEnScan(opts = {}) {
   const preferredLanguageRank = preferredLanguages.length
     ? preferredLanguageRanker(preferredLanguages)
     : null;
-  const { seen, variants: seenVariants } = collectSeenUrls();
+  // CAR-263 (upstream #5905) — the same portals.yml gives one verdict: the
+  // seen set honours `scan_history.recheck_after_days`, so a posting the
+  // window released comes back to the scan instead of deduping forever.
+  const { seen, variants: seenVariants } = collectSeenUrls(scanHistoryPolicy(portals));
   // CAR-223 (#4789) — filled during the fetch walk below: each fetched
   // posting's language versions, in provider order, before any filter. Empty
   // (and unfilled) unless dedup_include_language is on.

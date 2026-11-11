@@ -31,7 +31,7 @@ import { sanitizeTsvField, normalizeScanUrl } from './scan-sanitize.mjs';
 import { normalizeUrl } from './url-key.mjs';
 import { closesAtIso } from './posting-close.mjs';
 import { makeTimeoutFetch } from './fetch-timeout.mjs';
-import { saveLastScan, snapshotKeepReason, loadSeenUrls as loadSeenUrlsShared } from './en-scanner.mjs';
+import { saveLastScan, snapshotKeepReason, loadSeenUrls as loadSeenUrlsShared, scanHistoryPolicy } from './en-scanner.mjs';
 import { withFileLock, atomicWrite } from './file-lock.mjs';
 import { buildLocationFilter, buildContentFilter, compileKeyword, compileKeywordList, foldAccents, cleanStringList } from './location-filter.mjs';
 import { buildTierFilter } from './classify-tier.mjs';
@@ -122,6 +122,9 @@ export function loadConfig() {
     queries,
     negative,
     boosts,
+    // CAR-263 (upstream #5905) — the recheck window scan.mjs applies to the
+    // same seen set, threaded to runRuScan's loadSeenUrls call.
+    historyPolicy: scanHistoryPolicy(portals),
     // v1.29.0 — default now pulls every RU source from the registry
     // (hh, habr, trudvsem, getmatch, geekjob). User's portals.yml
     // takes precedence if it explicitly lists `sources: [...]`.
@@ -177,10 +180,10 @@ function collisionWarnings(queries, negative) {
  * Read every URL ever seen (across data/scan-history.tsv AND
  * data/pipeline.md AND data/applications.md) so we never re-add a known one.
  */
-export function loadSeenUrls() {
+export function loadSeenUrls(policy = {}) {
   // One implementation for both scanners (en-scanner.mjs): normalised URLs, and
   // parent skipped_location / skipped_age history rows don't count as seen.
-  return loadSeenUrlsShared();
+  return loadSeenUrlsShared(policy);
 }
 
 // v1.76.0 — compile the negative list once (word-boundary matching for short
@@ -210,7 +213,7 @@ export async function runRuScan(opts = {}) {
   // (e.g. api.hh.ru from a blocked IP) can't hang the whole scan (v1.63.0).
   const { writeFiles = true, onLog = () => {}, onProgress = () => {}, fetchImpl = makeTimeoutFetch(), signal } = opts;
   const cfg = loadConfig();
-  const seen = loadSeenUrls();
+  const seen = loadSeenUrls(cfg.historyPolicy);
 
   const log = (s, line) => onLog(s, line);
   log('stdout', '━'.repeat(60));
