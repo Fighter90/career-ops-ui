@@ -8,8 +8,11 @@
  *
  * buildEndpoint returns the search URL string; the source reads the SSR
  * hydration blob from it and pages `/en-us/search?...&page=N` itself (the
- * entry's `apple.queries` / `apple.teams` lists drive the axes). An entry
- * without a jobs.apple.com URL yields null, which resolveAdapter treats as no
+ * entry's `apple.queries` / `apple.teams` lists drive the axes; `apple:
+ * { full_board: true }` instead walks every posting in the location once,
+ * unsearched, and ignores them). An entry needs one of the three — `queries`,
+ * `teams` or `full_board` — or the fetch throws. An entry without a
+ * jobs.apple.com URL yields null, which resolveAdapter treats as no
  * endpoint (fail-soft per company).
  *
  * Example portals.yml entry:

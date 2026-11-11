@@ -127,6 +127,62 @@ test('fetchApple: honours entry.max_pages and clamps an oversized one to 50', as
   assert.equal(resolveMaxPages({}), 2);
 });
 
+// CAR-268 parity (upstream #6634, PR #6638) — full_board: ONE unsearched walk
+// of the location, read to Apple's own total. Apple's text search also matches
+// job descriptions ("business operations" alone returns ~half the US board),
+// so a few queries can cost more requests than the whole board and still stop
+// at a page cap; one unsearched walk is complete by definition and leaves the
+// precise cut to the scanner's title_filter.
+test('fetchApple: full_board walks the whole location unsearched, to Apple\'s own total', async () => {
+  // 20 rows on pages 1-2, the last posting alone on page 3, total 41 — the
+  // walk must stop at Apple's own total, not run the full page cap.
+  const impl = recording((call) => {
+    const pageNo = Number(new URL(call.url).searchParams.get('page') || 1);
+    const rows = pageNo <= 2
+      ? Array.from({ length: 20 }, (_, i) => row(String(pageNo * 100 + i), `Role ${pageNo}-${i}`))
+      : [row('999', 'Last Role')];
+    return ok(hydration(rows, 41));
+  });
+  const jobs = await fetchApple(ENTRY.careers_url, {
+    fetchImpl: impl,
+    // queries/teams present ALONGSIDE full_board — the URL assertions below
+    // then genuinely prove they are IGNORED (a fixture without them would
+    // only prove absence-because-unconfigured).
+    company: { ...ENTRY, apple: { full_board: true, queries: ['business operations'], teams: ['business-process-management-OPMFG-BPM'] } },
+    sleep: NO_SLEEP,
+  });
+  assert.equal(jobs.length, 41);
+  assert.equal(impl.calls.length, 3, 'reads to Apple\'s own total (41 = 20+20+1), not the 300-page cap');
+  for (const c of impl.calls) {
+    assert.equal(c.url.includes('search='), false, 'no text-search axis');
+    assert.equal(c.url.includes('team='), false, 'no team axis');
+    assert.ok(c.url.includes('location=united-states-USA'), 'one unsearched walk of the location');
+  }
+  assert.equal(jobs.truncated, undefined, 'a complete walk carries no truncation mark');
+});
+
+test('fetchApple: full_board clamps max_pages to its own ceiling (300, not the search-mode 50)', async () => {
+  const endless = () => ok(hydration(Array.from({ length: 20 }, (_, i) => row(String(i), `R${i}`)), 100000));
+  const impl = recording(endless);
+  const jobs = await fetchApple(ENTRY.careers_url, {
+    fetchImpl: impl,
+    company: { ...ENTRY, max_pages: 9999, apple: { full_board: true } },
+    sleep: NO_SLEEP,
+  });
+  assert.equal(impl.calls.length, 300, '9999 clamps to the full-board 300-page ceiling');
+  // The full-board cap stop carries the same canonical partial-read signal as
+  // the search-mode cap (CAR-255): the scan reports the board `partial`, not
+  // silently as the whole one.
+  assert.deepEqual(jobs.truncated, { reason: 'page-cap', fetched: jobs.length }, 'the full-board cap stop is reported');
+
+  assert.equal(resolveMaxPages({ max_pages: 9999 }, { fullBoard: true }), 300);
+  assert.equal(resolveMaxPages({}, { fullBoard: true }), 300, 'the ceiling is also the default');
+  assert.equal(resolveMaxPages({ max_pages: 3 }, { fullBoard: true }), 3, 'a smaller override is honoured');
+  // The search-mode ceiling is untouched.
+  assert.equal(resolveMaxPages({ max_pages: 9999 }), 50);
+  assert.equal(resolveMaxPages({}), 2);
+});
+
 // CAR-255 parity (upstream apple, delta b859214b..24da28e8) — a page-cap stop
 // is the canonical partial-read signal (board-truncation.mjs), not just a
 // stderr warning: scan.mjs reports the board `partial`, never silently as the
@@ -172,12 +228,12 @@ test('parseSearchPage: present-and-empty searchResults is "no matches"; wrong sh
 });
 
 test('fetchApple: rejects a no-config entry with a clear message and no request', async () => {
-  for (const apple of [undefined, {}, { queries: [], teams: [] }, { queries: ['  '] }]) {
+  for (const apple of [undefined, {}, { queries: [], teams: [] }, { queries: ['  '] }, { full_board: false }]) {
     const impl = recording(() => ok(hydration([], 0)));
     const company = { name: 'Apple', careers_url: 'https://jobs.apple.com/en-us/search', ...(apple ? { apple } : {}) };
     await assert.rejects(
       () => fetchApple(company.careers_url, { fetchImpl: impl, company, sleep: NO_SLEEP }),
-      /needs a non-empty apple\.queries or apple\.teams/,
+      /needs apple\.full_board: true or a non-empty apple\.queries or apple\.teams/,
     );
     assert.equal(impl.calls.length, 0, JSON.stringify(apple ?? null));
   }
