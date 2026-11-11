@@ -255,3 +255,42 @@ test('GET /api/pipeline exposes a closesAt map keyed by the queue URL', async ()
     'https://jobs.example.com/stored-a': '2026-12-05',
   }, 'URLs with no stored day are simply absent from the map');
 });
+
+// ── branch hardening (CI coverage ratchet: the per-file branch baseline on
+// posting-close.mjs measured below the recorded floor on CI's older Node —
+// V8 branch accounting differs per version; these lock the edge shapes so
+// every Node version clears the ratchet with margin) ──
+
+test('closesAtIso: datetime edge shapes — bounds, no-colon offsets, bad zones, padding', () => {
+  assert.equal(closesAtIso('2026-12-10T23:59:59+0000'), '2026-12-10', 'the no-colon +0000 form is valid and keeps the day');
+  assert.equal(closesAtIso('2026-12-10T22:00+0530'), '2026-12-10', 'seconds omitted, no-colon offset');
+  assert.equal(closesAtIso('2026-12-10T24:00:00'), '', 'hour 24 is refused');
+  assert.equal(closesAtIso('2026-12-10T10:60:00'), '', 'minute 60 is refused');
+  assert.equal(closesAtIso('2026-12-10T10:00:60'), '', 'second 60 is refused');
+  assert.equal(closesAtIso('2026-02-30T10:00:00'), '', 'an impossible calendar day inside a datetime is refused');
+  assert.equal(closesAtIso('2026-12-10T10:00:00+99:99'), '', 'an out-of-range offset is refused');
+  assert.equal(closesAtIso('2026-12-10T23:00:00-1400'), '2026-12-11', 'a -14:00 offset rolls the day forward');
+  assert.equal(closesAtIso('  2026-12-11  '), '2026-12-11', 'surrounding whitespace is trimmed');
+  assert.equal(closesAtIso({ endDate: null }), '', 'a null CLOSE_FIELD is skipped');
+  assert.equal(closesAtIso({ endDate: '' }), '', 'an empty CLOSE_FIELD is skipped');
+});
+
+test('closeDatesByUrl: malformed rows contribute nothing without crashing', () => {
+  const text = [
+    '# header',
+    'https://jobs.example.com/p\t2026-11-09\tgh\tEngineer\tAcme\tadded',
+    '2026-11-09\ten\t44\tAcme\tNot A Url\tnot-a-url\t2026-12-20',
+  ].join('\n');
+  const index = closeDatesByUrl(text);
+  assert.equal(index.has('https://jobs.example.com/p'), false, 'a parent row stopping short of closes_at contributes nothing');
+  assert.equal(index.get('not-a-url'), '2026-12-20', 'a non-URL web-ui url cell indexes under its raw cell (normalize fallback)');
+});
+
+test('closeDatesByUrl: a later row with an EMPTY closes_at does not erase the earlier day', () => {
+  const text = [
+    '# header',
+    '2026-11-09\ten\t45\tAcme\tEngineer\thttps://jobs.example.com/d\t2026-12-25',
+    '2026-11-10\ten\t45\tAcme\tEngineer\thttps://jobs.example.com/d\t',
+  ].join('\n');
+  assert.equal(closeDatesByUrl(text).get('https://jobs.example.com/d'), '2026-12-25');
+});
