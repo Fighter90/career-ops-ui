@@ -19,6 +19,13 @@
  *
  * Children with no extractable URL are dropped. Deleted/dead children are also dropped.
  *
+ * Shared HTTP context (upstream #6680): the two fetches go through the shared
+ * transport — the scanner injects a timeout-wrapped fetchImpl, the shared
+ * helper names the HTTP status on a non-2xx (a 503 HTML page never surfaces as
+ * a JSON parse error), and the source DECLARED its own `redirect: 'error'`
+ * policy on every call rather than relying on the helper's default, so a
+ * server-side 3xx can never be followed.
+ *
  * Used by the hackernews adapter (server/lib/portals/adapters/hackernews.mjs).
  */
 import { decodeEntities } from '../html-entities.mjs';
@@ -150,6 +157,11 @@ export async function fetchHackerNews(_url, opts = {}) {
   assertHnUrl(SEARCH_URL);
   const searchJson = await fetchJson(fetchImpl, SEARCH_URL, {
     signal,
+    // Declared redirect policy (upstream #6680): refuse to follow server-side
+    // redirects — this source's own contract, not a reliance on the helper's
+    // default. Identical behavior today; explicit so the policy survives a
+    // helper-default change.
+    redirect: 'error',
     headers: { 'User-Agent': UA, Accept: 'application/json' },
   }).catch((e) => { throw labeledHttpError(e, 'hackernews: search'); });
   const threadId = findHiringThreadId(searchJson);
@@ -166,6 +178,7 @@ export async function fetchHackerNews(_url, opts = {}) {
   assertHnUrl(itemUrl);
   const itemJson = await fetchJson(fetchImpl, itemUrl, {
     signal,
+    redirect: 'error', // same declared policy as the search hop
     headers: { 'User-Agent': UA, Accept: 'application/json' },
   }).catch((e) => { throw labeledHttpError(e, `hackernews: items (thread ${threadId})`); });
   const item = itemJson;
