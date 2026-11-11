@@ -70,7 +70,11 @@ jobs:
       # users get it via the parent project (FIX-C12).
       - name: Install Playwright
         run: |
-          npm install --no-save playwright
+          # Pinned: a fresh playwright release ships browser deps that
+          # `--with-deps` cannot install on the ubuntu runners (apt exit 100,
+          # twice in a row on both ubuntu-latest and ubuntu-24.04). 1.64.1 is
+          # the local node_modules version — known-good in every green run.
+          npm install --no-save playwright@1.64.1
           npx playwright install --with-deps chromium
       - name: Run smoke e2e
         run: node tests/e2e.mjs
