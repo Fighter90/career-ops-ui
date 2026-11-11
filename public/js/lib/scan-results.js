@@ -129,6 +129,7 @@ window.ScanResults = (function () {
     { value: 'startup-jobs', label: 'Startup Jobs' },
     { value: 'taleo', label: 'Taleo' },
     { value: 'teamtailor', label: 'Teamtailor' },
+    { value: 'tes', label: 'Tes' },
     { value: 'techinasia', label: 'Tech in Asia' },
     { value: 'telegram', label: 'Telegram' },
     { value: 'telegram-channel', label: 'Telegram (strict)' },

@@ -68,9 +68,41 @@ test('parseCryptocurrencyJobsRss: DOUBLE-decodes the feed (a single pass would l
   assert.ok(!jobs[0].company.includes('&amp;'), `company still double-encoded: ${jobs[0].company}`);
   assert.equal(jobs[0].title, 'Social Media & Growth Lead');
   assert.equal(jobs[0].company, 'Acme & Co');
-  // Description → snippet: HTML stripped, entities double-decoded.
-  assert.equal(jobs[0].snippet, 'We build web3 & DeFi. 100% remote.');
-  assert.ok(!jobs[0].snippet.includes('&amp;'), `snippet still double-encoded: ${jobs[0].snippet}`);
+});
+
+// CAR-257 (parent parity, upstream #6746) — the feed's <description> is NOT the
+// job description: every item carries the same one-sentence teaser template
+// ("{Company} is looking to hire a {Role} to join their team. This is a
+// full-time position…", 54 of 54 live items, 96-253 chars) that never names a
+// stack. The en-scanner's content filter reads `description ?? snippet`, so the
+// teaser would drop EVERY posting from this board for a user with
+// `content_filter.positive` set. The teaser is therefore never emitted as
+// description-like text at all (same decision as the parent's
+// _wp-job-feed.mjs refusing WordPress's excerpt).
+test('parseCryptocurrencyJobsRss: the feed teaser is NOT passed as the job description/snippet', () => {
+  const jobs = parseCryptocurrencyJobsRss(RSS);
+  assert.ok(jobs.length > 0);
+  for (const j of jobs) {
+    assert.equal(j.snippet, '', `teaser leaked into snippet: "${j.snippet}"`);
+    assert.equal(j.description, undefined, 'no description field may be emitted');
+  }
+});
+
+test('parseCryptocurrencyJobsRss: a teaser template item still parses (title/company/date survive)', () => {
+  // The exact teaser shape the live feed ships (parent #6746, verified
+  // 2026-11-09: 96-253 characters, never names a stack).
+  const teaser = '<rss><channel>'
+    + '<item><title>Protocol Engineer at Acme Protocol</title>'
+    + '<link>https://cryptocurrencyjobs.co/engineering/acme-protocol/</link>'
+    + '<description><![CDATA[<p>Acme Protocol is looking to hire a Protocol Engineer to join their team. This is a full-time position that is 100% remote with no geographic restrictions or requirements.</p>]]></description>'
+    + '<pubDate>Mon, 09 Nov 2026 10:00:00 GMT</pubDate></item>'
+    + '</channel></rss>';
+  const jobs = parseCryptocurrencyJobsRss(teaser);
+  assert.equal(jobs.length, 1);
+  assert.equal(jobs[0].title, 'Protocol Engineer');
+  assert.equal(jobs[0].company, 'Acme Protocol');
+  assert.equal(jobs[0].date, '2026-11-09');
+  assert.equal(jobs[0].snippet, '', 'the teaser must not become the snippet');
 });
 
 test('parseCryptocurrencyJobsRss: every listing is flagged remote', () => {

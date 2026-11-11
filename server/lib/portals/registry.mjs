@@ -54,6 +54,7 @@ import { solidjobsAdapter } from './adapters/solidjobs.mjs';
 import { weworkremotelyAdapter } from './adapters/weworkremotely.mjs';
 // v1.80.0 — Teamtailor per-tenant ATS (public /jobs.rss feed).
 import { teamtailorAdapter } from './adapters/teamtailor.mjs';
+import { tesAdapter } from './adapters/tes.mjs';
 // v1.81.0 — 13 new job-board providers.
 // Board-wide public APIs (provider-selected, fixed endpoint):
 import { thehubAdapter } from './adapters/thehub.mjs';
@@ -278,6 +279,9 @@ export const ALL_ADAPTERS = [
   weworkremotelyAdapter,
   // v1.80.0 — per-tenant ATS, auto-detected from a <slug>.teamtailor.com host.
   teamtailorAdapter,
+  // CAR-257 (parent parity, #6685) — Tes, UK and international teaching jobs,
+  // board-wide via provider: tes.
+  tesAdapter,
   // v1.81.0 — 13 new job-board providers.
   // Board-wide public APIs, provider-selected (like RemoteOK / Remotive):
   thehubAdapter,

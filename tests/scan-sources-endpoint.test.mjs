@@ -91,7 +91,7 @@ test('GET /api/scan/sources includes the EN ATS + aggregator sources', async () 
     'redrover', 'remote-com', 'remoteok', 'remotive', 'remotli', 'rheinmetall',
     'rippling', 'rss', 'schoolspring', 'senjob', 'sitemap', 'smartrecruiters',
     'softgarden', 'solidjobs', 'startup-jobs', 'successfactors', 'taleo', 'teamtailor',
-    'techinasia', 'telegram', 'telegram-channel', 'tencent', 'thehub', 'themuse',
+    'techinasia', 'telegram', 'telegram-channel', 'tencent', 'tes', 'thehub', 'themuse',
     'tkms', 'torre', 'trakstar', 'turbohire', 'ultipro', 'vdab',
     'weworkremotely', 'workable', 'workday', 'workingnomads', 'wttj', 'yourator',
     'zoho-recruit'

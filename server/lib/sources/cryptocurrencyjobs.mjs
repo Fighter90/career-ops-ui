@@ -80,11 +80,6 @@ function extractTag(block, tag) {
   return (m[1] !== undefined ? m[1] : m[2] || '').trim();
 }
 
-/** Strip HTML tags and collapse whitespace (snippet is a plain-text preview). */
-function stripTags(html) {
-  return html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
-}
-
 // Keep only absolute HTTPS links on the exact trusted board host. Uses the same
 // exact-match guard as assertCryptocurrencyJobsUrl + the adapter override, so
 // the parser is never more permissive than the SSRF guard (no subdomains).
@@ -145,10 +140,23 @@ export function parseCryptocurrencyJobsRss(xml, maxResults) {
       const { title, company } = splitTitle(rawTitle);
       if (!title) continue;
 
-      // The feed carries the job description for free in the same payload; feed
-      // it to `snippet` (tag-stripped, capped at 500) so content_filter can run.
-      const rawDesc = extractTag(item, 'description');
-      const snippet = rawDesc ? stripTags(decodeFeedText(rawDesc)).slice(0, 500) : '';
+      // CAR-257 (parent parity, upstream #6746) — NO snippet: the feed's
+      // <description> is not the job description. Every item carries the same
+      // one-sentence teaser template ("{Company} is looking to hire a {Role}
+      // to join their team. This is a full-time position that …", verified
+      // upstream 2026-11-09: 54 of 54 live items, 96-253 characters) and
+      // never names a stack. The en-scanner's content filter reads
+      // `description ?? snippet`, so the teaser would drop EVERY posting from
+      // this board for a user with `content_filter.positive` set. Same
+      // decision as the parent's _wp-job-feed.mjs, which refuses WordPress's
+      // excerpt. The title filter is untouched by this — the teaser only
+      // ever repeated the title it already matched.
+      //
+      // Location stays '' (the remote signal lives in isRemote/workplaceType),
+      // although some teasers name an on-site city ("is based in New York
+      // NY") — that clause is the feed's only location signal and carrying it
+      // would need an input other than the description-like field the content
+      // filter reads.
 
       jobs.push({
         id: `cryptocurrencyjobs-${url}`,
@@ -161,7 +169,7 @@ export function parseCryptocurrencyJobsRss(xml, maxResults) {
         workplaceType: 'Remote',
         relocates: false,
         date: toIsoDate(extractTag(item, 'pubDate')),
-        snippet,
+        snippet: '',
         source: 'cryptocurrencyjobs',
       });
     } catch {
