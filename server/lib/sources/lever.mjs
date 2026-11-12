@@ -47,6 +47,78 @@ export function assertLeverUrl(url) {
   return url;
 }
 
+// Annualization multipliers for Lever's salaryRange.interval values
+// (lever/postings-api: salaryRange is { currency, interval, min, max }).
+// Observed live on real boards: 'per-year-salary', 'per-hour-wage'. The
+// rest follow Lever's per-{period}-{salary|wage} naming; an interval not
+// in this table leaves salary off rather than guessing (same rule as the
+// parent's ashby.mjs INTERVAL_MULTIPLIERS lookup). Same annualization
+// basis as Ashby: 40 h/week, 52 weeks/year, 5 days/week.
+const LEVER_INTERVAL_MULTIPLIERS = {
+  'per-hour-wage': 2080,
+  'per-day-wage': 260,
+  'per-week-wage': 52,
+  'per-month-salary': 12,
+  'per-year-salary': 1,
+};
+
+/**
+ * Map a Lever posting's salaryRange to the Job.salary bounds
+ * ({ min, max, currency }, annualized), or undefined when the posting
+ * carries no usable range. Mirrors the parent's leverSalary() (#6907):
+ * only a real finite non-negative number counts, a one-sided range fills
+ * the missing bound from the other, bounds are ordered min<=max, an
+ * unrecognised interval leaves salary OFF (never guess), and the currency
+ * is trimmed + uppercased.
+ *
+ * Exported for tests.
+ *
+ * @param {any} j - one posting from the v0 postings list
+ * @returns {{min: number, max: number, currency: string} | undefined}
+ */
+export function leverSalary(j) {
+  const range = j?.salaryRange;
+  if (!range || typeof range !== 'object') return undefined;
+  // An interval naming an inherited Object property (e.g. 'constructor')
+  // resolves to a truthy non-number, which would annualize to NaN. Require a
+  // string interval that is an OWN property of the table (hasOwn is the
+  // prototype-name guard); every table value is a non-zero constant, so the
+  // multiplier needs no further truthiness check.
+  if (typeof range.interval !== 'string' || !Object.hasOwn(LEVER_INTERVAL_MULTIPLIERS, range.interval)) return undefined;
+  const multiplier = LEVER_INTERVAL_MULTIPLIERS[range.interval];
+  /** @param {unknown} v */
+  const num = (v) => (typeof v === 'number' && Number.isFinite(v) && v >= 0 ? v : undefined);
+  const minValue = num(range.min);
+  const maxValue = num(range.max);
+  if (minValue === undefined && maxValue === undefined) return undefined;
+  const annualizedMin = minValue !== undefined ? minValue * multiplier : undefined;
+  const annualizedMax = maxValue !== undefined ? maxValue * multiplier : undefined;
+  const resolvedMin = /** @type {number} */ (annualizedMin ?? annualizedMax);
+  const resolvedMax = /** @type {number} */ (annualizedMax ?? annualizedMin);
+  const currency = typeof range.currency === 'string' ? range.currency.trim().toUpperCase() : '';
+  return {
+    min: Math.min(resolvedMin, resolvedMax),
+    max: Math.max(resolvedMin, resolvedMax),
+    currency,
+  };
+}
+
+/**
+ * Render the annualized bounds into the web-ui shape's STRING `salary` field
+ * ('' when there is no comp data). The web-ui job shape carries salary as a
+ * display string (the en-scanner's `comp`, the pipeline column,
+ * scan-results' salaryHead), not a structured object — same convention as
+ * the manfred/applicantpro sources. leverSalary() always fills both bounds
+ * before returning, so only the both-bounds line is reachable.
+ * @param {{min: number, max: number, currency: string} | undefined} salary
+ */
+function salaryText(salary) {
+  if (!salary) return '';
+  const cur = salary.currency ? ` ${salary.currency}` : '';
+  return `${salary.min}–${salary.max}${cur}`;
+}
+
+
 export async function fetchLever(apiUrl, opts = {}) {
   const { fetchImpl = fetch, signal } = opts; // REVIEW-B3
   assertLeverUrl(apiUrl);
@@ -93,7 +165,13 @@ function normalize(j) {
     title: j.text || '',
     company: '',
     url: j.hostedUrl || j.applyUrl || '',
-    salary: j.salaryRange?.min ? `${j.salaryRange.min}-${j.salaryRange.max} ${j.salaryRange.currency}` : '',
+    // Lever's salaryRange ({ currency, interval, min, max }) maps to the
+    // web-ui string `salary` field annualized (CAR-271, parent #6907); an
+    // unknown interval or no usable number leaves salary off rather than
+    // guessing. The old `${min}-${max} ${currency}` read the raw figures
+    // (an hourly wage 2080× too small), dropped min:0 as falsy and dropped
+    // a max-only range entirely.
+    salary: salaryText(leverSalary(j)),
     location,
     isRemote,
     workplaceType: isRemote ? 'Remote' : (isHybrid ? 'Hybrid' : 'Onsite'),

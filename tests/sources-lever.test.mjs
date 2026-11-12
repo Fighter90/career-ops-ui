@@ -1,14 +1,23 @@
 /**
- * Lever source — location folding. Lever puts a SINGLE primary city in
- * `categories.location` and the full set on multi-location postings in
- * `categories.allLocations`; reading only the primary silently hid every other
- * eligible location from location_filter (a req open in Barcelona AND Montevideo
- * looked Barcelona-only). fetchLever now merges them, deduped.
+ * Lever source — location folding and the salaryRange port.
+ *
+ * Location: Lever puts a SINGLE primary city in `categories.location` and the
+ * full set on multi-location postings in `categories.allLocations`; reading
+ * only the primary silently hid every other eligible location from
+ * location_filter (a req open in Barcelona AND Montevideo looked
+ * Barcelona-only). fetchLever now merges them, deduped.
+ *
+ * Salary (CAR-271, parent #6907/#6922): Lever's `salaryRange` is
+ * { currency, interval, min, max } with a per-{period}-{salary|wage}
+ * interval; leverSalary() annualizes it into the Job.salary bounds
+ * (40 h/week · 52 weeks/year basis, same as Ashby) and the posting's
+ * `salary` field renders the annual string. An unknown interval leaves
+ * salary OFF rather than guessing.
  * CI-isolated: fake fetchImpl, no network.
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { fetchLever, assertLeverUrl } from '../server/lib/sources/lever.mjs';
+import { fetchLever, assertLeverUrl, leverSalary } from '../server/lib/sources/lever.mjs';
 import { buildLocationFilter } from '../server/lib/location-filter.mjs';
 
 const fake = (jobs) => async () => ({ ok: true, status: 200, json: async () => jobs });
@@ -150,4 +159,142 @@ test('lever: categories.commitment never leaks into workplaceType', async () => 
   assert.equal(job.workplaceType, 'Onsite'); // was 'Full-time'
   assert.equal(job.isRemote, false);
   assert.equal(job.snippet, 'Platform'); // team still feeds snippet
+});
+
+// ---------------------------------------------------------------------------
+// salaryRange → Job.salary (CAR-271, parent #6907/#6922)
+// ---------------------------------------------------------------------------
+
+// Lever's salaryRange is { currency, interval, min, max }; the interval names
+// the pay period. The annualization basis is the same as Ashby's: 40 h/week,
+// 52 weeks/year, 5 days/week — so an hourly wage reads as a comparable annual
+// figure instead of a number 2080× too small.
+test('leverSalary: annualizes every documented interval on the 40h/52w basis', () => {
+  const cases = [
+    // [interval, min, max, multiplier, expectedMin, expectedMax]
+    ['per-year-salary', 100000, 150000, 1, 100000, 150000],
+    ['per-hour-wage', 50, 60, 2080, 104000, 124800],
+    ['per-day-wage', 400, 500, 260, 104000, 130000],
+    ['per-week-wage', 2000, 2500, 52, 104000, 130000],
+    ['per-month-salary', 8000, 10000, 12, 96000, 120000],
+  ];
+  for (const [interval, min, max, , expMin, expMax] of cases) {
+    assert.deepEqual(
+      leverSalary({ salaryRange: { currency: 'USD', interval, min, max } }),
+      { min: expMin, max: expMax, currency: 'USD' },
+      `${interval} should annualize by its multiplier`,
+    );
+  }
+});
+
+test('leverSalary: a one-sided range fills the missing bound from the other', () => {
+  assert.deepEqual(
+    leverSalary({ salaryRange: { currency: 'USD', interval: 'per-year-salary', min: 90000 } }),
+    { min: 90000, max: 90000, currency: 'USD' },
+  );
+  assert.deepEqual(
+    leverSalary({ salaryRange: { currency: 'EUR', interval: 'per-hour-wage', max: 60 } }),
+    { min: 124800, max: 124800, currency: 'EUR' },
+  );
+});
+
+test('leverSalary: bounds are ordered min<=max even when the board lists them reversed', () => {
+  assert.deepEqual(
+    leverSalary({ salaryRange: { currency: 'USD', interval: 'per-year-salary', min: 150000, max: 100000 } }),
+    { min: 100000, max: 150000, currency: 'USD' },
+  );
+});
+
+// Only a real, finite, non-negative number counts. A string bound ("100k") is
+// junk, not a figure in the wrong unit; a negative number is junk too.
+test('leverSalary: non-number, negative and non-finite bounds are ignored', () => {
+  const range = { currency: 'USD', interval: 'per-year-salary' };
+  // Both bounds junk → no usable figure at all.
+  assert.equal(leverSalary({ salaryRange: { ...range, min: '100k', max: null } }), undefined);
+  assert.equal(leverSalary({ salaryRange: { ...range, min: -5, max: -1 } }), undefined);
+  assert.equal(leverSalary({ salaryRange: { ...range, min: Infinity, max: NaN } }), undefined);
+  // One real bound survives the junk on the other side (one-sided fill).
+  assert.deepEqual(
+    leverSalary({ salaryRange: { ...range, min: '100k', max: 120000 } }),
+    { min: 120000, max: 120000, currency: 'USD' },
+  );
+  assert.deepEqual(
+    leverSalary({ salaryRange: { ...range, min: 0, max: 100000 } }),
+    { min: 0, max: 100000, currency: 'USD' },
+    '0 is a valid non-negative bound (and the old truthy-min check silently dropped it)',
+  );
+});
+
+// An interval outside the table leaves salary OFF — the parent never guesses a
+// multiplier. 'constructor' resolves to a truthy non-number through the
+// prototype, which would annualize to NaN without the Object.hasOwn guard.
+test('leverSalary: an unknown or prototype-named interval leaves salary off', () => {
+  const range = { currency: 'USD', min: 100000, max: 150000 };
+  assert.equal(leverSalary({ salaryRange: { ...range, interval: 'per-fortnight-wage' } }), undefined);
+  assert.equal(leverSalary({ salaryRange: { ...range, interval: 'constructor' } }), undefined);
+  assert.equal(leverSalary({ salaryRange: { ...range, interval: 'toString' } }), undefined);
+  assert.equal(leverSalary({ salaryRange: { ...range, interval: 12 } }), undefined);
+  assert.equal(leverSalary({ salaryRange: { ...range, interval: null } }), undefined);
+  assert.equal(leverSalary({ salaryRange: { ...range } }), undefined);
+});
+
+test('leverSalary: a missing or non-object salaryRange leaves salary off', () => {
+  assert.equal(leverSalary({}), undefined);
+  assert.equal(leverSalary({ salaryRange: null }), undefined);
+  assert.equal(leverSalary({ salaryRange: '100-150k USD' }), undefined);
+  assert.equal(leverSalary({ salaryRange: [] }), undefined);
+  assert.equal(leverSalary(null), undefined);
+  assert.equal(leverSalary(undefined), undefined);
+});
+
+test('leverSalary: currency is trimmed and uppercased; a non-string becomes ""', () => {
+  assert.deepEqual(
+    leverSalary({ salaryRange: { currency: ' usd ', interval: 'per-year-salary', min: 1, max: 2 } }).currency,
+    'USD',
+  );
+  assert.deepEqual(
+    leverSalary({ salaryRange: { currency: 'eur', interval: 'per-year-salary', min: 1, max: 2 } }).currency,
+    'EUR',
+  );
+  assert.deepEqual(
+    leverSalary({ salaryRange: { interval: 'per-year-salary', min: 1, max: 2 } }).currency,
+    '',
+  );
+  assert.deepEqual(
+    leverSalary({ salaryRange: { currency: 42, interval: 'per-year-salary', min: 1, max: 2 } }).currency,
+    '',
+  );
+});
+
+// The web-ui job shape carries salary as a display STRING (the en-scanner's
+// `comp`, the pipeline column, scan-results' salaryHead). The posting field is
+// the annual string: bounds en-dash joined, currency after a space.
+test('fetchLever: maps salaryRange into the annual salary string, ordered, uppercased', async () => {
+  const rows = await fetchLever('https://api.lever.co/v0/postings/acme', {
+    fetchImpl: fake([
+      {
+        id: 's1', text: 'Eng', hostedUrl: 'https://jobs.lever.co/acme/s1',
+        categories: { location: 'Berlin' },
+        salaryRange: { currency: 'usd', interval: 'per-hour-wage', min: 60, max: 50 },
+      },
+      {
+        id: 's2', text: 'Eng', hostedUrl: 'https://jobs.lever.co/acme/s2',
+        categories: { location: 'Berlin' },
+        salaryRange: { currency: 'EUR', interval: 'per-year-salary', min: 70000 },
+      },
+      {
+        id: 's3', text: 'Eng', hostedUrl: 'https://jobs.lever.co/acme/s3',
+        categories: { location: 'Berlin' },
+      },
+      {
+        id: 's4', text: 'Eng', hostedUrl: 'https://jobs.lever.co/acme/s4',
+        categories: { location: 'Berlin' },
+        salaryRange: { currency: 'USD', interval: 'per-fortnight-wage', min: 1, max: 2 },
+      },
+    ]),
+  });
+  assert.equal(rows[0].salary, '104000–124800 USD', 'reversed bounds ordered + hourly annualized ×2080');
+  assert.equal(rows[1].salary, '70000–70000 EUR', 'one-sided range mirrored into both bounds');
+  assert.equal(rows[2].salary, '', 'no salaryRange → empty string, not undefined');
+  assert.equal(rows[3].salary, '', 'unknown interval → salary OFF, never guessed');
 });
