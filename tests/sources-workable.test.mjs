@@ -26,6 +26,7 @@ import {
   fetchWorkable,
   parseWorkableWidget,
   resolveWorkableSlug,
+  workableListingIdentity,
   meta,
 } from '../server/lib/sources/workable.mjs';
 import { buildLocationFilter } from '../server/lib/location-filter.mjs';
@@ -477,4 +478,120 @@ test('workable: an unresolvable slug throws before any fetch', async () => {
     /cannot derive account slug/,
   );
   assert.equal(called, false, 'fetch must not run for a non-workable URL');
+});
+
+// ── listingIdentity (parent #6966) — the posting's ATS-native identity ──
+// The widget payload's `shortcode` is the posting id; the board slug is the
+// account namespace resolveWorkableSlug already accepted, never a token parsed
+// out of a URL. Both halves are opaque strings per docs/listing-fingerprint.md:
+// nonempty, no surrounding whitespace, no ASCII controls. Numbers are never
+// coerced and nothing is trimmed or case-folded — anything else is not an id,
+// and a row that cannot build an identity falls back to URL dedup.
+
+test('workableListingIdentity: a clean slug + shortcode is the workable identity', () => {
+  assert.deepEqual(
+    workableListingIdentity('optimile', '801183DB79'),
+    { ats_provider: 'workable', board_slug: 'optimile', posting_id: '801183DB79' },
+  );
+  assert.equal(
+    Object.keys(workableListingIdentity('optimile', 'X')).length, 3,
+    'exactly the three identity keys',
+  );
+});
+
+test('workableListingIdentity: an unusable shortcode yields no identity (no coercion)', () => {
+  for (const shortcode of [' ABC123', 'ABC123 ', '\tABC123', 'ABC\u0007123', '', undefined, null, 123, { id: 'ABC123' }]) {
+    assert.equal(
+      workableListingIdentity('optimile', shortcode),
+      undefined,
+      `shortcode ${JSON.stringify(shortcode)} must not become a posting id`,
+    );
+  }
+});
+
+test('workableListingIdentity: a shortcode is opaque — never trimmed or case-folded', () => {
+  assert.deepEqual(
+    workableListingIdentity('optimile', 'abc123'),
+    { ats_provider: 'workable', board_slug: 'optimile', posting_id: 'abc123' },
+    'casing is kept exactly as the payload typed it',
+  );
+  assert.notDeepEqual(
+    workableListingIdentity('optimile', 'abc123'),
+    workableListingIdentity('optimile', 'ABC123'),
+    'casing differences are different ids, not the same one',
+  );
+});
+
+test('workableListingIdentity: the slug must be an account slug resolveWorkableSlug would accept', () => {
+  for (const slug of ['', '  acme  ', 'ac\u007fme', 'ac me', 'ac/me', '.acme', 'acme?', null, undefined]) {
+    assert.equal(
+      workableListingIdentity(slug, 'ABC123'),
+      undefined,
+      `slug ${JSON.stringify(slug)} is not a board_slug`,
+    );
+  }
+  assert.deepEqual(
+    workableListingIdentity('Foo_Corp-2', 'ABC123'),
+    { ats_provider: 'workable', board_slug: 'Foo_Corp-2', posting_id: 'ABC123' },
+    'alphanumerics, - and _ are the SLUG_RE alphabet; casing is kept',
+  );
+});
+
+test('parseWorkableWidget: no slug → rows fall back to URL dedup (no identity on any row)', () => {
+  const jobs = parseWorkableWidget(WIDGET_PAYLOAD);
+  assert.equal(jobs.length, 2);
+  assert.ok(jobs.every((j) => !('listingIdentity' in j)), 'no slug → no identity on any row');
+});
+
+test('parseWorkableWidget: the slug + each payload shortcode ride the rows as listingIdentity', () => {
+  const jobs = parseWorkableWidget(WIDGET_PAYLOAD, 'optimile');
+  assert.deepEqual(jobs[0].listingIdentity, { ats_provider: 'workable', board_slug: 'optimile', posting_id: 'ABC123' });
+  assert.deepEqual(jobs[1].listingIdentity, { ats_provider: 'workable', board_slug: 'optimile', posting_id: 'DEF456' });
+});
+
+test('parseWorkableWidget: a missing, padded or numeric shortcode leaves the row on URL dedup', () => {
+  const jobs = parseWorkableWidget({
+    name: 'X',
+    jobs: [
+      { title: 'No Shortcode', shortlink: 'https://apply.workable.com/j/NS1' },
+      { title: 'Padded', shortlink: 'https://apply.workable.com/j/P1', shortcode: ' P1 ' },
+      { title: 'Numeric', shortlink: 'https://apply.workable.com/j/N1', shortcode: 42 },
+    ],
+  }, 'optimile');
+  assert.equal(jobs.length, 3, 'an unusable shortcode never drops the row');
+  assert.ok(jobs.every((j) => !('listingIdentity' in j)), 'each row falls back to URL dedup');
+});
+
+test('parseWorkableWidget: a fan-out carries ONE identity, from the first entry\u2019s shortcode', () => {
+  const jobs = parseWorkableWidget(FAN_OUT_PAYLOAD, 'digitalgenius');
+  const impl = jobs.find((j) => j.title === 'Implementation Engineer');
+  assert.deepEqual(
+    impl?.listingIdentity,
+    { ats_provider: 'workable', board_slug: 'digitalgenius', posting_id: '801183DB79' },
+    'the folded posting gets one identity — siblings contributed locations only',
+  );
+  const solutions = jobs.find((j) => j.title === 'Solutions Engineer');
+  assert.deepEqual(
+    solutions?.listingIdentity,
+    { ats_provider: 'workable', board_slug: 'digitalgenius', posting_id: 'E8064EA4C7' },
+  );
+});
+
+test('parseWorkableWidget: a first entry with no shortcode leaves the fold unidentified even when siblings carry one', () => {
+  const jobs = parseWorkableWidget({
+    name: 'X',
+    jobs: [
+      { title: 'Impl', shortlink: 'https://apply.workable.com/j/F1', country: 'United Kingdom' },
+      { title: 'Impl', shortlink: 'https://apply.workable.com/j/F1', shortcode: 'F1', country: 'Poland' },
+    ],
+  }, 'acme');
+  assert.equal(jobs.length, 1);
+  assert.ok(!('listingIdentity' in jobs[0]),
+    'identity comes from the first entry only — a sibling shortcode is not a fallback');
+});
+
+test('workable: fetchWorkable attaches the identity built from the resolved slug', async () => {
+  const jobs = await fetchWorkable(ADAPTER_V3_URL, { fetchImpl: okJson(WIDGET_PAYLOAD) });
+  assert.deepEqual(jobs[0].listingIdentity, { ats_provider: 'workable', board_slug: 'optimile', posting_id: 'ABC123' });
+  assert.deepEqual(jobs[1].listingIdentity, { ats_provider: 'workable', board_slug: 'optimile', posting_id: 'DEF456' });
 });
