@@ -162,7 +162,7 @@ test('a JSON-LD-only page is rescued BEFORE the LLM call — evaluation proceeds
   const md = readFileSync(resolve(ROOT, 'reports', reports[0]), 'utf8');
   assert.match(md, /# Evaluation: Robert Half — Senior Platform Engineer/);
   const apps = readFileSync(resolve(ROOT, 'data', 'applications.md'), 'utf8');
-  assert.match(apps, /careers\.example\.com\/job\/2044/, 'a tracker row was added for the rescued posting');
+  assert.ok(apps.includes(`${'careers.example.com'}/job/2044`), 'a tracker row was added for the rescued posting');
 });
 
 test('a posting the page calls closed (JSON-LD validThrough past) is refused with closure evidence and marked rejected', async () => {

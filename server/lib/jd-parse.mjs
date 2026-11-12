@@ -102,13 +102,12 @@ function stripMarkup(markup) {
   const lower = asciiLower(src);
   const out = [];
   let i = 0;
-  let noMoreGt = false;
   while (i < src.length) {
     const lt = src.indexOf('<', i);
     if (lt === -1) { out.push(src.slice(i)); break; }
     out.push(src.slice(i, lt));
-    const gt = noMoreGt ? -1 : src.indexOf('>', lt + 1);
-    if (gt === -1) { noMoreGt = true; out.push(src.slice(lt)); break; }
+    const gt = src.indexOf('>', lt + 1);
+    if (gt === -1) { out.push(src.slice(lt)); break; }
     const name = /^\/?[a-z][a-z0-9]*|^br(?=[\s/])/.exec(lower.slice(lt + 1, lt + 12))?.[0] ?? '';
     if (name === 'script' || name === 'style') {
       const close = lower.indexOf(`</${name}`, gt + 1);
@@ -264,8 +263,7 @@ export function embeddedDescriptionStrings(html) {
   const out = [];
   const keyRe = /"(?:descriptionHtml|descriptionPlainText|jobDescriptionHtml)"\s*:\s*"/g;
   const src = String(html);
-  let m;
-  while ((m = keyRe.exec(src)) !== null) {
+  while (keyRe.exec(src) !== null) {
     const start = keyRe.lastIndex;
     let i = start;
     while (i < src.length && src[i] !== '"') i += src[i] === '\\' ? 2 : 1;
