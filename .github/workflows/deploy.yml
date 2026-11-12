@@ -590,13 +590,16 @@ jobs:
           # Idempotent: builds already in the cache skip in seconds; a fresh build
           # downloads once and fails the deploy loudly rather than shipping broken
           # PDF generation. as_owner -H puts the cache where the service's HOME
-          # resolves it (/opt/career-ops/.cache/ms-playwright).
-          if [ -d "$UI_DIR/node_modules/playwright" ] || [ -d "$UI_DIR/node_modules/playwright-core" ]; then
-            as_owner "$UI_DIR" bash -c 'cd "$1" && npx playwright install chromium' _ "$UI_DIR" \
-              || { echo "::error::playwright browser install failed — PDF generation would be broken on prod"; exit 1; }
-            owner_home=$(getent passwd "$(stat -c %U "$APP_DIR")" | cut -d: -f6)
-            echo "playwright cache: $(find "$owner_home/.cache/ms-playwright" -maxdepth 1 -name 'chromium*' -o -maxdepth 1 -name 'ffmpeg*' 2>/dev/null | tr '\n' ' ')"
-          fi
+          # resolves it (/opt/career-ops/.cache/ms-playwright). generate-pdf.mjs
+          # runs from the PARENT checkout, so the parent's tree is the primary
+          # target; the web-ui tree is installed too when it carries playwright.
+          for d in "$APP_DIR" "$UI_DIR"; do
+            [ -d "$d/node_modules/playwright" ] || [ -d "$d/node_modules/playwright-core" ] || continue
+            as_owner "$d" bash -c 'cd "$1" && npx playwright install chromium' _ "$d" \
+              || { echo "::error::playwright browser install failed for $d — PDF generation would be broken on prod"; exit 1; }
+          done
+          owner_home=$(getent passwd "$(stat -c %U "$APP_DIR")" | cut -d: -f6)
+          echo "playwright cache: $(find "$owner_home/.cache/ms-playwright" -maxdepth 1 -name 'chromium*' 2>/dev/null | tr '\n' ' ')"
           # CAR-85 — release-time SPA bundle: concat every body <script src="/js/…">
           # from public/index.html into public/js/bundle.js (89 cold-load script
           # requests → 4: the two <head> scripts + vendored Leaflet stay individual
@@ -662,15 +665,26 @@ jobs:
           # downloads browsers. mode=deploy now installs them itself; this mode
           # exists so the install can be run (and re-run) WITHOUT a full deploy.
           # Read-only apart from the ms-playwright cache: nothing is restarted.
+          # generate-pdf.mjs runs from the PARENT checkout (its output/ dir is
+          # /opt/career-ops/src/output), so the parent's node_modules is the
+          # install target; the web-ui tree is checked too and installed when
+          # it carries its own playwright.
           # shellcheck disable=SC2029  # the inputs are meant to expand locally
           ssh prod "APP_DIR='$APP_DIR' bash -s" <<'REMOTE'
           set -euo pipefail
           UI_DIR="$APP_DIR/web-ui"
           as_owner() { local d=$1; shift; sudo -u "$(stat -c %U "$d")" -H -- "$@"; }
-          [ -d "$UI_DIR/node_modules/playwright" ] || [ -d "$UI_DIR/node_modules/playwright-core" ] || { echo "::error::playwright not installed in $UI_DIR/node_modules — run a deploy first"; exit 1; }
-          version=$(node -p "require('$UI_DIR/node_modules/playwright-core/package.json').version" 2>/dev/null || echo unknown)
+          installed_in() {
+            for d in "$@"; do
+              [ -d "$d/node_modules/playwright" ] || [ -d "$d/node_modules/playwright-core" ] && { echo "$d"; return 0; }
+            done
+            return 1
+          }
+          TARGET=$(installed_in "$APP_DIR" "$UI_DIR") || { echo "::error::playwright not installed in $APP_DIR/node_modules nor $UI_DIR/node_modules — run a deploy first"; exit 1; }
+          echo "installing browsers for the playwright in: $TARGET"
+          version=$(node -p "require('$TARGET/node_modules/playwright-core/package.json').version" 2>/dev/null || echo unknown)
           echo "playwright-core: $version"
-          as_owner "$UI_DIR" bash -c 'cd "$1" && npx playwright install chromium' _ "$UI_DIR"
+          as_owner "$TARGET" bash -c 'cd "$1" && npx playwright install chromium' _ "$TARGET"
           owner_home=$(getent passwd "$(stat -c %U "$APP_DIR")" | cut -d: -f6)
           echo "cache at $owner_home/.cache/ms-playwright:"
           ls -1 "$owner_home/.cache/ms-playwright" 2>/dev/null || echo "::error::cache directory not found — the install did not land where the service resolves HOME"
