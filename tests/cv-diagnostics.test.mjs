@@ -49,6 +49,72 @@ test('analyze surfaces score + all checks', () => {
   assert.equal(r.checks.find((c) => c.id === 'contact').status, 'pass');
 });
 
+test('CAR-262 (#6654): Norwegian Bokmål section headings are recognized', () => {
+  // The parent's #6654 failure shape: a CV headed Arbeidserfaring / Utdanning /
+  // Kompetanse failed the standard-section gate because the term lists had no
+  // nb row. web-ui's own section gate is CV Studio's diagnostics — same gap.
+  const nb = Diag.analyze(`# Nordisk Kandidat
+nordisk@eksempel.no · +47 22 00 00 00
+
+## Summary
+Seniorplattformingeniør med ti års erfaring fra backend og sky.
+
+## Arbeidserfaring
+- Bygget en betalingstjeneste som kuttet svartiden med førti prosent.
+- Lanserte tre mikrotjenester som håndterer tolv tusen forespørsler i sekundet.
+
+## Utdanning
+- BSc informatikk, Universitetet i Oslo.
+
+## Kompetanse
+Go, PostgreSQL, Kubernetes.
+`);
+  const sections = nb.checks.find((c) => c.id === 'sections');
+  assert.equal(sections.status, 'pass', `Bokmål headings should all be found; got: ${sections.detail}`);
+});
+
+test('CAR-262 (#6654): the Bokmål compounds that put the key word last are recognized too', () => {
+  const compound = Diag.analyze(`# Nordisk Kandidat
+nordisk@eksempel.no · +47 22 00 00 00
+
+## Summary
+Seniorplattformingeniør med ti års erfaring fra backend og sky.
+
+## Yrkeserfaring
+- Bygget en betalingstjeneste som kuttet svartiden med førti prosent.
+
+## Utdanning
+- BSc informatikk, Universitetet i Oslo.
+
+## Kjernekompetanse
+- Systemdesign i Go og PostgreSQL.
+`);
+  const sections = compound.checks.find((c) => c.id === 'sections');
+  assert.equal(sections.status, 'pass', `compound headings should be found; got: ${sections.detail}`);
+});
+
+test('CAR-262 (#6654): an English CV still passes and the nb terms do not loosen detection', () => {
+  assert.equal(Diag.analyze(STRONG_CV).checks.find((c) => c.id === 'sections').status, 'pass');
+  // "Ferdigheter" must not appear from unrelated English prose.
+  const en = Diag.analyze(`# Jane Public
+jane@example.com · +1 (415) 555-0100
+
+## Summary
+Senior engineer with ten years of backend experience.
+
+## Experience
+- Built a payments service that cut checkout latency.
+
+## Education
+- BSc Computer Science, MIT.
+
+## Skills
+Go, PostgreSQL, Kubernetes.
+`);
+  const sections = en.checks.find((c) => c.id === 'sections');
+  assert.equal(sections.status, 'pass');
+});
+
 test('weak CV is flagged: weak verbs fail, buzzwords + low quantified', () => {
   const r = Diag.analyze(WEAK_CV);
   assert.ok(r.score < 60, `weak CV should score low, got ${r.score}`);
