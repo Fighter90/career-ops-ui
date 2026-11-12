@@ -25,9 +25,13 @@
     'proactive', 'go-to person', 'rockstar', 'ninja', 'guru', 'wheelhouse',
   ];
   const SECTION_HINTS = {
-    experience: /\b(experience|employment|work history)\b/i,
-    education: /\b(education|degree|university|b\.?sc|m\.?sc|ph\.?d)\b/i,
-    skills: /\b(skills|technologies|tech stack|competenc)/i,
+    // Norwegian Bokmål terms (CAR-262, upstream #6654): the compounds put the
+    // key word last, so they are listed whole, as the parent lists the German,
+    // Dutch and Danish ones; the skills group stays open on the right so the
+    // plural forms (Kompetanser, Ferdighetene) match too.
+    experience: /\b(experience|employment|work history|erfaring|arbeidserfaring|yrkeserfaring)\b/i,
+    education: /\b(education|degree|university|b\.?sc|m\.?sc|ph\.?d|utdanning)\b/i,
+    skills: /\b(skills|technologies|tech stack|competenc|kompetanse|kjernekompetanse|ferdigheter)/i,
     summary: /\b(summary|profile|about|objective)\b/i,
   };
   const EMAIL_RE = /\b[\w.+-]+@[\w-]+\.[\w.-]+\b/;
