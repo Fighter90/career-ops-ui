@@ -4,6 +4,15 @@
 > ⏳ **Uwaga o zakresie** — plik zawiera obecnie pełną historię wydań; wpisy sprzed dodania polskiego znajdują się poniżej w angielskim oryginale (tłumaczenie w toku).
 > _Wpisy od [1.271.3] czekają na tłumaczenie — angielski oryginał poniżej._
 
+## [1.271.11] — 2026-11-12
+
+### Naprawiono
+- **Fix** — Liveness checker now recognizes Norwegian closure banners (#6788), so expired Norwegian postings stop reading as live and resurfacing in scans; new tests cover this plus scanner snapshot-safety cases (#6757, #6784, #6779).
+
+### Uwagi
+- Deliberately NOT changed: the hard/soft expiry tiering — a soft Norwegian banner still loses to a visible Apply button, and no new scan sources or filters were added.
+
+
 ## [1.271.10] — 2026-11-12
 
 ### Naprawiono

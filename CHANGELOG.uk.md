@@ -4,6 +4,15 @@
 > ⏳ **Примітка щодо охоплення** — файл містить тепер повну історію випусків; записи, опубліковані до додання української, наведені нижче англійською оригіналу (переклад триває).
 > _Записи, починаючи з [1.271.3], очікують на переклад — англійський оригінал нижче._
 
+## [1.271.11] — 2026-11-12
+
+### Виправлено
+- **Fix** — Liveness checker now recognizes Norwegian closure banners (#6788), so expired Norwegian postings stop reading as live and resurfacing in scans; new tests cover this plus scanner snapshot-safety cases (#6757, #6784, #6779).
+
+### Примітки
+- Deliberately NOT changed: the hard/soft expiry tiering — a soft Norwegian banner still loses to a visible Apply button, and no new scan sources or filters were added.
+
+
 ## [1.271.10] — 2026-11-12
 
 ### Виправлено

@@ -3,6 +3,15 @@
 
 > यह परिवर्तन-सूची अब संपूर्ण रिलीज़-इतिहास रखती है। हिन्दी स्थानीयकरण (v1.122.0) से पहले प्रकाशित प्रविष्टियाँ नीचे अंग्रेज़ी मूल रूप में हैं — अनुवाद बाकी है; आधिकारिक स्रोत [🇬🇧 CHANGELOG.md](CHANGELOG.md) है।
 
+## [1.271.11] — 2026-11-12
+
+### ठीक किया गया
+- **Fix** — Liveness checker now recognizes Norwegian closure banners (#6788), so expired Norwegian postings stop reading as live and resurfacing in scans; new tests cover this plus scanner snapshot-safety cases (#6757, #6784, #6779).
+
+### नोट्स
+- Deliberately NOT changed: the hard/soft expiry tiering — a soft Norwegian banner still loses to a visible Apply button, and no new scan sources or filters were added.
+
+
 ## [1.271.10] — 2026-11-12
 
 ### ठीक किया गया

@@ -3,6 +3,15 @@
 > இந்த மாற்றப் பதிவு இப்போது முழு வெளியீட்டு வரலாற்றையும் கொண்டுள்ளது. தமிழ் மொழியாக்கம் (v1.245.0) சேர்க்கப்படுவதற்கு முன் வெளியிடப்பட்ட பதிவுகள் கீழே ஆங்கில அசல் வடிவில் உள்ளன — மொழிபெயர்ப்பு நிலுவையில் உள்ளது; அதிகாரப்பூர்வ ஆவணம் [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 > _[1.271.3] முதல் பதிவுகள் மொழிபெயர்ப்பு நிலுவையில் உள்ளன — ஆங்கில அசல் கீழே._
 
+## [1.271.11] — 2026-11-12
+
+### சரி செய்யப்பட்டது
+- **Fix** — Liveness checker now recognizes Norwegian closure banners (#6788), so expired Norwegian postings stop reading as live and resurfacing in scans; new tests cover this plus scanner snapshot-safety cases (#6757, #6784, #6779).
+
+### குறிப்புகள்
+- Deliberately NOT changed: the hard/soft expiry tiering — a soft Norwegian banner still loses to a visible Apply button, and no new scan sources or filters were added.
+
+
 ## [1.271.10] — 2026-11-12
 
 ### சரி செய்யப்பட்டது

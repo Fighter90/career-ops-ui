@@ -5,6 +5,15 @@
 > **Note de traduction (v1.61.0)** — le français a été ajouté comme 9e langue de l'interface. Ce fichier traduit les entrées récentes ; pour l'historique antérieur à la v1.55.0, voir le [🇬🇧 CHANGELOG anglais](CHANGELOG.md), qui reste la source normative.
 > ⏳ **Note de couverture** — ce fichier inclut désormais l'historique complet ; les entrées antérieures à la v1.61.0 figurent ci-dessous en anglais original, traduction en attente.
 
+## [1.271.11] — 2026-11-12
+
+### Corrigé
+- **Fix** — Liveness checker now recognizes Norwegian closure banners (#6788), so expired Norwegian postings stop reading as live and resurfacing in scans; new tests cover this plus scanner snapshot-safety cases (#6757, #6784, #6779).
+
+### Notes
+- Deliberately NOT changed: the hard/soft expiry tiering — a soft Norwegian banner still loses to a visible Apply button, and no new scan sources or filters were added.
+
+
 ## [1.271.10] — 2026-11-12
 
 ### Corrigé
