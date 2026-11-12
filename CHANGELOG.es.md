@@ -5,6 +5,15 @@
 > ⏳ **Nota de cobertura** — este archivo incluye ahora el historial completo; las entradas anteriores a la v1.12.0 aparecen en el original inglés a la espera de traducción.
 > _Las entradas a partir de [1.271.3] están pendientes de traducción — el original en inglés aparece abajo._
 
+## [1.271.12] — 2026-11-12
+
+### Corregido
+- **Las cargas útiles de la página `#/scan` al montar quedan acotadas** — la sonda de rendimiento en producción midió los dos endpoints de datos de la página de búsqueda en 1,9 s / 3,77 MB (`/api/scan-results`) y 4,6 s / 2,97 MB (`/api/scan/reposts`): la página esperaba ~6,5 s de tiempo de API por visita. Ambos quedan corregidos sin cambiar lo que se renderiza: el `description` de cada fila ahora se recorta en el servidor a 4000 caracteres — exactamente el recorte que la SPA ya aplica, de modo que las filas se renderizan byte a byte idénticas mientras la red deja de transportar descripciones que el cliente desecharía; y el agrupamiento de reposts se memoiza sobre el mtime+tamaño+ventana del historial de escaneos, así el pase costoso se ejecuta una vez por cambio del historial en lugar de en cada montaje de la página. La sonda de rendimiento también cubre ahora los endpoints de la página de escaneo (`/api/scan-results`, `/api/scan/sources`, `/api/scan/reposts`, `/api/portals`), de modo que las regresiones aquí se miden en lugar de quedar en anécdotas. (+5 pruebas, tests/scan-wire-weight.test.mjs)
+
+### Notas
+- Deliberadamente NO se cambió: el endpoint `/api/pipeline` sigue tal cual (el trabajo de diseño CAR-250 pendiente del responsable de los datos, ~1,9 s / 1,28 MB en producción, documentado); el filtrado de escaneos, la deduplicación y el algoritmo de detección de reposts no se tocan — solo cambia dónde se detiene la transmisión y cuándo se vuelve a ejecutar el cálculo.
+
+
 ## [1.271.11] — 2026-11-12
 
 ### Corregido

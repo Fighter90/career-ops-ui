@@ -4,6 +4,14 @@
 > **ملاحظة بشأن الترجمة (v1.70.0)** — أُضيفت العربية كإحدى ثلاث لغات واجهة جديدة. يترجم هذا الملف أحدث الإدخالات؛ السجل الكامل في [🇬🇧 CHANGELOG الإنجليزي](CHANGELOG.md) وهو المرجع المعتمد.
 > ⏳ **ملاحظة تغطية** — يتضمن هذا الملف الآن السجل الكامل؛ الإدخالات السابقة لإضافة العربية تظهر أدناه بالإنجليزية الأصلية بانتظار الترجمة.
 
+## [1.271.12] — 2026-11-12
+
+### أُصلح
+- **The `#/scan` page's mount-time payloads are bounded** — the prod perf probe measured the search page's two data endpoints at 1.9 s / 3.77 MB (`/api/scan-results`) and 4.6 s / 2.97 MB (`/api/scan/reposts`): the page waited ~6.5 s of API time per visit. Both are fixed without changing what renders: each row's `description` is now capped server-side at 4000 chars — exactly the slice the SPA already applies, so rows render byte-identical while the wire stops carrying descriptions the client would throw away; and the repost clustering is memoized on the scan-history's mtime+size+window, so the expensive pass runs once per history change instead of on every page mount. The perf probe also covers the scan page's endpoints now (`/api/scan-results`, `/api/scan/sources`, `/api/scan/reposts`, `/api/portals`), so regressions here are measured, not anecdotal. (+5 tests, tests/scan-wire-weight.test.mjs)
+
+### ملاحظات
+- Deliberately NOT changed: the `/api/pipeline` endpoint stays as-is (the CAR-250 data-owner design work, ~1.9 s / 1.28 MB on prod, documented); scan filtering, dedup and the repost detection algorithm are untouched — only where the wire stops and when the computation re-runs.
+
 ## [1.271.11] — 2026-11-12
 
 ### أُصلح

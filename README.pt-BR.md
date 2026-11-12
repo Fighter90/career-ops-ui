@@ -7,19 +7,19 @@
 
 _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-8302%20passed-brightgreen)](#testes)
+[![tests](https://img.shields.io/badge/tests-8312%20passed-brightgreen)](#testes)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#testes)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requisitos)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.271.11-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.11)
+[![release](https://img.shields.io/badge/release-v1.271.12-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.12)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versão — v1.271.11** — a **onda de liveness**: o banner de encerramento em norueguês não dispara mais falsamente nos elementos periféricos da página de vagas ativas, e correções de exatidão do scanner (#6757, #6784, #6779) mantêm o histórico de scan honesto. Testes 8302.
+> **🆕 Última versão — v1.271.12** — a **aceleração da página de busca**: os payloads de dados da tabela de scan agora são limitados no servidor — o fio deixa de transportar as descrições que a UI corta, e o agrupamento de reposts agora roda uma vez por mudança do histórico, então a página que esperava ~6,5 s de tempo de API por montagem agora carrega em frações de segundo. Testes 8312.
 >
-> **Anterior — v1.271.10** — onda CAR-262: páginas de vagas renderizadas por script recebem um resgate via JSON-LD JobPosting, para que a JD não fique mais "indisponível" (#6604), páginas de desafio do Cloudflare são recusadas em vez de avaliadas (#6798), títulos ATS em norueguês Bokmål passam a ser analisados (#6654) e o relatório de avaliação traz uma faixa de posicionamento ao lado da pontuação (#6789).
+> **Anterior — v1.271.11** — a **onda de liveness**: o banner de encerramento em norueguês não dispara mais falsamente nos elementos periféricos da página de vagas ativas, e correções de exatidão do scanner (#6757, #6784, #6779) mantêm o histórico de scan honesto. Testes 8302.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

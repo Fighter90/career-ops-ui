@@ -7,19 +7,19 @@
 
 _Неофициальный интерфейс — не аффилирован с career-ops / santifer и не одобрен ими._
 
-[![tests](https://img.shields.io/badge/tests-8302%20passed-brightgreen)](#тесты)
+[![tests](https://img.shields.io/badge/tests-8312%20passed-brightgreen)](#тесты)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.271.11-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.11)
+[![release](https://img.shields.io/badge/release-v1.271.12-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.12)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Последний релиз — v1.271.11** — **liveness-волна**: норвежский баннер закрытия больше не ложно срабатывает на «хроме» страниц живых вакансий, а исправления корректности сканера (#6757, #6784, #6779) держат историю сканов честной. Тесты: 8302.
+> **🆕 Последний релиз — v1.271.12** — **ускорение страницы поиска**: полезные нагрузки данных таблицы сканов ограничены на сервере — по сети больше не передаются описания, которые UI всё равно отрезает, а кластеризация репостов теперь выполняется один раз на изменение истории, поэтому страница, ждавшая ~6,5 с API-времени за одно монтирование, теперь загружается за доли секунды. Тесты: 8312.
 >
-> **Предыдущий релиз — v1.271.10** — волна CAR-262: страницы вакансий, отрисованные скриптом, получают спасение через JSON-LD JobPosting, так что JD больше не «недоступен» (#6604), страницы с Cloudflare-челленджем отклоняются вместо оценки (#6798), заголовки ATS на норвежском букмоле разбираются (#6654), а отчёт оценки содержит полосу позиционирования рядом со счётом (#6789).
+> **Предыдущий релиз — v1.271.11** — **liveness-волна**: норвежский баннер закрытия больше не ложно срабатывает на «хроме» страниц живых вакансий, а исправления корректности сканера (#6757, #6784, #6779) держат историю сканов честной. Тесты: 8302.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

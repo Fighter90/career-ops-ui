@@ -3,6 +3,15 @@
 
 > Dieses Changelog enthält die vollständige Versionsgeschichte. Einträge, die vor der deutschen Lokalisierung (v1.85.0) veröffentlicht wurden, stehen unten im englischen Original — Übersetzung ausstehend; maßgeblich bleibt [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.271.12] — 2026-11-12
+
+### Behoben
+- **Die Mount-Zeit-Payloads der `#/scan`-Seite sind begrenzt** — die Perf-Sonde auf Prod hat die beiden Daten-Endpunkte der Suchseite bei 1,9 s / 3,77 MB (`/api/scan-results`) und 4,6 s / 2,97 MB (`/api/scan/reposts`) gemessen: Die Seite wartete pro Besuch ~6,5 s API-Zeit. Beides ist behoben, ohne zu ändern, was gerendert wird: Die `description` jeder Zeile wird jetzt serverseitig auf 4000 Zeichen begrenzt — exakt der Slice, den die SPA bereits anwendet, sodass die Zeilen byte-identisch gerendert werden, während die Übertragung keine Beschreibungen mehr enthält, die der Client ohnehin verwerfen würde; und das Repost-Clustering ist über mtime+size+window des Scan-Verlaufs memoisiert, sodass der teure Durchlauf einmal pro Verlaufsänderung läuft statt bei jedem Seiten-Mount. Die Perf-Sonde deckt jetzt auch die Endpunkte der Scan-Seite ab (`/api/scan-results`, `/api/scan/sources`, `/api/scan/reposts`, `/api/portals`), sodass Regressionen hier gemessen werden, statt anekdotisch zu bleiben. (+5 Tests, tests/scan-wire-weight.test.mjs)
+
+### Hinweise
+- Bewusst NICHT geändert: Der `/api/pipeline`-Endpunkt bleibt, wie er ist (die CAR-250-Designarbeit des Dateninhabers, ~1,9 s / 1,28 MB auf Prod, dokumentiert); Scan-Filterung, Dedup und der Repost-Erkennungsalgorithmus bleiben unberührt — es ändert sich nur, wo die Übertragung endet und wann die Berechnung erneut läuft.
+
+
 ## [1.271.11] — 2026-11-12
 
 ### Behoben

@@ -7,19 +7,19 @@
 
 _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
 
-[![tests](https://img.shields.io/badge/tests-8302%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-8312%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.271.11-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.11)
+[![release](https://img.shields.io/badge/release-v1.271.12-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.12)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新リリース — v1.271.11** — **ライブネス ウェーブ**: ノルウェー語のクローズ バナーが、公開中の求人のページ周辺要素で誤作動しなくなり、スキャナ正確性修正(#6757, #6784, #6779)がスキャン履歴を正確に保ちます。テスト 8302。
+> **🆕 最新リリース — v1.271.12** — **検索ページの高速化**: スキャン テーブルのデータ ペイロードがサーバー側で上限付きになりました — ワイヤーは UI がスライスして捨てる説明文を運ばなくなり、リポストのクラスタリングは履歴が変わるたびに 1 回だけ実行されます。その結果、マウントごとに約 6.5 秒の API 待ち時間があったページが、今ではコンマ数秒でロードされます。テスト 8312。
 >
-> **前バージョン — v1.271.10** — CAR-262 ウェーブ: スクリプト描画の求人ページが JSON-LD JobPosting からの復元を得て JD が「利用不可」にならなくなり(#6604)、Cloudflare チャレンジ ページは評価せず拒否され(#6798)、ノルウェー語ブークモールの ATS 見出しが解析され(#6654)、評価レポートはスコアの横にポジショニング バンドを載せます(#6789)。
+> **前バージョン — v1.271.11** — **ライブネス ウェーブ**: ノルウェー語のクローズ バナーが、公開中の求人のページ周辺要素で誤作動しなくなり、スキャナ正確性修正(#6757, #6784, #6779)がスキャン履歴を正確に保ちます。テスト 8302。
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

@@ -5,6 +5,15 @@
 > **Note de traduction (v1.61.0)** — le français a été ajouté comme 9e langue de l'interface. Ce fichier traduit les entrées récentes ; pour l'historique antérieur à la v1.55.0, voir le [🇬🇧 CHANGELOG anglais](CHANGELOG.md), qui reste la source normative.
 > ⏳ **Note de couverture** — ce fichier inclut désormais l'historique complet ; les entrées antérieures à la v1.61.0 figurent ci-dessous en anglais original, traduction en attente.
 
+## [1.271.12] — 2026-11-12
+
+### Corrigé
+- **Les charges utiles de la page `#/scan` au montage sont plafonnées** — la sonde de perf en production a mesuré les deux endpoints de données de la page de recherche à 1,9 s / 3,77 Mo (`/api/scan-results`) et 4,6 s / 2,97 Mo (`/api/scan/reposts`) : la page attendait ~6,5 s de temps d'API par visite. Les deux sont corrigés sans changer ce qui est rendu : le `description` de chaque ligne est désormais plafonné côté serveur à 4000 caractères — exactement le tronçon que la SPA applique déjà, si bien que les lignes se rendent à l'octet identique pendant que le réseau ne transporte plus de descriptions que le client jetterait ; et le clustering des reposts est mémoïsé sur le mtime+taille+fenêtre de l'historique de scan, de sorte que la passe coûteuse s'exécute une fois par changement d'historique au lieu d'à chaque montage de page. La sonde de perf couvre aussi désormais les endpoints de la page de scan (`/api/scan-results`, `/api/scan/sources`, `/api/scan/reposts`, `/api/portals`), si bien que les régressions ici sont mesurées plutôt qu'anecdotiques. (+5 tests, tests/scan-wire-weight.test.mjs)
+
+### Notes
+- Délibérément NON modifié : l'endpoint `/api/pipeline` reste en l'état (le travail de conception CAR-250 laissé au propriétaire des données, ~1,9 s / 1,28 Mo en production, documenté) ; le filtrage des scans, la déduplication et l'algorithme de détection des reposts sont intacts — seuls l'endroit où le réseau s'arrête et le moment où le calcul est relancé changent.
+
+
 ## [1.271.11] — 2026-11-12
 
 ### Corrigé

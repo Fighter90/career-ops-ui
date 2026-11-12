@@ -3,6 +3,15 @@
 > Nhật ký này nay chứa đầy đủ lịch sử các bản phát hành. Các mục phát hành trước khi có bản địa hóa tiếng Việt (v1.254.0) xuất hiện bên dưới bằng bản gốc tiếng Anh — bản dịch còn đang chờ; bản chính thức là [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 > _Các mục từ [1.271.3] đang chờ dịch — bản gốc tiếng Anh bên dưới._
 
+## [1.271.12] — 2026-11-12
+
+### Đã sửa
+- **Các payload khi mount của trang `#/scan` đã bị giới hạn** — perf probe trên prod đo hai data endpoint của trang tìm kiếm ở mức 1.9 s / 3.77 MB (`/api/scan-results`) và 4.6 s / 2.97 MB (`/api/scan/reposts`): trang phải chờ ~6.5 s thời gian API cho mỗi lần truy cập. Cả hai đều được sửa mà không đổi những gì được hiển thị: `description` của mỗi dòng giờ bị giới hạn 4000 ký tự phía server — đúng phần cắt mà SPA vốn đã áp dụng, nên các dòng render giống hệt từng byte trong khi đường truyền không còn chở những phần mô tả mà client sẽ vứt bỏ; và việc gom cụm repost được memoized theo mtime+size+window của lịch sử quét, nên lượt tính toán tốn kém chỉ chạy một lần cho mỗi lần lịch sử thay đổi thay vì trên mỗi lần mount trang. perf probe giờ cũng bao phủ các endpoint của trang quét (`/api/scan-results`, `/api/scan/sources`, `/api/scan/reposts`, `/api/portals`), nên hồi quy ở đây được đo lường chứ không phải chuyện kể. (+5 tests, tests/scan-wire-weight.test.mjs)
+
+### Ghi chú
+- Deliberately NOT changed: endpoint `/api/pipeline` vẫn giữ nguyên (công việc thiết kế data-owner CAR-250, ~1.9 s / 1.28 MB trên prod, đã được ghi trong tài liệu); lọc quét (scan filtering), dedup và thuật toán phát hiện repost không bị đụng tới — chỉ có chỗ đường truyền dừng lại và lúc phép tính chạy lại là thay đổi.
+
+
 ## [1.271.11] — 2026-11-12
 
 ### Đã sửa

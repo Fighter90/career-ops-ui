@@ -22,6 +22,7 @@ import { runEnScan, loadLastScan } from '../en-scanner.mjs';
 import { getLastWorkdayFallback } from '../sources/workday.mjs';
 import { SOURCES } from '../sources/registry.mjs';
 import { PATHS } from '../paths.mjs';
+import { statSync } from 'node:fs';
 import { detectRepostsFromFile, DEFAULT_WINDOW_DAYS } from '../detect-reposts.mjs';
 import { annotateSnapshotFit, loadProfileTargetRoles } from '../title-fit.mjs';
 
@@ -101,6 +102,30 @@ export const __scanSlot = {
   release() { activeScan = null; },
 };
 
+// Wire-weight (2026-11-12): a row's `description` is capped at the same
+// 4000 chars the SPA slices it to (scan/runner.js) — the client renders
+// byte-identical content while the wire stops carrying the tail. Prod
+// measured 3.77 MB per bare snapshot; descriptions were most of it.
+const DESCRIPTION_WIRE_CAP = 4000;
+function capRowDescription(job) {
+  if (typeof job?.description !== 'string' || job.description.length <= DESCRIPTION_WIRE_CAP) return job;
+  return { ...job, description: job.description.slice(0, DESCRIPTION_WIRE_CAP) };
+}
+function capSnapshotDescriptions(snapshot) {
+  if (!snapshot || typeof snapshot !== 'object') return snapshot;
+  const out = { ...snapshot };
+  for (const region of ['en', 'ru']) {
+    const r = snapshot[region];
+    if (!r || typeof r !== 'object') continue;
+    out[region] = {
+      ...r,
+      filtered: (r.filtered || []).map(capRowDescription),
+      fresh: (r.fresh || []).map(capRowDescription),
+    };
+  }
+  return out;
+}
+
 export function registerScanRoutes(app) {
   // ─── F-018 LITE — consolidated entrypoint ───
   // GET /api/stream/scan?source=ats|regional|both[&dryRun=1][&company=Acme]
@@ -174,12 +199,28 @@ export function registerScanRoutes(app) {
   // ─── Repost / ghost-posting detection (v1.83.0, parent v1.15.0 parity) ───
   // Reads data/scan-history.tsv and flags company+role clusters re-listed under
   // different URLs within a rolling window. Read-only; never writes.
+  //
+  // Wire-weight (2026-11-12): the prod perf probe measured this endpoint at
+  // 4.6 s / 2.97 MB per call — the clustering re-ran over the whole history
+  // on EVERY #/scan mount. Memoized on the history's mtime+size+window: the
+  // expensive pass runs once per history change, repeat reads serve the same
+  // payload.
+  const repostsMemo = new Map(); // `${mtimeMs}:${size}:${windowDays}` → clusters
   app.get('/api/scan/reposts', (req, res) => {
     const raw = parseInt(String(req.query.window || ''), 10);
     const windowDays = Number.isFinite(raw) ? Math.min(365, Math.max(7, raw)) : DEFAULT_WINDOW_DAYS;
     let clusters = [];
+    let key = null;
     try {
-      clusters = detectRepostsFromFile(PATHS.scanHistory, windowDays);
+      const st = statSync(PATHS.scanHistory);
+      key = `${st.mtimeMs}:${st.size}:${windowDays}`;
+      if (repostsMemo.has(key)) {
+        clusters = repostsMemo.get(key);
+      } else {
+        clusters = detectRepostsFromFile(PATHS.scanHistory, windowDays);
+        if (repostsMemo.size > 8) repostsMemo.clear(); // a handful of windows, no unbounded growth
+        repostsMemo.set(key, clusters);
+      }
     } catch {
       clusters = []; // fail-soft: a malformed history must not 500 the page
     }
@@ -221,7 +262,13 @@ export function registerScanRoutes(app) {
     const hasQuery = q || region || req.query.limit || req.query.offset || req.query.set;
 
     if (!hasQuery) {
-      res.json({ ...snapshot, workdayFallback: getLastWorkdayFallback() });
+      // Wire-weight (2026-11-12): the prod probe measured 3.77 MB per page
+      // mount — rows carried full descriptions the SPA immediately slices
+      // to 4000 chars (scan/runner.js). Cap server-side to the same bound:
+      // the page renders byte-identical content, the wire stops carrying
+      // the tail.
+      const capped = capSnapshotDescriptions(snapshot);
+      res.json({ ...capped, workdayFallback: getLastWorkdayFallback() });
       return;
     }
 
@@ -270,7 +317,7 @@ export function registerScanRoutes(app) {
       set: wanted,
       region: regions.join(','),
       query: q,
-      rows: matched.slice(offset, offset + limit),
+      rows: matched.slice(offset, offset + limit).map(capRowDescription),
     });
   });
 }
