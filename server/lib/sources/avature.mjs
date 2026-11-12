@@ -160,6 +160,12 @@ export function parseAvature(html, ctx = /** @type {any} */ ({})) {
       } catch {
         continue;
       }
+      // A href with its own scheme (javascript:, data:, mailto:) is absolute,
+      // so new URL keeps it as it is: only http(s) is a job link. Defence in
+      // depth over the origin-host check below, which would drop these
+      // anyway (a scheme'd URL has no hostname) — but only http(s) may
+      // proceed to it (parent #6971).
+      if (!/^https?:\/\//i.test(url)) continue;
     }
     {
       // `url` is absolute here (it started http(s) or resolved above) — keep
@@ -237,8 +243,10 @@ function resolveMaxPages(company) {
 
 /**
  * Fetch + normalize an Avature tenant's SearchJobs list (paginated by jobOffset
- * in steps of 6). Stops on an empty page, a page that adds no fresh rows (offset
- * ignored / looped), a RAW-short page, or the page cap. A page-1 failure
+ * in steps of 6). Stops on an empty page (no result cards), a repeated page
+ * (rows parsed but all already seen — offset ignored / looped), a RAW-short
+ * page, or the page cap. A full page whose rows the parser dropped (non-http
+ * scheme, no title) still advanced, so the walk goes on. A page-1 failure
  * throws; a later-page failure keeps the collected partials and logs.
  *
  * @param {string} endpoint host-pinned Avature URL (from buildEndpoint)
@@ -269,7 +277,11 @@ export async function fetchAvature(endpoint, opts = {}) {
       console.error(`  ⚠ avature: page ${page + 1} failed (${err.message}) — keeping the ${out.length} jobs collected so far`);
       break;
     }
-    if (rows.length === 0) break;
+    // A page is stalled when it has no cards (empty) or every parsed row was
+    // already seen (the offset repeated a page). Zero fresh rows alone is
+    // not enough: a page of cards whose links the parser dropped (non-http
+    // scheme, no title) still advanced, so the walk goes on (parent #6971).
+    if (raw === 0) break; // truly empty page
 
     let fresh = 0;
     for (const row of rows) {
@@ -278,7 +290,10 @@ export async function fetchAvature(endpoint, opts = {}) {
       fresh += 1;
       out.push(row);
     }
-    if (fresh === 0) break; // offset ignored / looped
+    // Stop only on a repeated page (rows parsed, all already seen). A page
+    // of cards whose links were all dropped still advanced — the walk
+    // continues and the RAW-short check below ends the real board.
+    if (fresh === 0 && rows.length > 0) break; // offset ignored / looped
     // RAW page length — one unparseable card on a full page must not end the
     // walk (the old FILTERED-vs-PAGE_SIZE test stopped it a page early).
     if (raw < PAGE_SIZE) break; // last page

@@ -282,3 +282,76 @@ test('parseAvature: parses a result card rendered without the leading article cl
   // The raw count (pagination stops on it) sees the same card.
   assert.equal(countAvatureArticles(pageHtml([block])), 1);
 });
+
+// ── parent #6971: non-http(s) scheme guard + page-stall rework ──────────────
+// A href carrying its own scheme (javascript:, data:, mailto:) is absolute —
+// new URL() resolves it as-is instead of against the origin — so only an
+// explicit /^https?:\/\//i test can drop it. And a page is stalled only when
+// it has no cards or repeats already-seen rows: zero fresh rows ALONE is not
+// a stall, because a page of cards whose links the parser dropped still
+// advanced the offset.
+
+test('parseAvature: drops javascript:/mailto: hrefs; a relative JobDetail link is still kept', () => {
+  const html = pageHtml([
+    // Scheme'd hrefs embed a JobDetail path, so the title-anchor regex
+    // matches them — only the http(s) test may drop them.
+    articleBlock({ href: "javascript:openJob('/JobDetail/Sneaky/9001')", title: 'Sneaky JS Link' }),
+    articleBlock({ href: 'mailto:jobs@example.com?subject=/JobDetail/9002', title: 'Sneaky Mailto' }),
+    // The good neighbours are kept: an absolute on-host href and a relative
+    // one that resolves against the origin.
+    articleBlock(),
+    articleBlock({ href: '/JobDetail/Relative-Keep/9003', title: 'Relative Keep' }),
+  ]);
+  const jobs = parseAvature(html, { origin: ORIGIN, fallbackCompany: 'Acme' });
+  assert.deepEqual(
+    jobs.map((j) => j.title),
+    ['Senior Go Engineer', 'Relative Keep'],
+    'a scheme-carrying href is absolute for new URL(); only http(s) is a job link',
+  );
+  assert.equal(jobs[1].url, `${ORIGIN}/JobDetail/Relative-Keep/9003`);
+});
+
+test('fetchAvature: a full page whose links were ALL dropped still advances the walk', async () => {
+  // Page 0: 6 raw cards, every link a javascript: scheme → zero parsed rows.
+  // Zero fresh + zero parsed is NOT a stall: the offset itself advanced, so
+  // the walk must go on (parent #6971). The old `rows.length === 0` break
+  // stopped the walk right after page 1 and silently hid the rest of the board.
+  const jsPage = pageHtml(
+    Array.from({ length: 6 }, (_, i) =>
+      articleBlock({ href: `javascript:openJob('/JobDetail/Js-${i}/${700 + i}')`, title: `Js ${i}` })),
+  );
+  const full = pageHtml(
+    Array.from({ length: 6 }, (_, i) => articleBlock({ href: `/careers/JobDetail/Role-${i}/${100 + i}`, title: `Role ${i}` })),
+  );
+  const last = pageHtml([articleBlock({ href: '/careers/JobDetail/Last-A/200', title: 'Last A' })]);
+  let calls = 0;
+  const fetchImpl = (url, opts) => { calls += 1; return htmlFetch({ 0: jsPage, 6: full, 12: last })(url, opts); };
+  const jobs = await fetchAvature(ENDPOINT, { fetchImpl, company: { name: 'Acme' } });
+  assert.equal(calls, 3, 'a dropped-link full page advances; the walk ends on the short page 3');
+  assert.equal(jobs.length, 7, 'the jobs behind the dropped-link page are still collected (6 + the short last page)');
+});
+
+test('fetchAvature: a truly empty page (no cards at all) still breaks', async () => {
+  const full = pageHtml(
+    Array.from({ length: 6 }, (_, i) => articleBlock({ href: `/careers/JobDetail/E-${i}/${800 + i}`, title: `E ${i}` })),
+  );
+  let calls = 0;
+  const fetchImpl = (url, opts) => { calls += 1; return htmlFetch({ 0: full })(url, opts); };
+  // offset 6 falls back to pageHtml([]) — zero cards → the walk must stop.
+  const jobs = await fetchAvature(ENDPOINT, { fetchImpl, company: { name: 'Acme' } });
+  assert.equal(calls, 2);
+  assert.equal(jobs.length, 6);
+});
+
+test('fetchAvature: a repeated page (rows parsed, all already seen) still breaks', async () => {
+  const sameFull = pageHtml(
+    Array.from({ length: 6 }, (_, i) => articleBlock({ href: `/careers/JobDetail/Dup-${i}/${900 + i}`, title: `Dup ${i}` })),
+  );
+  let calls = 0;
+  const fetchImpl = (url, opts) => { calls += 1; return htmlFetch({ 0: sameFull, 6: sameFull })(url, opts); };
+  // Page 1 repeats page 0 verbatim: raw cards full, rows parsed, but zero
+  // fresh ids → a stalled page (the offset looped) → break, no infinite walk.
+  const jobs = await fetchAvature(ENDPOINT, { fetchImpl, company: { name: 'Acme' } });
+  assert.equal(calls, 2);
+  assert.equal(jobs.length, 6);
+});
