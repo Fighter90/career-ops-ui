@@ -416,6 +416,22 @@ jobs:
           g "$UI_DIR" rev-parse --verify --quiet "$UI_REF^{commit}" >/dev/null || { echo "::error::unknown web-ui ref $UI_REF"; exit 1; }
           [ -z "$(g "$APP_DIR" ls-tree -r --name-only "$PARENT_REF" -- web-ui)" ] || { echo "::error::parent ref tracks web-ui/; overlay would clobber the viewer"; exit 1; }
 
+          # Backup hygiene: every attempt tars each file the overlay would
+          # touch — over a stale checkout that is the whole tree, and the
+          # 2026-11-12 "No space left on device" deploy outage came from
+          # exactly that pile (four same-day attempts over a v1.198.0-era
+          # checkout). Keep the newest three deploy backups plus anything
+          # younger than 7 days; prune the rest before this run writes its own.
+          backup_root="${BACKUP_ROOT:-/opt/career-ops/backups}"
+          if [ -d "$backup_root" ]; then
+            echo "disk before: $(df -h / | tail -1)"
+            ls -1t "$backup_root" 2>/dev/null | grep '^deploy-' | tail -n +4 | while IFS= read -r old; do
+              rm -rf -- "$backup_root/$old"
+            done
+            find "$backup_root" -maxdepth 1 -name 'deploy-*' -type d -mtime +7 -exec rm -rf -- {} +
+            echo "disk after prune: $(df -h / | tail -1)"
+          fi
+
           BK="${BACKUP_ROOT:-/opt/career-ops/backups}/deploy-$(date -u +%Y%m%dT%H%M%SZ)"
           install -d -m 700 "$BK"
           parent_prev=$(head -1 "$APP_DIR/VERSION" 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' || true)
