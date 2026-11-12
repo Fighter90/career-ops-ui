@@ -475,7 +475,7 @@ async function main() {
         writeFileSync(resolve(ROOT, `qa/QA-REGRESSION-PROMPT-v${ver}.md`),
           `# QA regression prompt — v${ver}\n\nSwarm release (${issue.identifier}). Story: ${story}\n\n- Gates at ship time: see the CHANGELOG entry for ${ver} and the release workflow run.\n- Spot check: ${issue.title} behaves as described; no regressions on the touched surfaces.\n`);
 
-        const relCommit = await sh(`git add CHANGELOG.md CHANGELOG.*.md qa/ package.json && git commit -q -m ${JSON.stringify(`release: v${ver} (swarm ${issue.identifier})`)} && git push origin main`, { timeoutMs: 300_000 });
+        const relCommit = await sh(`git add CHANGELOG.md CHANGELOG.*.md qa/ package.json docs/sdd/CONVENTIONS.md .claude/PROJECT-CONTEXT.md && git commit -q -m ${JSON.stringify(`release: v${ver} (swarm ${issue.identifier})`)} && git push origin main`, { timeoutMs: 300_000 });
         if (relCommit.code !== 0) throw new Error(`release commit failed: ${short(relCommit.all)}`);
         const ci = await sh(`sleep 20; gh run list --workflow=ci.yml --branch main --limit 1 --json databaseId --jq '.[0].databaseId'`);
         const ciId = ci.out.trim();
