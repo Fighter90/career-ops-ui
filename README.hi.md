@@ -9,19 +9,19 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-8249%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-8302%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.271.8-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.8)
+[![release](https://img.shields.io/badge/release-v1.271.11-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.11)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.271.8** — नया **Talentlink** स्कैन सोर्स (Lumesse TalentLink करियर साइट्स; रजिस्ट्री **140 = 135 EN + 5 RU · 135 adapters**) और Google `max_pages` ऑप्ट-इन पेजिनेशन।
+> **🆕 नवीनतम रिलीज़ — v1.271.11** — **liveness वेव**: नॉर्वेजियन क्लोज़र बैनर अब लाइव पोस्टिंग के पेज क्रोम पर गलत ट्रिगर नहीं होता, और स्कैनर-करेक्टनेस फिक्स (#6757, #6784, #6779) स्कैन हिस्ट्री को ईमानदार रखते हैं। टेस्ट 8302।
 >
-> **पिछला — v1.271.7** — Apple स्कैन सोर्स अब सिर्फ़ नवीनतम पेज की बजाय Apple के पूरे करियर्स बोर्ड पर चलता है, जिससे पुरानी लेकिन अभी भी खुली पोस्टिंग्स स्कैन में सामने आती हैं; नए वॉक को लॉक करने के लिए सोर्स टेस्ट बढ़ाए गए।
+> **पिछला — v1.271.10** — CAR-262 वेव: स्क्रिप्ट-रेंडर किए गए जॉब पेज को JSON-LD JobPosting रेस्क्यू मिलता है, जिससे JD अब "अनुपलब्ध" नहीं कहा जाता (#6604); Cloudflare-चैलेंज पेज इवैल्यूएट करने की बजाय अस्वीकार किए जाते हैं (#6798); नॉर्वेजियन बोकमाल ATS हेडिंग्स पार्स होती हैं (#6654); और इवैल्यूएशन रिपोर्ट स्कोर के बग़ल में एक पोज़िशनिंग बैंड भी देती है (#6789)।
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

@@ -7,19 +7,19 @@
 
 _Interface non officielle — sans affiliation ni approbation de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-8249%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-8302%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.271.8-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.8)
+[![release](https://img.shields.io/badge/release-v1.271.11-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.11)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Dernière version — v1.271.8** — nouvelle source de scan Talentlink pour les sites carrières Lumesse TalentLink (registre 140 = 135 EN + 5 RU · 135 adaptateurs) et pagination `max_pages` opt-in sur la source de scan Google.
+> **🆕 Dernière version — v1.271.11** — la **vague de liveness** : la bannière de clôture norvégienne ne se déclenche plus à tort sur le chrome des pages d'offres actives, et les correctifs d'exactitude du scanner (#6757, #6784, #6779) gardent l'historique de scan honnête. Tests : 8302.
 >
-> **Précédente — v1.271.7** — la source de scan Apple parcourt désormais l'intégralité du tableau des carrières d'Apple au lieu de la seule dernière page, si bien que les offres plus anciennes mais toujours ouvertes remontent dans les scans ; les tests de source élargis verrouillent ce nouveau parcours.
+> **Précédente — v1.271.10** — vague CAR-262 : les pages d'offres rendues par script bénéficient d'un sauvetage via JSON-LD JobPosting pour que la description ne soit plus « indisponible » (#6604), les pages avec défi Cloudflare sont refusées au lieu d'être évaluées (#6798), les titres ATS en norvégien bokmål sont analysés (#6654) et le rapport d'évaluation comporte une bande de positionnement à côté du score (#6789).
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

@@ -7,19 +7,19 @@
 
 _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。_
 
-[![tests](https://img.shields.io/badge/tests-8249%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-8302%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.271.8-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.8)
+[![release](https://img.shields.io/badge/release-v1.271.11-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.11)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.271.8** — 新增面向 Lumesse TalentLink 職缺網站的 Talentlink 掃描來源(登錄表 140 = 135 EN + 5 RU · 135 adapters),以及 Google 掃描來源的 `max_pages` 選用分頁。
+> **🆕 最新版本 — v1.271.11** — **存活檢測波次**：挪威語關閉橫幅不再在有效職缺的頁面周邊元素上誤觸發，掃描器正確性修復(#6757、#6784、#6779)讓掃描歷史保持真實。測試 8302。
 >
-> **前一版本 — v1.271.7** — Apple 掃描來源現在會走訪 Apple 完整的職缺看板，而不僅僅是最新一頁，因此較舊但仍開放的職缺會出現在掃描結果中；擴充後的來源測試鎖定了這個新的走訪方式。
+> **前一版本 — v1.271.10** — CAR-262 波次：以腳本渲染的職缺頁面透過 JSON-LD JobPosting 結構化資料兜底提取，JD 不再顯示「不可用」(#6604)，Cloudflare 挑戰頁面遭拒絕而非評估(#6798)，挪威語 Bokmål 的 ATS 標題可解析(#6654)，評估報告在分數旁附帶定位區間(#6789)。
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

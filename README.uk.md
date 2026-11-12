@@ -10,19 +10,19 @@
 
 _Неофіційний інтерфейс — не пов'язаний із career-ops / santifer і не схвалений ними._
 
-[![tests](https://img.shields.io/badge/tests-8249%20passed-brightgreen)](#тести)
+[![tests](https://img.shields.io/badge/tests-8302%20passed-brightgreen)](#тести)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#тести)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.271.8-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.8)
+[![release](https://img.shields.io/badge/release-v1.271.11-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.11)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Останній реліз — v1.271.8** — нове джерело сканування Talentlink для сайтів кар'єри Lumesse TalentLink (реєстр 140 = 135 EN + 5 RU · 135 адаптерів) та опційне посторінкове читання `max_pages` для джерела сканування Google.
+> **🆕 Останній реліз — v1.271.11** — **хвиля liveness**: норвезький банер закриття більше не дає хибних спрацювань на елементах сторінок живих вакансій, а виправлення коректності сканера (#6757, #6784, #6779) тримають історію сканувань чесною. Тести: 8302.
 >
-> **Попередній реліз — v1.271.7** — джерело сканування Apple тепер обходить повну дошку вакансій Apple замість лише найновішої сторінки, тож старіші, але ще відкриті вакансії з'являються в скануваннях; розширені тести джерела закріплюють цей новий обхід.
+> **Попередній реліз — v1.271.10** — хвиля CAR-262: сторінки вакансій, що рендеряться скриптом, отримують порятунок через JSON-LD JobPosting, тож опис вакансії більше не «недоступний» (#6604), сторінки з викликом Cloudflare відхиляються замість оцінювання (#6798), заголовки ATS норвезькою бокмол розпізнаються (#6654), а звіт оцінки містить діапазон позиціонування поруч із балом (#6789).
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

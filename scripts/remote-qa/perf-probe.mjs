@@ -50,7 +50,7 @@ if (BASIC_USER) {
   headers.Authorization = 'Basic ' + Buffer.from(`${BASIC_USER}:${BASIC_PASS}`).toString('base64');
 }
 
-const ENDPOINTS = ['/', '/api/health', '/api/pipeline', '/api/tracker', '/api/tracker/stages', '/api/reports', '/api/dashboard', '/api/map/jobs'];
+const ENDPOINTS = ['/', '/api/health', '/api/pipeline', '/api/tracker', '/api/tracker/stages', '/api/reports', '/api/dashboard', '/api/map/jobs', '/api/scan-results', '/api/scan/sources', '/api/scan/reposts', '/api/portals'];
 
 const median = (xs) => {
   const s = [...xs].sort((a, b) => a - b);

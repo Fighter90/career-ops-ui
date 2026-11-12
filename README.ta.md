@@ -7,19 +7,19 @@
 
 _அதிகாரப்பூர்வமற்ற இடைமுகம் — career-ops / santifer உடன் எந்தத் தொடர்பும் அல்ல, அவர்களால் அங்கீகரிக்கப்படவும் இல்லை._
 
-[![tests](https://img.shields.io/badge/tests-8249%20passed-brightgreen)](#சோதனைகள்)
+[![tests](https://img.shields.io/badge/tests-8302%20passed-brightgreen)](#சோதனைகள்)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#சோதனைகள்)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#சோதனைகள்)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#தேவைகள்)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.271.8-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.8)
+[![release](https://img.shields.io/badge/release-v1.271.11-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.11)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 சமீபத்திய வெளியீடு — v1.271.8** — புதிய **Talentlink** scan source (Lumesse TalentLink career sites; registry **140 = 135 EN + 5 RU · 135 adapters**) மற்றும் Google `max_pages` opt-in pagination.
+> **🆕 சமீபத்திய வெளியீடு — v1.271.11** — **liveness wave**: நோர்வே closure banner இனி live posting-களின் page chrome-இல் தவறாக தூண்டப்படாது; scanner-correctness fixes (#6757, #6784, #6779) scan history-ஐ நம்பகமாக வைக்கின்றன. டெஸ்ட்கள் 8302.
 >
-> **முந்தைய வெளியீடு — v1.271.7** — Apple scan source இப்போது சமீபத்திய page மட்டுமல்லாமல் Apple-இன் முழு careers board-ஐயும் walk செய்கிறது, எனவே பழையதாக இருந்தாலும் இன்னும் திறந்திருக்கும் roles scans-இல் தெரிகின்றன; புதிய walk-ஐ lock செய்ய expanded source tests சேர்க்கப்பட்டன.
+> **முந்தைய வெளியீடு — v1.271.10** — CAR-262 wave: script-ஆல் render செய்யப்படும் job pages JSON-LD JobPosting rescue பெறுகின்றன, எனவே JD இனி "unavailable" என்று காட்டப்படாது (#6604); Cloudflare-challenge pages evaluate செய்யப்படாமல் refuse செய்யப்படுகின்றன (#6798); நோர்வே Bokmål ATS headings parse ஆகின்றன (#6654); மேலும் evaluation report score-க்கு அருகில் ஒரு positioning band-ஐயும் சேர்க்கிறது (#6789).
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
