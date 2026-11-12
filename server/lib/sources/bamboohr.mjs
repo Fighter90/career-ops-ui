@@ -62,6 +62,36 @@ export function assertBambooHRUrl(url) {
 }
 
 /**
+ * The posting's ATS-native identity (parent #6955): the tenant subdomain the
+ * board was fetched at and the job's `id` from the payload, never parsed out
+ * of a URL. BambooHR ids are positive integers, but the list payload carries
+ * them either as a number or as a decimal string, so both are accepted in
+ * their one canonical decimal form (no leading zeros, no sign, no padding)
+ * and give the same posting_id — the same contract greenhouse.mjs applies to
+ * its numeric ids. Returns undefined for anything else (an empty, padded or
+ * non-decimal id, or a tenant that is empty, padded or carries subdomain
+ * remnants), so that row falls back to URL dedup. Exported for unit tests.
+ * (The smartrecruiters/join sources carry the same field for their ids.)
+ *
+ * @param {string | null | undefined} tenant
+ * @param {unknown} id
+ * @returns {{ats_provider: 'bamboohr', board_slug: string, posting_id: string} | undefined}
+ */
+export function bamboohrListingIdentity(tenant, id) {
+  if (typeof tenant !== 'string' || !/^[a-z0-9][a-z0-9-]*$/.test(tenant)) return undefined;
+  let postingId;
+  if (typeof id === 'number') {
+    if (!Number.isSafeInteger(id) || id <= 0) return undefined;
+    postingId = String(id);
+  } else if (typeof id === 'string' && /^[1-9][0-9]*$/.test(id)) {
+    postingId = id;
+  } else {
+    return undefined;
+  }
+  return { ats_provider: 'bamboohr', board_slug: tenant, posting_id: postingId };
+}
+
+/**
  * Parse a BambooHR `/careers/list` response. Exported for unit tests.
  *
  * BambooHR returns `{ result: [{ id, jobOpeningName,
@@ -71,6 +101,14 @@ export function assertBambooHRUrl(url) {
  * without a non-empty `id` are dropped (id is the URL/dedup key; a blank id
  * collapses distinct postings).
  *
+ * - location: join `city` + `state`; append "Remote" when `isRemote` is
+ *   truthy or the joined text reads remote. BambooHR's `isRemote` is
+ *   `1`/`true` when set and `null` otherwise.
+ * - listingIdentity: `bamboohr` / tenant / payload `id`, when the id has a
+ *   canonical decimal form (see bamboohrListingIdentity); absent otherwise
+ *   (and on a malformed origin — the tenant derives from the URL, never from
+ *   a guess), so the row falls back to URL dedup.
+ *
  * @param {any} json
  * @param {string} companyName
  * @param {string} origin  e.g. "https://acme.bamboohr.com"
@@ -78,6 +116,12 @@ export function assertBambooHRUrl(url) {
 export function parseBambooHRResponse(json, companyName, origin) {
   requireContainer(json, 'BambooHR careers list', 'result');
   const rows = requireArray(json.result, 'BambooHR careers list rows');
+  let tenant = null;
+  try {
+    tenant = new URL(origin).hostname.replace(/\.bamboohr\.com$/, '');
+  } catch {
+    // a malformed origin still parses the board — just without an identity
+  }
   return rows
     .filter((j) => j && j.jobOpeningName && String(j.id ?? '').trim().length > 0)
     .map((j) => {
@@ -91,6 +135,7 @@ export function parseBambooHRResponse(json, companyName, origin) {
       // null; the trailing .filter(Boolean) removes it.
       const encodedId = safeEncodeURIComponent(id);
       if (encodedId === null) return null;
+      const listingIdentity = bamboohrListingIdentity(tenant, j.id);
       return {
         id: `bamboohr-${id}`,
         title: String(j.jobOpeningName),
@@ -104,6 +149,7 @@ export function parseBambooHRResponse(json, companyName, origin) {
         date: '',
         snippet: '',
         source: 'bamboohr',
+        ...(listingIdentity ? { listingIdentity } : {}),
       };
     })
     .filter(Boolean);
