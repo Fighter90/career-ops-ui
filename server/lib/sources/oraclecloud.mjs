@@ -45,7 +45,10 @@
  * SSRF defence: `assertOraclecloudUrl` requires HTTPS + an ORC host (regex
  * host-pinned), and every fetch uses `redirect:'error'`. An off-host
  * ExternalURL is never emitted — the parser falls back to the tenant-built
- * job URL (anti-injection, same idiom as avature).
+ * job URL (anti-injection, same idiom as avature). An entry that serves ORC
+ * only on its own domain may name that ONE host exactly in `oracle_host:`
+ * (upstream #6635); it is compared exactly, checked before every fetch, and
+ * never widens the https-only rule.
  *
  * Used by the oraclecloud adapter
  * (server/lib/portals/adapters/oraclecloud.mjs).
@@ -60,6 +63,41 @@ import { markTruncated } from '../board-truncation.mjs';
 // not resolve). No leading zero and at most two digits
 // keeps this a BOUNDED host pin, never a wildcard `oraclecloud<anything>.com`.
 export const ORACLE_HOST_RE = /^[a-z0-9-]+\.fa\.(?:[a-z0-9-]+\.)?(?:ocs\.)?oraclecloud(?:[1-9][0-9]?)?\.com$/i;
+
+// A bare DNS name — no scheme, port, path or wildcard; one hostname exactly.
+// Same shape as upstream's providers/eightfold.mjs BRANDED_HOST_RE.
+const BRANDED_HOST_RE = /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z](?:[a-z0-9-]{0,61}[a-z0-9])?$/;
+
+/**
+ * The entry's opt-in branded ORC host (`oracle_host`), lowercased, or null.
+ *
+ * Some employers serve Oracle Recruiting Cloud only on their own domain behind
+ * a CDN, with no *.oraclecloud.com pod host anywhere (Dell: jobs.dell.com →
+ * enterpriseplatform.dell.com — Akamai DNS, a *.dell.com-only certificate, no
+ * pod host in the page; the CE REST API answers there unchanged, upstream
+ * #6635). Mirrors upstream's `eightfold_host` idiom: the pin stays EXACT —
+ * only the one host the entry names is trusted, never a pattern.
+ *
+ * @param {any} entry
+ * @returns {string|null}
+ */
+export function brandedOracleHost(entry) {
+  const raw = entry && entry.oracle_host;
+  if (typeof raw !== 'string') return null;
+  const host = raw.trim().toLowerCase();
+  return host.length <= 253 && BRANDED_HOST_RE.test(host) ? host : null;
+}
+
+/**
+ * The host-pin decision shared by the guard and the resolve path: an ORC pod
+ * host, or — when the entry names one — exactly that branded host.
+ * @param {string} hostname
+ * @param {string|null} branded
+ */
+export function isTrustedOracleHost(hostname, branded) {
+  return ORACLE_HOST_RE.test(hostname)
+    || (branded !== null && hostname.toLowerCase() === branded);
+}
 
 export const PAGE_SIZE = 200;
 export const MAX_PAGES = 25; // default cap (~5000 jobs) when the entry sets no max_pages
@@ -80,8 +118,14 @@ export const meta = {
   region: 'en',
 };
 
-/** Defence-in-depth host guard on every URL this source touches. @param {string} url */
-export function assertOraclecloudUrl(url) {
+/**
+ * Defence-in-depth host guard on every URL this source touches. When the
+ * entry names a branded host (`oracle_host`), that ONE host is trusted in
+ * addition to the ORC pod pattern — exactly, never as a pattern.
+ * @param {string} url
+ * @param {string|null} [branded] the entry's exact `oracle_host` pin, when present
+ */
+export function assertOraclecloudUrl(url, branded = null) {
   let parsed;
   try {
     parsed = new URL(url);
@@ -89,8 +133,8 @@ export function assertOraclecloudUrl(url) {
     throw new Error(`oraclecloud: invalid URL: ${url}`);
   }
   if (parsed.protocol !== 'https:') throw new Error(`oraclecloud: URL must use HTTPS: ${url}`);
-  if (!ORACLE_HOST_RE.test(parsed.hostname)) {
-    throw new Error(`oraclecloud: untrusted hostname "${parsed.hostname}" — must match *.fa[.<region>][.ocs].oraclecloud.com`);
+  if (!isTrustedOracleHost(parsed.hostname, branded)) {
+    throw new Error(`oraclecloud: untrusted hostname "${parsed.hostname}" — must match *.fa[.<region>][.ocs].oraclecloud.com or the entry's oracle_host`);
   }
   return url;
 }
@@ -114,8 +158,9 @@ function toEpochMs(value) {
  * entry's `api:`/careers_url. Honors optional `entry.siteNumber` /
  * `entry.locationId` overrides.
  *
- * @param {string} rawUrl host-pinned ORC careers URL
- * @param {{ siteNumber?: string, locationId?: string|number }} [entry]
+ * @param {string} rawUrl host-pinned ORC careers URL (pod host, or a branded
+ *   host named exactly in `entry.oracle_host`)
+ * @param {{ siteNumber?: string, locationId?: string|number, oracle_host?: string }} [entry]
  * @returns {{host:string, lang:string, siteNumber:string, locationId:(string|null)}|null}
  */
 export function resolveSite(rawUrl, entry = {}) {
@@ -127,7 +172,7 @@ export function resolveSite(rawUrl, entry = {}) {
     return null;
   }
   if (parsed.protocol !== 'https:') return null;
-  if (!ORACLE_HOST_RE.test(parsed.hostname)) return null;
+  if (!isTrustedOracleHost(parsed.hostname, brandedOracleHost(entry))) return null;
 
   const segs = parsed.pathname.split('/').filter(Boolean);
   // Path shape: /hcmUI/CandidateExperience/<lang>/sites/<siteNumber>/...
@@ -295,7 +340,10 @@ export async function fetchOraclecloud(endpoint, opts = {}) {
   // Test seam (mirrors apple.mjs): an injectable sleep keeps a long-walk test
   // instant; the default stays the signal-aware delay.
   const sleep = sleepOpt || ((ms) => delay(ms, signal));
-  assertOraclecloudUrl(endpoint);
+  // The entry's exact branded-host pin (`oracle_host`, upstream #6635) —
+  // honored by every guard below.
+  const branded = brandedOracleHost(company);
+  assertOraclecloudUrl(endpoint, branded);
   const site = resolveSite(endpoint, company);
   if (!site) throw new Error(`oraclecloud: cannot derive API URL from ${endpoint}`);
   // CAR-255 parity (upstream) — `opts.maxPages` is the liveness-probe budget:
@@ -316,7 +364,7 @@ export async function fetchOraclecloud(endpoint, opts = {}) {
   for (let page = 0; page < maxPages; page += 1) {
     const offset = page * PAGE_SIZE;
     const apiUrl = buildApiUrl(site, offset, PAGE_SIZE);
-    assertOraclecloudUrl(apiUrl); // SSRF guard before every fetch
+    assertOraclecloudUrl(apiUrl, branded); // SSRF guard before every fetch
     if (page > 0) await sleep(INTER_PAGE_DELAY_MS);
 
     let json;
