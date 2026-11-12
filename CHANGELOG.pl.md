@@ -4,6 +4,18 @@
 > ⏳ **Uwaga o zakresie** — plik zawiera obecnie pełną historię wydań; wpisy sprzed dodania polskiego znajdują się poniżej w angielskim oryginale (tłumaczenie w toku).
 > _Wpisy od [1.271.3] czekają na tłumaczenie — angielski oryginał poniżej._
 
+## [1.271.8] — 2026-11-12
+
+### Dodano
+- **Talentlink** — nowe źródło skanowania (parent #6790, CAR-258) — strony karier Lumesse TalentLink: origin careers dzierżawy wykrywany automatycznie z hostów z rodziny `*.talentlink.com`, nadpisanie przez `provider: talentlink`; rejestr **139 → 140 = 135 EN + 5 RU · 135 adapters**; bramki licznikowe zregenerowane.
+- **Opcja `max_pages` źródła skanowania Google** (parent PR #6761, CAR-258): stronicowanie poza pierwszą stroną wyników, włączane per wpis.
+
+### Naprawiono
+- Orkiestrator swarm przejmuje nieaktualne blokady single-flight z martwym PID-em holdera (zabity orkiestrator nie blokuje już każdego kolejnego uruchomienia), a prompt develop executora przypina dokładną tożsamość issue z Linear (diff niewłaściwego issue to automatyczny RETURN z review).
+
+### Uwagi
+- Świadomie NIE zmieniono: filtrowania skanowania, punktacji, portals.yml ani żadnej konfiguracji warstwy użytkownika. Treści ×18 changelogów w wersjach językowych niosą w tym wydaniu tekst identyczny z angielskim — objęte notami o zalegającym tłumaczeniu w preambułach; pełne przełożenie to praca na później (CAR-269).
+
 ## [1.271.7] — 2026-11-11
 
 ### Naprawiono

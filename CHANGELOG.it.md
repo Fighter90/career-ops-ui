@@ -3,6 +3,18 @@
 
 > Questo changelog contiene ora la cronologia completa delle versioni. Le voci pubblicate prima della localizzazione italiana (v1.85.0) compaiono sotto nell'originale inglese — traduzione in attesa; il riferimento resta [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.271.8] — 2026-11-12
+
+### Aggiunto
+- **Talentlink** nuova sorgente di scansione (parent #6790, CAR-258) — siti carriera Lumesse TalentLink: l'origin careers del tenant viene auto-rilevato dagli host della famiglia `*.talentlink.com`, override tramite `provider: talentlink`; registro **139 → 140 = 135 EN + 5 RU · 135 adapter**; count gate rigenerati.
+- **Opzione `max_pages` per la sorgente di scansione Google** (parent PR #6761, CAR-258): paginazione oltre la prima pagina dei risultati, attivabile per singola voce.
+
+### Corretto
+- L'orchestratore dello swarm subentra ai lock single-flight stanti il cui PID detentore è morto (un orchestratore ucciso non blocca più ogni lancio successivo), e il prompt develop dell'executor vincola l'identità esatta della issue Linear (una diff sulla issue sbagliata è un RETURN automatico della review).
+
+### Note
+- Non fatto deliberatamente: filtraggio delle scansioni, punteggio, portals.yml o qualsiasi configurazione del livello utente. I corpi ×18 dei changelog localizzati portano per questa release testo identico all'inglese — coperti dalle note «traduzione in attesa» dei preamboli; una passata di traduzione è lavoro successivo (CAR-269).
+
 ## [1.271.7] — 2026-11-11
 
 ### Corretto

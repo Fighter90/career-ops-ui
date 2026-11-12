@@ -3,6 +3,18 @@
 
 > **Oversættelsesnote.** Filen er oversat til dansk: de seneste poster (fra v1.77.0 og bagud, inkl. v1.76.0 / v1.75.2 / v1.75.1 / v1.75.0) er fuldt oversat til teknisk dansk. Ældre poster bevares på engelsk; versionsoverskrifter og datoer er identiske med den engelske kildefil.
 
+## [1.271.8] — 2026-11-12
+
+### Tilføjet
+- **Talentlink**-scankilde (parent #6790, CAR-258) — Lumesse TalentLink-jobtavler: tenantens careers-origin detekteres automatisk fra `*.talentlink.com`-familie-værter, `provider: talentlink`-override; registeret **139 → 140 = 135 EN + 5 RU · 135 adapters**; count-gates regenereret.
+- **`max_pages`-tilvalg til Google-scankilden** (parent PR #6761, CAR-258): paginering ud over første side af resultaterne, tilvalg pr. entry.
+
+### Rettet
+- Swarm-orkkestratoren overtager forældede single-flight-låse med en død holder-PID (en dræbt orkestrator sætter ikke længere hver næste start fast), og eksekverens develop-prompt pinner den præcise Linear-issue-identitet (et forkert-issue-diff er en automatisk review-RETURN).
+
+### Noter
+- Bevidst IKKE ændret: scan-filtrering, scoring, portals.yml eller nogen brugerlagskonfiguration. De ×18 lokalers changelog-tekster bærer i denne udgivelse EN-identisk tekst — dækket af forordenes noter om manglende oversættelse; en oversættelsesrunde er opfølgningsarbejde (CAR-269).
+
 ## [1.271.7] — 2026-11-11
 
 ### Rettet

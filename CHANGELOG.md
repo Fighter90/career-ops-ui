@@ -1,3 +1,15 @@
+## [1.271.8] — 2026-11-12
+
+### Added
+- **Talentlink** scan source (parent #6790, CAR-258) — Lumesse TalentLink career sites: tenant careers origin auto-detects from `*.talentlink.com`-family hosts, `provider: talentlink` overrides; registry **139 → 140 = 135 EN + 5 RU · 135 adapters**; count gates regenerated.
+- **Google scan source `max_pages` opt-in** (parent PR #6761, CAR-258): pagination beyond the first page of results, opt-in per entry.
+
+### Fixed
+- The swarm orchestrator takes over stale single-flight locks with a dead holder PID (a killed orchestrator no longer wedges every next launch), and the executor's develop prompt pins the exact Linear issue identity (a wrong-issue diff is an automatic review RETURN).
+
+### Notes
+- Deliberately NOT changed: scan filtering, scoring, portals.yml, or any user-layer configuration. The ×18 locale changelog bodies carry EN-identical text for this release — covered by the preambles' translation-pending notes; a translation sweep is follow-up work (CAR-269).
+
 ## [1.271.7] — 2026-11-11
 
 ### Fixed

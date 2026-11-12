@@ -5,6 +5,18 @@
 > ⏳ **Nota de cobertura** — este archivo incluye ahora el historial completo; las entradas anteriores a la v1.12.0 aparecen en el original inglés a la espera de traducción.
 > _Las entradas a partir de [1.271.3] están pendientes de traducción — el original en inglés aparece abajo._
 
+## [1.271.8] — 2026-11-12
+
+### Añadido
+- **Talentlink**, nueva fuente de escaneo (padre #6790, CAR-258) — sitios de carreras de Lumesse TalentLink: el origen de carreras del tenant se autodetecta desde hosts de la familia `*.talentlink.com`, y `provider: talentlink` lo anula; registro **139 → 140 = 135 EN + 5 RU · 135 adapters**; puertas de recuento regeneradas.
+- **Opt-in `max_pages` para la fuente de escaneo de Google** (PR padre #6761, CAR-258): paginación más allá de la primera página de resultados, opt-in por entrada.
+
+### Corregido
+- El orquestador del swarm toma el control de los bloqueos single-flight obsoletos cuyo PID titular está muerto (un orquestador eliminado ya no atasca cada lanzamiento siguiente), y el prompt de develop del executor fija la identidad exacta del issue de Linear (un diff de un issue equivocado es un RETURN automático de revisión).
+
+### Notas
+- Deliberadamente NO se cambió: el filtrado de escaneos, el scoring, portals.yml ni ninguna configuración de la capa de usuario. Los cuerpos de los changelog ×18 localizados llevan texto idéntico al inglés para esta versión — cubierto por las notas de traducción pendiente de los preámbulos; una pasada de traducción es trabajo posterior (CAR-269).
+
 ## [1.271.7] — 2026-11-11
 
 ### Corregido

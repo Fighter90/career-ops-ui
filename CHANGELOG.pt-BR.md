@@ -3,6 +3,18 @@
 > **Nota** — este arquivo está integralmente traduzido para o português brasileiro. Cada entrada de versão foi reescrita em PT-BR técnico de qualidade editorial, preservando blocos de código, mensagens de commit, caminhos de arquivo, URLs, variáveis de ambiente, comandos e rótulos de link em sua forma original.
 > _As entradas a partir de [1.271.3] aguardam tradução — o original em inglês abaixo._
 
+## [1.271.8] — 2026-11-12
+
+### Adicionado
+- **Talentlink** — nova fonte de scan para sites de carreiras Lumesse TalentLink (pai #6790, CAR-258): a origem de carreiras do tenant é auto-detectada a partir de hosts da família `*.talentlink.com`, com override via `provider: talentlink`; registro **139 → 140 = 135 EN + 5 RU · 135 adapters**; count gates regenerados.
+- **`max_pages` opt-in na fonte de scan do Google** (pai PR #6761, CAR-258): paginação além da primeira página de resultados, opt-in por entrada.
+
+### Corrigido
+- O orquestrador do swarm assume locks single-flight obsoletos cujo PID detentor está morto (um orquestrador morto não trava mais todos os lançamentos seguintes), e o prompt de develop do executor fixa a identidade exata da issue do Linear (um diff da issue errada é um RETURN automático da review).
+
+### Notas
+- Deliberadamente NÃO alterado: filtragem de scan, scoring, portals.yml ou qualquer configuração da camada do usuário. Os corpos dos changelogs das ×18 localidades carregam texto idêntico ao inglês nesta versão — coberto pelas notas de tradução pendente dos preâmbulos; uma varredura de tradução é trabalho futuro (CAR-269).
+
 ## [1.271.7] — 2026-11-11
 
 ### Corrigido

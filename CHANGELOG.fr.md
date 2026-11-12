@@ -5,6 +5,18 @@
 > **Note de traduction (v1.61.0)** — le français a été ajouté comme 9e langue de l'interface. Ce fichier traduit les entrées récentes ; pour l'historique antérieur à la v1.55.0, voir le [🇬🇧 CHANGELOG anglais](CHANGELOG.md), qui reste la source normative.
 > ⏳ **Note de couverture** — ce fichier inclut désormais l'historique complet ; les entrées antérieures à la v1.61.0 figurent ci-dessous en anglais original, traduction en attente.
 
+## [1.271.8] — 2026-11-12
+
+### Ajouté
+- **Source de scan Talentlink** (parent #6790, CAR-258) — les sites carrières Lumesse TalentLink : l'origine carrières du tenant s'auto-détecte depuis les hôtes de la famille `*.talentlink.com`, avec possibilité de forcer via `provider: talentlink` ; registre **139 → 140 = 135 EN + 5 RU · 135 adaptateurs** ; garde-fous de comptage régénérés.
+- **Opt-in `max_pages` de la source de scan Google** (parent PR #6761, CAR-258) : pagination au-delà de la première page de résultats, opt-in par entrée.
+
+### Corrigé
+- L'orchestrateur du swarm reprend les verrous single-flight périmés dont le PID détenteur est mort (un orchestrateur tué ne bloque plus chaque lancement suivant), et le prompt develop de l'exécuteur épingle l'identité exacte de l'issue Linear (un diff sur la mauvaise issue est un RETURN automatique de la revue).
+
+### Notes
+- Délibérément NON modifié : le filtrage des scans, le scoring, portals.yml et toute configuration de la couche utilisateur. Les corps des changelogs des ×18 langues portent un texte identique à l'anglais pour cette version — couverts par les notes de traduction en attente des préambules ; une passe de traduction est un travail à venir (CAR-269).
+
 ## [1.271.7] — 2026-11-11
 
 ### Corrigé

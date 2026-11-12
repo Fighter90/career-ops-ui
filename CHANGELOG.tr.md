@@ -3,6 +3,18 @@
 > Bu changelog artık tüm sürüm geçmişini içerir. Türkçe yerelleştirmenin eklenmesinden (v1.85.0) önce yayınlanan girdiler aşağıda İngilizce özgün hâliyle yer alır — çeviri bekliyor; asıl kaynak [🇬🇧 CHANGELOG.md](CHANGELOG.md)'dir.
 > _[1.271.3]'ten itibaren girdiler çeviri bekliyor — İngilizce orijinal aşağıda._
 
+## [1.271.8] — 2026-11-12
+
+### Eklendi
+- **Talentlink** tarama kaynağı (parent #6790, CAR-258) — Lumesse TalentLink kariyer siteleri: kiracının careers kaynağı `*.talentlink.com` ailesi ana makinelerinden otomatik algılanır, `provider: talentlink` ile geçersiz kılınabilir; kayıt **139 → 140 = 135 EN + 5 RU · 135 adaptör**; sayım kapıları yeniden üretildi.
+- **Google tarama kaynağı için `max_pages` seçeneği** (parent PR #6761, CAR-258): sonuçların ilk sayfası ötesinde sayfalama, giriş başına isteğe bağlı.
+
+### Düzeltildi
+- Swarm orkestratörü, sahibi ölü PID olan bayat single-flight kilitlerini devralır (öldürülen bir orkestratör artık sonraki her başlatmayı kilitlemiyor) ve yürütücünün develop istemi kesin Linear sorun kimliğini sabitliyor (yanlış soruna ait bir diff otomatik inceleme RETURN).
+
+### Notlar
+- Bilinçli olarak DEĞİŞTİRİLMEDİ: tarama filtreleme, puanlama, portals.yml veya kullanıcı katmanı yapılandırması. ×18 yerel dil changelog gövdeleri bu sürümde İngilizceyle aynı metni taşıyor — önsözlerdeki çeviri bekliyor notlarıyla kapsanıyor; çeviri taraması sonraki bir çalışma (CAR-269).
+
 ## [1.271.7] — 2026-11-11
 
 ### Düzeltildi

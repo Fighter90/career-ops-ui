@@ -3,6 +3,18 @@
 > இந்த மாற்றப் பதிவு இப்போது முழு வெளியீட்டு வரலாற்றையும் கொண்டுள்ளது. தமிழ் மொழியாக்கம் (v1.245.0) சேர்க்கப்படுவதற்கு முன் வெளியிடப்பட்ட பதிவுகள் கீழே ஆங்கில அசல் வடிவில் உள்ளன — மொழிபெயர்ப்பு நிலுவையில் உள்ளது; அதிகாரப்பூர்வ ஆவணம் [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 > _[1.271.3] முதல் பதிவுகள் மொழிபெயர்ப்பு நிலுவையில் உள்ளன — ஆங்கில அசல் கீழே._
 
+## [1.271.8] — 2026-11-12
+
+### சேர்க்கப்பட்டது
+- **Talentlink** scan source (parent #6790, CAR-258) — Lumesse TalentLink career sites: tenant careers origin `*.talentlink.com`-குடும்ப host-களிலிருந்து தானாகவே கண்டறியப்படுகிறது, `provider: talentlink` அதை override செய்கிறது; registry **139 → 140 = 135 EN + 5 RU · 135 adapters**; count gates மீண்டும் உருவாக்கப்பட்டன.
+- **Google scan source-இன் `max_pages` opt-in** (parent PR #6761, CAR-258): results-இன் முதல் page-க்கு அப்பாலான pagination, ஒரு entry-க்கு opt-in.
+
+### சரி செய்யப்பட்டது
+- Swarm orchestrator அதன் holder PID இறந்துவிட்ட stale single-flight lock-களை ஏற்றுக்கொள்கிறது (கொல்லப்பட்ட orchestrator இனி ஒவ்வொரு அடுத்த launch-ஐயும் தடுக்காது), மேலும் executor-இன் develop prompt சரியான Linear issue அடையாளத்தையே pin செய்கிறது (தவறான issue-இன் diff என்பது review-இல் தானியங்கி RETURN).
+
+### குறிப்புகள்
+- வேண்டுமென்றே மாற்றவில்லை: scan filtering, scoring, portals.yml, அல்லது எந்த user-layer configuration. இந்த வெளியீட்டுக்கு ×18 locale changelog bodies EN-ஒத்த text-ஐக் கொண்டுள்ளன — preamble-களின் மொழிபெயர்ப்பு-நிலுவை notes-ஆல் மூடப்பட்டுள்ளது; மொழிபெயர்ப்பு sweep பின்தொடரும் வேலை (CAR-269).
+
 ## [1.271.7] — 2026-11-11
 
 ### சரி செய்யப்பட்டது

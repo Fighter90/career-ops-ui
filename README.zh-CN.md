@@ -7,19 +7,19 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-8220%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-8249%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.271.7-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.7)
+[![release](https://img.shields.io/badge/release-v1.271.8-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.8)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.271.7** — Apple 扫描源现在遍历 Apple 完整的招聘看板，而不仅仅是最新一页，因此较旧但仍开放的职位会出现在扫描结果中；扩充后的源测试锁定了这一新的遍历方式。
+> **🆕 最新版本 — v1.271.8** — 新增面向 Lumesse TalentLink 招聘站点的 Talentlink 扫描源(注册表 140 = 135 EN + 5 RU · 135 adapters),以及 Google 扫描源的 `max_pages` 可选分页。
 >
-> **上一版本 — v1.271.6** — 扫描器波次父项目同步：重复职位检测会折叠区域性标题变体，扫描在 `recheck_after_days` 窗口过后重新接纳已见过的职位，反向流水线写入获得共享锁，HTML 实体通过新的共享实体表按属性模式解码。
+> **上一版本 — v1.271.7** — Apple 扫描源现在遍历 Apple 完整的招聘看板，而不仅仅是最新一页，因此较旧但仍开放的职位会出现在扫描结果中；扩充后的源测试锁定了这一新的遍历方式。
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

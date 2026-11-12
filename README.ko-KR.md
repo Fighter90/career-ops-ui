@@ -7,19 +7,19 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-8220%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-8249%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.271.7-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.7)
+[![release](https://img.shields.io/badge/release-v1.271.8-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.8)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.271.7** — Apple 스캔 소스가 최신 페이지만이 아니라 Apple의 전체 채용 보드를 순회하여, 더 오래됐지만 아직 열려 있는 공고도 스캔에 나타납니다; 확장된 소스 테스트가 새 순회 방식을 검증합니다.
+> **🆕 최신 릴리스 — v1.271.8** — Lumesse TalentLink 채용 사이트용 새 Talentlink 스캔 소스(레지스트리 140 = 135 EN + 5 RU · 어댑터 135)와 Google 스캔 소스의 `max_pages` 옵트인 페이지네이션이 추가되었습니다.
 >
-> **이전 버전 — v1.271.6** — 스캐너 웨이브 parent-sync: 리포스트 감지가 지역별 제목 변형을 통합하고, 스캔이 `recheck_after_days` 기간이 지나면 이미 본 공고를 다시 수용하며, reverse-pipeline 쓰기에 잠금이 추가되고, 공유 엔티티 테이블을 통해 HTML 엔티티가 attribute 모드로 디코딩됩니다.
+> **이전 버전 — v1.271.7** — Apple 스캔 소스가 최신 페이지만이 아니라 Apple의 전체 채용 보드를 순회하여, 더 오래됐지만 아직 열려 있는 공고도 스캔에 나타납니다; 확장된 소스 테스트가 새 순회 방식을 검증합니다.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

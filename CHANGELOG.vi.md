@@ -3,6 +3,18 @@
 > Nhật ký này nay chứa đầy đủ lịch sử các bản phát hành. Các mục phát hành trước khi có bản địa hóa tiếng Việt (v1.254.0) xuất hiện bên dưới bằng bản gốc tiếng Anh — bản dịch còn đang chờ; bản chính thức là [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 > _Các mục từ [1.271.3] đang chờ dịch — bản gốc tiếng Anh bên dưới._
 
+## [1.271.8] — 2026-11-12
+
+### Đã thêm
+- Nguồn quét **Talentlink** (parent #6790, CAR-258) — các career site Lumesse TalentLink: origin careers của tenant tự nhận diện từ các host thuộc họ `*.talentlink.com`, mục `provider: talentlink` ghi đè; Registry **139 → 140 = 135 EN + 5 RU · 135 adapters**; các count gate được tái sinh.
+- **`max_pages` opt-in của nguồn quét Google** (parent PR #6761, CAR-258): phân trang vượt qua trang kết quả đầu tiên, opt-in theo từng mục.
+
+### Đã sửa
+- Orchestrator swarm tiếp quản các lock single-flight cũ có PID holder đã chết (orchestrator bị kill không còn làm kẹt mọi lần khởi chạy tiếp theo), và prompt develop của executor chốt đúng định danh issue Linear (diff sai issue sẽ bị review RETURN tự động).
+
+### Ghi chú
+- Deliberately NOT changed: lọc quét (scan filtering), chấm điểm (scoring), portals.yml, hay bất kỳ cấu hình lớp người dùng nào. Nội dung changelog ×18 locale của bản phát hành này mang văn bản trùng khớp EN — được phần ghi chú "đang chờ dịch" ở lời tựa bao gồm; đợt dịch hàng loạt là việc tiếp theo (CAR-269).
+
 ## [1.271.7] — 2026-11-11
 
 ### Đã sửa
