@@ -20,6 +20,7 @@ Gate commands run from the repo root on Node ≥ 22: `node --test <file>` for on
 | **R-10** | Fork divergences from upstream are defended on every merge (ADR-0002) | `providers/telegram-channel.mjs`, `providers/telegram.mjs`, `web/src/lib/clis.ts`, `test-all.mjs` (parent repo) | the post-merge snapshot diff + greps in `docs/adr/0002-defend-fork-divergences.md` |
 | **R-11** | `pipeline.md` is read and written in **both** formats (fenced URLs and the parent's `## Pending` / `## Processed` checklist) without data loss | `server/lib/parsers.mjs` (`parsePipeline`, `addPipelineUrl`, `removePipelineUrl`) | `tests/parsers-pipeline-checklist.test.mjs`, `tests/pipeline-*.test.mjs` |
 | **R-12** | An aborted, failed or single-company scan never replaces the saved snapshot with an emptier one | `server/lib/en-scanner.mjs`, `server/lib/ru-scanner.mjs` (`saveLastScan`) | `tests/scan-snapshot-safety.test.mjs` |
+| **R-13** | README ×19 agree with `package.json` on every push: the 🆕 lead + release badge name the current version, the lead's trailing localized test count equals the badge count, and the locale file set is the 19-locale enumeration (three releases shipped stale leads before this existed) | `README.md` + `README.*.md`, `scripts/swarm/orchestrator.mjs` (`rotateReadmeRelease`, wired into the release manager) | `tests/readme-version-gate.test.mjs`, `tests/swarm-orchestrator.test.mjs` (rotation unit cases) |
 
 ## Maintenance rules
 

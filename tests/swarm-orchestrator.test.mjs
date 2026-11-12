@@ -10,7 +10,7 @@ import { spawnSync } from 'node:child_process';
 import { mkdtempSync, writeFileSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { parsePickOutput, acquireLock, developCheckout, changelogInsert, captureTestCount, baselineBump } from '../scripts/swarm/orchestrator.mjs';
+import { parsePickOutput, acquireLock, developCheckout, changelogInsert, captureTestCount, baselineBump, rotateReadmeRelease } from '../scripts/swarm/orchestrator.mjs';
 
 test('parses a real pick line', () => {
   const issue = parsePickOutput('blah\nSWARM_PICK::uuid-1::CAR-252::#/health: FIX_TARGETS keys\ntrailer');
@@ -196,4 +196,80 @@ test('orchestrator source: the salvage Done requires a PR marker', async () => {
     src.includes('lacks a PR marker'),
     'the salvage path must refuse non-PR merges (the false-Done guard)',
   );
+});
+
+// ── rotateReadmeRelease — the release manager's README banner + badge
+// rotation. Three releases (v1.271.13/.14/.15) shipped with a stale EN lead
+// because the release script rotated CHANGELOGs but never READMEs; the
+// manual sweeps then missed the EN trail (it stayed on v1.271.12 through
+// v1.271.15) and the EN lead's trailing test count (8411 while every badge
+// said 8450). The rotation moves the lead version, demotes the old lead
+// into the trail, and follows the language-independent badges. ──
+
+const EN_BANNER = [
+  '# career-ops-ui',
+  '',
+  '[![tests](https://img.shields.io/badge/tests-8411%20passed-brightgreen)](#tests)',
+  '[![release](https://img.shields.io/badge/release-v1.271.14-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.14)',
+  '',
+  '> **🆕 Latest release — v1.271.14** — the **parent-sync wave**. Tests 8411.',
+  '> **Previous — v1.271.13** — the wire-weight fix.',
+  '',
+].join('\n');
+
+test('rotateReadmeRelease: lead takes the new version, the trail is demoted', () => {
+  const out = rotateReadmeRelease(EN_BANNER, 'v1.271.15', 'v1.271.14', 8450);
+  assert.ok(out.includes('🆕 Latest release — v1.271.15'), 'lead moves to the new version');
+  assert.ok(out.includes('Previous — v1.271.14'), 'the trail carries the version released over');
+  assert.ok(!out.includes('v1.271.13'), 'the two-releases-ago version leaves the banner');
+});
+
+test('rotateReadmeRelease: badges follow (release, tag, tests count)', () => {
+  const out = rotateReadmeRelease(EN_BANNER, 'v1.271.15', 'v1.271.14', 8450);
+  assert.ok(out.includes('release-v1.271.15-blue'));
+  assert.ok(out.includes('releases/tag/v1.271.15'));
+  assert.ok(out.includes('tests-8450%20passed'));
+  assert.ok(!out.includes('tests-8411%20passed'), 'the stale badge number is gone');
+});
+
+test('rotateReadmeRelease: the localized trailing count moves in every script', () => {
+  const mk = (lead) => `> intro\n${lead}\n${lead.replace(/^[^v]*/, '')}`;
+  const cases = [
+    ['> **🆕 Latest — v1.271.14** — x. Tests 8411.', 'Tests 8450.'],
+    ['> **🆕 Latest — v1.271.14** — x. Tests: 8411.', 'Tests: 8450.'],
+    ['> **🆕 Dernière — v1.271.14** — x. Tests : 8411.', 'Tests : 8450.'],
+    ['> **🆕 Последний релиз — v1.271.14** — x. Тесты: 8411.', 'Тесты: 8450.'],
+    ['> **🆕 最新リリース — v1.271.14** — x。テスト 8411。', 'テスト 8450。'],
+    ['> **🆕 最新版本 — v1.271.14** — x。测试 8411。', '测试 8450。'],
+    ['> **🆕 नवीनतम — v1.271.14** — x। टेस्ट 8411।', 'टेस्ट 8451।'.replace('8451', '8450')],
+  ];
+  for (const [lead, expect] of cases) {
+    const out = rotateReadmeRelease(lead, 'v1.271.15', 'v1.271.14', 8450);
+    assert.ok(out.includes(expect), `trailing count localized: ${expect}`);
+  }
+});
+
+test('rotateReadmeRelease: a lead without the trailing count is left alone there', () => {
+  const lead = '> **🆕 Latest — v1.271.14** — no count here, ends with words.';
+  const out = rotateReadmeRelease(lead, 'v1.271.15', 'v1.271.14', 8450);
+  assert.ok(out.includes('v1.271.15'));
+  assert.ok(out.endsWith('ends with words.'), 'no fabricated number');
+});
+
+test('rotateReadmeRelease: lead without oldVersion → content untouched (no guessing)', () => {
+  const handEdited = EN_BANNER.replace(/v1\.271\.14/g, 'v9.9.9');
+  assert.equal(rotateReadmeRelease(handEdited, 'v1.271.15', 'v1.271.14', 8450), handEdited);
+});
+
+test('rotateReadmeRelease: null test count → versions rotate, badge numbers keep', () => {
+  const out = rotateReadmeRelease(EN_BANNER, 'v1.271.15', 'v1.271.14', null);
+  assert.ok(out.includes('🆕 Latest release — v1.271.15'));
+  assert.ok(out.includes('tests-8411%20passed'), 'no fabricated badge number');
+  assert.ok(out.includes('release-v1.271.15-blue') === false, 'badges untouched without a count');
+});
+
+test('orchestrator source: the release manager rotates the READMEs into the release commit', async () => {
+  const src = readFileSync(new URL('../scripts/swarm/orchestrator.mjs', import.meta.url), 'utf8');
+  assert.ok(src.includes('rotateReadmeRelease('), 'the rotation must be wired');
+  assert.ok(src.includes('README.*.md'), 'the release commit must carry the rotated READMEs');
 });

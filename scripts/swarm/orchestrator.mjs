@@ -223,6 +223,64 @@ export function baselineBump(conventions, version, count, date) {
   return conventions.replace(curRe, curLine + '\n' + prevLine);
 }
 
+// rotateReadmeRelease — the release manager's README banner + badge rotation.
+// The banner block at the top of every README*.md carries the lead (the
+// `> **🆕 …` line) and the trail (the next `> **… vX.Y.Z …**` blockquote line —
+// "Previous …" in EN, "Предыдущий релиз …" in RU, and so on). On a release:
+// the lead's version token moves to the new one, the trail's version token
+// becomes the version this release moved away from, and the language-
+// independent badges (release-vX-blue, releases/tag/vX, tests-N%20passed)
+// follow when the gated test count is known, and the lead's localized trailing
+// test count moves with them (the count is END-ANCHORED on the lead line, so
+// every locale's wording works — see the comment in the body). Guards: when
+// the lead does not carry oldVersion the content is returned untouched — a
+// hand-edited banner is never guessed at.
+export function rotateReadmeRelease(content, newVersion, oldVersion, testCount) {
+  if (!content.includes(oldVersion)) return content;
+  const lines = content.split('\n');
+  const limit = Math.min(lines.length, 40);
+  let leadIdx = -1;
+  let trailIdx = -1;
+  for (let i = 0; i < limit; i++) {
+    if (!lines[i].startsWith('> **')) continue;
+    if (leadIdx === -1) {
+      if (lines[i].includes('🆕') && lines[i].includes(oldVersion)) leadIdx = i;
+      continue;
+    }
+    if (!lines[i].includes('🆕') && /v\d+\.\d+\.\d+/.test(lines[i])) { trailIdx = i; break; }
+  }
+  if (leadIdx === -1) return content;
+  lines[leadIdx] = lines[leadIdx].replace(oldVersion, newVersion);
+  if (testCount != null) {
+    // The lead's trailing test count is fully localized ("Tests 8450." EN,
+    // "Pruebas: 8450." ES, "Тесты: 8450." RU, "テスト 8450。" JA, "टेस्ट 8450।" HI,
+    // "测试 8450。" ZH …), so the replacement is END-ANCHORED: the last
+    // word + number + sentence punctuation at the line's tail. A lead that
+    // does not end this way (no count at all) is left alone.
+    lines[leadIdx] = lines[leadIdx].replace(
+      /(\p{L}+(?:\s*[:：]\s*|\s+))(\d+)([.。।]?)[ \t]*$/u,
+      (m, words, num, punct) => `${words}${testCount}${punct}`,
+    );
+  }
+  if (trailIdx !== -1) {
+    const m = lines[trailIdx].match(/v\d+\.\d+\.\d+/);
+    if (m) lines[trailIdx] = lines[trailIdx].replace(m[0], oldVersion);
+  }
+  // badges: release-vX-blue / releases/tag/vX / tests-N%20passed — only
+  // rewritten when the tree's gated test count is known, so a null count
+  // never produces an empty badge number.
+  if (testCount != null) {
+    const esc = oldVersion.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    for (let i = 0; i < limit; i++) {
+      lines[i] = lines[i]
+        .replace(new RegExp('release-' + esc + '-blue', 'g'), `release-${newVersion}-blue`)
+        .replace(new RegExp('releases/tag/' + esc, 'g'), `releases/tag/${newVersion}`)
+        .replace(/tests-\d+%20passed/g, `tests-${testCount}%20passed`);
+    }
+  }
+  return lines.join('\n');
+}
+
 export function acquireLock(lock) {
   const claims = () => {
     const fd = openSync(lock, 'wx'); // exclusive create — no exists/write race
@@ -435,8 +493,16 @@ async function main() {
         log(`  merged: ${prUrl}`);
 
         await sh('git fetch origin -q && git checkout -q --detach origin/main');
+        // capture the version this release moves AWAY from, before the bump
+        let uiPrevVer = null;
+        try { uiPrevVer = JSON.parse(readFileSync(resolve(ROOT, 'package.json'), 'utf8')).version || null; } catch {}
         const verOut = await sh('npm version patch --no-git-tag-version');
         const ver = verOut.out.trim().replace(/^v/, '');
+        // README banners + badges rotate with the release (the release script
+        // used to rotate CHANGELOGs but never READMEs — three releases shipped
+        // with a stale EN lead before the manual sweeps caught up). oldVersion
+        // is the version this bump moved away from; testsCount comes from the
+        // gated tree.
         log(`-- release manager: v${ver} (changelog ×19 + QA prompt)`);
         // Baselines: the no-blanket-version-sweep grader reds every release
         // commit whose SDD baselines still name the previous version (the
@@ -485,7 +551,27 @@ async function main() {
         writeFileSync(resolve(ROOT, `qa/QA-REGRESSION-PROMPT-v${ver}.md`),
           `# QA regression prompt — v${ver}\n\nSwarm release (${issue.identifier}). Story: ${story}\n\n- Gates at ship time: see the CHANGELOG entry for ${ver} and the release workflow run.\n- Spot check: ${issue.title} behaves as described; no regressions on the touched surfaces.\n`);
 
-        const relCommit = await sh(`git add CHANGELOG.md CHANGELOG.*.md qa/ package.json docs/sdd/CONVENTIONS.md .claude/PROJECT-CONTEXT.md && git commit -q -m ${JSON.stringify(`release: v${ver} (swarm ${issue.identifier})`)} && git push origin main`, { timeoutMs: 300_000 });
+        // README banners + badges rotate with the release (the release script
+        // used to rotate CHANGELOGs but never READMEs — three releases shipped
+        // with a stale EN lead before the manual sweeps caught up). The lead
+        // 🆕 line takes v<ver>, the trail line takes the version this release
+        // moved away from, badges follow. Skipped when the pre-bump version
+        // is unknown (a hand-maintained banner is never guessed at).
+        if (uiPrevVer && uiPrevVer !== ver) {
+          const readmeFiles = ['README.md', ...readdirSync(ROOT).filter((n) => /^README\..+\.md$/.test(n))];
+          for (const f of readmeFiles) {
+            const rp = resolve(ROOT, f);
+            try {
+              writeFileSync(rp, rotateReadmeRelease(readFileSync(rp, 'utf8'), `v${ver}`, `v${uiPrevVer}`, testCount));
+            } catch (err) {
+              log(`  (README rotation skipped: ${f} — ${err && err.code === 'ENOENT' ? 'absent' : 'write failure'})`);
+            }
+          }
+        } else {
+          log('  (README rotation skipped: pre-bump version unknown)');
+        }
+
+        const relCommit = await sh(`git add CHANGELOG.md CHANGELOG.*.md README.md README.*.md qa/ package.json docs/sdd/CONVENTIONS.md .claude/PROJECT-CONTEXT.md && git commit -q -m ${JSON.stringify(`release: v${ver} (swarm ${issue.identifier})`)} && git push origin main`, { timeoutMs: 300_000 });
         if (relCommit.code !== 0) throw new Error(`release commit failed: ${short(relCommit.all)}`);
         const ci = await sh(`sleep 20; gh run list --workflow=ci.yml --branch main --limit 1 --json databaseId --jq '.[0].databaseId'`);
         const ciId = ci.out.trim();

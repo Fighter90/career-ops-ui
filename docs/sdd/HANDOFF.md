@@ -2,6 +2,13 @@
 
 This is the operating manual. Read it, then `PLAN.md` (order) and `BACKLOG.md` (what is left).
 
+## State (2026-11-12, v1.271.15)
+
+- Released: **v1.271.15** (2026-11-12) — CAR-269 closed: the coverage debt paid down and the exemptions removed (jd-parse 78.77→98.62 % branches, talentlink/tkms/tkms-adapter/_salary-text/posting-close/states → 100 %; +39 tests; node:coverage ignore markers on dead defensive branches; the exempt list carries no product source). Also: the swarm salvage-Done now requires a PR-squash marker in the commit subject (CAR-269 was closed as Done twice by infra commits that merely mentioned the identifier). Parent fork `da28ef95` (upstream d8b292df, 88 commits — the parent-sync wave v1.271.13 shipped 16 provider ports: ashby/smartrecruiters/successfactors/amazon/join/oraclecloud/darwinbox/jobstreet/platsbanken/thehub/a16z/arbeitnow/greenhouse + scanner bounds + _salary-text).
+- Gates: test:ci **8467/8464/0** · browser **210/209/0** · evals **0 ✗** · coverage gate green with **zero** product-source exemptions · remote-qa routes×19/site/links ✓ · prod **ok=true version=1.271.15 parentVersion=1.40.0** (the disk-full outage root-fixed: deploy.yml prunes old deploy backups — keep 3 + <7 days).
+- Queue: **empty** — the CAR-258…269 wave fully Done in Linear; v1.271.13/.14/.15 shipped the same day.
+- Swarm fixes landed this week: developCheckout (empty stale branch → -B reset; salvaged commits → continue), changelogInsert (entries below the locale preamble — the ×18 preamble breakage closed at the root), captureTestCount + baselineBump (the release manager bumps the SDD baselines from the gated count — no more babysitter pushes), the release-commit add-list covers the baselines and the lock, and the README banner lead is rotated by the release manager (see the README-BANNER gate).
+
 ## State (2026-11-10, v1.271.3)
 
 - Released: **v1.271.3** (2026-11-10) — the parent-sync wave (career-ops fork @ **298d2282**, upstream/main 24da28e8, PR #642): 3 new scan providers — **turbohire** (#6712), **adp-myjobs** (ADP Recruiting Management, #6678), **sitemap** (#6631) — registry **135 → 138 (133 EN + 5 RU)**; the provider-fix wave (jobicy full-feed walk + filters #6612, workday true-board-size #6672, adp-workforcenow lang #6679, applicantpro close-day #6716, mokahr robots #6726, computrabajo sort #6739, apple country #6452, dover/oraclecloud/platsbanken parity); the scanner wave (partly-read boards report `partial` #6636, transient-error retry-after-sweep #6675, posting close date in the pipeline #6597, uppercase ISO codes case-sensitive #6616, robots-check mirror). ADR-0002 divergences defended. Tests 7933 → **8126** (+193). Built by the **agent swarm** (v2.1 orchestrator, multi-round cycles in parallel worktrees).
