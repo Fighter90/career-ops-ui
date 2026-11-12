@@ -7,19 +7,19 @@
 
 _Giao diện không chính thức — không liên kết với career-ops / santifer, cũng không được họ chứng thực._
 
-[![tests](https://img.shields.io/badge/tests-8450%20passed-brightgreen)](#kiểm-thử)
+[![tests](https://img.shields.io/badge/tests-8561%20passed-brightgreen)](#kiểm-thử)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#kiểm-thử)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#kiểm-thử)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#yêu-cầu)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.271.15-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.15)
+[![release](https://img.shields.io/badge/release-v1.271.16-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.16)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Bản phát hành mới nhất — v1.271.15** — **trả nợ độ bao phủ**: mọi file từng được miễn nay đo thực sự vượt sàn — jd-parse, talentlink, tkms, salary-text, posting-close và states — và danh sách miễn trừ lại trống rỗng. Tests 8450.
+> **🆕 Bản phát hành mới nhất — v1.271.16 — v1.271.16** — **đợt parent-sync do bầy đàn 6 agent gửi đi**: nguồn quét MỚI **rexx-systems** (các trang nghề nghiệp trên host thương hiệu của nhà tuyển dụng qua CNAME của rexx — ghim tường minh `provider: rexx`, đăng ký **141 = 136 EN + 5 RU · 136 adapter**); **lương Lever** được đọc từ `salaryRange` với quy năm hóa theo cơ sở Ashby (giờ ×2080, tuần ×52, tháng ×12); các bài đăng **workable** và **bamboohr** mang listingIdentity gốc của ATS (shortcode/tenant + id, quy tắc id mờ, dự phòng khử trùng lặp theo URL); **avature** loại bỏ các liên kết `javascript:`/`data:`/`mailto:` và không còn kết thúc việc đi lại ở một trang mà tất cả liên kết đã bị loại; **gupy** cũng loại bỏ các trang nghề nghiệp bảo mật bằng logo giữ chỗ và subdomain tenant `confidencia`. Tests 8561.
 >
-> **Bản trước — v1.271.14** — **đợt parent-sync** (88 upstream commit): posting API của Ashby có trần thân 64 MB riêng kèm fallback embed, SmartRecruiters và SuccessFactors nhận các trần duyệt opt-in với cảnh báo cắt ngắn, Amazon và OracleCloud định cỡ ngân sách trang theo tổng số được báo cáo, Join mang các định danh listing ổn định qua republish — trang quét đọc những board lớn trọn vẹn thay vì dừng ở một trần trang. Tests 8411.
+> **Bản trước — v1.271.15 — v1.271.15** — **CAR-269 đã đóng: nợ độ phủ đã trả xong**. Mọi từng được miễn trước nay đều đo thực sự trên ngưỡng — jd-parse 78,77→98,62 % nhánh, talentlink/tkms/tkms-adapter/_salary-text/posting-close/states → 100 % — và danh sách miễn không còn mã nguồn sản phẩm nào (+39 kiểm thử; ba điểm đánh dấu `node:coverage ignore` trên các nhánh phòng vệ đã chết). Con đường cứu vớt của bầy đàn nay yêu cầu dấu PR-squash trước khi gọi công việc là Done (CAR-269 đã từng bị đóng nhầm là Done hai lần bởi các commit hạ tầng chỉ nhắc đến định danh).
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

@@ -9,20 +9,20 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 🌐 **Website: [cvstart.org](https://cvstart.org)** — multilingual landing + user guide (source in [`site/`](site/)).
 
-[![tests](https://img.shields.io/badge/tests-8450%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-8561%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.271.15-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.15)
+[![release](https://img.shields.io/badge/release-v1.271.16-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.16)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Latest release — v1.271.15** — the **parent-sync wave** (88 upstream commits): Ashby's posting API gets its own 64 MB body ceiling with an embed fallback, SmartRecruiters and SuccessFactors gain opt-in walk ceilings with truncation warnings, Amazon and OracleCloud size their page budgets from reported totals, Join carries republish-stable listing identities — the scan page reads big boards whole instead of stopping at a page cap. Tests 8450.
+> **🆕 Latest release — v1.271.16** — the **parent-sync wave**, shipped by a 6-agent swarm: a NEW **rexx-systems** scan source (employer-branded career sites on a rexx CNAME — explicit `provider: rexx` pin, registry **141 = 136 EN + 5 RU · 136 adapters**); **Lever salary** read from `salaryRange` with Ashby-basis annualization (hourly ×2080, weekly ×52, monthly ×12); **workable** and **bamboohr** postings carry the ATS-native listingIdentity (shortcode/tenant + id, opaque-id rules, URL-dedup fallback); **avature** drops `javascript:`/`data:`/`mailto:` links and no longer ends its walk on a page whose links were all dropped; **gupy** also drops confidential career pages by their placeholder logo and `confidencia` tenant subdomain. Tests 8561.
 
 >
-> **Previous — v1.271.14** — the **search page speedup**: the scan table's data payloads are bounded server-side — the wire stopped carrying descriptions the UI slices away and the repost clustering now runs once per history change, so the page that waited ~6.5 s of API time per mount now loads in fractions of a second.
+> **Previous — v1.271.15** — **CAR-269 closed: the coverage debt paid down**. Every previously exempted file now measures above the floor for real — jd-parse 78.77→98.62 % branches, talentlink/tkms/tkms-adapter/_salary-text/posting-close/states → 100 % — and the exempt list carries no product source (+39 tests; three `node:coverage ignore` markers on dead defensive branches). The swarm's salvage path now requires a PR-squash marker before calling work Done (CAR-269 had been closed as Done twice by infra commits that merely mentioned the identifier).
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

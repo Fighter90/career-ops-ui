@@ -7,19 +7,19 @@
 
 _Interface non officielle — sans affiliation ni approbation de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-8450%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-8561%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.271.15-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.15)
+[![release](https://img.shields.io/badge/release-v1.271.16-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.16)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Dernière version — v1.271.15** — le **remboursement de la dette de couverture** : chaque fichier exempté mesure désormais réellement au-dessus du plancher — jd-parse, talentlink, tkms, salary-text, posting-close et states — et la liste des exemptions est de nouveau vide. Tests : 8450.
+> **🆕 Dernière version — v1.271.16** — la **vague de parent-sync**, livrée par un swarm de 6 agents : une NOUVELLE source de scan **rexx-systems** (sites carrières à la marque de l'employeur sur un CNAME rexx — épingle explicite `provider: rexx`, registre **141 = 136 EN + 5 RU · 136 adaptateurs**) ; le **salaire Lever** lu depuis `salaryRange` avec annualisation sur la base Ashby (horaire ×2080, hebdomadaire ×52, mensuel ×12) ; les offres **workable** et **bamboohr** portent la listingIdentity native de l'ATS (shortcode/tenant + id, règles d'id opaque, repli de dédup par URL) ; **avature** rejette les liens `javascript:`/`data:`/`mailto:` et ne termine plus son parcours sur une page dont tous les liens ont été écartés ; **gupy** écarte aussi les pages carrières confidentielles par leur logo placeholder et leur sous-domaine de tenant `confidencia`. Tests : 8561.
 >
-> **Précédente — v1.271.14** — la **vague de parent-sync** (88 commits upstream) : l'API des offres d'Ashby obtient son propre plafond de corps de 64 Mo avec un repli embed, SmartRecruiters et SuccessFactors gagnent des plafonds de parcours opt-in avec avertissements de troncature, Amazon et OracleCloud dimensionnent leurs budgets de pages d'après les totaux rapportés, Join porte des identités de listage stables à la republication — la page de scan lit les grands boards en entier au lieu de s'arrêter à un plafond de pages. Tests : 8411.
+> **Précédente — v1.271.15** — **CAR-269 clôturé : la dette de couverture remboursée**. Chaque fichier précédemment exempté mesure désormais réellement au-dessus du plancher — jd-parse 78,77 → 98,62 % de branches, talentlink/tkms/tkms-adapter/_salary-text/posting-close/states → 100 % — et la liste des exemptions ne contient plus aucune source produit (+39 tests ; trois marqueurs `node:coverage ignore` sur des branches défensives mortes). Le chemin de sauvetage du swarm exige désormais un marqueur de squash PR avant de déclarer un travail Done (CAR-269 avait été clôturé comme Done deux fois par des commits d'infrastructure qui ne faisaient que mentionner l'identifiant). Tests : 8411.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

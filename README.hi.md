@@ -9,19 +9,19 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-8450%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-8561%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.271.15-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.15)
+[![release](https://img.shields.io/badge/release-v1.271.16-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.16)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.271.15** — **कवरेज-डेट की अदायगी**: माफ़ की गई हर फ़ाइल अब वास्तव में फ़्लोर से ऊपर मापी जाती है — jd-parse, talentlink, tkms, salary-text, posting-close और states — और माफ़ी सूची फिर से खाली है। टेस्ट 8450।
+> **🆕 नवीनतम रिलीज़ — v1.271.16 — v1.271.16** — **6 एजेंटों के झुंड द्वारा भेजी गई parent-sync लहर**: नया स्कैन स्रोत **rexx-systems** (rexx CNAME पर नियोक्ता के ब्रांडेड होस्ट पर करियर साइटें — स्पष्ट `provider: rexx` पिन, रजिस्ट्री **141 = 136 EN + 5 RU · 136 एडेप्टर**); **Lever वेतन** `salaryRange` से Ashby आधार पर वार्षिकीकरण के साथ पढ़ा जाता है (प्रति घंटा ×2080, साप्ताहिक ×52, मासिक ×12); **workable** और **bamboohr** पोस्टिंग ATS-नेटिव listingIdentity रखते हैं (shortcode/टेनेंट + id, ओपेक-id नियम, URL डीडुप फ़ॉलबैक); **avature** `javascript:`/`data:`/`mailto:` लिंक हटाता है और जिस पृष्ठ के सभी लिंक हटा दिए गए थे उस पर अब चालना समाप्त नहीं करता; **gupy** प्लेसहोल्डर लोगो और `confidencia` टेनेंट सबडोमेन से गोपनीय करियर पृष्ठों को भी हटाता है। टेस्ट 8561।
 >
-> **पिछला — v1.271.14** — **parent-sync वेव** (88 upstream कमिट्स): Ashby का posting API अपनी 64 MB बॉडी सीलिंग embed फ़ॉलबैक के साथ पाता है, SmartRecruiters और SuccessFactors ट्रंकेशन वार्निंग के साथ ऑप्ट-इन वॉक सीलिंग्स पाते हैं, Amazon और OracleCloud अपने पेज बजट रिपोर्टेड टोटल्स से साइज़ करते हैं, Join republish-stable listing आइडेंटिटीज़ रखता है — स्कैन पेज पेज-कैप पर रुकने के बजाय बड़े बोर्ड पूरे पढ़ता है। टेस्ट 8411।
+> **पिछला — v1.271.15 — v1.271.15** — **CAR-269 बंद: कवरेज ऋण चुकाया गया**। पहले मुफ़्त किया गया हर फ़ाइल अब वास्तव में दहलीज़ के ऊपर मापा जाता है — jd-parse 78.77→98.62 % शाखाएँ, talentlink/tkms/tkms-adapter/_salary-text/posting-close/states → 100 % — और मुफ़्त सूची में कोई उत्पाद स्रोत नहीं (+39 टेस्ट; मृत रक्षात्मक शाखाओं पर तीन `node:coverage ignore` चिह्न)। झुंड का सैल्वेज पथ अब काम को Done कहने से पहले PR-squash चिह्न मांगता है (CAR-269 दो बार केवल पहचानकर्ता का उल्लेख करने वाले इंफ्रा कमिट्स द्वारा Done के रूप में गलती से बंद किया गया था)।
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

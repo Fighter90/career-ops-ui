@@ -3,6 +3,24 @@
 > **i18n 註記** — 本檔案已完整翻譯為繁體中文(臺灣慣用語)。規範英文正文仍以 [🇬🇧 CHANGELOG.md](CHANGELOG.md) 為準。
 > _自 [1.271.3] 起的條目待翻譯——英文原文見下方。_
 
+## [1.271.16] — 2026-11-13
+
+### 新增
+
+- **rexx-systems——全新的掃描來源**（Rexx Systems 招募網站；註冊表 **141 = 136 EN + 5 RU · 136 adapters**）。rexx 入口網站運行於雇主的品牌主機上（jobs.employer.com、karriere employer.de——指向 rexx 雲端的 CNAME），因此**僅限明確指定**：在 portals.yml 中設定 `provider: rexx` + `careers_url`；沒有任何自動認領。走訪讀取 `stellenangebote.html` 列表（新舊兩種介面外觀）、以原始列數分頁、偵測重複頁面、盡力從 RSS feed 讀取日期、頁數上限 200、擷取錯誤時保留已取得的部分，並標記截斷（`page-cap`／`fetch-error`／`repeat-page`）。覆蓋率 98.5 % 行 / 93.1 % 分支——高於門檻，無需豁免。（CAR-270，parent #6946）
+- **Lever 薪資**——職缺的 `salaryRange` 現在會以與 Ashby 相同的年化基準（每週 40 小時 · 每年 52 週）讀入職缺薪資：時薪 ×2080、日薪 ×260、週薪 ×52、月薪 ×12、年薪 ×1；單邊區間補齊缺失的一端，上下限會重新排序，未知區間則不填薪資（絕不猜測），幣別予以正規化。為 Lever 看板填入 pipeline 的 `comp` 欄位。（CAR-271，parent #6907/#6922）
+- **Workable + BambooHR listingIdentity**——職缺帶有 ATS 原生識別 `{ats_provider, board_slug, posting_id}`，由 widget shortcode／BambooHR 租戶 + 職缺 id 建構（parent #6966/#6955），與 v1.271.13 發布的 SmartRecruiters/JOIN 契約一致。Opaque-id 規則：不去除空白、不統一大小寫、數字絕不強制轉型，非正規 id 回退為 URL 去重。（CAR-272/CAR-273）
+
+### 修復
+
+- **Avature 走訪**（#6971）：自帶協定的 href（`javascript:`、`data:`、`mailto:`）會被捨棄——只有 http(s) 是職缺連結；頁面停滯檢查現在能區分三種情況：真正空白的頁面（停止）、連結全數被捨棄的頁面（前進——位移已推進，走訪繼續）、重複的頁面（停止）。此前一整頁卡片若連結全被捨棄，會讓走訪提前結束。（CAR-274）
+- **Gupy 機密頁面**（#6892）：機密招募頁面現在也會依 Gupy 的佔位圖 `confidencial_logo.png` 與符合 /confidencia/i 的租戶子網域捨棄——搜尋酬載不會標記它們，且其名稱為自由文字。（CAR-275）
+
+### 備註
+
+- 刻意未自 parent 差異移植（32 個提交，`da28ef95..eaa74c4b`）：**印度（modes/in/）**與**奧地利（modes/at/）**市場層——屬 parent 端的評估提示詞，web-ui 不會 shell 進 modes；**dashboard 的 Inbox 分頁**與其他 `web/` 修復——parent 自有的 Go dashboard／Next 應用程式，並非本 SPA；**greenhouse/ashby/lever 非看板時拋錯**（#6918）——web-ui 自 v1.242.0 起即透過 `_shape.mjs` 對格式錯誤的 200 拋錯，上游後來補上；**seek_searches 拼字註冊修正**（#6948）——web-ui 沒有 seek_searches 讀取器；**pracecz 測試還原**（#6957）——web-ui 沒有 pracecz 來源；evaluator/batch/latex/backup/updater/cv-facts 修復——本儲存庫不執行的 parent CLI 工具。
+- 本波次由 6 個代理組成的 swarm 執行（每個移植單元一個代理，檔案所有權互不重疊，worktrees + red→green），最後由 orchestrator 對共用的註冊表／門檻檔案一次整合。
+
 ## [1.271.15] — 2026-11-12
 
 ### 修復

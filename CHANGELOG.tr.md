@@ -3,6 +3,24 @@
 > Bu changelog artık tüm sürüm geçmişini içerir. Türkçe yerelleştirmenin eklenmesinden (v1.85.0) önce yayınlanan girdiler aşağıda İngilizce özgün hâliyle yer alır — çeviri bekliyor; asıl kaynak [🇬🇧 CHANGELOG.md](CHANGELOG.md)'dir.
 > _[1.271.3]'ten itibaren girdiler çeviri bekliyor — İngilizce orijinal aşağıda._
 
+## [1.271.16] — 2026-11-13
+
+### Eklendi
+
+- **rexx-systems — YENİ bir tarama kaynağı** (Rexx Systems kariyer siteleri; kayıt **141 = 136 EN + 5 RU · 136 adaptör**). Bir rexx portalı işverenin markalı barındırıcısında yaşar (jobs.firma.com, karriere.firma.de — rexx bulutuna bir CNAME), bu yüzden bağlantı **yalnızca açık pin ile**: portals.yml içinde `provider: rexx` + `careers_url`; hiçbir şey otomatik sahiplenilmez. Gezinme, `stellenangebote.html` listesini okur (eski ve yeni skin), ham satır sayısına göre sayfalanır, tekrar sayfaları algılar, tarihleri RSS akışından best-effort okur, 200 sayfa üst sınırı, getirme hatalarında kısmi sonuçları tutar ve kırpılmayı işaretler (`page-cap` / `fetch-error` / `repeat-page`). Kapsam satırda %98,5 / dallarda %93,1 — eşikmanın üzerinde, muafiyet yok. (CAR-270, ebeveyn #6946)
+- **Lever maaşı** — ilanın `salaryRange`'i artık Ashby ile aynı yıllandırma temelinde okunur (haftada 40 saat · yılda 52 hafta): saatlik ×2080, günlük ×260, haftalık ×52, aylık ×12, yıllık ×1; tek taraflı bir aralık eksik sınırı diğerinden tamamlar, sınırlar sıralanır, bilinmeyen bir aralık maaşı boş bırakır (asla tahmin edilmez), para birimi normalleştirilir. Lever panoları için pipeline `comp` sütununu doldurur. (CAR-271, ebeveyn #6907/#6922)
+- **workable ve bamboohr için listingIdentity** — ilanlar, widget kısa kodundan / BambooHR kiracısından + iş kimliğinden oluşturulan ATS'nin yerleşik kimliğini taşır `{ats_provider, board_slug, posting_id}` (#6966/#6955) — v1.271.13'teki SmartRecruiters/JOIN ile aynı sözleşme. Opak-id kuralları: kırpma yok, büyük/küçük harf katlaması yok, sayılar asla zorlanmaz, kanonik olmayan kimlikler URL tekilleştirmesine düşer. (CAR-272/CAR-273)
+
+### Düzeltildi
+
+- **avature gezinmesi** (#6971): kendi şemasını taşıyan bağlantılar (`javascript:`, `data:`, `mailto:`) düşürülür — yalnızca http(s) bir iş bağlantısıdır; ve takılma kontrolü, gerçekten boş bir sayfa (dur), tüm bağlantıları düşürülmüş bir sayfa (ilerle — ofset hareket etti, gezinme sürer) ve tekrarlanan bir sayfa (dur) arasında ayrım yapar. Daha önce, tüm bağlantıları düşürülmüş bir kart sayfası gezinmeyi erken bitiriyordu. (CAR-274)
+- **gupy gizli sayfaları** (#6892): gizli kariyer sayfaları artık Gupy'nin yer tutucu logosu `confidencial_logo.png` ve /confidencia/i ile eşleşen bir kiracı alt alan adıyla da düşürülür — arama yükü onları işaretlemez, adları serbest metindir. (CAR-275)
+
+### Notlar
+
+- Ebeveyn deltasından (32 commit, `da28ef95..eaa74c4b`) port edilmedi: **Hindistan (modes/in/)** ve **Avusturya (modes/at/)** pazar katmanları — ebeveynin değerlendirme istemleri, web-ui modes çalıştırmaz; **panonun Inbox sekmesi** ve diğer `web/` düzeltmeleri — ebeveynin Go panosu / Next uygulaması, bu SPA değil; **greenhouse/ashby/lever'in panolmayan yanıtta throw'u** (#6918) — web-ui v1.242.0'dan beri `_shape.mjs` üzerinden bozuk bir 200'da throw ediyor, upstream yetişti; **seek_searches yazım hata kaydı** (#6948) — web-ui'nin seek_searches okuyucusu yok; **pracecz test geri yükleme** (#6957) — web-ui'nin pracecz kaynağı yok; evaluator/batch/latex/backup/updater/cv-facts düzeltmeleri — bu deposunun çalıştırmadığı ebeveyn CLI araçları.
+- Dalga, 6 ajanlı bir sürü tarafından yürütüldü (port birimi başına bir ajan, ayrık dosya sahipliği, worktree'ler + red→green), paylaşılan kayıt/gate dosyaları üzerinde tek bir orkestratör geçişinde entegre edildi.
+
 ## [1.271.15] — 2026-11-12
 
 ### Düzeltildi

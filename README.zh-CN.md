@@ -7,19 +7,19 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-8450%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-8561%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.271.15-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.15)
+[![release](https://img.shields.io/badge/release-v1.271.16-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.16)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.271.15** — **覆盖率欠账清偿**：此前豁免的每个文件现在实测都高于门槛——jd-parse、talentlink、tkms、salary-text、posting-close 与 states——豁免列表再次清空。测试 8450。
+> **🆕 最新版本 — v1.271.16** — **parent-sync 波次**，由 6 个智能体组成的 swarm 发布：全新 **rexx-systems** 扫描源（运行在 rexx CNAME 上的雇主品牌招聘站点——需显式 `provider: rexx` 固定，注册表 **141 = 136 EN + 5 RU · 136 adapters**）；**Lever 薪资**改从 `salaryRange` 读取，按 Ashby 基准年化（时薪 ×2080、周薪 ×52、月薪 ×12）；**workable** 与 **bamboohr** 的职位携带 ATS 原生 listingIdentity（shortcode/租户 + 职位 id、不透明 id 规则、URL 去重回退）；**avature** 丢弃 `javascript:`/`data:`/`mailto:` 链接，且不再因页面链接全部被丢弃而终止遍历；**gupy** 还会依据占位 logo 和 `confidencia` 租户子域名丢弃保密招聘页面。测试 8561。
 >
-> **上一版本 — v1.271.14** — **parent-sync 波次**（上游 88 个提交）：Ashby 的职位 API 获得了带 embed 回退的专属 64 MB 响应体上限，SmartRecruiters 与 SuccessFactors 获得了带截断警告的可选遍历上限，Amazon 与 OracleCloud 依据报告的总量确定页面预算，Join 提供跨重发稳定的列表身份——扫描页面可以完整读取大型看板，而不是停在页数上限。测试 8411。
+> **上一版本 — v1.271.15** — **CAR-269 关闭：覆盖率欠账清偿**。此前豁免的每个文件现在实测都高于门槛——jd-parse 分支覆盖率 78.77→98.62 %，talentlink/tkms/tkms-adapter/_salary-text/posting-close/states → 100 %——且豁免列表不含任何产品源码（+39 个测试；三个针对死防御分支的 `node:coverage ignore` 标记）。swarm 的抢救路径现在要求先有 PR-squash 标记才能宣布工作完成（CAR-269 曾两次被仅仅提及该标识符的基础设施提交错误地标记为 Done）。
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

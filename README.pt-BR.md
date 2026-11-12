@@ -7,19 +7,19 @@
 
 _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-8450%20passed-brightgreen)](#testes)
+[![tests](https://img.shields.io/badge/tests-8561%20passed-brightgreen)](#testes)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#testes)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requisitos)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.271.15-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.15)
+[![release](https://img.shields.io/badge/release-v1.271.16-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.16)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versão — v1.271.15** — o **pagamento da dívida de cobertura**: todo arquivo isento agora mede acima do piso de verdade — jd-parse, talentlink, tkms, salary-text, posting-close e states — e a lista de isenções está vazia de novo. Testes 8450.
+> **🆕 Última versão — v1.271.16** — a **onda de parent-sync**, entregue por um enxame de 6 agentes: uma NOVA fonte de scan **rexx-systems** (sites de carreira na marca do empregador rodando num CNAME do rexx — pin explícito `provider: rexx`, registro **141 = 136 EN + 5 RU · 136 adapters**); **salário da Lever** lido de `salaryRange` com anualização na base da Ashby (por hora ×2080, por semana ×52, por mês ×12); as vagas do **workable** e do **bamboohr** carregam a listingIdentity nativa do ATS (shortcode/tenant + id, regras de id opaco, fallback para dedup por URL); o **avature** descarta links `javascript:`/`data:`/`mailto:` e não encerra mais a caminhada numa página cujos links foram todos descartados; o **gupy** também descarta páginas de carreira confidenciais pelo logo de placeholder e pelo subdomínio de tenant `confidencia`. Testes 8561.
 >
-> **Anterior — v1.271.14** — a **onda de parent-sync** (88 commits upstream): a API de vagas da Ashby ganha um teto próprio de corpo de 64 MB com fallback via embed, SmartRecruiters e SuccessFactors ganham tetos opt-in de caminhada com avisos de truncamento, Amazon e OracleCloud dimensionam seus orçamentos de página a partir de totais reportados, Join carrega identidades de listagem estáveis entre republicações — a página de busca lê boards grandes inteiros em vez de parar em um limite de páginas. Testes 8411.
+> **Anterior — v1.271.15** — **CAR-269 encerrado: a dívida de cobertura quitada**. Todo arquivo antes isento agora mede de verdade acima do piso — jd-parse 78,77→98,62 % de ramificações, talentlink/tkms/tkms-adapter/_salary-text/posting-close/states → 100 % — e a lista de isentos não carrega nenhuma fonte de produto (+39 testes; três marcadores `node:coverage ignore` em ramificações defensivas mortas). O caminho de resgate do enxame agora exige um marcador de squash de PR antes de declarar o trabalho Done (o CAR-269 chegou a ser encerrado como Done duas vezes por commits de infraestrutura que apenas mencionavam o identificador).
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

@@ -3,6 +3,24 @@
 > **说明** — 本文件已完整翻译为出版级简体中文(中国大陆用语规范),包含全部历史版本条目。代码块、提交信息、文件路径、URL、环境变量、命令行片段以及 CSP / SSRF / TOCTOU / WCAG / ATS / JD / SSE / REST / API 等通用英文缩写按原文保留。
 > _自 [1.271.3] 起的条目待翻译——英文原文见下方。_
 
+## [1.271.16] — 2026-11-13
+
+### 新增
+
+- **rexx-systems — 全新扫描源**（Rexx Systems 招聘站点；注册表 **141 = 136 EN + 5 RU · 136 adapters**）。rexx 门户运行在雇主品牌化的主机上（jobs.employer.com、karriere.unternehmen.de——指向 rexx 云的 CNAME），因此**仅支持显式固定**：在 portals.yml 中配置 `provider: rexx` + `careers_url`；没有任何自动认领。遍历读取 `stellenangebote.html` 列表（新旧两种外观），按原始行数分页，检测重复页，尽力读取 RSS feed 获取日期，上限 200 页，抓取出错时保留部分结果，并标记截断（`page-cap` / `fetch-error` / `repeat-page`）。覆盖率 98.5 % 行 / 93.1 % 分支——高于门槛且无豁免。（CAR-270，父项目 #6946）
+- **Lever 薪资**——职位的 `salaryRange` 现在按与 Ashby 相同的年化基准（每周 40 小时 · 每年 52 周）读入职位薪资：时薪 ×2080、日薪 ×260、周薪 ×52、月薪 ×12、年薪 ×1；单边区间补全缺失的一端，区间按顺序排列，未知区间则不启用薪资（绝不猜测），货币做规范化。为 Lever 看板填充流水线的 `comp` 列。（CAR-271，父项目 #6907/#6922）
+- **Workable + BambooHR listingIdentity**——职位携带由 widget shortcode / BambooHR 租户 + 职位 id 构建的 ATS 原生身份 `{ats_provider, board_slug, posting_id}`（父项目 #6966/#6955），与 v1.271.13 发布的 SmartRecruiters/JOIN 契约一致。不透明 id 规则：不裁剪、不改大小写、数字绝不强制转换，非规范 id 回退到 URL 去重。（CAR-272/CAR-273）
+
+### 修复
+
+- **Avature 遍历**（#6971）：自带协议的 href（`javascript:`、`data:`、`mailto:`）被丢弃——只有 http(s) 才算职位链接；页面停滞检查现在区分三种情况：真正为空的页面（停止）、链接全部被丢弃的页面（前进——偏移量已移动，遍历继续）与重复页面（停止）。此前一个卡片链接全部被丢弃的页面会提前终止遍历。（CAR-274）
+- **Gupy 保密页面**（#6892）：保密招聘页面现在还会依据 Gupy 的占位 `confidencial_logo.png` 以及匹配 /confidencia/i 的租户子域名被丢弃——搜索载荷不标记它们，其名称为自由文本。（CAR-275）
+
+### 备注
+
+- 未从父项目差异（32 个提交，`da28ef95..eaa74c4b`）移植的内容：**印度（modes/in/）**与**奥地利（modes/at/）**市场层——父项目侧的评估提示词，web-ui 不调用 modes；**dashboard 的 Inbox 标签页**及其他 `web/` 修复——父项目自己的 Go dashboard/Next 应用，并非本 SPA；**greenhouse/ashby/lever 非看板抛错**（#6918）——web-ui 自 v1.242.0 起就通过 `_shape.mjs` 对畸形的 200 抛错，上游刚刚赶上；**seek_searches 注册拼写**（#6948）——web-ui 没有 seek_searches 读取器；**pracecz 测试恢复**（#6957）——web-ui 没有 pracecz 源；evaluator/batch/latex/backup/updater/cv-facts 修复——本仓库不运行的父项目 CLI 工具。
+- 本波次由 6 个智能体组成的 swarm 执行（每个移植单元一个，文件所有权互不重叠，worktree + 红→绿），由编排器在共享的注册表/门禁文件上一次性集成。
+
 ## [1.271.15] — 2026-11-12
 
 ### 修复

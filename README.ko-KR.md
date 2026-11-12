@@ -7,19 +7,19 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-8450%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-8561%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.271.15-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.15)
+[![release](https://img.shields.io/badge/release-v1.271.16-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.16)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.271.15** — **커버리지 부채 상환**: 제외됐던 모든 파일이 이제 실제로 기준선 위로 측정됩니다 — jd-parse, talentlink, tkms, salary-text, posting-close, states — 그리고 제외 목록이 다시 비었습니다. 테스트 8450.
+> **🆕 최신 릴리스 — v1.271.16** — 6-에이전트 스웜이 출시한 **parent-sync 웨이브**: 새로운 **rexx-systems** 스캔 소스(rexx CNAME 위에서 운영되는 고용주 브랜드 커리어 사이트 — 명시적 `provider: rexx` 핀, 레지스트리 **141 = 136 EN + 5 RU · 136 adapters**); **Lever 급여**가 `salaryRange`에서 Ashby 기준 연율화로 읽힙니다(시간당 ×2080, 주당 ×52, 월당 ×12); **workable**과 **bamboohr** 공고는 ATS 고유의 listingIdentity(쇼트코드/테넌트 + id, 불투명 id 규칙, URL 중복 제거 폴백)를 전달합니다; **avature**는 `javascript:`/`data:`/`mailto:` 링크를 버리고 링크가 모두 버려진 페이지에서 더는 탐색을 끝내지 않습니다; **gupy**도 자리표시자 로고와 `confidencia` 테넌트 서브도메인으로 기밀 커리어 페이지를 버립니다. 테스트 8561.
 >
-> **이전 버전 — v1.271.14** — **parent-sync 웨이브**(업스트림 커밋 88개): Ashby의 공고 API에 embed 폴백이 있는 자체 64 MB 본문 상한이 생겼고, SmartRecruiters와 SuccessFactors는 잘림 경고가 있는 옵트인 탐색 상한을 얻었으며, Amazon과 OracleCloud는 보고된 총계에서 페이지 예산을 산정하고, Join은 재게시에도 안정적인 listing identity를 전달합니다 — 스캔 페이지는 페이지 상한에서 멈추는 대신 큰 보드를 통째로 읽습니다. 테스트 8411.
+> **이전 버전 — v1.271.15** — **CAR-269 종료: 커버리지 부채 상환**. 이전에 예외였던 모든 파일이 이제 실제로 기준선 위로 측정됩니다 — jd-parse 78.77→98.62 % 분기, talentlink/tkms/tkms-adapter/_salary-text/posting-close/states → 100 % — 그리고 예외 목록에는 제품 소스가 하나도 없습니다(+39 테스트; 구조적으로 죽은 방어 분기에 붙은 세 개의 `node:coverage ignore` 마커). 이제 스웜의 salvage 경로는 작업을 Done이라 부르기 전에 PR-스쿼시 마커를 요구합니다(CAR-269는 식별자만 언급한 인프라 커밋에 의해 두 번이나 Done으로 닫혔었습니다).
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

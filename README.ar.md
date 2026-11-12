@@ -10,19 +10,19 @@
 
 _واجهة غير رسمية — لا علاقة لها بـ career-ops / santifer ولا تحظى بموافقتهما._
 
-[![tests](https://img.shields.io/badge/tests-8450%20passed-brightgreen)](#الاختبارات)
+[![tests](https://img.shields.io/badge/tests-8561%20passed-brightgreen)](#الاختبارات)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#الاختبارات)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.271.15-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.15)
+[![release](https://img.shields.io/badge/release-v1.271.16-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.16)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 أحدث إصدار — v1.271.15** — **سداد دين التغطية**: كل ملف كان مستثنىً يقيس الآن فعليًا فوق الحد — jd-parse وtalentlink وtkms وsalary-text وposting-close وstates — وقائمة الاستثناءات فارغة من جديد. الاختبارات: 8450.
+> **🆕 أحدث إصدار — v1.271.16** — **موجة المزامنة مع الأب (parent-sync)** شُحنت بواسطة سرب من 6 وكلاء: مصدر مسح **جديد — rexx-systems** (مواقع وظائف تحمل هوية صاحب العمل على CNAME تابع لـ rexx — تثبيت صريح عبر `provider: rexx`، والسجل **141 = 136 EN + 5 RU · 136 adapters**)؛ **رواتب Lever** تُقرأ من `salaryRange` مع تحويل سنوي على أساس Ashby (×2080 للساعي، ×52 للأسبوعي، ×12 للشهري)؛ منشورات **workable** و**bamboohr** تحمل هوية الإدراج الأصلية لنظام ATS (listingIdentity) — shortcode/tenant + id، قواعد المعرّفات المعتمة، واللجوء إلى dedup عبر URL؛ **avature** يتجاهل روابط `javascript:`/`data:`/`mailto:` ولم يعد ينهي جولته عند صفحة أُسقطت روابطها كلها؛ **gupy** يسقط صفحات الوظائف السرية أيضًا عبر شعار العنصر البديل الخاص بها والمجال الفرعي للمستأجر المطابق لـ `confidencia`. الاختبارات: 8561.
 >
-> **السابق — v1.271.14** — **موجة المزامنة مع الأب (parent-sync)** (88 كومِت upstream): تحصل نقطة نهاية API لوظائف Ashby على سقف خاص بالجسم بحجم 64 MB مع بديل embed، ويكتسب SmartRecruiters وSuccessFactors سقوف تجاوز اختيارية مع تحذيرات اقتطاع، ويحجمان Amazon وOracleCloud ميزانيات صفحاتهما وفق الإجماليات المبلَّغة، ويحمل Join هويات إدراج ثابتة عبر إعادة النشر — تقرأ صفحة المسح اللوحات الكبيرة كاملة بدل التوقف عند حد الصفحات. الاختبارات: 8411.
+> **السابق — v1.271.15** — **إغلاق CAR-269: سداد دين التغطية**. كل ملف كان مستثنىً سابقًا يقيس الآن فعليًا فوق الحد — jd-parse من 78.77 إلى 98.62 % من التفرعات، talentlink/tkms/tkms-adapter/_salary-text/posting-close/states إلى 100 % — وقائمة الاستثناءات لا تتضمن أي مصدر من مصادر المنتج (+39 اختبارًا؛ ثلاث علامات `node:coverage ignore` على تفرعات دفاعية ميتة). يتطلب مسار الإنقاذ الخاص بالسرب الآن علامة squash على PR قبل وسم العمل بأنه منجز (كان قد أُغلق CAR-269 مرتين بوصفه منجزًا بواسطة كومِتات بنية تحتية اكتفت بذكر المعرّف).
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

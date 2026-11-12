@@ -254,11 +254,13 @@ export function rotateReadmeRelease(content, newVersion, oldVersion, testCount) 
   if (testCount != null) {
     // The lead's trailing test count is fully localized ("Tests 8450." EN,
     // "Pruebas: 8450." ES, "Тесты: 8450." RU, "テスト 8450。" JA, "टेस्ट 8450।" HI,
-    // "测试 8450。" ZH …), so the replacement is END-ANCHORED: the last
-    // word + number + sentence punctuation at the line's tail. A lead that
-    // does not end this way (no count at all) is left alone.
+    // "டெஸ்ட்கள் 8450." TA — Tamil letters carry \p{M} combining marks, so the
+    // word class must include them — "测试 8450。" ZH …), so the replacement is
+    // END-ANCHORED: the last word + number + sentence punctuation at the
+    // line's tail. A lead that does not end this way (no count at all) is
+    // left alone.
     lines[leadIdx] = lines[leadIdx].replace(
-      /(\p{L}+(?:\s*[:：]\s*|\s+))(\d+)([.。।]?)[ \t]*$/u,
+      /([\p{L}\p{M}]+(?:\s*[:：]\s*|\s+))(\d+)([.。।]?)[ \t]*$/u,
       (m, words, num, punct) => `${words}${testCount}${punct}`,
     );
   }

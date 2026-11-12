@@ -7,19 +7,19 @@
 
 _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve onlar tarafından onaylanmamıştır._
 
-[![tests](https://img.shields.io/badge/tests-8450%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-8561%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.271.15-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.15)
+[![release](https://img.shields.io/badge/release-v1.271.16-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.16)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Son sürüm — v1.271.15** — **kapsam borcunun ödenmesi**: muaf tutulan her dosya artık gerçekten eşiğin üzerinde ölçüyor — jd-parse, talentlink, tkms, salary-text, posting-close ve states — ve muafiyet listesi yeniden boş. Test: 8450.
+> **🆕 Son sürüm — v1.271.16 — v1.271.16** — **6 ajanlı sürü tarafından gönderilen parent-sync dalgası**: YENİ tarama kaynağı **rexx-systems** (rexx CNAME'i üzerinden işverenin markalı barındırıcısında kariyer siteleri — açık `provider: rexx` pini, kayıt **141 = 136 EN + 5 RU · 136 adaptör**); **Lever maaşı**, `salaryRange`'den Ashby temeliyle yıllandırılarak okunur (saatlik ×2080, haftalık ×52, aylık ×12); **workable** ve **bamboohr** ilanları ATS'nin yerleşik listingIdentity'sini taşır (shortcode/kiracı + id, opak-id kuralları, URL tekilleştirmesine geri dönüş); **avature**, `javascript:`/`data:`/`mailto:` bağlantılarını düşürür ve tüm bağlantıları düşürülmüş bir sayfada gezinmeyi artık sonlandırmaz; **gupy**, yer tutucu logosu ve `confidencia` kiracı alt alan adıyla gizli kariyer sayfalarını da düşürür. Test: 8561.
 >
-> **Önceki — v1.271.14** — **parent-sync dalgası** (88 upstream commit): Ashby'nin ilan API'si embed yedeğiyle birlikte kendi 64 MB gövde tavanını kazanıyor, SmartRecruiters ve SuccessFactors kesilme uyarılarıyla isteğe bağlı geçiş tavanları elde ediyor, Amazon ve OracleCloud sayfa bütçelerini bildirilen toplamlara göre boyutlandırıyor, Join yeniden yayına dayanıklı listing kimlikleri taşıyor — tarama sayfası büyük panoları bir sayfa sınırında durmak yerine baştan sona okuyor. Test: 8411.
+> **Önceki — v1.271.15 — v1.271.15** — **CAR-269 kapandı: kapsam borcu ödendi**. Daha önce muaf tutulan her dosya artık gerçekten eşikmanın üzerinde ölçülüyor — jd-parse %78,77→%98,62 dallar, talentlink/tkms/tkms-adapter/_salary-text/posting-close/states → %100 — ve muafiyet listesi ürün kaynağı içermiyor (+39 test; ölü savunma dallarında üç `node:coverage ignore` işareti). Sürünün kurtarma yolu artık işi Done olarak adlandırmadan önce bir PR-squash işareti istiyor (CAR-269, yalnızca tanımlayıcıdan bahseden altyapı commit'leri tarafından iki kez Done olarak kapatılmıştı).
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

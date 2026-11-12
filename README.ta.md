@@ -7,19 +7,19 @@
 
 _அதிகாரப்பூர்வமற்ற இடைமுகம் — career-ops / santifer உடன் எந்தத் தொடர்பும் அல்ல, அவர்களால் அங்கீகரிக்கப்படவும் இல்லை._
 
-[![tests](https://img.shields.io/badge/tests-8450%20passed-brightgreen)](#சோதனைகள்)
+[![tests](https://img.shields.io/badge/tests-8561%20passed-brightgreen)](#சோதனைகள்)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#சோதனைகள்)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#சோதனைகள்)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#தேவைகள்)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.271.15-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.15)
+[![release](https://img.shields.io/badge/release-v1.271.16-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.16)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 சமீபத்திய வெளியீடு — v1.271.15** — **coverage கடன் திருப்பிச் செலுத்தப்பட்டது**: விலக்கு அளிக்கப்பட்ட ஒவ்வொரு file-உம் இப்போது உண்மையிலேயே வரம்புக்கு மேல் அளவிடப்படுகிறது — jd-parse, talentlink, tkms, salary-text, posting-close மற்றும் states — விலக்குப் பட்டியல் மீண்டும் காலியாக உள்ளது. டெஸ்ட்கள் 8450.
+> **🆕 சமீபத்திய வெளியீடு — v1.271.16** — **parent-sync wave**, 6-agent swarm மூலம் வழங்கப்பட்டது: புதிய **rexx-systems** scan source (rexx CNAME-இல் இயங்கும் முதலாளி-பிராண்ட் career sites — வெளிப்படையான `provider: rexx` pin, registry **141 = 136 EN + 5 RU · 136 adapters**); **Lever salary** இப்போது `salaryRange`-இலிருந்து Ashby-அடிப்படை ஆண்டு-மாற்றத்துடன் படிக்கப்படுகிறது (மணிநேரம் ×2080, வாரம் ×52, மாதம் ×12); **workable** மற்றும் **bamboohr** postings ATS-சொந்த listingIdentity-ஐ சுமக்கின்றன (shortcode/tenant + id, opaque-id விதிகள், URL-dedup fallback); **avature** `javascript:`/`data:`/`mailto:` இணைப்புகளை drop செய்கிறது, மேலும் அனைத்து இணைப்புகளும் drop செய்யப்பட்ட பக்கத்தில் தன் walk-ஐ இனி முடிக்காது; **gupy** confidential career pages-ஐ அவற்றின் placeholder logo மற்றும் `confidencia` tenant subdomain மூலமும் drop செய்கிறது. டெஸ்ட்கள் 8561.
 >
-> **முந்தைய வெளியீடு — v1.271.14** — **parent-sync wave** (88 upstream commits): Ashby-இன் posting API தனக்கென 64 MB body ceiling-ஐ embed fallback-உடன் பெறுகிறது, SmartRecruiters மற்றும் SuccessFactors truncation warnings-உடன் opt-in walk ceilings பெறுகின்றன, Amazon மற்றும் OracleCloud தங்கள் page budgets-ஐ reported totals-இலிருந்து அளவிடுகின்றன, Join republish-stable listing identities-ஐ சுமக்கிறது — scan page ஒரு page cap-இல் நிற்பதற்குப் பதிலாக பெரிய boards-ஐ முழுமையாகப் படிக்கிறது. டெஸ்ட்கள் 8411.
+> **முந்தைய வெளியீடு — v1.271.15** — **CAR-269 மூடப்பட்டது: coverage கடன் திருப்பிச் செலுத்தப்பட்டது**. முன்பு விலக்கு அளிக்கப்பட்ட ஒவ்வொரு file-உம் இப்போது உண்மையிலேயே வரம்புக்கு மேல் அளவிடப்படுகிறது — jd-parse 78.77→98.62 % branches, talentlink/tkms/tkms-adapter/_salary-text/posting-close/states → 100 % — மேலும் விலக்குப் பட்டியலில் எந்த product source-உம் இல்லை (+39 டெஸ்ட்கள்; இறந்த defensive branches-இல் மூன்று `node:coverage ignore` markers). Swarm-இன் salvage path இப்போது வேலையை Done என்று அழைக்கும் முன் ஒரு PR-squash marker-ஐக் கட்டாயப்படுத்துகிறது (CAR-269 அடையாளத்தை வெறுமனே குறிப்பிட்ட infra commits மூலம் இருமுறை Done என தவறாக மூடப்பட்டிருந்தது). டெஸ்ட்கள் 8450.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

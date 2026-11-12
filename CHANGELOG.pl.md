@@ -4,6 +4,21 @@
 > ⏳ **Uwaga o zakresie** — plik zawiera obecnie pełną historię wydań; wpisy sprzed dodania polskiego znajdują się poniżej w angielskim oryginale (tłumaczenie w toku).
 > _Wpisy od [1.271.3] czekają na tłumaczenie — angielski oryginał poniżej._
 
+## [1.271.16] — 2026-11-13
+
+### Dodano
+- **rexx-systems — NOWE źródło skanowania** (strony karier Rexx Systems; rejestr **141 = 136 EN + 5 RU · 136 adapters**). Portal rexx działa na hoście firmowanym przez pracodawcę (jobs.employer.com, karriere employer.de — CNAME do chmury rexx), więc obowiązuje **wyłącznie jawne przypięcie**: dodaj `provider: rexx` + `careers_url` w portals.yml; nic nie przypisuje się automatycznie. Obchód czyta listę `stellenangebote.html` (stara i nowa skórka), stronicuje po surowej liczbie wierszy, wykrywa strony powtórzone, best-effort odczytuje daty z feedu RSS, ogranicza się do 200 stron, zachowuje wyniki częściowe przy błędach pobierania i oznacza przycięcie (`page-cap` / `fetch-error` / `repeat-page`). Pokrycie 98,5 % linii / 93,1 % gałęzi — powyżej progu, bez wyjątku. (CAR-270, parent #6946)
+- **Lever salary** — `salaryRange` ogłoszenia jest teraz wczytywane do wynagrodzenia oferty na tej samej zasadzie rocznego uśredniania co Ashby (40 h/tydzień · 52 tygodnie/rok): godzinowa ×2080, dzienna ×260, tygodniowa ×52, miesięczna ×12, roczna ×1; zakresy jednostronne uzupełniają brakującą granicę, granice są porządkowane, nieznany interwał pozostawia wynagrodzenie WYŁĄCZONE (nigdy nie zgadywane), waluta jest normalizowana. Wypełnia kolumnę `comp` w pipeline dla boardów Lever. (CAR-271, parent #6907/#6922)
+- **listingIdentity dla Workable + BambooHR** — ogłoszenia niosą natywną dla ATS tożsamość `{ats_provider, board_slug, posting_id}` budowaną ze shortcode'u widgetu / z dzierżawy BambooHR + identyfikatora oferty (parent #6966/#6955), zgodnie z kontraktem SmartRecruiters/JOIN dostarczonym w v1.271.13. Reguły identyfikatorów nieprzezroczystych: bez przycinania, bez zmiany wielkości liter, liczby nigdy nie są koercjonowane, identyfikatory niekanoniczne cofają się do dedupu po URL. (CAR-272/CAR-273)
+
+### Naprawiono
+- **Obchód Avature** (#6971): hrefy niosące własny schemat (`javascript:`, `data:`, `mailto:`) są odrzucane — tylko http(s) jest linkiem do oferty; a test zastoju strony rozróżnia naprawdę pustą stronę (stop) od strony, z której odrzucono WSZYSTKIE linki (advance — offset się zmienił, więc obchód trwa dalej) od strony powtórzonej (stop). Wcześniej strona kart, z której odrzucono wszystkie linki, przedwcześnie kończyła obchód. (CAR-274)
+- **Poufne strony Gupy** (#6892): poufne strony karier są teraz odrzucane także po placeholdernym logo Gupy `confidencial_logo.png` oraz po subdomenie dzierżawy pasującej do /confidencia/i — payload wyszukiwania ich nie oznacza, a ich nazwy są tekstem dowolnym. (CAR-275)
+
+### Uwagi
+- Nie portowano z delty rodzica (32 commity, `da28ef95..eaa74c4b`): warstwy rynkowe **Indie (modes/in/)** i **Austria (modes/at/)** — prompty ewaluacji żyją po stronie rodzica, a web-ui nie wywołuje trybów; **zakładka Inbox dashboardu** i pozostałe poprawki `web/` — to własny dashboard Go / aplikacja Next rodzica, nie ten SPA; **greenhouse/ashby/lever throw poza boardem** (#6918) — web-ui od v1.242.0 rzuca wyjątek przy zniekształconym 200 poprzez `_shape.mjs`, upstream dopiero dogonił; **rejestracja literówki seek_searches** (#6948) — web-ui nie ma czytnika seek_searches; **przywrócenie testu pracecz** (#6957) — web-ui nie ma źródła pracecz; poprawki evaluator/batch/latex/backup/updater/cv-facts — narzędzia CLI rodzica, których to repo nie uruchamia.
+- Falę wykonał rój 6 agentów (jeden na jednostkę portu, rozłączne własności plików, worktree + red→green), zintegrowany w jednym przebiegu orkiestratora nad współdzielonymi plikami rejestru/bramek.
+
 ## [1.271.15] — 2026-11-12
 
 ### Naprawiono

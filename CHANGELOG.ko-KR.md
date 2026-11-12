@@ -4,6 +4,21 @@
 > ⏳ **참고** — 이 파일은 이제 전체 릴리스 이력을 담고 있습니다. v1.12.0 이전의 6개 항목은 영어 원문 그대로 수록되어 있습니다(번역 대기).
 > _[1.271.3]부터의 항목은 번역 대기 중입니다 — 영어 원문은 아래에 있습니다._
 
+## [1.271.16] — 2026-11-13
+
+### 추가
+- **rexx-systems — 새로운 스캔 소스** (Rexx Systems 커리어 사이트; 레지스트리 **141 = 136 EN + 5 RU · 136 adapters**). rexx 포털은 고용주의 브랜드 호스트(jobs.employer.com, karriere employer.de — rexx 클라우드로의 CNAME)에서 운영되므로 **명시적 핀 전용**입니다: portals.yml에 `provider: rexx` + `careers_url`을 연결합니다; 아무것도 자동 클레임하지 않습니다. 탐색은 `stellenangebote.html` 목록(구형·신형 스킨 모두)을 읽고, 원시 행 수로 페이지를 넘기며, 반복 페이지를 감지하고, 날짜는 RSS 피드에서 최선을 다해 읽고, 200페이지를 상한으로 두며, 가져오기 오류 시 부분 결과를 유지하고, 잘림을 표시합니다(`page-cap` / `fetch-error` / `repeat-page`). 커버리지 98.5 % 라인 / 93.1 % 분기 — 예외 없이 기준선 위. (CAR-270, parent #6946)
+- **Lever 급여** — 공고의 `salaryRange`가 이제 Ashby와 동일한 연율화 기준(주 40시간 · 52주/년)으로 직무 급여에 읽힙니다: 시간당 ×2080, 일당 ×260, 주당 ×52, 월당 ×12, 연간 ×1; 한쪽만 있는 범위는 누락된 경계를 채우고, 경계는 정렬되며, 알 수 없는 구간은 급여를 끕니다(추측하지 않음), 통화는 정규화됩니다. Lever 보드의 파이프라인 `comp` 열을 채웁니다. (CAR-271, parent #6907/#6922)
+- **Workable + BambooHR `listingIdentity`** — 공고가 위젯 쇼트코드 / BambooHR 테넌트 + job id(parent #6966/#6955)에서 만들어진 ATS 고유 식별자 `{ats_provider, board_slug, posting_id}`를 전달하며, v1.271.13에서 출시된 SmartRecruiters/JOIN 계약과 일치합니다. 불투명 id 규칙: 잘라내기 없음, 대소문자 접기 없음, 숫자 강제 변환 없음, 비정준 id는 URL 중복 제거로 폴백. (CAR-272/CAR-273)
+
+### 수정
+- **Avature 탐색** (#6971): 자체 스킴을 지닌 href(`javascript:`, `data:`, `mailto:`)는 버려집니다 — http(s)만이 채용 링크입니다; 그리고 페이지 정체 검사가 진짜 빈 페이지(정지)와 링크가 모두 버려진 페이지(전진 — 오프셋이 이동했으므로 탐색이 계속됩니다)와 반복 페이지(정지)를 구분합니다. 이전에는 링크가 모두 버려진 카드 페이지가 탐색을 조기에 끝냈습니다. (CAR-274)
+- **Gupy 기밀 페이지** (#6892): 기밀 커리어 페이지가 이제 Gupy의 자리표시자 `confidencial_logo.png`와 /confidencia/i에 일치하는 테넌트 서브도메인으로도 버려집니다 — 검색 페이로드는 이를 표시하지 않고 이름은 자유 텍스트입니다. (CAR-275)
+
+### 참고
+- parent 델타(32개 커밋, `da28ef95..eaa74c4b`)에서 포트하지 않음: **인도(modes/in/)** 및 **오스트리아(modes/at/)** 마켓 레이어 — parent 측 평가 프롬프트이며 web-ui는 modes로 셸을 실행하지 않습니다; **대시보드 Inbox 탭**과 기타 `web/` 수정 사항 — parent 자체의 Go 대시보드/Next 앱이며 이 SPA가 아닙니다; **greenhouse/ashby/lever 비보드 throw** (#6918) — web-ui는 v1.242.0부터 `_shape.mjs`를 통해 잘못된 형태의 200에서 throw해 왔으며 upstream이 뒤늦게 따라잡았습니다; **seek_searches 오타 등록** (#6948) — web-ui에는 seek_searches 리더가 없습니다; **pracecz 테스트 복원** (#6957) — web-ui에는 pracecz 소스가 없습니다; evaluator/batch/latex/backup/updater/cv-facts 수정 사항 — 이 저장소가 실행하지 않는 parent CLI 도구입니다.
+- 이 웨이브는 6-에이전트 스웜(포트 단위당 하나, 서로소인 파일 소유권, 워크트리 + red→green)이 실행했으며, 공유 레지스트리/게이트 파일 위에서 하나의 오케스트레이터 패스로 통합되었습니다.
+
 ## [1.271.15] — 2026-11-12
 
 ### 수정

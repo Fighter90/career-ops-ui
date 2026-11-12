@@ -3,6 +3,21 @@
 > **Nota** — este arquivo está integralmente traduzido para o português brasileiro. Cada entrada de versão foi reescrita em PT-BR técnico de qualidade editorial, preservando blocos de código, mensagens de commit, caminhos de arquivo, URLs, variáveis de ambiente, comandos e rótulos de link em sua forma original.
 > _As entradas a partir de [1.271.3] aguardam tradução — o original em inglês abaixo._
 
+## [1.271.16] — 2026-11-13
+
+### Adicionado
+- **rexx-systems — uma NOVA fonte de scan** (sites de carreira da Rexx Systems; registro **141 = 136 EN + 5 RU · 136 adapters**). Um portal rexx roda no host com a marca do empregador (jobs.employer.com, karriere employer.de — um CNAME para a nuvem do rexx), por isso é **somente via pin explícito**: configure `provider: rexx` + `careers_url` no portals.yml; nada é reivindicado automaticamente. A caminhada lê a lista `stellenangebote.html` (skins antiga e nova), pagina pela contagem bruta de linhas, detecta páginas repetidas, lê o feed RSS na tentativa de obter datas, limita a 200 páginas, mantém parciais em erros de fetch e marca o truncamento (`page-cap` / `fetch-error` / `repeat-page`). Cobertura 98,5 % de linhas / 93,1 % de ramificações — acima do piso, sem isenção. (CAR-270, pai #6946)
+- **Salário da Lever** — o `salaryRange` de uma vaga agora é lido para o salário do job na mesma base de anualização da Ashby (40 h/semana · 52 semanas/ano): hora ×2080, dia ×260, semana ×52, mês ×12, ano ×1; intervalos com um lado só preenchem o limite faltante, os limites são ordenados, um intervalo desconhecido deixa o salário DESLIGADO (nunca adivinhado), a moeda é normalizada. Popula a coluna `comp` do pipeline para boards da Lever. (CAR-271, pai #6907/#6922)
+- **listingIdentity para Workable + BambooHR** — as vagas carregam a identidade nativa do ATS `{ats_provider, board_slug, posting_id}`, construída a partir do shortcode do widget / do tenant BambooHR + id da vaga (pai #6966/#6955), no mesmo contrato de SmartRecruiters/JOIN enviado na v1.271.13. Regras de id opaco: sem trim, sem case-folding, números nunca coagidos, ids não canônicos caem para o dedup por URL. (CAR-272/CAR-273)
+
+### Corrigido
+- **Caminhada do Avature** (#6971): hrefs com esquema próprio (`javascript:`, `data:`, `mailto:`) são descartados — apenas http(s) é link de vaga; e a checagem de página parada distingue uma página realmente vazia (parar) de uma página cujos links foram TODOS descartados (avançar — o offset se moveu, então a caminhada continua) de uma página repetida (parar). Antes, uma página de cards cujos links foram todos descartados encerrava a caminhada prematuramente. (CAR-274)
+- **Páginas confidenciais do Gupy** (#6892): páginas de carreira confidenciais agora também são descartadas pelo `confidencial_logo.png` de placeholder do Gupy e por um subdomínio de tenant que casa com /confidencia/i — o payload de busca não as sinaliza e seus nomes são texto livre. (CAR-275)
+
+### Notas
+- NÃO portado do delta do pai (32 commits, `da28ef95..eaa74c4b`): as camadas de mercado **Índia (modes/in/)** e **Áustria (modes/at/)** — prompts de avaliação do lado do pai, o web-ui não faz shell nos modes; a **aba Inbox do dashboard** e as demais correções de `web/` — o dashboard/Next app próprio do pai, não esta SPA; **throw de não-board de greenhouse/ashby/lever** (#6918) — o web-ui já lança erro num 200 malformado via `_shape.mjs` desde a v1.242.0, o upstream alcançou; **registro de typo de seek_searches** (#6948) — o web-ui não tem leitor de seek_searches; **restauração de teste do pracecz** (#6957) — o web-ui não tem fonte pracecz; correções de evaluator/batch/latex/backup/updater/cv-facts — ferramentas CLI do pai que este repositório não roda.
+- A onda foi executada por um enxame de 6 agentes (um por unidade de porta, propriedade de arquivos disjunta, worktrees + red→green), integrada numa única passada do orquestrador sobre os arquivos compartilhados de registro/gates.
+
 ## [1.271.15] — 2026-11-12
 
 ### Corregido

@@ -242,6 +242,7 @@ test('rotateReadmeRelease: the localized trailing count moves in every script', 
     ['> **🆕 最新リリース — v1.271.14** — x。テスト 8411。', 'テスト 8450。'],
     ['> **🆕 最新版本 — v1.271.14** — x。测试 8411。', '测试 8450。'],
     ['> **🆕 नवीनतम — v1.271.14** — x। टेस्ट 8411।', 'टेस्ट 8451।'.replace('8451', '8450')],
+    ['> **🆕 சமீபத்திய — v1.271.14** — x. டெஸ்ட்கள் 8411.', 'டெஸ்ட்கள் 8450.'],
   ];
   for (const [lead, expect] of cases) {
     const out = rotateReadmeRelease(lead, 'v1.271.15', 'v1.271.14', 8450);

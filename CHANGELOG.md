@@ -1,3 +1,21 @@
+## [1.271.16] — 2026-11-13
+
+### Added
+
+- **rexx-systems — a NEW scan source** (Rexx Systems career sites; registry **141 = 136 EN + 5 RU · 136 adapters**). A rexx portal runs on the employer's branded host (jobs.employer.com, karriere employer.de — a CNAME onto rexx's cloud), so it is **explicit-pin only**: wire `provider: rexx` + `careers_url` in portals.yml; nothing auto-claims. The walk reads the `stellenangebote.html` list (old and new skins), pages by the raw row count, detects repeat pages, reads the RSS feed best-effort for dates, caps at 200 pages, keeps partials on fetch errors, and marks truncation (`page-cap` / `fetch-error` / `repeat-page`). Coverage 98.5 % line / 93.1 % branch — above the floor with no exemption. (CAR-270, parent #6946)
+- **Lever salary** — a posting's `salaryRange` is now read into the job salary on the same annualization basis as Ashby (40 h/week · 52 weeks/year): hourly ×2080, daily ×260, weekly ×52, monthly ×12, yearly ×1; one-sided ranges fill the missing bound, bounds are ordered, an unknown interval leaves salary OFF (never guessed), currency is normalized. Populates the pipeline `comp` column for Lever boards. (CAR-271, parent #6907/#6922)
+- **Workable + BambooHR listingIdentity** — postings carry the ATS-native identity `{ats_provider, board_slug, posting_id}` built from the widget shortcode / the BambooHR tenant + job id (parent #6966/#6955), matching the SmartRecruiters/JOIN contract shipped in v1.271.13. Opaque-id rules: no trimming, no case-folding, numbers never coerced, non-canonical ids fall back to URL dedup. (CAR-272/CAR-273)
+
+### Fixed
+
+- **Avature walk** (#6971): hrefs carrying their own scheme (`javascript:`, `data:`, `mailto:`) are dropped — only http(s) is a job link; and the page-stall check distinguishes a truly empty page (stop) from a page whose links were ALL dropped (advance — the offset moved, so the walk continues) from a repeated page (stop). Previously a page of cards whose links were all dropped ended the walk prematurely. (CAR-274)
+- **Gupy confidential pages** (#6892): confidential career pages are now also dropped by Gupy's placeholder `confidencial_logo.png` and by a tenant subdomain matching /confidencia/i — the search payload does not flag them and their names are free text. (CAR-275)
+
+### Notes
+
+- Not ported from the parent delta (32 commits, `da28ef95..eaa74c4b`): the **India (modes/in/)** and **Austria (modes/at/)** market layers — parent-side evaluation prompts, web-ui does not shell into modes; the **dashboard Inbox tab** and the other `web/` fixes — the parent's own Go dashboard/Next app, not this SPA; **greenhouse/ashby/lever non-board throw** (#6918) — web-ui has thrown on a malformed 200 via `_shape.mjs` since v1.242.0, upstream caught up; **seek_searches typo-registration** (#6948) — web-ui has no seek_searches reader; **pracecz test restore** (#6957) — web-ui has no pracecz source; evaluator/batch/latex/backup/updater/cv-facts fixes — parent CLI tools this repo does not run.
+- The wave was executed by a 6-agent swarm (one per port unit, disjoint file ownership, worktrees + red→green), integrated in one orchestrator pass over the shared registry/gate files.
+
 ## [1.271.15] — 2026-11-12
 
 ### Fixed

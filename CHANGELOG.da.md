@@ -3,6 +3,21 @@
 
 > **Oversættelsesnote.** Filen er oversat til dansk: de seneste poster (fra v1.77.0 og bagud, inkl. v1.76.0 / v1.75.2 / v1.75.1 / v1.75.0) er fuldt oversat til teknisk dansk. Ældre poster bevares på engelsk; versionsoverskrifter og datoer er identiske med den engelske kildefil.
 
+## [1.271.16] — 2026-11-13
+
+### Tilføjet
+- **rexx-systems — en NY scan-kilde** (Rexx Systems-karrieresider; registret **141 = 136 EN + 5 RU · 136 adapters**). En rexx-portal kører på arbejdsgiverens brandede vært (jobs.employer.com, karriere employer.de — et CNAME op til rexx' cloud), så den er **kun til eksplicit pin**: konfigurér `provider: rexx` + `careers_url` i portals.yml; intet claimer den automatisk. Walk'en læser `stellenangebote.html`-listen (gammelt og nyt skin), pager efter det rå rækkeantal, opdager gentagne sider, læser RSS-feedet best effort for datoer, har et loft på 200 sider, bevarer partials ved fetch-fejl og markerer trunkering (`page-cap` / `fetch-error` / `repeat-page`). Coverage 98,5 % linjer / 93,1 % forgreninger — over grænsen uden fritagelse. (CAR-270, parent #6946)
+- **Lever-løn** — et opslags `salaryRange` læses nu ind i jobbets løn på samme annualiseringsgrundlag som Ashby (40 t/uge · 52 uger/år): time ×2080, dag ×260, uge ×52, måned ×12, år ×1; ensidige intervaller udfylder den manglende grænse, grænserne sorteres, et ukendt interval efterlader løn slået fra (den gættes aldrig), og valutaen normaliseres. Udfylder `comp`-kolonnen i pipelinen for Lever-boards. (CAR-271, parent #6907/#6922)
+- **Workable + BambooHR listingIdentity** — opslag bærer den ATS-native identitet `{ats_provider, board_slug, posting_id}`, bygget fra widget-shortcode / BambooHR-tenant + job-id (parent #6966/#6955), i tråd med den SmartRecruiters/JOIN-kontrakt, der kom med v1.271.13. Opaque-id-regler: ingen trimning, ingen case-folding, tal coerces aldrig, ikke-kanoniske id'er falder tilbage til URL-dedup. (CAR-272/CAR-273)
+
+### Rettet
+- **Avature-walk** (#6971): hrefs med eget skema (`javascript:`, `data:`, `mailto:`) droppes — kun http(s) er et joblink; og side-stall-tjekket skelner mellem en reelt tom side (stop), en side, hvis links ALLE er droppet (videre — offsettet flyttede sig, så walk'en fortsætter), og en gentagen side (stop). Tidligere sluttede walk'en for tidligt på en side af kort, hvis links alle var droppet. (CAR-274)
+- **Gupy-fortrolige sider** (#6892): fortrolige karrieresider droppes nu også via Gupys pladsholder-logo `confidencial_logo.png` og via et tenant-subdomæne, der matcher /confidencia/i — søge-payload'en flagger dem ikke, og deres navne er fri tekst. (CAR-275)
+
+### Noter
+- Ikke portet fra parent-deltaet (32 commits, `da28ef95..eaa74c4b`): **Indien (modes/in/)**- og **Østrig (modes/at/)**-markedslagene — parent-side evalueringsprompts, web-ui sheller ikke ind i modes; **dashboard-Inbox-fanen** og de øvrige `web/`-rettelser — forælderens egen Go-dashboard/Next-app, ikke denne SPA; **greenhouse/ashby/lever non-board throw** (#6918) — web-ui har kastet på en malformed 200 via `_shape.mjs` siden v1.242.0, upstream er nu indhentet; **seek_searches-typo-registrering** (#6948) — web-ui har ingen seek_searches-læser; **pracecz test-gendannelse** (#6957) — web-ui har ingen pracecz-kilde; evaluator/batch/latex/backup/updater/cv-facts-rettelser — parent-CLI-værktøjer, som dette repo ikke kører.
+- Bølgen blev udført af en sværm på 6 agenter (én pr. port-enhed, adskilt fil-ejerskab, worktrees + rød→grøn), integreret i ét orkestrator-pass over de delte registry/gate-filer.
+
 ## [1.271.15] — 2026-11-12
 
 ### Rettet

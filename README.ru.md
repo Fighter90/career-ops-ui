@@ -7,19 +7,19 @@
 
 _Неофициальный интерфейс — не аффилирован с career-ops / santifer и не одобрен ими._
 
-[![tests](https://img.shields.io/badge/tests-8450%20passed-brightgreen)](#тесты)
+[![tests](https://img.shields.io/badge/tests-8561%20passed-brightgreen)](#тесты)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.271.15-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.15)
+[![release](https://img.shields.io/badge/release-v1.271.16-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.16)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Последний релиз — v1.271.15** — **расплата по долгу покрытия**: каждый ранее освобождённый файл теперь реально измеряется выше порога — jd-parse, talentlink, tkms, salary-text, posting-close и states — а список исключений снова пуст. Тесты: 8450.
+> **🆕 Последний релиз — v1.271.16 — v1.271.16** — **волна parent-sync, отправленная роем из 6 агентов**: новый источник сканирования **rexx-systems** (карьерные сайты на брендированном хосте работодателя через CNAME rexx — явный пин `provider: rexx`, реестр **141 = 136 EN + 5 RU · 136 адаптеров**); **зарплаты Lever** читаются из `salaryRange` с годовым базисом Ashby (часовая ×2080, недельная ×52, месячная ×12); постинги **workable** и **bamboohr** несут ATS-нативный listingIdentity (shortcode/тенант + id, правила opaque-id, фолбэк на дедуп по URL); **avature** отбрасывает ссылки `javascript:`/`data:`/`mailto:` и больше не завершает обход на странице, все ссылки которой были отброшены; **gupy** также отбрасывает конфиденциальные карьерные страницы по плейсхолдер-логотипу и тенант-субдомену `confidencia`. Тесты: 8561.
 >
-> **Предыдущий релиз — v1.271.14** — **волна parent-sync** (88 апстрим-коммитов): у API вакансий Ashby появляется собственный лимит тела ответа 64 МБ с embed-фолбэком, SmartRecruiters и SuccessFactors получают opt-in потолки обхода с предупреждениями об усечении, Amazon и OracleCloud вычисляют страничные бюджеты из заявленных общих чисел, Join несёт стабильные при повторной публикации идентичности листингов — страница сканов читает большие борды целиком, а не останавливается на страничном потолке. Тесты: 8411.
+> **Предыдущий релиз — v1.271.15 — v1.271.15** — **CAR-269 закрыт: долг по покрытию выплачен**. Каждый ранее освобождённый файл теперь реально измеряется выше порога — jd-parse 78.77→98.62 % ветвей, talentlink/tkms/tkms-adapter/_salary-text/posting-close/states → 100 % — а exempt-лист не содержит продуктовых исходников (+39 тестов; три маркера `node:coverage ignore` на мёртвые защитные ветки). Salvage-путь роя теперь требует PR-squash-маркер, прежде чем считать работу выполненной (CAR-269 дважды ложно закрывался инфра-коммитами, лишь упоминавшими идентификатор).
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

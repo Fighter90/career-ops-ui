@@ -3,6 +3,24 @@
 > Nhật ký này nay chứa đầy đủ lịch sử các bản phát hành. Các mục phát hành trước khi có bản địa hóa tiếng Việt (v1.254.0) xuất hiện bên dưới bằng bản gốc tiếng Anh — bản dịch còn đang chờ; bản chính thức là [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 > _Các mục từ [1.271.3] đang chờ dịch — bản gốc tiếng Anh bên dưới._
 
+## [1.271.16] — 2026-11-13
+
+### Đã thêm
+
+- **rexx-systems — một nguồn quét MỚI** (các trang nghề nghiệp Rexx Systems; đăng ký **141 = 136 EN + 5 RU · 136 adapter**). Một cổng rexx sống trên host thương hiệu của nhà tuyển dụng (jobs.congty.com, karriere.congty.de — một CNAME lên đám mây rexx), vì vậy kết nối **chỉ với ghim tường minh**: `provider: rexx` + `careers_url` trong portals.yml; không có gì tự nhận. Việc đi lại đọc danh sách `stellenangebote.html` (cả skin cũ và mới), phân trang theo số hàng thô, phát hiện trang lặp lại, đọc ngày từ nguồn RSS best-effort, trần 200 trang, giữ kết quả một phần khi lỗi tải và đánh dấu việc cắt ngắn (`page-cap` / `fetch-error` / `repeat-page`). Độ phủ 98,5 % dòng / 93,1 % nhánh — trên ngưỡng, không miễn trừ. (CAR-270, cha #6946)
+- **Lương Lever** — `salaryRange` của bài đăng giờ được đọc vào lương của vị trí với quy năm hóa theo cơ sở Ashby (40 giờ/tuần · 52 tuần/năm): theo giờ ×2080, theo ngày ×260, theo tuần ×52, theo tháng ×12, theo năm ×1; khoảng một phía lấy giới hạn còn thiếu từ phía kia, các giới hạn được sắp thứ tự, một khoảng không biết để lương trống (không bao giờ đoán), tiền tệ được chuẩn hóa. Điền cột `comp` của pipeline cho các bảng Lever. (CAR-271, cha #6907/#6922)
+- **listingIdentity cho workable và bamboohr** — các bài đăng mang định danh gốc của ATS `{ats_provider, board_slug, posting_id}` được dựng từ shortcode của widget / tenant BambooHR + id vị trí (#6966/#6955) — cùng hợp đồng với SmartRecruiters/JOIN của v1.271.13. Quy tắc id mờ: không cắt khoảng trắng, không gấp trường hợp, số không bao giờ bị ép kiểu, id không chính quy về khử trùng lặp theo URL. (CAR-272/CAR-273)
+
+### Đã sửa
+
+- **Việc đi lại avature** (#6971): các liên kết mang giao thức riêng (`javascript:`, `data:`, `mailto:`) bị loại bỏ — chỉ http(s) là liên kết vị trí; và kiểm tra kẹt giờ phân biệt một trang thực sự trống (dừng), một trang mà tất cả liên kết đã bị loại (tiến — offset đã di chuyển, việc đi lại tiếp tục) và một trang lặp lại (dừng). Trước đây, một trang thẻ với tất cả liên kết bị loại kết thúc việc đi lại sớm. (CAR-274)
+- **Các trang bảo mật gupy** (#6892): các trang nghề nghiệp bảo mật nay cũng bị loại bằng logo giữ chỗ của Gupy `confidencial_logo.png` và một subdomain tenant khớp /confidencia/i — tải trọng tìm kiếm không đánh dấu chúng và tên của chúng là văn bản tự do. (CAR-275)
+
+### Ghi chú
+
+- Không port từ phần thay đổi của cha (32 commit, `da28ef95..eaa74c4b`): các tầng thị trường **Ấn Độ (modes/in/)** và **Áo (modes/at/)** — các prompt đánh giá của cha, web-ui không chạy modes; **tab Inbox của bảng điều khiển** và các sửa `web/` khác — bảng điều khiển Go / ứng dụng Next của cha, không phải SPA này; **throw khi phản hồi không phải bảng của greenhouse/ashby/lever** (#6918) — web-ui đã throw trên một 200 dị dạng qua `_shape.mjs` từ v1.242.0, thượng nguồn đã theo kịp; **đăng ký lỗi chính tả seek_searches** (#6948) — web-ui không có trình đọc seek_searches; **khôi phục kiểm thử pracecz** (#6957) — web-ui không có nguồn pracecz; các sửa evaluator/batch/latex/backup/updater/cv-facts — công cụ CLI của cha mà kho này không chạy.
+- Đợt này được thực hiện bởi bầy đàn 6 agent (một agent cho mỗi đơn vị port, quyền sở hữu tệp rời rạc, worktree + red→green), được tích hợp trong một lượt điều phối duy nhất trên các tệp chung đăng ký/gate.
+
 ## [1.271.15] — 2026-11-12
 
 ### Đã sửa

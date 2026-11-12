@@ -3,6 +3,24 @@
 > இந்த மாற்றப் பதிவு இப்போது முழு வெளியீட்டு வரலாற்றையும் கொண்டுள்ளது. தமிழ் மொழியாக்கம் (v1.245.0) சேர்க்கப்படுவதற்கு முன் வெளியிடப்பட்ட பதிவுகள் கீழே ஆங்கில அசல் வடிவில் உள்ளன — மொழிபெயர்ப்பு நிலுவையில் உள்ளது; அதிகாரப்பூர்வ ஆவணம் [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 > _[1.271.3] முதல் பதிவுகள் மொழிபெயர்ப்பு நிலுவையில் உள்ளன — ஆங்கில அசல் கீழே._
 
+## [1.271.16] — 2026-11-13
+
+### சேர்க்கப்பட்டது
+
+- **rexx-systems — புதிய scan source** (Rexx Systems career sites; registry **141 = 136 EN + 5 RU · 136 adapters**). ஒரு rexx portal முதலாளியின் பிராண்ட் செய்யப்பட்ட host-இல் இயங்குகிறது (jobs.employer.com, karriere employer.de — rexx-இன் cloud-இல் ஒரு CNAME), எனவே இது **explicit-pin மட்டுமே**: portals.yml-இல் `provider: rexx` + `careers_url` இணைக்கவும்; எதுவும் auto-claim செய்யாது. Walk `stellenangebote.html` list-ஐப் படிக்கிறது (பழைய மற்றும் புதிய skins), raw row எண்ணிக்கையால் pages செய்கிறது, repeat pages-ஐக் கண்டறிகிறது, தேதிகளுக்காக RSS feed-ஐ best-effort ஆகப் படிக்கிறது, 200 pages-இல் வரம்பிடுகிறது, fetch errors-இல் partials-ஐ வைத்துக்கொள்கிறது, மேலும் truncation-ஐக் குறிக்கிறது (`page-cap` / `fetch-error` / `repeat-page`). Coverage 98.5 % line / 93.1 % branch — விலக்கு இல்லாமல் வரம்புக்கு மேலே. (CAR-270, parent #6946)
+- **Lever salary** — ஒரு posting-இன் `salaryRange` இப்போது Ashby-உடன் ஒரே ஆண்டு-மாற்ற அடிப்படையில் (40 h/week · 52 weeks/year) job salary-ஆகப் படிக்கப்படுகிறது: hourly ×2080, daily ×260, weekly ×52, monthly ×12, yearly ×1; ஒரு பக்கம் மட்டும் கொண்ட ranges காணாத எல்லையை நிரப்புகின்றன, எல்லைகள் வரிசைப்படுத்தப்படுகின்றன, தெரியாத interval salary-ஐ OFF ஆகவே விடுகிறது (ஒருபோதும் ஊகிக்காது), currency normalise செய்யப்படுகிறது. Lever boards-க்கு pipeline-இன் `comp` column-ஐ நிரப்புகிறது. (CAR-271, parent #6907/#6922)
+- **Workable + BambooHR listingIdentity** — postings இப்போது widget shortcode / BambooHR tenant + job id-இலிருந்து கட்டமைக்கப்பட்ட ATS-சொந்த அடையாளம் `{ats_provider, board_slug, posting_id}`-ஐ சுமக்கின்றன (parent #6966/#6955), v1.271.13-இல் வழங்கப்பட்ட SmartRecruiters/JOIN contract-உடன் பொருந்துகிறது. Opaque-id விதிகள்: trim இல்லை, case-folding இல்லை, numbers ஒருபோதும் coerce செய்யப்படாது, non-canonical ids URL dedup-க்கு fallback ஆகும். (CAR-272/CAR-273)
+
+### சரி செய்யப்பட்டது
+
+- **Avature walk** (#6971): சொந்த scheme-ஐ சுமக்கும் hrefs (`javascript:`, `data:`, `mailto:`) drop செய்யப்படுகின்றன — http(s) மட்டுமே ஒரு job link; மேலும் page-stall check ஒரு உண்மையாகக் காலியான page-ஐ (நிறுத்து) அனைத்து links-உம் drop செய்யப்பட்ட page-இலிருந்து (முன்னேறு — offset நகர்ந்தது, எனவே walk தொடர்கிறது) மற்றும் repeat page-இலிருந்து (நிறுத்து) வேறுபடுத்துகிறது. முன்பு அனைத்து links-உம் drop செய்யப்பட்ட cards page walk-ஐ முன்கூட்டியே முடித்துவிட்டது. (CAR-274)
+- **Gupy confidential pages** (#6892): confidential career pages இப்போது Gupy-இன் placeholder `confidencial_logo.png` மற்றும் /confidencia/i-உடன் பொருந்தும் tenant subdomain மூலமும் drop செய்யப்படுகின்றன — search payload அவற்றை flag செய்வதில்லை, அவற்றின் பெயர்கள் free text. (CAR-275)
+
+### குறிப்புகள்
+
+- Parent delta-விலிருந்து port செய்யப்படவில்லை (32 commits, `da28ef95..eaa74c4b`): **India (modes/in/)** மற்றும் **Austria (modes/at/)** market layers — parent-side evaluation prompts, web-ui modes-இல் shell செய்வதில்லை; **dashboard Inbox tab** மற்றும் மற்ற `web/` fixes — parent-இன் சொந்த Go dashboard/Next app, இந்த SPA அல்ல; **greenhouse/ashby/lever non-board throw** (#6918) — web-ui v1.242.0 முதல் `_shape.mjs` வழியாக malformed 200-இல் throw செய்கிறது, upstream இப்போது பின்தொடர்கிறது; **seek_searches typo-registration** (#6948) — web-ui-க்கு seek_searches reader இல்லை; **pracecz test restore** (#6957) — web-ui-க்கு pracecz source இல்லை; evaluator/batch/latex/backup/updater/cv-facts fixes — இந்த repo இயக்காத parent CLI tools.
+- இந்த wave 6-agent swarm மூலம் செய்யப்பட்டது (ஒரு port unit-க்கு ஒரு agent, பிரிக்கப்பட்ட file ownership, worktrees + red→green), shared registry/gate files-இன் மீது ஒரே orchestrator pass-இல் ஒருங்கிணைக்கப்பட்டது.
+
 ## [1.271.15] — 2026-11-12
 
 ### சரி செய்யப்பட்டது

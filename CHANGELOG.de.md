@@ -3,6 +3,24 @@
 
 > Dieses Changelog enthält die vollständige Versionsgeschichte. Einträge, die vor der deutschen Lokalisierung (v1.85.0) veröffentlicht wurden, stehen unten im englischen Original — Übersetzung ausstehend; maßgeblich bleibt [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.271.16] — 2026-11-13
+
+### Neu
+
+- **rexx-systems — eine NEUE Scan-Quelle** (Rexx-Systems-Karriereseiten; Registry **141 = 136 EN + 5 RU · 136 Adapter**). Ein rexx-Portal läuft auf dem markengebundenen Host des Arbeitgebers (jobs.firma.de, karriere.firma.de — ein CNAME auf die rexx-Cloud), daher ist die Anbindung **nur mit explizitem Pin**: `provider: rexx` + `careers_url` in der portals.yml; nichts wird automatisch beansprucht. Der Durchlauf liest die `stellenangebote.html`-Liste (altes und neues Skin), paginiert nach der rohen Zeilenzahl, erkennt Wiederholungsseiten, liest Datumsangaben best-effort aus dem RSS-Feed, Deckel bei 200 Seiten, hält Teilresultate bei Fetch-Fehlern und markiert die Verkürzung (`page-cap` / `fetch-error` / `repeat-page`). Abdeckung 98,5 % Zeilen / 93,1 % Zweige — über der Schwelle, ohne Ausnahme. (CAR-270, Parent #6946)
+- **Lever-Gehalt** — die `salaryRange` eines Postings wird jetzt mit derselben Jahresisierungsbasis wie Ashby gelesen (40 h/Woche · 52 Wochen/Jahr): stündlich ×2080, täglich ×260, wöchentlich ×52, monatlich ×12, jährlich ×1; ein einseitiger Bereich ergänzt die fehlende Grenze aus der anderen, Grenzen werden geordnet, ein unbekanntes Intervall lässt das Gehalt leer (niemals geraten), die Währung wird normalisiert. Füllt die `comp`-Spalte der Pipeline für Lever-Boards. (CAR-271, Parent #6907/#6922)
+- **listingIdentity für workable und bamboohr** — Postings tragen die ATS-native Identität `{ats_provider, board_slug, posting_id}`, gebaut aus dem Widget-Shortcode / dem BambooHR-Tenant + der Stellen-id (#6966/#6955) — derselbe Vertrag wie SmartRecruiters/JOIN aus v1.271.13. Opaque-id-Regeln: kein Trimmen, keine_case-Faltung, Zahlen werden nie erzwungen, nicht-kanonische ids fallen auf die URL-Dedup zurück. (CAR-272/CAR-273)
+
+### Behoben
+
+- **avature-Durchlauf** (#6971): Links mit eigenem Schema (`javascript:`, `data:`, `mailto:`) werden verworfen — nur http(s) ist ein Stellen-Link; und die Stall-Prüfung unterscheidet eine wirklich leere Seite (Stopp), eine Seite, deren Links sämtlich verworfen wurden (weiter — das Offset hat sich bewegt, der Durchlauf geht on) und eine Wiederholungsseite (Stopp). Bisher beendete eine Karten-Seite mit lauter verworfenen Links den Durchlauf vorzeitig. (CAR-274)
+- **gupy-Vertraulichkeitsseiten** (#6892): Vertrauliche Karriereseiten werden jetzt zusätzlich über das Platzhalter-Logo von Gupy `confidencial_logo.png` und eine /confidencia/i-tenant-subdomain verworfen — der Such-Payload markiert sie nicht, ihre Namen sind freier Text. (CAR-275)
+
+### Hinweise
+
+- Nicht portiert aus dem Parent-Delta (32 Commits, `da28ef95..eaa74c4b`): die Marktschichten **Indien (modes/in/)** und **Österreich (modes/at/)** — Evaluierungs-Prompts des Parents, web-ui führt keine modes aus; der **Inbox-Tab des Dashboards** und die übrigen `web/`-Fixes — das Go-Dashboard/die Next-App des Parents, nicht dieses SPA; der **Throw bei Nicht-Board-Antworten von greenhouse/ashby/lever** (#6918) — web-ui wirft seit v1.242.0 über `_shape.mjs` bei einem malformed 200, upstream hat aufgeholt; die **seek_searches-Typo-Registrierung** (#6948) — web-ui hat keinen seek_searches-Leser; die **pracecz-Test-Wiederherstellung** (#6957) — web-ui hat keine pracecz-Quelle; evaluator/batch/latex/backup/updater/cv-facts-Fixes — Parent-CLI-Werkzeuge, die dieses Repository nicht ausführt.
+- Die Welle wurde von einem Schwarm aus 6 Agenten ausgeführt (einer pro Port-Einheit, disjunktes Datei-Eigentum, Worktrees + red→green), integriert in einem einzigen Orchestrator-Durchlauf über die gemeinsamen Registry/Gate-Dateien.
+
 ## [1.271.15] — 2026-11-12
 
 ### Behoben

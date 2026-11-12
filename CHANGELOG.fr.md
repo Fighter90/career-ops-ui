@@ -5,6 +5,24 @@
 > **Note de traduction (v1.61.0)** — le français a été ajouté comme 9e langue de l'interface. Ce fichier traduit les entrées récentes ; pour l'historique antérieur à la v1.55.0, voir le [🇬🇧 CHANGELOG anglais](CHANGELOG.md), qui reste la source normative.
 > ⏳ **Note de couverture** — ce fichier inclut désormais l'historique complet ; les entrées antérieures à la v1.61.0 figurent ci-dessous en anglais original, traduction en attente.
 
+## [1.271.16] — 2026-11-13
+
+### Ajouté
+
+- **rexx-systems — une NOUVELLE source de scan** (sites carrières Rexx Systems ; registre **141 = 136 EN + 5 RU · 136 adaptateurs**). Un portail rexx tourne sur l'hôte à la marque de l'employeur (jobs.employer.com, karriere.employer.de — un CNAME vers le cloud rexx), il est donc **réservé à l'épingle explicite** : câblez `provider: rexx` + `careers_url` dans portals.yml ; rien ne se revendique automatiquement. Le parcours lit la liste `stellenangebote.html` (habillages ancien et nouveau), pagine d'après le nombre brut de lignes, détecte les pages répétées, lit le feed RSS au mieux pour les dates, plafonne à 200 pages, conserve les résultats partiels en cas d'erreur de fetch et marque la troncature (`page-cap` / `fetch-error` / `repeat-page`). Couverture 98,5 % lignes / 93,1 % branches — au-dessus du plancher sans exemption. (CAR-270, parent #6946)
+- **Salaire Lever** — le `salaryRange` d'une offre est désormais lu dans le salaire sur la même base d'annualisation qu'Ashby (40 h/semaine · 52 semaines/an) : horaire ×2080, journalier ×260, hebdomadaire ×52, mensuel ×12, annuel ×1 ; une plage à un seul côté comble la borne manquante, les bornes sont ordonnées, un intervalle inconnu laisse le salaire DÉSACTIVÉ (jamais deviné), la devise est normalisée. Alimente la colonne `comp` du pipeline pour les boards Lever. (CAR-271, parent #6907/#6922)
+- **listingIdentity Workable + BambooHR** — les offres portent l'identité native de l'ATS `{ats_provider, board_slug, posting_id}` construite depuis le shortcode du widget / le tenant BambooHR + l'id de l'offre (parent #6966/#6955), selon le contrat SmartRecruiters/JOIN livré en v1.271.13. Règles d'id opaque : pas de rognage, pas de normalisation de casse, aucune coercition sur les nombres, les ids non canoniques retombent sur la dédup par URL. (CAR-272/CAR-273)
+
+### Corrigé
+
+- **Parcours Avature** (#6971) : les hrefs portant leur propre schéma (`javascript:`, `data:`, `mailto:`) sont écartés — seul http(s) est un lien d'offre ; et le test de page bloquée distingue une page réellement vide (arrêt) d'une page dont TOUS les liens ont été écartés (avancer — l'offset a bougé, donc le parcours continue) d'une page répétée (arrêt). Auparavant, une page de cartes dont tous les liens avaient été écartés mettait fin au parcours prématurément. (CAR-274)
+- **Pages confidentielles Gupy** (#6892) : les pages carrières confidentielles sont désormais aussi écartées par le `confidencial_logo.png` placeholder de Gupy et par un sous-domaine de tenant correspondant à /confidencia/i — le payload de recherche ne les signale pas et leurs noms sont en texte libre. (CAR-275)
+
+### Notes
+
+- NON porté depuis le delta parent (32 commits, `da28ef95..eaa74c4b`) : les couches de marché **Inde (modes/in/)** et **Autriche (modes/at/)** — des prompts d'évaluation côté parent, web-ui ne lance pas de shell dans les modes ; **l'onglet Inbox du dashboard** et les autres correctifs `web/` — le dashboard/Next Go du parent lui-même, pas cette SPA ; le **throw greenhouse/ashby/lever hors board** (#6918) — web-ui lève déjà sur un 200 malformé via `_shape.mjs` depuis la v1.242.0, upstream vient de s'aligner ; la **coquille d'enregistrement seek_searches** (#6948) — web-ui n'a aucun lecteur seek_searches ; la **restauration du test pracecz** (#6957) — web-ui n'a aucune source pracecz ; correctifs evaluator/batch/latex/backup/updater/cv-facts — des outils CLI du parent que ce dépôt n'exécute pas.
+- La vague a été exécutée par un swarm de 6 agents (un par unité de port, propriété de fichiers disjointe, worktrees + red→green), intégrée en une seule passe d'orchestrateur sur les fichiers registre/gates partagés.
+
 ## [1.271.15] — 2026-11-12
 
 ### Corrigé
