@@ -15,9 +15,10 @@
  *         queries: ["business strategy", ...]
  *
  * buildEndpoint returns the FIRST query's results URL — detectApi's provenance
- * link; fetchGoogle rebuilds one URL per query from the fixed BASE (one
- * first-page request per query, robots.txt-bounded — see the source).
- * Ported from the parent's providers/google.mjs (parity v1.253.0).
+ * link; fetchGoogle rebuilds one URL per query and page from the fixed BASE
+ * (PAGE_SIZE-card pages, `max_pages` per query — see the source).
+ * Ported from the parent's providers/google.mjs (parity v1.253.0; the
+ * pagination + PR #6761 partial-read marks are CAR-258).
  */
 import {
   fetchGoogle,
