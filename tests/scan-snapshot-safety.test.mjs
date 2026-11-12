@@ -124,9 +124,9 @@ test('EN: a stop mid-run still saves the roles found before it (CAR-259, parent 
   const r = await runEnScan({ signal: ctrl.signal, fetchImpl });
   assert.ok(r.fresh.some((j) => j.url === ALPHA7_URL), 'the role read before the stop is fresh');
   const history = readFileSync(resolve(dir, 'data', 'scan-history.tsv'), 'utf8');
-  assert.ok(history.split('\n').some((l) => l.split('\t').includes(ALPHA7_URL)), 'scan-history.tsv keeps the role found before the stop');
+  assert.ok(history.split('\n').some((l) => l.split('\t').some((c) => c === ALPHA7_URL)), 'scan-history.tsv keeps the role found before the stop');
   const pipeline = readFileSync(resolve(dir, 'data', 'pipeline.md'), 'utf8');
-  assert.ok(pipeline.split('\n').some((l) => l.split(/[\s|]/).includes(ALPHA7_URL)), 'pipeline.md keeps the role found before the stop');
+  assert.ok(pipeline.split('\n').some((l) => l.split(/[\s|]/).some((t) => t === ALPHA7_URL)), 'pipeline.md keeps the role found before the stop');
   assert.equal(readSnap().en.filtered.length, 2, 'the previous snapshot still survives (R-12 unchanged)');
 });
 
@@ -324,9 +324,9 @@ test('EN: a scan stopped mid-run keeps the roles already found', async () => {
   const r = await runEnScan({ signal: ctrl.signal, fetchImpl, onLog: () => {} });
   assert.deepEqual(r.fresh.map((j) => j.url), ['https://example.com/Alpha/7'], 'rolesFound counts only the roles the stop actually kept');
   const pipeline = readFileSync(resolve(dir, 'data', 'pipeline.md'), 'utf8');
-  assert.ok(pipeline.includes('https://example.com/Alpha/7'), 'the kept role reached pipeline.md despite the stop');
+  assert.ok(pipeline.split(/[\s|]/).some((t) => t === 'https://example.com/Alpha/7'), 'the kept role reached pipeline.md despite the stop');
   const history = readFileSync(resolve(dir, 'data', 'scan-history.tsv'), 'utf8');
-  assert.ok(history.includes('https://example.com/Alpha/7'), 'the kept role reached scan-history.tsv despite the stop');
+  assert.ok(history.split('\n').some((l) => l.split('\t').some((c) => c === 'https://example.com/Alpha/7')), 'the kept role reached scan-history.tsv despite the stop');
   assert.equal(readSnap().en.filtered.length, 1, 'R-12 still holds: the aborted run does not replace the snapshot');
 });
 
@@ -350,8 +350,8 @@ test('RU: a scan stopped mid-run keeps the roles already found', async () => {
   const r = await runRuScan({ signal: ctrl.signal, fetchImpl, onLog: () => {} });
   assert.deepEqual(r.fresh.map((j) => j.url), ['https://trudvsem.ru/vacancy/v9'], 'rolesFound counts only the roles the stop actually kept');
   const pipeline = readFileSync(resolve(dir, 'data', 'pipeline.md'), 'utf8');
-  assert.ok(pipeline.includes('https://trudvsem.ru/vacancy/v9'), 'the kept role reached pipeline.md despite the stop');
+  assert.ok(pipeline.split(/[\s|]/).some((t) => t === 'https://trudvsem.ru/vacancy/v9'), 'the kept role reached pipeline.md despite the stop');
   const history = readFileSync(resolve(dir, 'data', 'scan-history.tsv'), 'utf8');
-  assert.ok(history.includes('https://trudvsem.ru/vacancy/v9'), 'the kept role reached scan-history.tsv despite the stop');
+  assert.ok(history.split('\n').some((l) => l.split('\t').some((c) => c === 'https://trudvsem.ru/vacancy/v9')), 'the kept role reached scan-history.tsv despite the stop');
   assert.equal(readSnap().ru.filtered.length, 1, 'R-12 still holds: the aborted run does not replace the snapshot');
 });

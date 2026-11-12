@@ -175,7 +175,7 @@ test('a posting the page calls closed (JSON-LD validThrough past) is refused wit
   assert.equal(providerCalls, 0, 'a closed posting costs no LLM tokens');
   const pipeline = readFileSync(resolve(ROOT, 'data', 'pipeline.md'), 'utf8');
   assert.match(pipeline, /## Rejected/, 'the pipeline entry left the queue');
-  assert.ok(pipeline.split(/[\s|]/).includes(PIPE_URL), 'the pipeline carries the posting URL');
+  assert.ok(pipeline.split(/[\s|]/).some((t) => t === PIPE_URL), 'the pipeline carries the posting URL');
 });
 
 test('a 403 Cloudflare interstitial is refused as bot_challenge — the challenge body never becomes the JD', async () => {

@@ -10,7 +10,7 @@
  * value past that and the title_filter culls hard anyway.
  */
 import { requireArray, requireObject } from './_shape.mjs';
-import { delay, fetchJson, fetchJsonWithRetry, labeledHttpError } from '../http-json.mjs';
+import { delay, fetchJsonWithRetry, labeledHttpError } from '../http-json.mjs';
 import { markTruncated } from '../board-truncation.mjs';
 
 const UA = 'career-ops-web-ui/1.0';

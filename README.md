@@ -19,7 +19,7 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Latest release — v1.271.13** — the **parent-sync wave** (88 upstream commits): Ashby's posting API gets its own 64 MB body ceiling with an embed fallback, SmartRecruiters and SuccessFactors gain opt-in walk ceilings with truncation warnings, Amazon and OracleCloud size their page budgets from reported totals, Join carries republish-stable listing identities — the scan page reads big boards whole instead of stopping at a page cap. Tests 8411.
+> **🆕 Latest release — v1.271.14** — the **parent-sync wave** (88 upstream commits): Ashby's posting API gets its own 64 MB body ceiling with an embed fallback, SmartRecruiters and SuccessFactors gain opt-in walk ceilings with truncation warnings, Amazon and OracleCloud size their page budgets from reported totals, Join carries republish-stable listing identities — the scan page reads big boards whole instead of stopping at a page cap. Tests 8411.
 
 >
 > **Previous — v1.271.12** — the **search page speedup**: the scan table's data payloads are bounded server-side — the wire stopped carrying descriptions the UI slices away and the repost clustering now runs once per history change, so the page that waited ~6.5 s of API time per mount now loads in fractions of a second.
