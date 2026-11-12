@@ -63,7 +63,6 @@
     "server/lib/portals/adapters/wttj.mjs",
     "server/lib/portals/adapters/yourator.mjs",
     "server/lib/portals/adapters/zoho-recruit.mjs",
-    "server/lib/posting-close.mjs",
     "server/lib/rate-limit.mjs",
     "server/lib/robots-check.mjs",
     "server/lib/routes/activity.mjs",
@@ -171,7 +170,6 @@
     "server/lib/sources/telegram-channel.mjs",
     "server/lib/sources/telegram.mjs",
     "server/lib/sources/themuse.mjs",
-    "server/lib/sources/tkms.mjs",
     "server/lib/sources/trakstar.mjs",
     "server/lib/sources/turbohire.mjs",
     "server/lib/sources/ultipro.mjs",
@@ -179,7 +177,6 @@
     "server/lib/sources/workable.mjs",
     "server/lib/sources/workday.mjs",
     "server/lib/sources/wttj.mjs",
-    "server/lib/states.mjs",
     "server/lib/store.mjs",
     "server/lib/tracker-import.mjs",
     "server/lib/trust-validator.mjs"
