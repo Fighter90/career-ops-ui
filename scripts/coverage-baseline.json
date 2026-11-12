@@ -102,6 +102,7 @@
     "server/lib/runner.mjs",
     "server/lib/safe-fetch.mjs",
     "server/lib/sources/4dayweek.mjs",
+    "server/lib/sources/_salary-text.mjs",
     "server/lib/sources/adp-myjobs.mjs",
     "server/lib/sources/aldi-nord.mjs",
     "server/lib/sources/alibaba.mjs",
