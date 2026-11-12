@@ -163,6 +163,7 @@
     "server/lib/sources/softgarden.mjs",
     "server/lib/sources/solidjobs.mjs",
     "server/lib/sources/successfactors.mjs",
+    "server/lib/sources/talentlink.mjs",
     "server/lib/sources/taleo.mjs",
     "server/lib/sources/teamtailor.mjs",
     "server/lib/sources/techinasia.mjs",
