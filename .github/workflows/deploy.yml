@@ -37,7 +37,7 @@ on:
       mode:
         description: 'recon (read-only), deploy, or verify (read-only smoke of the live app)'
         type: choice
-        options: [recon, deploy, verify, hermes, provider, cleanup-plan, cleanup-apply]
+        options: [recon, deploy, verify, hermes, provider, cleanup-plan, cleanup-apply, browsers]
         default: recon
       app_dir:
         description: 'Parent career-ops checkout on the server (web-ui is its web-ui/ subdir)'
@@ -582,6 +582,21 @@ jobs:
           echo "parent now $(g "$APP_DIR" log -1 --format='%h %s' "$PARENT_REF") VERSION=$want_parent"
           echo "web-ui now $UI_REF ($(node -p "require('$UI_DIR/package.json').version"))"
           install_deps
+          # Playwright browsers: `npm ci` never downloads browser binaries, and a
+          # package-lock bump moves the expected browser build number
+          # (chromium_headless_shell-N). A version-bump deploy therefore silently
+          # broke generate-pdf.mjs on prod until someone ran the install by hand
+          # (2026-11-12: "Executable doesn't exist at …/chromium_headless_shell-1234").
+          # Idempotent: builds already in the cache skip in seconds; a fresh build
+          # downloads once and fails the deploy loudly rather than shipping broken
+          # PDF generation. as_owner -H puts the cache where the service's HOME
+          # resolves it (/opt/career-ops/.cache/ms-playwright).
+          if [ -d "$UI_DIR/node_modules/playwright" ] || [ -d "$UI_DIR/node_modules/playwright-core" ]; then
+            as_owner "$UI_DIR" bash -c 'cd "$1" && npx playwright install chromium' _ "$UI_DIR" \
+              || { echo "::error::playwright browser install failed — PDF generation would be broken on prod"; exit 1; }
+            owner_home=$(getent passwd "$(stat -c %U "$APP_DIR")" | cut -d: -f6)
+            echo "playwright cache: $(find "$owner_home/.cache/ms-playwright" -maxdepth 1 -name 'chromium*' -o -maxdepth 1 -name 'ffmpeg*' 2>/dev/null | tr '\n' ' ')"
+          fi
           # CAR-85 — release-time SPA bundle: concat every body <script src="/js/…">
           # from public/index.html into public/js/bundle.js (89 cold-load script
           # requests → 4: the two <head> scripts + vendored Leaflet stay individual
@@ -635,6 +650,38 @@ jobs:
             systemctl is-active --quiet "$u" || echo "::warning::$u is not active"
           done
           echo "deploy OK — rollback material kept in $BK"
+          REMOTE
+
+      - name: Playwright browsers (mode=browsers)
+        if: inputs.mode == 'browsers'
+        env:
+          APP_DIR: ${{ inputs.app_dir }}
+        run: |
+          # One-off fix for the 2026-11-12 PDF outage: a package-lock bump moved
+          # the expected chromium_headless_shell build and `npm ci` never
+          # downloads browsers. mode=deploy now installs them itself; this mode
+          # exists so the install can be run (and re-run) WITHOUT a full deploy.
+          # Read-only apart from the ms-playwright cache: nothing is restarted.
+          # shellcheck disable=SC2029  # the inputs are meant to expand locally
+          ssh prod "APP_DIR='$APP_DIR' bash -s" <<'REMOTE'
+          set -euo pipefail
+          UI_DIR="$APP_DIR/web-ui"
+          as_owner() { local d=$1; shift; sudo -u "$(stat -c %U "$d")" -H -- "$@"; }
+          [ -d "$UI_DIR/node_modules/playwright" ] || [ -d "$UI_DIR/node_modules/playwright-core" ] || { echo "::error::playwright not installed in $UI_DIR/node_modules — run a deploy first"; exit 1; }
+          version=$(node -p "require('$UI_DIR/node_modules/playwright-core/package.json').version" 2>/dev/null || echo unknown)
+          echo "playwright-core: $version"
+          as_owner "$UI_DIR" bash -c 'cd "$1" && npx playwright install chromium' _ "$UI_DIR"
+          owner_home=$(getent passwd "$(stat -c %U "$APP_DIR")" | cut -d: -f6)
+          echo "cache at $owner_home/.cache/ms-playwright:"
+          ls -1 "$owner_home/.cache/ms-playwright" 2>/dev/null || echo "::error::cache directory not found — the install did not land where the service resolves HOME"
+          # The exact executable the failure named must now exist (headless shell
+          # build directory for this playwright-core version).
+          if ls -d "$owner_home"/.cache/ms-playwright/chromium*headless* >/dev/null 2>&1; then
+            echo "headless shell present ✓"
+          else
+            echo "::error::no chromium*headless* build in the cache — PDF generation stays broken"
+            exit 1
+          fi
           REMOTE
 
       - name: Cleanup plan (read-only dry run)
