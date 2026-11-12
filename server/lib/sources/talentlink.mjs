@@ -320,6 +320,9 @@ export function parseJobsResponse(json, { detailPage, company, locations }) {
     const id = row.id ?? f.id;
     if (!(Number.isInteger(id) || (typeof id === 'string' && /^\d+$/.test(id)))) continue;
     const seg = safeEncodeURIComponent(String(id));
+    // The id is an integer or a digit string, so its URL encoding can never
+    // fail on a lone surrogate — a contract guard, not a reachable branch.
+    /* node:coverage ignore next */
     if (seg === null) continue;
     const title = clean(f.jobTitle);
     if (!title) continue;

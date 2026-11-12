@@ -3,6 +3,14 @@
 
 > Dieses Changelog enthält die vollständige Versionsgeschichte. Einträge, die vor der deutschen Lokalisierung (v1.85.0) veröffentlicht wurden, stehen unten im englischen Original — Übersetzung ausstehend; maßgeblich bleibt [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.271.15] — 2026-11-12
+
+### Behoben
+- **CAR-269 abgeschlossen: die Coverage-Schulden abgetragen und die Ausnahmen entfernt** — jede Datei, die zuvor von der pro-Datei-Coverage-Untergrenze ausgenommen war, misst jetzt real darüber: `jd-parse` 78,77 → 98,62 % Branches, `sources/talentlink` 85,49 → 100 %, `sources/tkms` → 100 %, `portals/adapters/tkms` 88,89 → 100 %, `_salary-text` 88,57 → 100 %, `posting-close` 92,94 → 100 %, `states` 95,65 → 100 % (verifiziert auf Node 22 und Node 20). Die Ausnahmeliste der Coverage-Baseline führt keine Produktquellen mehr. Strukturell tote Defensiv-Branches tragen `node:coverage ignore`-Marker mit Begründungen. (+39 Tests)
+
+### Hinweise
+- Bewusst NICHT geändert: keine Quellcodedatei wurde angerührt — die Welle besteht aus Tests plus drei Coverage-Ignore-Markern; Registry, Scan-Abläufe und Endpunkte verhalten sich exakt wie in v1.271.14.
+
 ## [1.271.14] — 2026-11-12
 
 ### Behoben

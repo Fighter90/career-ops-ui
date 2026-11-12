@@ -3,6 +3,14 @@
 > Bu changelog artık tüm sürüm geçmişini içerir. Türkçe yerelleştirmenin eklenmesinden (v1.85.0) önce yayınlanan girdiler aşağıda İngilizce özgün hâliyle yer alır — çeviri bekliyor; asıl kaynak [🇬🇧 CHANGELOG.md](CHANGELOG.md)'dir.
 > _[1.271.3]'ten itibaren girdiler çeviri bekliyor — İngilizce orijinal aşağıda._
 
+## [1.271.15] — 2026-11-12
+
+### Düzeltildi
+- **CAR-269 kapatıldı: kapsam borcu ödendi ve muafiyetler kaldırıldı** — dosya başına kapsam eşiğinden muaf tutulan her dosya artık gerçekten eşiğin üzerinde ölçüyor: `jd-parse` 78,77 → 98,62 % dallanma, `sources/talentlink` 85,49 → 100 %, `sources/tkms` → 100 %, `portals/adapters/tkms` 88,89 → 100 %, `_salary-text` 88,57 → 100 %, `posting-close` 92,94 → 100 %, `states` 95,65 → 100 % (Node 22 ve Node 20 üzerinde doğrulandı). Coverage-baseline muafiyet listesi artık hiçbir ürün kaynağı taşımıyor. Yapısal olarak ölü savunma dallanmaları gerekçeleriyle birlikte `node:coverage ignore` işaretleri taşıyor. (+39 test)
+
+### Notlar
+- Bilinçli olarak DEĞİŞTİRİLMEDİ: hiçbir kaynak dosya mantığına dokunulmadı — dalga testler artı üç coverage-ignore işaretinden ibaret; kayıt defteri, tarama akışları ve uç noktalar tam olarak v1.271.14 gibi davranıyor.
+
 ## [1.271.14] — 2026-11-12
 
 ### Düzeltildi

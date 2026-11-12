@@ -7,19 +7,19 @@
 
 _அதிகாரப்பூர்வமற்ற இடைமுகம் — career-ops / santifer உடன் எந்தத் தொடர்பும் அல்ல, அவர்களால் அங்கீகரிக்கப்படவும் இல்லை._
 
-[![tests](https://img.shields.io/badge/tests-8411%20passed-brightgreen)](#சோதனைகள்)
+[![tests](https://img.shields.io/badge/tests-8450%20passed-brightgreen)](#சோதனைகள்)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#சோதனைகள்)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#சோதனைகள்)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#தேவைகள்)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.271.14-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.14)
+[![release](https://img.shields.io/badge/release-v1.271.15-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.15)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 சமீபத்திய வெளியீடு — v1.271.14** — **parent-sync wave** (88 upstream commits): Ashby-இன் posting API தனக்கென 64 MB body ceiling-ஐ embed fallback-உடன் பெறுகிறது, SmartRecruiters மற்றும் SuccessFactors truncation warnings-உடன் opt-in walk ceilings பெறுகின்றன, Amazon மற்றும் OracleCloud தங்கள் page budgets-ஐ reported totals-இலிருந்து அளவிடுகின்றன, Join republish-stable listing identities-ஐ சுமக்கிறது — scan page ஒரு page cap-இல் நிற்பதற்குப் பதிலாக பெரிய boards-ஐ முழுமையாகப் படிக்கிறது. டெஸ்ட்கள் 8411.
+> **🆕 சமீபத்திய வெளியீடு — v1.271.15** — **coverage கடன் திருப்பிச் செலுத்தப்பட்டது**: விலக்கு அளிக்கப்பட்ட ஒவ்வொரு file-உம் இப்போது உண்மையிலேயே வரம்புக்கு மேல் அளவிடப்படுகிறது — jd-parse, talentlink, tkms, salary-text, posting-close மற்றும் states — விலக்குப் பட்டியல் மீண்டும் காலியாக உள்ளது. டெஸ்ட்கள் 8450.
 >
-> **முந்தைய வெளியீடு — v1.271.12** — **தேடல் page வேக மேம்பாடு**: scan டேபிளின் data payload-கள் server-side-இல் வரம்பிடப்பட்டன — UI வெட்டி எறிந்த description-களை wire இனி சுமப்பதில்லை, மேலும் repost clustering ஒவ்வொரு history மாற்றத்திலும் ஒரே முறை இயலுகிறது; எனவே ஒவ்வொரு mount-இலும் ~6.5 s API நேரம் காத்திருந்த page இப்போது நொடிப்பகுதிகளில் load ஆகுகிறது. டெஸ்ட்கள் 8312.
+> **முந்தைய வெளியீடு — v1.271.14** — **parent-sync wave** (88 upstream commits): Ashby-இன் posting API தனக்கென 64 MB body ceiling-ஐ embed fallback-உடன் பெறுகிறது, SmartRecruiters மற்றும் SuccessFactors truncation warnings-உடன் opt-in walk ceilings பெறுகின்றன, Amazon மற்றும் OracleCloud தங்கள் page budgets-ஐ reported totals-இலிருந்து அளவிடுகின்றன, Join republish-stable listing identities-ஐ சுமக்கிறது — scan page ஒரு page cap-இல் நிற்பதற்குப் பதிலாக பெரிய boards-ஐ முழுமையாகப் படிக்கிறது. டெஸ்ட்கள் 8411.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

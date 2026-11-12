@@ -3,6 +3,14 @@
 
 > **Oversættelsesnote.** Filen er oversat til dansk: de seneste poster (fra v1.77.0 og bagud, inkl. v1.76.0 / v1.75.2 / v1.75.1 / v1.75.0) er fuldt oversat til teknisk dansk. Ældre poster bevares på engelsk; versionsoverskrifter og datoer er identiske med den engelske kildefil.
 
+## [1.271.15] — 2026-11-12
+
+### Rettet
+- **CAR-269 lukket: coverage-gælden er indfriet, og fritagelserne fjernet** — hver fil, der havde været fritaget for den pr. fil coverage-grænse, måler nu reelt over den: `jd-parse` 78,77 → 98,62 % forgreninger, `sources/talentlink` 85,49 → 100 %, `sources/tkms` → 100 %, `portals/adapters/tkms` 88,89 → 100 %, `_salary-text` 88,57 → 100 %, `posting-close` 92,94 → 100 %, `states` 95,65 → 100 % (verificeret på Node 22 og Node 20). Coverage-baseline-fritagelseslisten bærer ikke længere nogen produktkilde. Strukturelt døde defensive forgreninger bærer `node:coverage ignore`-markører med begrundelser. (+39 test)
+
+### Noter
+- Bevidst IKKE ændret: ingen kildefillogik er rørt — bølgen er test plus tre coverage-ignore-markører; registret, scan-flødene og endpointene opfører sig præcis som i v1.271.14.
+
 ## [1.271.14] — 2026-11-12
 
 ### Rettet

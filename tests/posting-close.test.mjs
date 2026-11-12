@@ -314,3 +314,30 @@ test('closeDatesByUrl: a tab-led row (empty first cell) takes the web-ui shape a
   assert.equal(closeDatesByUrl('\t\t\t\t\t\t\t2026-06-06').size, 0,
     'an empty leading cell is not a parent URL; the empty web-ui url cell contributes nothing');
 });
+
+// ── branch hardening round 3 (coverage headroom: lock the last reachable
+// input shapes so every Node version clears the ratchet with margin) ──
+
+test('closeDatesByUrl: a parent row with an EMPTY status cell is neither added nor observational', () => {
+  // 16 cells, the status column (6th) empty: `String(cells[5] || '')` takes its
+  // fallback, the empty status is not "added" and not in the visibility-only
+  // set, so the day indexes directly.
+  const cells = ['https://jobs.example.com/emptystatus', '2026-11-09', 'gh', 'Engineer', 'Acme', ''];
+  while (cells.length < 15) cells.push('');
+  cells.push('2026-04-02');
+  const index = closeDatesByUrl(cells.join('\t'));
+  assert.equal(index.get('https://jobs.example.com/emptystatus'), '2026-04-02');
+});
+
+test('closeDateForUrl: a URL that does not normalize looks its raw cell up', () => {
+  const index = closeDatesByUrl('2026-11-09\ten\t53\tAcme\tEngineer\tnot-a-url\t2026-08-01');
+  assert.equal(closeDateForUrl(index, 'not-a-url'), '2026-08-01',
+    'the lookup falls back to the raw URL cell exactly the way the index build does');
+});
+
+test('closesAtIso: a date-only rollover (a valid Date on the wrong calendar day) is refused', () => {
+  assert.equal(closesAtIso('2026-01-32'), '',
+    'day 32 rolls over into Feb 1 — the mismatch against the written day is refused');
+  assert.equal(closesAtIso('2026-00-10'), '',
+    'month 00 rolls back into December — the mismatch against the written day is refused');
+});

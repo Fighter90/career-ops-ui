@@ -3,6 +3,14 @@
 > Nhật ký này nay chứa đầy đủ lịch sử các bản phát hành. Các mục phát hành trước khi có bản địa hóa tiếng Việt (v1.254.0) xuất hiện bên dưới bằng bản gốc tiếng Anh — bản dịch còn đang chờ; bản chính thức là [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 > _Các mục từ [1.271.3] đang chờ dịch — bản gốc tiếng Anh bên dưới._
 
+## [1.271.15] — 2026-11-12
+
+### Đã sửa
+- **CAR-269 đóng lại: trả hết nợ độ bao phủ và gỡ các khoản miễn trừ** — mọi file từng được miễn khỏi sàn độ bao phủ theo từng file nay đo thực sự vượt sàn: `jd-parse` 78.77 → 98.62 % nhánh, `sources/talentlink` 85.49 → 100 %, `sources/tkms` → 100 %, `portals/adapters/tkms` 88.89 → 100 %, `_salary-text` 88.57 → 100 %, `posting-close` 92.94 → 100 %, `states` 95.65 → 100 % (đã xác minh trên Node 22 và Node 20). Danh sách miễn trừ của coverage-baseline không còn chứa bất kỳ mã nguồn sản phẩm nào. Các nhánh phòng thủ đã chết về mặt cấu trúc mang các marker `node:coverage ignore` kèm lý do. (+39 test)
+
+### Ghi chú
+- Cố ý KHÔNG thay đổi: không đụng đến logic của bất kỳ file nguồn nào — đợt này chỉ là các test cộng thêm ba marker coverage-ignore; registry, luồng quét và các endpoint hoạt động y hệt như v1.271.14.
+
 ## [1.271.14] — 2026-11-12
 
 ### Đã sửa

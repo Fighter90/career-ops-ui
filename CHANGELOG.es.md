@@ -5,6 +5,14 @@
 > ⏳ **Nota de cobertura** — este archivo incluye ahora el historial completo; las entradas anteriores a la v1.12.0 aparecen en el original inglés a la espera de traducción.
 > _Las entradas a partir de [1.271.3] están pendientes de traducción — el original en inglés aparece abajo._
 
+## [1.271.15] — 2026-11-12
+
+### Corregido
+- **CAR-269 cerrado: la deuda de cobertura pagada y las exenciones eliminadas** — cada archivo que había sido exento del suelo de cobertura por archivo ahora mide por encima de él de verdad: `jd-parse` 78,77 → 98,62 % de ramas, `sources/talentlink` 85,49 → 100 %, `sources/tkms` → 100 %, `portals/adapters/tkms` 88,89 → 100 %, `_salary-text` 88,57 → 100 %, `posting-close` 92,94 → 100 %, `states` 95,65 → 100 % (verificado en Node 22 y Node 20). La lista de exentos del coverage-baseline ya no contiene ninguna fuente de producto. Las ramas defensivas estructuralmente muertas llevan marcadores `node:coverage ignore` con justificaciones. (+39 pruebas)
+
+### Notas
+- Deliberadamente NO cambiado: no se tocó la lógica de ningún archivo fuente — la ola son pruebas más tres marcadores coverage-ignore; el registro, los flujos de escaneo y los endpoints se comportan exactamente como en v1.271.14.
+
 ## [1.271.14] — 2026-11-12
 
 ### Corregido

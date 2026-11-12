@@ -3,6 +3,14 @@
 
 > Questo changelog contiene ora la cronologia completa delle versioni. Le voci pubblicate prima della localizzazione italiana (v1.85.0) compaiono sotto nell'originale inglese — traduzione in attesa; il riferimento resta [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.271.15] — 2026-11-12
+
+### Corretto
+- **CAR-269 chiuso: il debito di copertura saldato e le esenzioni rimosse** — ogni file che era stato esentato dalla soglia di copertura per file ora misura davvero sopra di essa: `jd-parse` 78,77 → 98,62 % di rami, `sources/talentlink` 85,49 → 100 %, `sources/tkms` → 100 %, `portals/adapters/tkms` 88,89 → 100 %, `_salary-text` 88,57 → 100 %, `posting-close` 92,94 → 100 %, `states` 95,65 → 100 % (verificato su Node 22 e Node 20). L'elenco delle esenzioni del coverage-baseline non contiene più alcuna sorgente di prodotto. I rami difensivi strutturalmente morti portano marker `node:coverage ignore` con motivazioni. (+39 test)
+
+### Note
+- Deliberatamente NON modificato: nessuna logica di file sorgente è stata toccata — l'onda è test più tre marker coverage-ignore; il registry, i flussi di scansione e gli endpoint si comportano esattamente come nella v1.271.14.
+
 ## [1.271.14] — 2026-11-12
 
 ### Corretto

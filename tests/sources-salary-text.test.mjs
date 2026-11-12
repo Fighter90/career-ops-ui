@@ -151,3 +151,35 @@ test('parseAnnualCompensation: rejects non-annual periods, annualizes a month co
   assert.equal(parseAnnualCompensation('65.000 EUR-75.000 EUR')?.min, 65000, 'a repeated currency code is stripped');
   assert.equal(parseAnnualCompensation('65.000 EUR-75.000 EUR')?.max, 75000);
 });
+
+// ── branch hardening (coverage ratchet: lock the remaining separator /
+// sentinel branches so every Node clears the per-file floor with margin) ──
+
+test('parseAmount: both separators with the dot last (US convention) — comma groups, dot is decimal', () => {
+  assertAmount('1,234.5', { min: 1234.5, max: 1234.5 });
+  assertAmount('1,234.5k', { min: 1234500, max: 1234500 });
+  assertAmount('$2,500.75', { min: 2500.75, max: 2500.75 });
+});
+
+test('parseAmount: Chinese edges — a 万 bound that is not a plain decimal, and no unit at all', () => {
+  assertAmount('1,2万', null);
+  assertAmount('60-1,2万', null);
+  assertAmount('年薪 60-80', { min: 60, max: 80 });
+});
+
+test('parseAmount: null/undefined read as empty, and junk numeric runs stay unparseable', () => {
+  assertAmount(null, null);
+  assertAmount(undefined, null);
+  assertAmount(',,,', null);
+  assertAmount('80-,,,', null);
+  assertAmount(',,,-80', null);
+});
+
+test('compensationPeriod / compensationCurrency / parseAnnualCompensation accept null/undefined', () => {
+  assert.equal(compensationPeriod(null), null);
+  assert.equal(compensationPeriod(undefined), null);
+  assert.equal(compensationCurrency(null), undefined);
+  assert.equal(compensationCurrency(undefined), undefined);
+  assert.equal(parseAnnualCompensation(null), null);
+  assert.equal(parseAnnualCompensation(undefined), null);
+});

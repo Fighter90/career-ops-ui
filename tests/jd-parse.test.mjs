@@ -168,3 +168,118 @@ test('wordCount: splits on any whitespace, counts real words only', () => {
   assert.equal(wordCount('a b  c\n\td'), 4);
   assert.equal(wordCount('   '), 0);
 });
+
+// ── branch hardening (the coverage ratchet): every remaining branch in the
+// module, driven through its exported pure functions only — htmlToText's
+// entity decoding, stripMarkup's script/unclosed-tag paths, scriptTagEnd's
+// bound, embeddedDescriptionStrings' malformed-string recovery, ldJsonBlocks'
+// hostile tag heads, and the posting-identity/queue-walk fallbacks ──
+
+test('htmlToText entities: Latin-1 names, named refs (incl. case-folded), decimal + hex code points; out-of-range, surrogate and unknown each become a space', () => {
+  const jd = fromEmbeddedDescription(
+    '{"descriptionHtml":"&Eacute;lite caf&eacute; &nbsp;&amp;&AMP; &#20320;&#x4F60;&#X597D; &#99999999; &#xD800; &nosuchentity;"}',
+  );
+  assert.match(jd.text, /Élite café/, 'Latin-1 named refs decode case-correctly; nbsp becomes a plain space');
+  assert.match(jd.text, /&&/, 'a decoded ampersand survives (&amp; and case-folded &AMP;)');
+  assert.match(jd.text, /你你好/, 'decimal and hex code points decode');
+  assert.match(jd.text, /^Élite café && 你你好$/, 'out-of-range, surrogate and unknown entities collapse to spacing');
+});
+
+test('htmlToText escaped markup: tags with quoted attributes (&quot;, &amp; inside a value) unescape to real tags then strip to text', () => {
+  const jd = fromEmbeddedDescription(
+    '{"descriptionHtml":"&lt;p&gt;Apply &lt;a href=&quot;https://x.example/jobs/1?a=1&amp;b=2&quot;&gt;here&lt;/a&gt; today&lt;/p&gt; and &lt;br /&gt; soon"}',
+  );
+  assert.equal(jd.text, 'Apply here today\nand\nsoon', 'the attribute survives the tag strip; br/ becomes a line break');
+});
+
+test('stripMarkup: closed <script>/<style> payloads are dropped with text around them kept; an unclosed one swallows the rest', () => {
+  const closed = fromEmbeddedDescription(
+    '{"descriptionHtml":"Before<script>var t = 1;</script>Mid<style>p { color: red }</style>After"}',
+  );
+  assert.equal(closed.text, 'Before Mid After');
+  assert.ok(!closed.text.includes('var t'), 'script payload is not text');
+  assert.ok(!closed.text.includes('color'), 'style payload is not text');
+  const unclosedScript = fromEmbeddedDescription('{"descriptionHtml":"Visible<script>var a = 1 and everything after is payload"}');
+  assert.equal(unclosedScript.text, 'Visible', 'an unclosed <script> ends the extractable text');
+  const unclosedStyle = fromEmbeddedDescription('{"descriptionHtml":"Kept<style>.a { broken"}');
+  assert.equal(unclosedStyle.text, 'Kept', 'an unclosed <style> ends the extractable text');
+});
+
+test('stripMarkup: a "<" with no ">" keeps the rest as prose; a tag-wannabe (<5 …>) degrades to a space', () => {
+  const noGt = fromEmbeddedDescription('{"descriptionHtml":"I would love <3 for this role"}');
+  assert.equal(noGt.text, 'I would love <3 for this role', 'a lone "<" is prose, never eaten');
+  const wannabe = fromEmbeddedDescription('{"descriptionHtml":"teams of <5 engineers> apply here"}');
+  assert.equal(wannabe.text, 'teams of apply here', 'a "<" whose name does not parse strips to a space');
+});
+
+test('ldJsonBlocks: hostile tag heads — no ">", an oversized head, a ">" inside an unmatched quote, a closing tag without ">"', () => {
+  assert.deepEqual(ldJsonBlocks(null), [], 'null input yields nothing');
+  assert.deepEqual(ldJsonBlocks('<script type="application/ld+json"'), [], 'no ">" after <script → nothing');
+  const big = `<script type="application/ld+json" ${'x'.repeat(5000)}>{}</script>`;
+  assert.deepEqual(ldJsonBlocks(big), [], 'a tag head beyond the 4 KB bound is skipped, not scanned');
+  assert.deepEqual(ldJsonBlocks('<script type="application/ld+json" q="unfinished>{}'), [],
+    'a ">" inside an unmatched attribute quote is not a tag end');
+  const noCloseGt = '<script type="application/ld+json">{"a":1}</script';
+  assert.deepEqual(ldJsonBlocks(noCloseGt), ['{"a":1}'], 'a closing tag without ">" still yields the block, then stops');
+});
+
+test('embeddedDescriptionStrings: a raw control character is escaped and recovered; a bad escape degrades to spacing', () => {
+  const ctrl = '{"descriptionHtml":"line one\u0007line two"}';
+  assert.deepEqual(embeddedDescriptionStrings(ctrl), ['line one\u0007line two'],
+    'the raw BEL is escaped, parsed, and kept as a character');
+  const bad = '{"descriptionHtml":"abc\\d"}';
+  assert.deepEqual(embeddedDescriptionStrings(bad), ['abc '],
+    'an invalid JSON escape fails both parses and degrades to spacing, never markup');
+});
+
+test('fromLdJson: odd node shapes — array @type, null queue nodes, string hiringOrganization, array/string jobLocation, object country, array employmentType, absent location', () => {
+  const rich = wrap(JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': ['JobPosting', 'Thing'],
+    title: 'Marine Engineer',
+    description: BODY,
+    hiringOrganization: 'Acme GmbH',
+    jobLocation: [{ address: { addressLocality: 'Kiel', addressRegion: 'SH', addressCountry: { name: 'Germany' } } }],
+    employmentType: ['FULL_TIME', 'CONTRACTOR'],
+  }));
+  const jd = fromLdJson(rich);
+  assert.ok(jd, 'an array @type still qualifies');
+  assert.match(jd.text, /^# Marine Engineer/);
+  assert.match(jd.text, /\*\*Company:\*\* Acme GmbH/, 'a string hiringOrganization is used directly');
+  assert.match(jd.text, /\*\*Location:\*\* Kiel, SH, Germany/, 'array jobLocation takes the first entry; object country takes .name');
+  assert.match(jd.text, /\*\*Employment type:\*\* FULL_TIME, CONTRACTOR/, 'an array employmentType joins');
+  const noLoc = fromLdJson(wrap(JSON.stringify({ '@type': 'JobPosting', title: 'X', description: BODY, jobLocation: 'Remote · Kiel' })));
+  assert.ok(noLoc && !noLoc.text.includes('**Location:**'), 'a string jobLocation resolves to nothing → no Location line');
+  const nullNode = fromLdJson(wrap(JSON.stringify({ '@graph': [null, posting()] })));
+  assert.ok(nullNode, 'a null node in the queue is skipped, the real posting still found');
+});
+
+test('jdFromPageHtml: queue-walk fallbacks — malformed block, null nodes, @graph walk, array @type, minimal posting (every canon fallback)', () => {
+  assert.equal(jdFromPageHtml('<script type="application/ld+json">{"broken":</script>'), null,
+    'a malformed block is skipped by the closure scanner too');
+  assert.equal(jdFromPageHtml(wrap(JSON.stringify([null, { '@type': 'JobPosting', identifier: 42 }]))), null,
+    'null nodes are skipped; a bare JobPosting (non-string scalar identifier) has no JD to give');
+  const graph = wrap(JSON.stringify({ '@graph': [{ '@type': ['JobPosting'] }] }));
+  assert.equal(jdFromPageHtml(graph), null, 'an @graph walk with an array @type reaches the minimal posting');
+});
+
+test('jdFromPageHtml: identity checks — @id fallback, foreign host kept, strong-token compare, token-less URLs kept, malformed requested URL kept, fragment-query ids', () => {
+  const req = 'https://careers.example.com/offer/777x';
+  assert.equal(jdFromPageHtml(wrap(JSON.stringify(posting({ '@id': 'https://careers.example.com/offer/999z' }))), Date.now(), req),
+    null, 'a same-host @id naming another job is refused');
+  const foreign = jdFromPageHtml(wrap(JSON.stringify(posting({ url: 'https://cdn.other.org/job/1' }))), Date.now(), req);
+  assert.ok(foreign && foreign.method === 'ld+json', 'a different host is not an identity match → kept');
+  const noTok = jdFromPageHtml(wrap(JSON.stringify(posting({ url: req }))), Date.now(), 'https://careers.example.com/about');
+  assert.ok(noTok && noTok.method === 'ld+json', 'a requested URL with no id tokens is not refused');
+  const badUrl = jdFromPageHtml(wrap(JSON.stringify(posting({ url: req }))), Date.now(), 'not a url at all');
+  assert.ok(badUrl && badUrl.method === 'ld+json', 'an unparseable requested URL is not refused');
+  assert.equal(jdFromPageHtml(wrap(JSON.stringify(posting({ url: req }))), Date.now(), 'https://careers.example.com/offer/2044-summer'),
+    null, 'two non-year id tokens that share nothing are different jobs');
+  assert.equal(jdFromPageHtml(wrap(JSON.stringify(posting({ url: 'https://careers.example.com/#/job?jobId=2031' }))), Date.now(), 'https://careers.example.com/#/jobs/2044'),
+    null, 'an id inside a fragment query is compared like a path id');
+});
+
+test('pageTitle: a nullish page yields an empty string', () => {
+  assert.equal(pageTitle(null), '');
+  assert.equal(pageTitle(undefined), '');
+});

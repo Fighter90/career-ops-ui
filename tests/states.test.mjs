@@ -184,3 +184,21 @@ test('invalid YAML (unterminated flow sequence) fails to parse and falls back', 
   }
   assert.match(warns.join(' '), /failed to parse/);
 });
+
+// ── branch hardening (coverage headroom: lock the last entry-shape branches
+// so every Node version clears the ratchet with margin) ──
+
+test('a file entry carries its string description; a non-string description and a non-array aliases value read as empty', () => {
+  useFile(
+    'states:\n' +
+    '  - id: desc\n    label: Described\n    description: has a description\n    dashboard_group: desc\n' +
+    '  - id: noalias\n    label: NoAlias\n    aliases: 42\n    description: 99\n',
+  );
+  const labels = states.canonicalLabels();
+  assert.ok(labels.includes('Described'), 'a string description is carried through the parse');
+  assert.ok(labels.includes('NoAlias'), 'a non-string description reads as an empty one, not a dropped row');
+  assert.equal(states.canonicalizeStatus('noalias'), 'NoAlias',
+    'a non-array aliases value reads as an empty list, so the row still folds by id/label');
+  assert.equal(states.canonicalizeStatus('42'), null,
+    'the numeric aliases value is not a foldable alias');
+});

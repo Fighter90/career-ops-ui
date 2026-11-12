@@ -7,19 +7,19 @@
 
 _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
 
-[![tests](https://img.shields.io/badge/tests-8411%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-8450%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.271.14-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.14)
+[![release](https://img.shields.io/badge/release-v1.271.15-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.15)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新リリース — v1.271.14** — **parent-sync ウェーブ**（アップストリーム 88 コミット）：Ashby の投稿 API に embed フォールバック付きの専用 64 MB ボディ上限が付きました。SmartRecruiters と SuccessFactors は切り詰め警告付きのオプトイン ウォーク上限を獲得し、Amazon と OracleCloud は報告された総数からページ予算をサイズ化し、Join は再掲にも安定したリスティング ID を保持します — スキャン ページはページ上限で止まる代わりに、大きなボードを丸ごと読みます。テスト 8411。
+> **🆕 最新リリース — v1.271.15** — **カバレッジ債務の返済**：除外されていたすべてのファイルが、実際にしきい値を上回る値を計測するようになりました — jd-parse、talentlink、tkms、salary-text、posting-close、states — 除外リストは再び空です。テスト 8450。
 >
-> **前バージョン — v1.271.12** — **検索ページの高速化**: スキャン テーブルのデータ ペイロードがサーバー側で上限付きになりました — ワイヤーは UI がスライスして捨てる説明文を運ばなくなり、リポストのクラスタリングは履歴が変わるたびに 1 回だけ実行されます。その結果、マウントごとに約 6.5 秒の API 待ち時間があったページが、今ではコンマ数秒でロードされます。テスト 8312。
+> **前バージョン — v1.271.14** — **parent-sync ウェーブ**（アップストリーム 88 コミット）：Ashby の投稿 API に embed フォールバック付きの専用 64 MB ボディ上限が付きました。SmartRecruiters と SuccessFactors は切り詰め警告付きのオプトイン ウォーク上限を獲得し、Amazon と OracleCloud は報告された総数からページ予算をサイズ化し、Join は再掲にも安定したリスティング ID を保持します — スキャン ページはページ上限で止まる代わりに、大きなボードを丸ごと読みます。テスト 8411。
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

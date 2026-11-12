@@ -58,6 +58,9 @@ export function readCanonicalStates() {
   try {
     raw = readFileSync(PATHS.statesYml, 'utf8');
   } catch (err) {
+    // readFileSync only ever throws Error subclasses, so the String(err)
+    // fallback in the message is dead defensive code, not a reachable branch.
+    /* node:coverage ignore next 2 */
     if (err && err.code !== 'ENOENT') {
       console.warn(`⚠️  states: ${PATHS.statesYml} failed to read (${err instanceof Error ? err.message : String(err)}) — using the built-in fallback`);
     }
@@ -85,6 +88,10 @@ export function readCanonicalStates() {
       // Present but unparseable / no usable states → drift, not silent.
       console.warn(`⚠️  states: ${PATHS.statesYml} has no usable states — using the built-in fallback`);
     } catch (err) {
+      // yaml.load only ever throws Error subclasses (YAMLException), so the
+      // String(err) fallback in the message is dead defensive code, not a
+      // reachable branch.
+      /* node:coverage ignore next */
       console.warn(`⚠️  states: ${PATHS.statesYml} failed to parse (${err instanceof Error ? err.message : String(err)}) — using the built-in fallback`);
     }
   }

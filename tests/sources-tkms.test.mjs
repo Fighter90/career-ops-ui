@@ -268,3 +268,89 @@ test('fetchTkms: hitting the posting cap (MAX_JOBS) while nextPage is set logs t
   assert.equal(jobs.length, 1000, 'the total postings cap holds');
   assert.match(errs.join(' '), /posting cap/, 'the truncation names the posting cap, not the page cap');
 });
+
+// ── branch hardening: the three remaining fetch/normalize branches (empty
+// later page, all-duplicate later page, an epoch stamp beyond the Date range) ──
+
+test('fetchTkms: an empty later page ends the walk cleanly — no truncation logged', async () => {
+  let call = 0;
+  const fetchImpl = async () => {
+    call++;
+    return call === 1
+      ? { ok: true, json: async () => ({ jobs: [rawRow('1')], page: 0, nextPage: 1, totalHits: 9 }) }
+      : { ok: true, json: async () => ({ jobs: [], page: 1, nextPage: null, totalHits: 9 }) };
+  };
+  const errs = [];
+  const orig = console.error;
+  console.error = (...a) => errs.push(a.join(' '));
+  let jobs;
+  try {
+    jobs = await fetchTkms('https://jobs.tkmsgroup.com', { fetchImpl });
+  } finally {
+    console.error = orig;
+  }
+  assert.equal(jobs.length, 1);
+  assert.equal(errs.join(' '), '', 'an empty later page is a clean end, not a truncation');
+});
+
+test('fetchTkms: a later page repeating only already-seen ids stops cleanly — no truncation logged', async () => {
+  let call = 0;
+  const fetchImpl = async () => {
+    call++;
+    return { ok: true, json: async () => ({ jobs: [rawRow('dup')], page: call - 1, nextPage: call, totalHits: 9 }) };
+  };
+  const errs = [];
+  const orig = console.error;
+  console.error = (...a) => errs.push(a.join(' '));
+  let jobs;
+  try {
+    jobs = await fetchTkms('https://jobs.tkmsgroup.com', { fetchImpl });
+  } finally {
+    console.error = orig;
+  }
+  assert.equal(jobs.length, 1, 'the duplicated row is not added twice');
+  assert.equal(errs.join(' '), '', 'a server loop (fresh === 0) is a clean stop, not a truncation');
+});
+
+test('parseQuery: an epoch stamp beyond the Date range (and a non-positive one) yields an empty date, not a crash', () => {
+  const parsed = parseQuery({
+    jobs: [
+      { data: { id: 'far', title: 'T', postingDate_timestamp: 1e15 } }, // *1000 = 1e18 → TimeClip → NaN
+      { data: { id: 'neg', title: 'T', postingDate_timestamp: -5 } },
+      { data: { id: 'ok', title: 'T', postingDate_timestamp: 1751493600 } },
+    ],
+  }, CFG);
+  assert.deepEqual(parsed.rows.map((r) => r.date), ['', '', '2025-07-02'],
+    'an out-of-range epoch (invalid Date) and a negative one both read as no date; a valid one becomes ISO');
+});
+
+// ── adapter branch matrix (CAR-269: portals/adapters/tkms.mjs ≥95 % branches) ──
+import { tkmsAdapter } from '../server/lib/portals/adapters/tkms.mjs';
+
+test('tkms adapter: matches() rejects null, primitives and bare objects', () => {
+  assert.equal(tkmsAdapter.matches(null), false);
+  assert.equal(tkmsAdapter.matches(undefined), false);
+  assert.equal(tkmsAdapter.matches('tkms'), false);
+  assert.equal(tkmsAdapter.matches(42), false);
+  assert.equal(tkmsAdapter.matches({}), false, 'no provider, no tkms careers_url');
+  assert.equal(tkmsAdapter.matches({ name: 'TKMS' }), false, 'a name alone does not match');
+});
+
+test('tkms adapter: buildEndpoint() null-safety and the default query API', () => {
+  assert.equal(tkmsAdapter.buildEndpoint(null), null);
+  assert.equal(tkmsAdapter.buildEndpoint({}), null);
+  assert.equal(tkmsAdapter.buildEndpoint({ name: 'TKMS' }), null, 'no provider pin, foreign careers_url');
+  assert.equal(
+    tkmsAdapter.buildEndpoint({ provider: 'not-tkms', careers_url: 'https://example.com' }),
+    null,
+  );
+  assert.equal(
+    tkmsAdapter.buildEndpoint({ provider: 'tkms', careers_url: 'https://example.com' }),
+    'https://jobs.tkmsgroup.com/api/filter/query',
+    'the provider pin wins over a foreign careers_url — the default query API',
+  );
+  assert.equal(
+    tkmsAdapter.buildEndpoint({ careers_url: 'https://jobs.tkmsgroup.com/en', provider: 'tkms' }),
+    'https://jobs.tkmsgroup.com/api/filter/query',
+  );
+});

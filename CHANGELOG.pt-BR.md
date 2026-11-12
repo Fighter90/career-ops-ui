@@ -3,6 +3,14 @@
 > **Nota** — este arquivo está integralmente traduzido para o português brasileiro. Cada entrada de versão foi reescrita em PT-BR técnico de qualidade editorial, preservando blocos de código, mensagens de commit, caminhos de arquivo, URLs, variáveis de ambiente, comandos e rótulos de link em sua forma original.
 > _As entradas a partir de [1.271.3] aguardam tradução — o original em inglês abaixo._
 
+## [1.271.15] — 2026-11-12
+
+### Corregido
+- **CAR-269 encerrado: a dívida de cobertura quitada e as isenções removidas** — cada arquivo que havia sido isento do piso de cobertura por arquivo agora mede acima dele de verdade: `jd-parse` 78,77 → 98,62 % de ramificações, `sources/talentlink` 85,49 → 100 %, `sources/tkms` → 100 %, `portals/adapters/tkms` 88,89 → 100 %, `_salary-text` 88,57 → 100 %, `posting-close` 92,94 → 100 %, `states` 95,65 → 100 % (verificado no Node 22 e no Node 20). A lista de isentos do coverage-baseline não carrega mais nenhuma fonte de produto. Ramificações defensivas estruturalmente mortas carregam marcadores `node:coverage ignore` com justificativas. (+39 testes)
+
+### Notas
+- Deliberadamente NÃO alterado: nenhuma lógica de arquivo-fonte foi tocada — a onda é de testes mais três marcadores coverage-ignore; o registro, os fluxos de scan e os endpoints se comportam exatamente como na v1.271.14.
+
 ## [1.271.14] — 2026-11-12
 
 ### Corregido

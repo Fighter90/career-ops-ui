@@ -7,19 +7,19 @@
 
 _Giao diện không chính thức — không liên kết với career-ops / santifer, cũng không được họ chứng thực._
 
-[![tests](https://img.shields.io/badge/tests-8411%20passed-brightgreen)](#kiểm-thử)
+[![tests](https://img.shields.io/badge/tests-8450%20passed-brightgreen)](#kiểm-thử)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#kiểm-thử)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#kiểm-thử)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#yêu-cầu)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.271.14-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.14)
+[![release](https://img.shields.io/badge/release-v1.271.15-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.15)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Bản phát hành mới nhất — v1.271.14** — **đợt parent-sync** (88 upstream commit): posting API của Ashby có trần thân 64 MB riêng kèm fallback embed, SmartRecruiters và SuccessFactors nhận các trần duyệt opt-in với cảnh báo cắt ngắn, Amazon và OracleCloud định cỡ ngân sách trang theo tổng số được báo cáo, Join mang các định danh listing ổn định qua republish — trang quét đọc những board lớn trọn vẹn thay vì dừng ở một trần trang. Tests 8411.
+> **🆕 Bản phát hành mới nhất — v1.271.15** — **trả nợ độ bao phủ**: mọi file từng được miễn nay đo thực sự vượt sàn — jd-parse, talentlink, tkms, salary-text, posting-close và states — và danh sách miễn trừ lại trống rỗng. Tests 8450.
 >
-> **Bản trước — v1.271.12** — **tăng tốc trang tìm kiếm**: các payload dữ liệu của bảng quét bị giới hạn phía server — đường truyền không còn chở những phần mô tả mà UI cắt bỏ, và việc gom cụm repost giờ chỉ chạy một lần cho mỗi lần lịch sử thay đổi, nên trang vốn chờ ~6.5 s thời gian API cho mỗi lần mount nay tải trong tích tắc. Tests 8312.
+> **Bản trước — v1.271.14** — **đợt parent-sync** (88 upstream commit): posting API của Ashby có trần thân 64 MB riêng kèm fallback embed, SmartRecruiters và SuccessFactors nhận các trần duyệt opt-in với cảnh báo cắt ngắn, Amazon và OracleCloud định cỡ ngân sách trang theo tổng số được báo cáo, Join mang các định danh listing ổn định qua republish — trang quét đọc những board lớn trọn vẹn thay vì dừng ở một trần trang. Tests 8411.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

@@ -7,19 +7,19 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-8411%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-8450%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.271.14-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.14)
+[![release](https://img.shields.io/badge/release-v1.271.15-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.15)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.271.14** — **parent-sync 웨이브**(업스트림 커밋 88개): Ashby의 공고 API에 embed 폴백이 있는 자체 64 MB 본문 상한이 생겼고, SmartRecruiters와 SuccessFactors는 잘림 경고가 있는 옵트인 탐색 상한을 얻었으며, Amazon과 OracleCloud는 보고된 총계에서 페이지 예산을 산정하고, Join은 재게시에도 안정적인 listing identity를 전달합니다 — 스캔 페이지는 페이지 상한에서 멈추는 대신 큰 보드를 통째로 읽습니다. 테스트 8411.
+> **🆕 최신 릴리스 — v1.271.15** — **커버리지 부채 상환**: 제외됐던 모든 파일이 이제 실제로 기준선 위로 측정됩니다 — jd-parse, talentlink, tkms, salary-text, posting-close, states — 그리고 제외 목록이 다시 비었습니다. 테스트 8450.
 >
-> **이전 버전 — v1.271.12** — **검색 페이지 속도 개선**: 스캔 테이블의 데이터 페이로드가 서버 측에서 상한을 갖게 되었습니다 — 와이어는 UI가 잘라내는 설명을 더는 실어 나르지 않고, 리포스트 클러스터링은 이제 히스토리가 바뀔 때 한 번씩 실행됩니다. 그 결과 마운트마다 약 6.5초의 API 시간을 기다리던 페이지가 이제 1초도 안 되는 시간에 로드됩니다. 테스트 8312.
+> **이전 버전 — v1.271.14** — **parent-sync 웨이브**(업스트림 커밋 88개): Ashby의 공고 API에 embed 폴백이 있는 자체 64 MB 본문 상한이 생겼고, SmartRecruiters와 SuccessFactors는 잘림 경고가 있는 옵트인 탐색 상한을 얻었으며, Amazon과 OracleCloud는 보고된 총계에서 페이지 예산을 산정하고, Join은 재게시에도 안정적인 listing identity를 전달합니다 — 스캔 페이지는 페이지 상한에서 멈추는 대신 큰 보드를 통째로 읽습니다. 테스트 8411.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

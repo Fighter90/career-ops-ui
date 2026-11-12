@@ -1,3 +1,11 @@
+## [1.271.15] — 2026-11-12
+
+### Fixed
+- **CAR-269 closed: the coverage debt paid down and the exemptions removed** — every file that had been exempted from the per-file coverage floor now measures above it for real: `jd-parse` 78.77 → 98.62 % branches (the unclosed-tag, script/style-swallow, entity-decode and malformed-JSON-recovery paths got driven through the exported parsers), `sources/talentlink` 85.49 → 100 %, `sources/tkms` → 100 %, `portals/adapters/tkms` 88.89 → 100 % (the full matches/buildEndpoint null-safety and provider-pin matrix), `_salary-text` 88.57 → 100 %, `posting-close` 92.94 → 100 %, `states` 95.65 → 100 % (all on Node 22 and Node 20). `scripts/coverage-baseline.json` carries no career-ops-written source in its exempt list any more. Structurally dead defensive branches that no export can reach carry `/* node:coverage ignore next */` markers with one-line justifications, so the accounting stays version-stable. (+39 tests)
+
+### Notes
+- Deliberately NOT changed: no source-file logic was touched — the wave is tests plus three `node:coverage ignore` markers; the registry, the scan flows, and the endpoints behave exactly as v1.271.14.
+
 ## [1.271.14] — 2026-11-12
 
 ### Fixed

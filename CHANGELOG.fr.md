@@ -5,6 +5,14 @@
 > **Note de traduction (v1.61.0)** — le français a été ajouté comme 9e langue de l'interface. Ce fichier traduit les entrées récentes ; pour l'historique antérieur à la v1.55.0, voir le [🇬🇧 CHANGELOG anglais](CHANGELOG.md), qui reste la source normative.
 > ⏳ **Note de couverture** — ce fichier inclut désormais l'historique complet ; les entrées antérieures à la v1.61.0 figurent ci-dessous en anglais original, traduction en attente.
 
+## [1.271.15] — 2026-11-12
+
+### Corrigé
+- **CAR-269 clôturé : la dette de couverture remboursée et les exemptions supprimées** — chaque fichier qui était exempté du plancher de couverture par fichier mesure désormais réellement au-dessus : `jd-parse` 78,77 → 98,62 % de branches, `sources/talentlink` 85,49 → 100 %, `sources/tkms` → 100 %, `portals/adapters/tkms` 88,89 → 100 %, `_salary-text` 88,57 → 100 %, `posting-close` 92,94 → 100 %, `states` 95,65 → 100 % (vérifié sur Node 22 et Node 20). La liste des exemptions de la baseline de couverture ne contient plus aucune source produit. Les branches défensives structurellement mortes portent des marqueurs `node:coverage ignore` avec justifications. (+39 tests)
+
+### Notes
+- Délibérément NON modifié : aucune logique de fichier source n'a été touchée — la vague, ce sont des tests plus trois marqueurs coverage-ignore ; le registre, les flux de scan et les endpoints se comportent exactement comme en v1.271.14.
+
 ## [1.271.14] — 2026-11-12
 
 ### Corrigé

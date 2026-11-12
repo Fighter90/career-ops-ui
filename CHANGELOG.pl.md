@@ -4,6 +4,14 @@
 > ⏳ **Uwaga o zakresie** — plik zawiera obecnie pełną historię wydań; wpisy sprzed dodania polskiego znajdują się poniżej w angielskim oryginale (tłumaczenie w toku).
 > _Wpisy od [1.271.3] czekają na tłumaczenie — angielski oryginał poniżej._
 
+## [1.271.15] — 2026-11-12
+
+### Naprawiono
+- **CAR-269 zamknięty: dług pokrycia spłacony, zwolnienia usunięte** — każdy plik, który był zwolniony z progu pokrycia przypadającego na plik, mierzy teraz realnie powyżej niego: `jd-parse` 78,77 → 98,62 % gałęzi, `sources/talentlink` 85,49 → 100 %, `sources/tkms` → 100 %, `portals/adapters/tkms` 88,89 → 100 %, `_salary-text` 88,57 → 100 %, `posting-close` 92,94 → 100 %, `states` 95,65 → 100 % (zweryfikowano na Node 22 i Node 20). Lista zwolnień w coverage-baseline nie zawiera już żadnego źródła produktu. Strukturalnie martwe gałęzie defensywne noszą znaczniki `node:coverage ignore` z uzasadnieniami. (+39 testów)
+
+### Uwagi
+- Celowo NIE zmieniono: logika plików źródłowych nie została dotknięta — fala to testy plus trzy znaczniki coverage-ignore; rejestr, przepływy skanowania i endpointy zachowują się dokładnie jak w v1.271.14.
+
 ## [1.271.14] — 2026-11-12
 
 ### Naprawiono

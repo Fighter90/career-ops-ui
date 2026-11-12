@@ -463,3 +463,254 @@ test('talentlink adapter: matches vendor tenants and explicit provider entries, 
   assert.equal(talentlinkAdapter.buildEndpoint({}), null, 'no endpoint without a board URL');
   assert.equal(talentlinkAdapter.id, 'talentlink');
 });
+
+// ── branch hardening (coverage ratchet headroom: lock the remaining input
+// shapes through the exported surface so every Node version clears the
+// per-file floor with margin) ──
+
+test('talentlink: a config jobDescriptionURL that cannot parse falls back to details.html', async () => {
+  // `new URL(value, boardDir)` throws on a malformed absolute value — the
+  // catch keeps the fallback posting page next to the career page.
+  const { jobs } = await fetchEntry(
+    { name: 'Acme', careers_url: BOARD },
+    { config: { navigationPages: { jobDescriptionURL: 'https://[bad-ipv6' } } },
+  );
+  assert.equal(jobs[0].url, `${BOARD}details.html?jobId=1`);
+});
+
+test('talentlink: unit edge shapes — empty board URL, non-string page, directory detail URL', () => {
+  const board = resolveBoard('https://careers.acme.example/acme_jobsearch.html', { vendorOnly: false });
+  assert.equal(resolveBoard(''), null, 'an empty string is no board');
+  assert.throws(() => parseBoardPage(undefined), /no FO widget/, 'a non-string page reads as an empty one');
+  assert.equal(resolveDetailPage('https://[bad-ipv6', board), 'https://careers.acme.example/details.html',
+    'an unparseable configured URL falls back');
+  assert.equal(resolveDetailPage('https://careers.acme.example/', board), 'https://careers.acme.example/details.html',
+    'a directory URL with no file name falls back');
+});
+
+test('talentlink: resolveMaxPages non-positive / non-integer values take the default', () => {
+  assert.equal(resolveMaxPages({ max_pages: 0 }), 20);
+  assert.equal(resolveMaxPages({ max_pages: -2 }), 20);
+  assert.equal(resolveMaxPages({ max_pages: 1.5 }), 20);
+  assert.equal(resolveMaxPages(null), 20);
+});
+
+test('talentlink: criteria — a bindTo naming no known value contributes nothing', () => {
+  const crit = {
+    LOV5: { lovName: 'Acme Country', items: [{ value: 1, label: 'Mexico' }] },
+    LOV6: { lovName: 'Acme Location', items: [{ value: 2, label: 'Monterrey', bindTo: [999] }] },
+  };
+  const loc = parseCriteria(crit);
+  assert.equal([...loc.boundTo.keys()].length, 0, 'a binding to an unknown value is dropped');
+  assert.equal(loc.boundTargets.size, 0);
+  const out = parseJobsResponse(jobsPage([row(1, { SLOVLIST6: 'Monterrey', SLOVLIST20: undefined })]), {
+    detailPage: `${BOARD}details.html`, company: 'Acme', locations: loc,
+  });
+  assert.equal(out.jobs[0].location, 'Monterrey', 'the city survives without its unresolvable country');
+});
+
+test('talentlink: field shape edges — whitespace jobNumber, junk dates, string WorkMode, non-string location, missing jobFields', async () => {
+  const rows = [
+    row(1, { jobNumber: '   ', SLOVLIST20: 42, WorkMode: 'Remote' }),
+    row(2, { DPOSTINGSTART: NaN, applicationUrl: 'https://apply.example/no-lang' }),
+    row(3, { DPOSTINGSTART: '' }),
+    row(4, { DPOSTINGSTART: 'not-a-date' }),
+    row(5, { DPOSTINGSTART: '2026-01-05' }),
+    { id: 6, jobFields: null },
+  ];
+  const { jobs } = await fetchEntry({ name: 'Acme', careers_url: BOARD }, { pages: [jobsPage(rows, 6)] });
+  assert.equal(jobs.length, 5, 'row 6 (no jobFields object → no title) is dropped');
+  assert.equal(jobs[0].requisitionId, undefined, 'a whitespace jobNumber is no requisition id');
+  assert.equal(jobs[0].location, '', 'a non-string location value reads as empty; a string WorkMode is not a list');
+  assert.equal(jobs[1].date, '', 'a non-finite DPOSTINGSTART names no date');
+  assert.equal('language' in jobs[1], false, 'an applicationUrl without langCode names no language');
+  assert.equal(jobs[2].date, '', 'an empty DPOSTINGSTART names no date');
+  assert.equal(jobs[3].date, '', 'an unparseable DPOSTINGSTART string names no date');
+  assert.equal(jobs[4].date, '2026-01-05', 'a parseable DPOSTINGSTART string carries its UTC day');
+});
+
+test('talentlink: description edges — non-array, junk entries, missing title, all-empty parts', async () => {
+  const rows = [
+    row(1, {}, 'nope'),
+    row(2, {}, [null, 'junk', { title: '', content: '<p>body only</p>' }]),
+    row(3, {}, [{ title: 'Empty', content: '' }]),
+  ];
+  const { jobs } = await fetchEntry({ name: 'Acme', careers_url: BOARD }, { pages: [jobsPage(rows, 3)] });
+  assert.equal('description' in jobs[0], false, 'a non-array customFields names no description');
+  assert.equal(jobs[1].description, 'body only', 'junk entries are skipped; a missing title keeps the bare body');
+  assert.equal('description' in jobs[2], false, 'all-empty parts name no description');
+});
+
+test('talentlink: a jobsCount that is not a non-negative integer names no total', () => {
+  for (const jobsCount of [-5, 1.5, '9', null]) {
+    const out = parseJobsResponse(jobsPage([row(1)], jobsCount), {
+      detailPage: `${BOARD}details.html`, company: 'Acme', locations: parseCriteria({}),
+    });
+    assert.equal(out.total, undefined, String(jobsCount));
+    assert.equal(out.rawCount, 1);
+    assert.equal(out.jobs.length, 1);
+  }
+});
+
+test('talentlink: a Hybrid-only work mode reads workplaceType Hybrid', async () => {
+  const { jobs } = await fetchEntry({ name: 'Acme', careers_url: BOARD }, {
+    pages: [jobsPage([row(9, { WorkMode: ['Hybrid'] })])],
+  });
+  assert.equal(jobs[0].location, 'Berlin, Germany · Hybrid');
+  assert.equal(jobs[0].isRemote, false);
+  assert.equal(jobs[0].workplaceType, 'Hybrid');
+});
+
+test('talentlink: a stale cached pair re-reads the page; a failed re-read keeps the known pair', async () => {
+  const staleId = `${FO_HOST} ${SITE_ID} ${BOARD}details.html`;
+  const staleCache = {
+    get: () => ({ id: staleId, checkedAt: new Date(Date.now() - 31 * 24 * 3600 * 1000).toISOString() }),
+    set: () => {},
+    delete: () => {},
+  };
+  const impl = async (url) => {
+    if (url === `${BOARD}index.html`) { const e = new Error('HTTP 500'); e.status = 500; throw e; }
+    if (url.endsWith('/fo/rest/config')) return okJson(CONFIG);
+    if (url.endsWith('/fo/rest/jobs/criteria')) return okJson(CRITERIA);
+    if (url.includes('/fo/rest/jobs?')) return okJson(jobsPage([row(1)]));
+    throw new Error(`unexpected request ${url}`);
+  };
+  const jobs = await fetchTalentlink(BOARD, {
+    fetchImpl: impl, sleep: async () => {}, company: { name: 'Acme', careers_url: BOARD }, idCache: staleCache,
+  });
+  assert.equal(jobs.length, 1, 'the failed re-read kept the known pair and the scan proceeded');
+});
+
+test('talentlink: junk cache values are ignored and replaced by a fresh read', async () => {
+  const junkIds = [
+    'a b c d',
+    'bad.example.com ABCDE0123456789ABCDEFGHIJ https://x',
+    `${FO_HOST} short https://x`,
+    `${FO_HOST} ${SITE_ID} ftp://x`,
+    `${FO_HOST}  https://x`,
+    ` ${SITE_ID} https://x`,
+    `${FO_HOST} ${SITE_ID} `,
+    42,
+  ];
+  for (const id of junkIds) {
+    const { impl } = makeFetch();
+    const store = new Map();
+    const cache = {
+      get: () => ({ id, checkedAt: new Date().toISOString() }),
+      set: (k, v) => store.set(k, v),
+      delete: () => {},
+    };
+    const jobs = await fetchTalentlink(BOARD, {
+      fetchImpl: impl, sleep: async () => {}, company: { name: 'Acme', careers_url: BOARD }, idCache: cache,
+    });
+    assert.equal(jobs.length, 1, String(id));
+    assert.equal(store.get(`${BOARD}index.html`).id, `${FO_HOST} ${SITE_ID} ${BOARD}details.html`,
+      'the junk value is replaced by a fresh page read');
+  }
+});
+
+test('talentlink: a digit-string DPOSTINGSTART reads as its epoch value', async () => {
+  const { jobs } = await fetchEntry({ name: 'Acme', careers_url: BOARD }, {
+    pages: [jobsPage([row(11, { DPOSTINGSTART: '1793746800000' })])],
+  });
+  assert.equal(jobs[0].date, new Date(1793746800000).toISOString().slice(0, 10),
+    'a digit-string date is read as milliseconds, not parsed as a calendar string');
+});
+
+test('talentlink: a call without idCache uses the process cache; a page-0 403 drops it', async () => {
+  clearTalentlinkSiteCache();
+  try {
+    const first = makeFetch();
+    const jobs = await fetchTalentlink(BOARD, {
+      fetchImpl: first.impl, sleep: async () => {}, company: { name: 'Acme', careers_url: BOARD },
+    });
+    assert.equal(jobs.length, 1);
+
+    const pageConfigCalls = [];
+    const second = makeFetch();
+    const jobs2 = await fetchTalentlink(BOARD, {
+      fetchImpl(url, opts) { pageConfigCalls.push(url); return second.impl(url, opts); },
+      sleep: async () => {}, company: { name: 'Acme', careers_url: BOARD },
+    });
+    assert.equal(jobs2.length, 1);
+    assert.ok(!pageConfigCalls.some((u) => u.endsWith('index.html')), 'the process cache hit costs no page request');
+
+    const refused = makeFetch({ pages: [Object.assign(new Error('HTTP 403'), { status: 403 })] });
+    await assert.rejects(
+      () => fetchTalentlink(BOARD, { fetchImpl: refused.impl, sleep: async () => {}, company: { name: 'Acme', careers_url: BOARD } }),
+      (e) => e.status === 404);
+
+    const reReadCalls = [];
+    const third = makeFetch();
+    await fetchTalentlink(BOARD, {
+      fetchImpl(url, opts) { reReadCalls.push(url); return third.impl(url, opts); },
+      sleep: async () => {}, company: { name: 'Acme', careers_url: BOARD },
+    });
+    assert.ok(reReadCalls.some((u) => u.endsWith('index.html')), 'the dropped entry is re-read');
+  } finally {
+    clearTalentlinkSiteCache();
+  }
+});
+
+test('talentlink: entry edges — a non-string endpoint, no company, and the built-in inter-page sleep', async () => {
+  const impl1 = makeFetch().impl;
+  const jobs1 = await fetchTalentlink(undefined, {
+    fetchImpl: impl1, sleep: async () => {}, company: { name: 'Acme', careers_url: BOARD }, idCache: new Map(),
+  });
+  assert.equal(jobs1.length, 1, 'the entry careers_url is used when the endpoint is not a string');
+
+  const impl2 = makeFetch().impl;
+  const jobs2 = await fetchTalentlink(BOARD, {
+    fetchImpl: impl2, sleep: async () => {}, company: null, idCache: new Map(),
+  });
+  assert.equal(jobs2.length, 1, 'a null company reads as an empty entry');
+
+  const full = Array.from({ length: 100 }, (_, i) => row(i + 1));
+  const impl3 = makeFetch({ pages: [jobsPage(full, 0), jobsPage([row(201)], 0)] }).impl;
+  const t0 = Date.now();
+  const jobs3 = await fetchTalentlink(BOARD, {
+    fetchImpl: impl3, idCache: new Map(), company: { name: 'Acme', careers_url: BOARD },
+  });
+  assert.equal(jobs3.length, 101);
+  assert.ok(Date.now() - t0 >= 250, 'the built-in sleep waited the inter-page delay between pages');
+});
+
+test('talentlink: duplicate posting URLs across pages are deduped', async () => {
+  const full = (start) => Array.from({ length: 100 }, (_, i) => row(start + i));
+  const dup = Array.from({ length: 100 }, (_, i) => row(i + 1));
+  const { jobs } = await fetchEntry({ name: 'Acme', careers_url: BOARD }, {
+    pages: [jobsPage(full(1), 0), jobsPage(dup, 0), jobsPage([row(201)], 0)],
+  });
+  const walked = await jobs;
+  assert.equal(walked.length, 101, 'page 2 repeated page 1 row-for-row and contributed nothing');
+});
+
+test('talentlink: a cap stop with an unknown total warns without a count and marks page-cap without a total', async () => {
+  const capture = [];
+  const origError = console.error;
+  console.error = (...a) => capture.push(a.join(' '));
+  try {
+    let n = 0;
+    const { calls } = makeFetch();
+    const jobs = await fetchTalentlink(BOARD, {
+      fetchImpl(url, opts) {
+        calls.push({ url, opts });
+        if (url === BOARD + 'index.html') return okText(page());
+        if (url.endsWith('/fo/rest/config')) return okJson(CONFIG);
+        if (url.endsWith('/fo/rest/jobs/criteria')) return okJson(CRITERIA);
+        const rows = Array.from({ length: 100 }, () => row(++n));
+        return okJson({ globals: { typeDescriptor: {} }, jobs: rows });
+      },
+      sleep: async () => {},
+      company: { name: 'Acme', careers_url: BOARD, max_pages: 1 },
+      idCache: new Map(),
+    });
+    assert.equal(listCalls(calls).length, 1);
+    assert.equal(jobs.length, 100);
+    assert.ok(capture.some((w) => /raise max_pages/.test(w)));
+    assert.ok(!capture.some((w) => /postings listed/.test(w)), 'no total is named when the board names none');
+    assert.deepEqual(jobs.truncated, { reason: 'page-cap', fetched: 100 });
+  } finally {
+    console.error = origError;
+  }
+});

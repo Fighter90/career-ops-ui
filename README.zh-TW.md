@@ -7,19 +7,19 @@
 
 _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。_
 
-[![tests](https://img.shields.io/badge/tests-8411%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-8450%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.271.14-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.14)
+[![release](https://img.shields.io/badge/release-v1.271.15-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.15)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.271.14** — **parent-sync 波次**（上游 88 個提交）：Ashby 的職缺 API 獲得帶 embed 回退的專屬 64 MB 回應主體上限，SmartRecruiters 與 SuccessFactors 獲得帶截斷警告的選擇性走訪上限，Amazon 與 OracleCloud 依報告的總量決定頁面預算，Join 提供跨重發穩定的列表識別——掃描頁面可以完整讀取大型看板，而不是停在頁數上限。測試 8411。
+> **🆕 最新版本 — v1.271.15** — **覆蓋率欠帳清償**：先前豁免的每個檔案現在實測都高於門檻——jd-parse、talentlink、tkms、salary-text、posting-close 與 states——豁免清單再次清空。測試 8450。
 >
-> **前一版本 — v1.271.12** — **搜尋頁面提速**：掃描表格的資料酬載已在伺服器端設置上限——傳輸不再承載 UI 會切掉的描述文字，repost 聚類也改為每次歷史變更只執行一次，原本每次掛載需等待約 6.5 秒 API 時間的頁面現在載入只需零點幾秒。測試 8312。
+> **前一版本 — v1.271.14** — **parent-sync 波次**（上游 88 個提交）：Ashby 的職缺 API 獲得帶 embed 回退的專屬 64 MB 回應主體上限，SmartRecruiters 與 SuccessFactors 獲得帶截斷警告的選擇性走訪上限，Amazon 與 OracleCloud 依報告的總量決定頁面預算，Join 提供跨重發穩定的列表識別——掃描頁面可以完整讀取大型看板，而不是停在頁數上限。測試 8411。
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
