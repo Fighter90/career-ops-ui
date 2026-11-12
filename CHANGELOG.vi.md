@@ -1,3 +1,11 @@
+## [1.271.9] — 2026-11-12
+
+### Đã sửa
+- **Fix**: the oraclecloud scanner now pins the canonical entry host, so scans fetch only genuine Oracle Cloud careers boards — no stray or wrong-tenant oracle hosts — with tests locking the pin (#6635 fork parity).
+
+### Ghi chú
+- Deliberately NOT changed: how per-company oraclecloud entries are configured in portals.yml — the change only tightens host validation, not scan filters, pagination, or any other provider.
+
 # Nhật ký thay đổi (Tiếng Việt)
 
 > Nhật ký này nay chứa đầy đủ lịch sử các bản phát hành. Các mục phát hành trước khi có bản địa hóa tiếng Việt (v1.254.0) xuất hiện bên dưới bằng bản gốc tiếng Anh — bản dịch còn đang chờ; bản chính thức là [🇬🇧 CHANGELOG.md](CHANGELOG.md).

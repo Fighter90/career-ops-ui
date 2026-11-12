@@ -1,3 +1,11 @@
+## [1.271.9] — 2026-11-12
+
+### 修復
+- **Fix**: the oraclecloud scanner now pins the canonical entry host, so scans fetch only genuine Oracle Cloud careers boards — no stray or wrong-tenant oracle hosts — with tests locking the pin (#6635 fork parity).
+
+### 備註
+- Deliberately NOT changed: how per-company oraclecloud entries are configured in portals.yml — the change only tightens host validation, not scan filters, pagination, or any other provider.
+
 # 變更日誌
 
 > **i18n 註記** — 本檔案已完整翻譯為繁體中文(臺灣慣用語)。規範英文正文仍以 [🇬🇧 CHANGELOG.md](CHANGELOG.md) 為準。

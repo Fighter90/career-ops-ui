@@ -1,3 +1,11 @@
+## [1.271.9] — 2026-11-12
+
+### Düzeltildi
+- **Fix**: the oraclecloud scanner now pins the canonical entry host, so scans fetch only genuine Oracle Cloud careers boards — no stray or wrong-tenant oracle hosts — with tests locking the pin (#6635 fork parity).
+
+### Notlar
+- Deliberately NOT changed: how per-company oraclecloud entries are configured in portals.yml — the change only tightens host validation, not scan filters, pagination, or any other provider.
+
 # Changelog (Türkçe)
 
 > Bu changelog artık tüm sürüm geçmişini içerir. Türkçe yerelleştirmenin eklenmesinden (v1.85.0) önce yayınlanan girdiler aşağıda İngilizce özgün hâliyle yer alır — çeviri bekliyor; asıl kaynak [🇬🇧 CHANGELOG.md](CHANGELOG.md)'dir.

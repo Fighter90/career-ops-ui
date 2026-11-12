@@ -1,3 +1,11 @@
+## [1.271.9] — 2026-11-12
+
+### Naprawiono
+- **Fix**: the oraclecloud scanner now pins the canonical entry host, so scans fetch only genuine Oracle Cloud careers boards — no stray or wrong-tenant oracle hosts — with tests locking the pin (#6635 fork parity).
+
+### Uwagi
+- Deliberately NOT changed: how per-company oraclecloud entries are configured in portals.yml — the change only tightens host validation, not scan filters, pagination, or any other provider.
+
 # Dziennik zmian
 
 > **Uwaga dot. tłumaczenia (v1.70.0)** — polski dodano jako jeden z trzech nowych języków interfejsu. Ten plik tłumaczy najnowsze wpisy; pełna historia znajduje się w [🇬🇧 angielskim CHANGELOG](CHANGELOG.md), który jest źródłem normatywnym.
