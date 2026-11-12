@@ -6,7 +6,11 @@
  * on either:
  *   - an explicit `provider: oraclecloud` (for branded careers pages, with
  *     `api:` pointing at the ORC careers URL), or
- *   - a `careers_url` / `api:` whose host matches the ORC host pattern.
+ *   - a `careers_url` / `api:` whose host matches the ORC host pattern, or
+ *   - a branded host (`enterpriseplatform.dell.com`-style — no pod host to
+ *     point at) named EXACTLY in the entry's `oracle_host:` (upstream #6635).
+ *     A sibling host or a wildcard is never accepted: the pin is exact, like
+ *     upstream's `eightfold_host`.
  *
  * The endpoint is host-pinned to the entry's own `api:`/`careers_url` — the
  * siteNumber (default CX_1) and language come from its
@@ -21,7 +25,7 @@
  *
  * The HTTP fetch + JSON parsing lives in server/lib/sources/oraclecloud.mjs.
  */
-import { fetchOraclecloud, ORACLE_HOST_RE } from '../../sources/oraclecloud.mjs';
+import { fetchOraclecloud, brandedOracleHost, isTrustedOracleHost } from '../../sources/oraclecloud.mjs';
 
 function tenantUrl(company) {
   const raw = String((company && (company.api || company.careers_url)) || '').trim();
@@ -33,7 +37,8 @@ function tenantUrl(company) {
     return null;
   }
   if (u.protocol !== 'https:') return null;
-  if (!ORACLE_HOST_RE.test(u.hostname)) return null;
+  // The ORC pod pattern, or the entry's exact `oracle_host` branded pin.
+  if (!isTrustedOracleHost(u.hostname, brandedOracleHost(company))) return null;
   return raw;
 }
 

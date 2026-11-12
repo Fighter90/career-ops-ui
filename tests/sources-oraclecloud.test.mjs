@@ -503,3 +503,102 @@ test('oraclecloudAdapter: matches provider or ORC host (incl. variants), endpoin
     null,
   );
 });
+
+// ---------------------------------------------------------------------------
+// CAR-266 (upstream #6635) — the opt-in `oracle_host` branded-host pin
+//
+// Dell serves ORC only on its own domain (enterpriseplatform.dell.com — CDN,
+// a *.dell.com-only certificate, no *.oraclecloud.com pod host anywhere), so
+// there is nothing for the ORC_HOST pattern to match. An entry names that ONE
+// host exactly in `oracle_host:`; the pin is exact (never a pattern), checked
+// before every fetch, and never widens the https-only rule.
+// ---------------------------------------------------------------------------
+
+test('resolveSite: oracle_host admits exactly the named branded host (Dell)', () => {
+  const dellApi = 'https://enterpriseplatform.dell.com/hcmUI/CandidateExperience/en/sites/CX_1001/jobs';
+  // Mixed case in the entry → lowercased exact compare against the URL host.
+  const site = resolveSite(dellApi, { oracle_host: 'EnterprisePlatform.dell.com' });
+  assert.deepEqual(site, { host: 'enterpriseplatform.dell.com', lang: 'en', siteNumber: 'CX_1001', locationId: null });
+});
+
+test('resolveSite: the branded pin is exact — sibling, wildcard, scheme and http: refused', () => {
+  const dellApi = 'https://enterpriseplatform.dell.com/hcmUI/CandidateExperience/en/sites/CX_1001/jobs';
+  // Without oracle_host a branded host is refused exactly as today.
+  assert.equal(resolveSite(dellApi), null);
+  // A sibling host is not the host the entry named.
+  assert.equal(resolveSite(dellApi, { oracle_host: 'other.dell.com' }), null);
+  // Wildcards and full URLs are junk → no usable oracle_host → refused.
+  assert.equal(resolveSite(dellApi, { oracle_host: '*.dell.com' }), null);
+  assert.equal(resolveSite(dellApi, { oracle_host: 'https://enterpriseplatform.dell.com' }), null);
+  // A lookalike suffix is not an exact match.
+  assert.equal(
+    resolveSite('https://enterpriseplatform.dell.com.evil.example/jobs', { oracle_host: 'enterpriseplatform.dell.com' }),
+    null,
+  );
+  // http: stays refused even with the pin — the pin never widens the scheme.
+  assert.equal(
+    resolveSite('http://enterpriseplatform.dell.com/x', { oracle_host: 'enterpriseplatform.dell.com' }),
+    null,
+  );
+});
+
+test('assertOraclecloudUrl: an exact oracle_host is admitted; sibling and http: rejected', () => {
+  const url = 'https://enterpriseplatform.dell.com/hcmRestApi/resources/latest/recruitingCEJobRequisitions';
+  assert.equal(assertOraclecloudUrl(url, 'enterpriseplatform.dell.com'), url);
+  assert.throws(() => assertOraclecloudUrl(url), /untrusted hostname/);
+  assert.throws(() => assertOraclecloudUrl(url, 'other.dell.com'), /untrusted hostname/);
+  assert.throws(
+    () => assertOraclecloudUrl('http://enterpriseplatform.dell.com/jobs', 'enterpriseplatform.dell.com'),
+    /HTTPS/,
+  );
+});
+
+test('fetchOraclecloud: fetches only from the pinned branded host (Dell end-to-end)', async () => {
+  const dellApi = 'https://enterpriseplatform.dell.com/hcmUI/CandidateExperience/en/sites/CX_1001/jobs';
+  const fetchImpl = fakeFetch(makePage([
+    makeReq({ Id: '1', Title: 'Corporate Strategy Manager', PrimaryLocation: 'Round Rock, TX' }),
+  ], 1));
+  const jobs = await fetchOraclecloud(dellApi, {
+    fetchImpl,
+    company: { name: 'Dell', oracle_host: 'EnterprisePlatform.dell.com' },
+  });
+  assert.equal(jobs.length, 1);
+  assert.equal(hostOf(fetchImpl.calls[0].url), 'enterpriseplatform.dell.com');
+  assert.ok(new URL(fetchImpl.calls[0].url).pathname.startsWith('/hcmRestApi/'));
+  // Postings stay on the branded host (built from the resolved site).
+  assert.ok(jobs[0].url.startsWith('https://enterpriseplatform.dell.com/hcmUI/'));
+  assert.ok(jobs[0].url.endsWith('/job/1'));
+
+  // The same branded endpoint with NO oracle_host never reaches the network.
+  let called = false;
+  const nosyFetch = async () => { called = true; return { ok: true, json: async () => ({}) }; };
+  await assert.rejects(
+    () => fetchOraclecloud(dellApi, { fetchImpl: nosyFetch }),
+    /untrusted hostname/,
+  );
+  assert.equal(called, false);
+});
+
+test('oraclecloudAdapter: oracle_host claims a branded host exactly (detect parity, #6635)', () => {
+  const dellUrl = 'https://enterpriseplatform.dell.com/hcmUI/CandidateExperience/en/sites/CX_1001/jobs';
+  const dell = { name: 'Dell', careers_url: dellUrl, oracle_host: 'EnterprisePlatform.dell.com' };
+  assert.ok(oraclecloudAdapter.matches(dell));
+  assert.equal(oraclecloudAdapter.buildEndpoint(dell), dellUrl);
+  // Without oracle_host the branded entry is refused (the pattern never claims it).
+  const bare = { name: 'Dell', careers_url: dellUrl };
+  assert.ok(!oraclecloudAdapter.matches(bare));
+  assert.equal(oraclecloudAdapter.buildEndpoint(bare), null);
+  // A sibling oracle_host does not claim the entry either.
+  const sibling = { ...dell, oracle_host: 'other.dell.com' };
+  assert.ok(!oraclecloudAdapter.matches(sibling));
+  assert.equal(oraclecloudAdapter.buildEndpoint(sibling), null);
+  // An explicit provider pin still needs a trusted URL — now incl. oracle_host.
+  assert.equal(
+    oraclecloudAdapter.buildEndpoint({ provider: 'oraclecloud', careers_url: dellUrl }),
+    null,
+  );
+  assert.equal(
+    oraclecloudAdapter.buildEndpoint({ provider: 'oraclecloud', careers_url: dellUrl, oracle_host: 'enterpriseplatform.dell.com' }),
+    dellUrl,
+  );
+});
