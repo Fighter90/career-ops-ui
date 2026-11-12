@@ -2,6 +2,12 @@
 
 This is the operating manual. Read it, then `PLAN.md` (order) and `BACKLOG.md` (what is left).
 
+## State (2026-11-13, v1.271.16)
+
+- Released: **v1.271.16** (2026-11-13) — the parent-sync wave against upstream `eaa74c4b` (32 commits; fork `f4709886`, divergences defended): **NEW rexx-systems source** (registry **141 = 136 EN + 5 RU · 136 adapters**, explicit `provider: rexx` pin, coverage 98.5/93.1 with no exemption), Lever salaryRange annualization (Ashby basis), workable/bamboohr listingIdentity (the smartrecruiters/join contract), avature scheme-guard + stall-rework, gupy confidential drop. Executed by a **6-agent swarm** (worktrees, red→green, disjoint file ownership; orchestrator wired the shared registry/gate files and regenerated the count gates from the live registry). Deliberate no-ports: modes/in+at (parent prompts), dashboard Inbox (Go TUI), the greenhouse/ashby/lever non-board throw (web-ui's `_shape.mjs` has thrown since v1.242.0), seek_searches typo-key, pracecz test.
+- Gates: CI **8583/8561/0** × Node 18/20/22 · browser **210/209/0** · evals **16 pass / 0 fail** · changelog parity ✓ ×19 · README-гейт 40/40 · verify ✓ (`ok=true version=1.271.16 parentVersion=1.40.0`).
+- README automation's **first live run**: `rotateReadmeRelease` rotated ×19 and immediately exposed a Tamil-class miss (the end-anchored count regex used `\p{L}`, but Tamil virama is `\p{M}` — fixed to `[\p{L}\p{M}]+` with a red-first test case). 8 of the 18 locale-narrative agents hit the provider rate limit at 9+ parallel; the orchestrator translated those inline. Lesson: cap locale fan-out at ~9 agents.
+
 ## State (2026-11-12, v1.271.15)
 
 - Released: **v1.271.15** (2026-11-12) — CAR-269 closed: the coverage debt paid down and the exemptions removed (jd-parse 78.77→98.62 % branches, talentlink/tkms/tkms-adapter/_salary-text/posting-close/states → 100 %; +39 tests; node:coverage ignore markers on dead defensive branches; the exempt list carries no product source). Also: the swarm salvage-Done now requires a PR-squash marker in the commit subject (CAR-269 was closed as Done twice by infra commits that merely mentioned the identifier). Parent fork `da28ef95` (upstream d8b292df, 88 commits — the parent-sync wave v1.271.13 shipped 16 provider ports: ashby/smartrecruiters/successfactors/amazon/join/oraclecloud/darwinbox/jobstreet/platsbanken/thehub/a16z/arbeitnow/greenhouse + scanner bounds + _salary-text).
