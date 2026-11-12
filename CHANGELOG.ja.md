@@ -3,6 +3,15 @@
 > **翻訳ノート** — このファイルは全エントリが日本語本文で完全に翻訳済みです。コードブロック、コミットメッセージ、ファイルパス、URL、環境変数、コマンド、リンクラベルは原文のまま保持しています。
 > _[1.271.3]以降のエントリは翻訳待ちです — 英語の原文が下にあります。_
 
+## [1.271.10] — 2026-11-12
+
+### 修正
+- **Added** script-rendered JD rescue for evaluate/auto-pipeline: JSON-LD `JobPosting` and embedded-JD extraction (`jd-parse.mjs`), Cloudflare-challenge refusal in liveness, Bokmål ATS headings, and `positioning_band` scoring support.
+
+### メモ
+- Deliberately NOT changed: the network transport — JD prefetch has no browser/headed fallback; it rides the existing SSRF-safe `safeGet` fetch, whose DNS-pinned transport remains the egress guard.
+
+
 ## [1.271.9] — 2026-11-12
 
 ### 修正

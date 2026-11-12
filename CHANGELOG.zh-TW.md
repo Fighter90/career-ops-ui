@@ -3,6 +3,15 @@
 > **i18n 註記** — 本檔案已完整翻譯為繁體中文(臺灣慣用語)。規範英文正文仍以 [🇬🇧 CHANGELOG.md](CHANGELOG.md) 為準。
 > _自 [1.271.3] 起的條目待翻譯——英文原文見下方。_
 
+## [1.271.10] — 2026-11-12
+
+### 修復
+- **Added** script-rendered JD rescue for evaluate/auto-pipeline: JSON-LD `JobPosting` and embedded-JD extraction (`jd-parse.mjs`), Cloudflare-challenge refusal in liveness, Bokmål ATS headings, and `positioning_band` scoring support.
+
+### 備註
+- Deliberately NOT changed: the network transport — JD prefetch has no browser/headed fallback; it rides the existing SSRF-safe `safeGet` fetch, whose DNS-pinned transport remains the egress guard.
+
+
 ## [1.271.9] — 2026-11-12
 
 ### 修復

@@ -3,6 +3,15 @@
 > Bu changelog artık tüm sürüm geçmişini içerir. Türkçe yerelleştirmenin eklenmesinden (v1.85.0) önce yayınlanan girdiler aşağıda İngilizce özgün hâliyle yer alır — çeviri bekliyor; asıl kaynak [🇬🇧 CHANGELOG.md](CHANGELOG.md)'dir.
 > _[1.271.3]'ten itibaren girdiler çeviri bekliyor — İngilizce orijinal aşağıda._
 
+## [1.271.10] — 2026-11-12
+
+### Düzeltildi
+- **Added** script-rendered JD rescue for evaluate/auto-pipeline: JSON-LD `JobPosting` and embedded-JD extraction (`jd-parse.mjs`), Cloudflare-challenge refusal in liveness, Bokmål ATS headings, and `positioning_band` scoring support.
+
+### Notlar
+- Deliberately NOT changed: the network transport — JD prefetch has no browser/headed fallback; it rides the existing SSRF-safe `safeGet` fetch, whose DNS-pinned transport remains the egress guard.
+
+
 ## [1.271.9] — 2026-11-12
 
 ### Düzeltildi

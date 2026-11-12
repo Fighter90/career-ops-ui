@@ -3,6 +3,15 @@
 > Nhật ký này nay chứa đầy đủ lịch sử các bản phát hành. Các mục phát hành trước khi có bản địa hóa tiếng Việt (v1.254.0) xuất hiện bên dưới bằng bản gốc tiếng Anh — bản dịch còn đang chờ; bản chính thức là [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 > _Các mục từ [1.271.3] đang chờ dịch — bản gốc tiếng Anh bên dưới._
 
+## [1.271.10] — 2026-11-12
+
+### Đã sửa
+- **Added** script-rendered JD rescue for evaluate/auto-pipeline: JSON-LD `JobPosting` and embedded-JD extraction (`jd-parse.mjs`), Cloudflare-challenge refusal in liveness, Bokmål ATS headings, and `positioning_band` scoring support.
+
+### Ghi chú
+- Deliberately NOT changed: the network transport — JD prefetch has no browser/headed fallback; it rides the existing SSRF-safe `safeGet` fetch, whose DNS-pinned transport remains the egress guard.
+
+
 ## [1.271.9] — 2026-11-12
 
 ### Đã sửa

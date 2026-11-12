@@ -3,6 +3,15 @@
 > **Nota** — este arquivo está integralmente traduzido para o português brasileiro. Cada entrada de versão foi reescrita em PT-BR técnico de qualidade editorial, preservando blocos de código, mensagens de commit, caminhos de arquivo, URLs, variáveis de ambiente, comandos e rótulos de link em sua forma original.
 > _As entradas a partir de [1.271.3] aguardam tradução — o original em inglês abaixo._
 
+## [1.271.10] — 2026-11-12
+
+### Corrigido
+- **Added** script-rendered JD rescue for evaluate/auto-pipeline: JSON-LD `JobPosting` and embedded-JD extraction (`jd-parse.mjs`), Cloudflare-challenge refusal in liveness, Bokmål ATS headings, and `positioning_band` scoring support.
+
+### Notas
+- Deliberately NOT changed: the network transport — JD prefetch has no browser/headed fallback; it rides the existing SSRF-safe `safeGet` fetch, whose DNS-pinned transport remains the egress guard.
+
+
 ## [1.271.9] — 2026-11-12
 
 ### Corrigido

@@ -3,6 +3,15 @@
 
 > यह परिवर्तन-सूची अब संपूर्ण रिलीज़-इतिहास रखती है। हिन्दी स्थानीयकरण (v1.122.0) से पहले प्रकाशित प्रविष्टियाँ नीचे अंग्रेज़ी मूल रूप में हैं — अनुवाद बाकी है; आधिकारिक स्रोत [🇬🇧 CHANGELOG.md](CHANGELOG.md) है।
 
+## [1.271.10] — 2026-11-12
+
+### ठीक किया गया
+- **Added** script-rendered JD rescue for evaluate/auto-pipeline: JSON-LD `JobPosting` and embedded-JD extraction (`jd-parse.mjs`), Cloudflare-challenge refusal in liveness, Bokmål ATS headings, and `positioning_band` scoring support.
+
+### नोट्स
+- Deliberately NOT changed: the network transport — JD prefetch has no browser/headed fallback; it rides the existing SSRF-safe `safeGet` fetch, whose DNS-pinned transport remains the egress guard.
+
+
 ## [1.271.9] — 2026-11-12
 
 ### ठीक किया गया

@@ -4,6 +4,15 @@
 > ⏳ **Примітка щодо охоплення** — файл містить тепер повну історію випусків; записи, опубліковані до додання української, наведені нижче англійською оригіналу (переклад триває).
 > _Записи, починаючи з [1.271.3], очікують на переклад — англійський оригінал нижче._
 
+## [1.271.10] — 2026-11-12
+
+### Виправлено
+- **Added** script-rendered JD rescue for evaluate/auto-pipeline: JSON-LD `JobPosting` and embedded-JD extraction (`jd-parse.mjs`), Cloudflare-challenge refusal in liveness, Bokmål ATS headings, and `positioning_band` scoring support.
+
+### Примітки
+- Deliberately NOT changed: the network transport — JD prefetch has no browser/headed fallback; it rides the existing SSRF-safe `safeGet` fetch, whose DNS-pinned transport remains the egress guard.
+
+
 ## [1.271.9] — 2026-11-12
 
 ### Виправлено
