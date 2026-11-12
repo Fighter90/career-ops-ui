@@ -319,10 +319,20 @@ async function main() {
             if (!sha && mergedSha) {
               // Run-6 truth: the executor's work is ALREADY merged to main — the task is
               // done, not blocked. Close it with evidence instead of failing.
-              const ev = `**Already merged to main** — the executor's work is commit ${mergedSha.slice(0, 9)} (an ancestor of origin/main; CI green on the containing run). Nothing left to ship.`;
-              await doneIssue(issue, ev);
-              log(`already merged: ${mergedSha.slice(0, 9)} — issue closed as Done`);
-              mergedDone = true; break;
+              // FALSE-DONE guard (CAR-269, closed twice on infra commits): a merge
+              // candidate counts only when its subject carries a PR-squash marker
+              // `(#NNN)` — swarm work always lands through a PR, while infra/doc
+              // commits that merely MENTION the identifier ("… CAR-269 tracks …")
+              // are direct pushes without one.
+              const subj = (await sh(`git log -1 --format=%s ${mergedSha}`)).out.trim();
+              if (!/\(#\d+\)\s*$/.test(subj)) {
+                log(`  salvage candidate ${mergedSha.slice(0, 9)} lacks a PR marker ("${subj.slice(0, 60)}") — not merged work, continuing`);
+              } else {
+                const ev = `**Already merged to main** — the executor's work is commit ${mergedSha.slice(0, 9)} (an ancestor of origin/main; CI green on the containing run). Nothing left to ship.`;
+                await doneIssue(issue, ev);
+                log(`already merged: ${mergedSha.slice(0, 9)} — issue closed as Done`);
+                mergedDone = true; break;
+              }
             }
             if (sha) {
               log(`  reflog rescue: found lost work ${sha.slice(0, 9)} for ${issue.identifier} — cherry-picking`);

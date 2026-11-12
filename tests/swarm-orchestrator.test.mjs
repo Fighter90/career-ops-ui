@@ -181,3 +181,19 @@ test('orchestrator source: the release manager routes through baselineBump', asy
   const src = readFileSync(new URL('../scripts/swarm/orchestrator.mjs', import.meta.url), 'utf8');
   assert.ok(src.includes('baselineBump('), 'the release manager must bump the baselines');
 });
+
+// The false-Done guard on the salvage path: an "already merged" verdict
+// requires a PR-squash marker `(#NNN)` in the commit subject. CAR-269 was
+// closed as Done twice by infra commits that merely MENTION the identifier
+// in their bodies ("chore(coverage): exempt … CAR-269 tracks raising the
+// coverage").
+test('orchestrator source: the salvage Done requires a PR marker', async () => {
+  const src = readFileSync(new URL('../scripts/swarm/orchestrator.mjs', import.meta.url), 'utf8');
+  assert.ok(
+    src.includes("test(subj)"), 'the salvage path must inspect the commit subject',
+  );
+  assert.ok(
+    src.includes('(#\\d+)'),
+    'the PR-squash marker regex must gate the Done verdict',
+  );
+});
