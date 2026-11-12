@@ -47,8 +47,10 @@
  *   - A confidential posting carries "Confidencial" where the employer goes
  *     (the portal endpoint no longer flags rows with
  *     `isConfidentialCareerPage`) and is dropped. The label is matched whole,
- *     so an employer whose name merely contains the word stays. A blank
- *     `careerPageName` drops too.
+ *     so an employer whose name merely contains the word stays — and for the
+ *     confidential pages whose name is free text, Gupy's placeholder
+ *     `careerPageLogo` and a tenant subdomain that says so mark them too. A
+ *     blank `careerPageName` drops too.
  *   - Posting URLs are host-locked to HTTPS `gupy.io` / `*.gupy.io`.
  *   - Newest-first ordering holds across pages, so a recency window stops a
  *     sweep early (with a 2-day safety margin). `opts.sinceMs` (the run window)
@@ -94,6 +96,14 @@ const SNIPPET_CAP = 500;
 // Indexing Policy rule 1). Matched whole, so an employer whose name merely
 // contains the word is kept.
 const CONFIDENTIAL_EMPLOYER = /^(?:empresa\s+)?confidencial$/i;
+
+// A confidential career page (careerPage.visibility "confidential" on the
+// posting page) is not flagged in the search payload, and its name is free
+// text ("Vagas Confidenciais", "Escritório de Advocacia"). Two signals the row
+// already carries mark most of them: the placeholder logo Gupy assigns such a
+// page, and a tenant subdomain that says so.
+const CONFIDENTIAL_LOGO_SUFFIX = '/confidencial_logo.png';
+const CONFIDENTIAL_TENANT = /confidencia/i;
 
 const HEADERS = {
   'User-Agent': BROWSER_LIKE_USER_AGENT,
@@ -271,9 +281,10 @@ export function buildGupyLocation(j) {
 
 /**
  * Normalize one raw Gupy posting into the web-ui job shape, or null when it
- * must be dropped (non-object, confidential — flagged `isConfidentialCareerPage`
- * or labelled "Confidencial" where the employer goes — no title, unsafe/absent
- * URL, no employer name).
+ * must be dropped (non-object, confidential — flagged `isConfidentialCareerPage`,
+ * labelled "Confidencial" where the employer goes, carrying Gupy's placeholder
+ * `careerPageLogo`, or on a tenant whose subdomain says "confidencial" — no
+ * title, unsafe/absent URL, no employer name).
  * @param {any} j
  */
 export function normalizeGupyJob(j) {
@@ -285,6 +296,10 @@ export function normalizeGupyJob(j) {
   if (!isSafeGupyUrl(url)) return null;
   const company = text(j.careerPageName);
   if (!company || CONFIDENTIAL_EMPLOYER.test(company)) return null;
+  const logo = text(j.careerPageLogo);
+  if (logo.endsWith(CONFIDENTIAL_LOGO_SUFFIX)) return null;
+  // `url` passed isSafeGupyUrl above, so this parse cannot throw.
+  if (CONFIDENTIAL_TENANT.test(new URL(url).hostname.split('.')[0])) return null;
 
   const type = text(j.workplaceType);
   const isRemote = type === 'remote' || (!type && j.isRemoteWork === true);

@@ -8,8 +8,9 @@
  *     comma-joined; it ignores the plural spellings and has no country filter
  *     (a configured country warns and is not sent).
  *   - max_pages caps at 100: the API serves no offset past 9,900.
- *   - workplaceType is a singular string; confidential rows (flagged or
- *     labelled "Confidencial", matched whole) and employer-less rows drop.
+ *   - workplaceType is a singular string; confidential rows (flagged,
+ *     labelled "Confidencial" matched whole, placeholder-logoed, or on a
+ *     "confidencia" tenant) and employer-less rows drop.
  *   - Posting URLs are host-locked to HTTPS gupy.io / *.gupy.io.
  *   - ctx window is early-stop only; the entry's since_days also filters.
  *   - opts.maxPages is a TOTAL page budget; a probe failure propagates as-is.
@@ -277,6 +278,55 @@ test('normalizeGupyJob drops an unflagged "Confidencial" employer label and keep
   });
   assert.ok(unflagged.every((r) => r === null), JSON.stringify(unflagged));
   assert.equal(namedLikeIt?.company, 'Confidencial Seguros');
+});
+
+test('normalizeGupyJob drops a placeholder-logo or "confidencia" tenant row and keeps everything else', () => {
+  // A confidential career page (careerPage.visibility "confidential" on the
+  // posting page) is not flagged in the search payload, and its name is free
+  // text ("Vagas Confidenciais", "Escritório de Advocacia"). Two signals the
+  // row already carries mark most of them: the placeholder logo Gupy assigns
+  // such a page, and a tenant subdomain that says so.
+  const logoDrops = [
+    'https://files.gupy.io/confidencial_logo.png',
+    'https://acme.gupy.io/assets/confidencial_logo.png',
+    '  https://files.gupy.io/confidencial_logo.png  ', // trimmed before the test
+  ].map((careerPageLogo, i) => normalizeGupyJob({
+    name: 'Analista', jobUrl: `https://acme.gupy.io/job/l${i}`, careerPageName: 'Acme', careerPageLogo,
+  }));
+  assert.ok(logoDrops.every((r) => r === null), JSON.stringify(logoDrops));
+
+  const tenantDrops = [
+    'https://vagas-confidenciais.gupy.io/job/t1',
+    'https://Confidenciais.gupy.io/job/t2',
+  ].map((jobUrl) => normalizeGupyJob({
+    name: 'Analista', jobUrl, careerPageName: 'Acme',
+  }));
+  assert.ok(tenantDrops.every((r) => r === null), JSON.stringify(tenantDrops));
+
+  // Endswith semantics: a logo that merely CONTAINS "confidencial" mid-path is
+  // a real asset, not the placeholder.
+  const midLogo = normalizeGupyJob({
+    name: 'Analista', jobUrl: 'https://acme.gupy.io/job/l9', careerPageName: 'Acme',
+    careerPageLogo: 'https://files.gupy.io/assets/confidencial_logo_dark.png',
+  });
+  assert.equal(midLogo?.company, 'Acme');
+
+  // A normal row with a real logo and an ordinary tenant is kept.
+  const normal = normalizeGupyJob({
+    name: 'Analista', jobUrl: 'https://acme.gupy.io/job/n1', careerPageName: 'Acme',
+    careerPageLogo: 'https://files.gupy.io/acme_logo.png',
+  });
+  assert.equal(normal?.company, 'Acme');
+  assert.equal(normal?.url, 'https://acme.gupy.io/job/n1');
+
+  // The older signals still drop alongside the new ones — the checks extend,
+  // not replace, the existing filter.
+  const allFour = normalizeGupyJob({
+    name: 'Analista', jobUrl: 'https://vagas-confidenciais.gupy.io/job/old',
+    careerPageName: 'Confidencial', isConfidentialCareerPage: true,
+    careerPageLogo: 'https://files.gupy.io/confidencial_logo.png',
+  });
+  assert.equal(allFour, null);
 });
 
 // ── extractGupyRows ─────────────────────────────────────────────────────────
