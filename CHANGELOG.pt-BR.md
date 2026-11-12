@@ -1,3 +1,8 @@
+# Histórico de mudanças
+
+> **Nota** — este arquivo está integralmente traduzido para o português brasileiro. Cada entrada de versão foi reescrita em PT-BR técnico de qualidade editorial, preservando blocos de código, mensagens de commit, caminhos de arquivo, URLs, variáveis de ambiente, comandos e rótulos de link em sua forma original.
+> _As entradas a partir de [1.271.3] aguardam tradução — o original em inglês abaixo._
+
 ## [1.271.9] — 2026-11-12
 
 ### Corrigido
@@ -5,11 +10,6 @@
 
 ### Notas
 - Deliberately NOT changed: how per-company oraclecloud entries are configured in portals.yml — the change only tightens host validation, not scan filters, pagination, or any other provider.
-
-# Histórico de mudanças
-
-> **Nota** — este arquivo está integralmente traduzido para o português brasileiro. Cada entrada de versão foi reescrita em PT-BR técnico de qualidade editorial, preservando blocos de código, mensagens de commit, caminhos de arquivo, URLs, variáveis de ambiente, comandos e rótulos de link em sua forma original.
-> _As entradas a partir de [1.271.3] aguardam tradução — o original em inglês abaixo._
 
 ## [1.271.8] — 2026-11-12
 

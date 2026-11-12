@@ -1,3 +1,8 @@
+# 變更日誌
+
+> **i18n 註記** — 本檔案已完整翻譯為繁體中文(臺灣慣用語)。規範英文正文仍以 [🇬🇧 CHANGELOG.md](CHANGELOG.md) 為準。
+> _自 [1.271.3] 起的條目待翻譯——英文原文見下方。_
+
 ## [1.271.9] — 2026-11-12
 
 ### 修復
@@ -5,11 +10,6 @@
 
 ### 備註
 - Deliberately NOT changed: how per-company oraclecloud entries are configured in portals.yml — the change only tightens host validation, not scan filters, pagination, or any other provider.
-
-# 變更日誌
-
-> **i18n 註記** — 本檔案已完整翻譯為繁體中文(臺灣慣用語)。規範英文正文仍以 [🇬🇧 CHANGELOG.md](CHANGELOG.md) 為準。
-> _自 [1.271.3] 起的條目待翻譯——英文原文見下方。_
 
 ## [1.271.8] — 2026-11-12
 

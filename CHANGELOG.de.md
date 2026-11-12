@@ -1,3 +1,8 @@
+# Changelog (Deutsch)
+
+
+> Dieses Changelog enthält die vollständige Versionsgeschichte. Einträge, die vor der deutschen Lokalisierung (v1.85.0) veröffentlicht wurden, stehen unten im englischen Original — Übersetzung ausstehend; maßgeblich bleibt [🇬🇧 CHANGELOG.md](CHANGELOG.md).
+
 ## [1.271.9] — 2026-11-12
 
 ### Behoben
@@ -5,11 +10,6 @@
 
 ### Hinweise
 - Deliberately NOT changed: how per-company oraclecloud entries are configured in portals.yml — the change only tightens host validation, not scan filters, pagination, or any other provider.
-
-# Changelog (Deutsch)
-
-
-> Dieses Changelog enthält die vollständige Versionsgeschichte. Einträge, die vor der deutschen Lokalisierung (v1.85.0) veröffentlicht wurden, stehen unten im englischen Original — Übersetzung ausstehend; maßgeblich bleibt [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
 ## [1.271.8] — 2026-11-12
 

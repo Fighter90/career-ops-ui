@@ -1,3 +1,8 @@
+# Ændringslog
+
+
+> **Oversættelsesnote.** Filen er oversat til dansk: de seneste poster (fra v1.77.0 og bagud, inkl. v1.76.0 / v1.75.2 / v1.75.1 / v1.75.0) er fuldt oversat til teknisk dansk. Ældre poster bevares på engelsk; versionsoverskrifter og datoer er identiske med den engelske kildefil.
+
 ## [1.271.9] — 2026-11-12
 
 ### Rettet
@@ -5,11 +10,6 @@
 
 ### Noter
 - Deliberately NOT changed: how per-company oraclecloud entries are configured in portals.yml — the change only tightens host validation, not scan filters, pagination, or any other provider.
-
-# Ændringslog
-
-
-> **Oversættelsesnote.** Filen er oversat til dansk: de seneste poster (fra v1.77.0 og bagud, inkl. v1.76.0 / v1.75.2 / v1.75.1 / v1.75.0) er fuldt oversat til teknisk dansk. Ældre poster bevares på engelsk; versionsoverskrifter og datoer er identiske med den engelske kildefil.
 
 ## [1.271.8] — 2026-11-12
 

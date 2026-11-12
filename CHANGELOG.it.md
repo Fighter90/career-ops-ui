@@ -1,3 +1,8 @@
+# Changelog (Italiano)
+
+
+> Questo changelog contiene ora la cronologia completa delle versioni. Le voci pubblicate prima della localizzazione italiana (v1.85.0) compaiono sotto nell'originale inglese — traduzione in attesa; il riferimento resta [🇬🇧 CHANGELOG.md](CHANGELOG.md).
+
 ## [1.271.9] — 2026-11-12
 
 ### Corretto
@@ -5,11 +10,6 @@
 
 ### Note
 - Deliberately NOT changed: how per-company oraclecloud entries are configured in portals.yml — the change only tightens host validation, not scan filters, pagination, or any other provider.
-
-# Changelog (Italiano)
-
-
-> Questo changelog contiene ora la cronologia completa delle versioni. Le voci pubblicate prima della localizzazione italiana (v1.85.0) compaiono sotto nell'originale inglese — traduzione in attesa; il riferimento resta [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
 ## [1.271.8] — 2026-11-12
 
