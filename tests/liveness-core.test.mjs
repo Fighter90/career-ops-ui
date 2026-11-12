@@ -274,3 +274,75 @@ test('classifyLiveness: a sibling "Job removed" badge (no "sorry") with an APPLY
   });
   assert.equal(r.result, 'active');
 });
+
+// ── Norwegian wave (parent #6620) + the "Sorter etter søknadsfrist" fix
+// (parent #6788, CAR-259). arbeidsplassen.no, Jobbnorge and employer career
+// sites keep a closed posting's "Søk her" link, so the closure banners are
+// hard patterns; normalizeForMatch folds å→a but leaves ø alone, hence [øo].
+const NORWEGIAN_BODY = 'Om stillingen\nVi søker en avdelingsdirektør som skal lede plattform og infrastruktur i en stor offentlig virksomhet.\n'.repeat(4);
+const norwegianPage = (bodyText, applyControls) => classifyLiveness({
+  status: 200,
+  requestedUrl: 'https://arbeidsplassen.nav.no/stillinger/stilling/022e0f20-ab6f-4fa8-ae75-8db6143c5d51',
+  finalUrl: 'https://arbeidsplassen.nav.no/stillinger/stilling/022e0f20-ab6f-4fa8-ae75-8db6143c5d51',
+  bodyText,
+  applyControls,
+});
+
+test('classifyLiveness: Norwegian qualified apply labels → active (parent #6620)', () => {
+  for (const label of ['Gå til søknad', 'Send søknad', 'Søk på stillingen', 'Søk på denne stillingen', 'Søk nå', 'Søk her', 'GÅ TIL SØKNAD']) {
+    const r = norwegianPage(NORWEGIAN_BODY, ['Lagre favoritt', label]);
+    assert.equal(r.result, 'active', label);
+    assert.equal(r.code, 'apply_control_visible', label);
+  }
+});
+
+test('classifyLiveness: bare "Søk", the search control and the deadline stem are NOT Apply (parent #6620)', () => {
+  // Bare "Søk" is also every Norwegian site's search button, and the deadline
+  // line and the "Søknadsfrist" label share the stem. None of them is Apply.
+  for (const label of ['Søk', 'Søk etter stillinger', 'Søknadsfrist', 'Søk senest mandag 16. november']) {
+    const r = norwegianPage(NORWEGIAN_BODY, [label]);
+    assert.equal(r.result, 'uncertain', label);
+    assert.equal(r.code, 'no_apply_control', label);
+  }
+});
+
+test('classifyLiveness: a Norwegian closure banner expires a posting that keeps its "Søk her" link (parent #6620, #6788)', () => {
+  // A closed Norwegian posting can keep its "Søk her" link next to the closure
+  // banner. The banner wins; a deadline still ahead does not. "Søk etter
+  // stillinger" is site chrome, not a clause opener: it can sit on the banner's
+  // own line and must not hide the closure. Neither may a "Sorter etter
+  // søknadsfrist" sort control joined to the banner: its "etter" opens no
+  // clause around the banner (#6788) — joined on one line or on the next.
+  for (const notice of [
+    'Søknadsfristen er utløpt',
+    'Søknadsfristen har gått ut',
+    'Stillingen er ikke lenger ledig',
+    'Denne annonsen er utløpt',
+    'Stillingen er besatt',
+    'Søk etter stillinger Søknadsfristen er utløpt',
+    'Sorter etter søknadsfrist Stillingen er besatt',
+    'Sorter etter søknadsfrist\nStillingen er besatt',
+    'Sorter etter søknadsfrist Søknadsfristen er utløpt',
+  ]) {
+    const r = norwegianPage(`${notice}\n${NORWEGIAN_BODY}`, ['Søk her']);
+    assert.equal(r.result, 'expired', notice);
+  }
+});
+
+test('classifyLiveness: Norwegian deadline-ahead clauses keep a posting active (parent #6620)', () => {
+  for (const notice of [
+    'Når søknadsfristen er utløpt, blir søkerlisten offentliggjort',
+    'Etter at søknadsfristen er utløpt vil vi kalle inn til intervju',
+    'Søknader behandles etter søknadsfristen er utløpt',
+    'Søkerlisten blir offentlig så snart søknadsfristen har gått ut',
+    'Søknadsfrist: 20.11.2026',
+    'Søknadsfristen utløper 20. november',
+    'Søknadsfristen er 20. november',
+    'Stillingen er ledig fra 1. januar',
+    'Stillingen vil bli besatt så snart som mulig',
+  ]) {
+    const r = norwegianPage(`${notice}\n${NORWEGIAN_BODY}`, ['Søk her']);
+    assert.equal(r.result, 'active', notice);
+    assert.equal(r.code, 'apply_control_visible', notice);
+  }
+});

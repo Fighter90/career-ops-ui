@@ -85,6 +85,15 @@ const HARD_EXPIRED_PATTERNS = [
   /ce poste n'est plus (disponible|a pourvoir|ouvert)/i,
   /recrutement (termine|cloture)/i,
   /candidatures (closes|cloturees)/i,
+  // Norwegian closure banners. arbeidsplassen.no, Jobbnorge and employer
+  // career sites can keep a closed posting's "Søk her" link, so this has to be
+  // a hard pattern (parent #6620). normalizeForMatch() folds å to a but not ø,
+  // hence [øo] and "gatt". Only the past tense and statements that the post is
+  // gone match: a deadline still ahead ("Søknadsfrist: 20.11.2026",
+  // "Søknadsfristen utløper 20. november") and "Stillingen vil bli besatt"
+  // never do.
+  /s[øo]knadsfristen (?:er utl[øo]pt|har gatt ut)/i,
+  /\b(?:stillingen|annonsen) er (?:ikke lenger (?:ledig|aktiv|tilgjengelig)|besatt|utl[øo]pt)\b/i,
 ];
 
 const LISTING_PAGE_PATTERNS = [
@@ -211,6 +220,14 @@ const APPLY_PATTERNS = [
   // labels containing “投递” can be status/history controls rather than Apply.
   /^申请职位$/,
   /^投递$/,
+  // Norwegian (arbeidsplassen.no, Jobbnorge, employer career sites): "Gå til
+  // søknad", "Send søknad", "Søk på stillingen", "Søk nå". normalizeForMatch
+  // turns "å" into "a" but leaves "ø" alone, so both are spelled here as they
+  // arrive (parent #6620). Bare "Søk" is not Apply: it is also every Norwegian
+  // site's search button ("Søk", "Søk etter stillinger"), so only the
+  // qualified labels count, and only at the start of the label.
+  /^(?:ga til|send) s[øo]knad(?:en)?(?![\p{L}\p{M}])/iu,
+  /^s[øo]k (?:pa (?:denne |den )?(?:stillingen|jobben)|stillingen|her|na)(?![\p{L}\p{M}])/iu,
 ];
 
 const MIN_CONTENT_CHARS = 300;
@@ -247,8 +264,30 @@ function firstMatch(patterns, text = '') {
 //
 // Words are separated by a single space because normalizeForMatch() leaves one
 // character per run of whitespace; "\n" is not a space, so the clause stops there.
+// The Norwegian openers are spelled as normalizeForMatch() leaves them (når →
+// "nar", så → "sa"; ø is kept): public-sector postings routinely say "Når
+// søknadsfristen er utløpt, blir søkerlisten offentliggjort", which describes
+// what happens after the deadline, not a closed posting (parent #6620). "for"
+// and "til" are left out because they are also prepositions in both languages.
+// So is "etter" ("Søk etter stillinger"); see ETTER_BEFORE_MATCH for the one
+// place a bare "etter" opens the clause.
 const TIME_OR_CONDITION_CLAUSE =
-  /\b(?:until|till|once|when|whenever|after|before|unless|if|whether|as soon as) (?:[^\s.,;:!?…|•·]+ ){0,9}[^\s.,;:!?…|•·]+$/i;
+  /(?:\b(?:until|till|once|when|whenever|after|before|unless|if|whether|as soon as|nar|etter at|inntil|hvis|dersom|sa snart)|(?<![\p{L}\p{N}])før) (?:[^\s.,;:!?…|•·]+ ){0,9}[^\s.,;:!?…|•·]+$/iu;
+
+// A bare "etter" opens the clause only when the match itself starts at the
+// deadline noun right after it: "Søknader behandles etter søknadsfristen er
+// utløpt". A lookahead for the noun anywhere after "etter" also caught a sort
+// control: "Sorter etter søknadsfrist Stillingen er besatt", with the control
+// and the banner joined on one line, read the banner as part of a time clause
+// and the filled position as active (parent #6788, CAR-259).
+const ETTER_BEFORE_MATCH = /(?<![\p{L}\p{N}])etter $/iu;
+const DEADLINE_NOUN_START = /^s[øo]knadsfrist/iu;
+
+function opensTimeOrConditionClause(lines, match) {
+  const end = match.index + match[0].length;
+  if (TIME_OR_CONDITION_CLAUSE.test(lines.slice(0, end))) return true;
+  return DEADLINE_NOUN_START.test(match[0]) && ETTER_BEFORE_MATCH.test(lines.slice(0, match.index));
+}
 
 // `lines` keeps its line breaks (normalizeForMatch with keepLineBreaks). The
 // patterns match on the joined text, as every other check here does, so a
@@ -258,7 +297,7 @@ function firstStatedMatch(patterns, lines = '') {
   const text = lines.replace(/\n/g, ' ');
   return patterns.find((pattern) => {
     for (const match of text.matchAll(new RegExp(pattern, `${pattern.flags}g`))) {
-      if (!TIME_OR_CONDITION_CLAUSE.test(lines.slice(0, match.index + match[0].length))) return true;
+      if (!opensTimeOrConditionClause(lines, match)) return true;
     }
     return false;
   });

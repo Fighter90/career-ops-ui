@@ -103,6 +103,32 @@ test('EN: an aborted scan keeps the previous snapshot', async () => {
   assert.ok(logs.some((l) => /snapshot kept \(scan aborted\)/.test(l)), 'the skip is logged');
 });
 
+test('EN: a stop mid-run still saves the roles found before it (CAR-259, parent #6779 mirror)', async () => {
+  // The parent's scheduled full sweep keeps the roles it already found when
+  // the time limit hits. web-ui's scanners share the invariant: the stop
+  // (here, a signal aborted after Alpha's board was read) never discards the
+  // roles already kept — pipeline.md and scan-history.tsv still get them, and
+  // the R-12 snapshot keep on top does not undo the append.
+  seed([row('Alpha', 1), row('Beta', 2)]);
+  const ctrl = new AbortController();
+  const fetchImpl = async (url) => {
+    const u = String(url);
+    if (u.includes('/offices')) return json({ offices: [] });
+    if (u.includes('boards/alpha/')) {
+      ctrl.abort(); // the stop lands mid-run, after Alpha's board was read
+      return json({ jobs: [{ id: 7, title: 'Lead Engineer', company_name: 'Alpha', absolute_url: 'https://example.com/alpha/7', location: { name: 'Remote' } }] });
+    }
+    return new Response('down', { status: 500 });
+  };
+  const r = await runEnScan({ signal: ctrl.signal, fetchImpl });
+  assert.ok(r.fresh.some((j) => j.url === 'https://example.com/alpha/7'), 'the role read before the stop is fresh');
+  const history = readFileSync(resolve(dir, 'data', 'scan-history.tsv'), 'utf8');
+  assert.ok(history.includes('https://example.com/alpha/7'), 'scan-history.tsv keeps the role found before the stop');
+  const pipeline = readFileSync(resolve(dir, 'data', 'pipeline.md'), 'utf8');
+  assert.ok(pipeline.includes('https://example.com/alpha/7'), 'pipeline.md keeps the role found before the stop');
+  assert.equal(readSnap().en.filtered.length, 2, 'the previous snapshot still survives (R-12 unchanged)');
+});
+
 test('EN: a scan where every source errored keeps the previous snapshot', async () => {
   seed([row('Alpha', 1), row('Beta', 2), row('Beta', 3)]);
   const r = await runEnScan({ fetchImpl: greenhouseFetch({}) });
