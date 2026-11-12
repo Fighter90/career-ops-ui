@@ -195,6 +195,34 @@ export function changelogInsert(content, entry) {
   return lines.join('\n');
 }
 
+// captureTestCount — the release manager's baseline bump needs the real
+// unit-test count of the tree it just gated. TAP prints "# pass N"; the spec
+// reporter prints "✔ N passing". Either may be absent (run-12) — null then,
+// and the caller skips the bump rather than documenting a guess.
+export function captureTestCount(gatesOutput) {
+  const tap = gatesOutput.match(/^# pass (\d+)\s*$/m);
+  if (tap) return parseInt(tap[1], 10);
+  const spec = gatesOutput.match(/✔\s+(\d+)\s+passing/);
+  if (spec) return parseInt(spec[1], 10);
+  return null;
+}
+
+// baselineBump — the no-blanket-version-sweep grader fails every release
+// commit whose SDD baselines still name the previous version (v1.271.9 and
+// v1.271.10 both red this way, each needing a babysitter push). The release
+// manager owns the bump: the "Current count" line moves to a "Count as of"
+// history line naming the previous version, and the new current line carries
+// the gated tree's real count.
+export function baselineBump(conventions, version, count, date) {
+  if (count === null) return conventions;
+  const curRe = /- Current count as of \*\*(v[\d.]+)\*\*: \*\*(\d+)\*\* unit[^\n]*/;
+  const m = conventions.match(curRe);
+  if (!m) return conventions;
+  const prevLine = `- Count as of **${m[1]}**: **${m[2]}** unit + **210** Playwright (see the CHANGELOG entry for ${m[1]})`;
+  const curLine = `- Current count as of **${version}**: **${count}** unit + **210** Playwright (${version} — the swarm release; the release manager bumped this baseline from the gated tree's own test count, ${date})`;
+  return conventions.replace(curRe, curLine + '\n' + prevLine);
+}
+
 export function acquireLock(lock) {
   const claims = () => {
     const fd = openSync(lock, 'wx'); // exclusive create — no exists/write race
@@ -251,6 +279,7 @@ async function main() {
       try {
         // ---- develop (executor ↔ reviewer loop, deterministic TESTER between rounds)
         let reviewNotes = '';
+        let gatesOutput = '';
         let round = 0;
         for (; round < MAX_ROUNDS; round++) {
           log(`-- round ${round + 1}/${MAX_ROUNDS}: develop`);
@@ -311,6 +340,7 @@ async function main() {
 
           log('-- tester: deterministic gates (npm run test:ci)');
           const gates = await sh('npm run test:ci', { timeoutMs: 30 * 60_000 });
+          gatesOutput = `${gates.all || ''}\n${gates.tail || ''}`;
           // v1.7: the gate verdict is the EXIT CODE. node --test exits non-zero on any
           // failure regardless of the reporter format (TAP prints "# pass N", the spec
           // reporter prints "✔ …" — parse nothing, trust the code). A green run with a
@@ -398,6 +428,28 @@ async function main() {
         const verOut = await sh('npm version patch --no-git-tag-version');
         const ver = verOut.out.trim().replace(/^v/, '');
         log(`-- release manager: v${ver} (changelog ×19 + QA prompt)`);
+        // Baselines: the no-blanket-version-sweep grader reds every release
+        // commit whose SDD baselines still name the previous version (the
+        // v1.271.9/v1.271.10 class). Bump CONVENTIONS from the gated tree's
+        // own count; PROJECT-CONTEXT's repo-state line names the version too.
+        const testCount = captureTestCount(gatesOutput);
+        if (testCount !== null) {
+          const today2 = today;
+          const convPath = resolve(ROOT, 'docs/sdd/CONVENTIONS.md');
+          try {
+            writeFileSync(convPath, baselineBump(readFileSync(convPath, 'utf8'), `v${ver}`, testCount, today2));
+            const pcPath = resolve(ROOT, '.claude/PROJECT-CONTEXT.md');
+            const pc = readFileSync(pcPath, 'utf8');
+            const pcRe = /> \*\*Repo state\.\*\* v[\d.]+ \(/;
+            if (pcRe.test(pc)) {
+              writeFileSync(pcPath, pc.replace(pcRe, `> **Repo state.** v${ver} (${today2} — the swarm release shipped this version; the baseline and chain live in docs/sdd/CONVENTIONS.md) (\n> previous state: `));
+            }
+          } catch (err) {
+            log(`  (baseline bump skipped: ${err && err.code === 'ENOENT' ? 'file absent' : 'write failure'})`);
+          }
+        } else {
+          log('  (baseline bump skipped: no test count in the gates output)');
+        }
 
         const today = new Date().toISOString().slice(0, 10);
         const entry = (fixedLabel, notesLabel) =>

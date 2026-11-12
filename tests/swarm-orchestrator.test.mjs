@@ -10,7 +10,7 @@ import { spawnSync } from 'node:child_process';
 import { mkdtempSync, writeFileSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { parsePickOutput, acquireLock, developCheckout, changelogInsert } from '../scripts/swarm/orchestrator.mjs';
+import { parsePickOutput, acquireLock, developCheckout, changelogInsert, captureTestCount, baselineBump } from '../scripts/swarm/orchestrator.mjs';
 
 test('parses a real pick line', () => {
   const issue = parsePickOutput('blah\nSWARM_PICK::uuid-1::CAR-252::#/health: FIX_TARGETS keys\ntrailer');
@@ -145,4 +145,39 @@ test('changelogInsert: a preamble-less file prepends as before', () => {
 
 test('changelogInsert: a file with no release entry gets the entry prepended', () => {
   assert.equal(changelogInsert('header text\n', 'ENTRY\n'), 'ENTRY\nheader text\n');
+});
+
+// captureTestCount + baselineBump — the release manager's baseline bump.
+// Regression: the no-blanket-version-sweep grader reds EVERY swarm release
+// commit whose SDD baselines still name the previous version (v1.271.9 and
+// v1.271.10 both needed a babysitter push within an hour of each other).
+test('captureTestCount: reads the TAP pass line', () => {
+  assert.equal(captureTestCount('ok 1 - x\n# tests 10\n# pass 8295\n# fail 0\n'), 8295);
+});
+
+test('captureTestCount: reads the spec-reporter line', () => {
+  assert.equal(captureTestCount('✔ 8255 passing (30s)\n'), 8255);
+});
+
+test('captureTestCount: no summary line → null (no guessed numbers)', () => {
+  assert.equal(captureTestCount('all systems nominal\n'), null);
+});
+
+test('baselineBump: current line demotes to history, new current carries the gated count', () => {
+  const before = '- Current count as of **v1.271.9**: **8255** unit + **210** Playwright (v1.271.9 — CAR-266 details)\n- Count as of **v1.271.8**: **8249** unit\n';
+  const after = baselineBump(before, 'v1.271.10', 8295, '2026-11-12');
+  assert.ok(after.includes('- Current count as of **v1.271.10**: **8295**'), 'new current line');
+  assert.ok(after.includes('- Count as of **v1.271.9**: **8255**'), 'previous line demoted to history');
+  assert.ok(after.indexOf('v1.271.10') < after.indexOf('v1.271.9'), 'current precedes history');
+  assert.ok(after.includes('- Count as of **v1.271.8**: **8249**'), 'older history untouched');
+});
+
+test('baselineBump: no test count → file unchanged (no fabricated numbers)', () => {
+  const before = '- Current count as of **v1.271.9**: **8255** unit + **210** Playwright (x)\n';
+  assert.equal(baselineBump(before, 'v1.271.10', null, '2026-11-12'), before);
+});
+
+test('orchestrator source: the release manager routes through baselineBump', async () => {
+  const src = readFileSync(new URL('../scripts/swarm/orchestrator.mjs', import.meta.url), 'utf8');
+  assert.ok(src.includes('baselineBump('), 'the release manager must bump the baselines');
 });
