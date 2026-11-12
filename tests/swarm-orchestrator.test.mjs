@@ -193,7 +193,7 @@ test('orchestrator source: the salvage Done requires a PR marker', async () => {
     src.includes("test(subj)"), 'the salvage path must inspect the commit subject',
   );
   assert.ok(
-    src.includes('(#\\d+)'),
-    'the PR-squash marker regex must gate the Done verdict',
+    src.includes('lacks a PR marker'),
+    'the salvage path must refuse non-PR merges (the false-Done guard)',
   );
 });
