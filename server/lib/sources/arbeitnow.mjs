@@ -53,9 +53,25 @@ function epochSecondsToDate(created_at) {
   return d.toISOString().slice(0, 10);
 }
 
+// The parent's coerceId (providers/_ids.mjs): accept a string or a number,
+// trim it, treat empty as absent. ABSENT BEATS WRONG — an id that cannot be
+// coerced returns undefined rather than a placeholder.
+/**
+ * @param {unknown} raw
+ * @returns {string|undefined}
+ */
+function coerceId(raw) {
+  if (typeof raw !== 'string' && typeof raw !== 'number') return undefined;
+  const s = String(raw).trim();
+  return s === '' ? undefined : s;
+}
+
 /**
  * Normalize a single Arbeitnow job item into the web-ui rich 12-field shape.
  * Returns null if the item lacks a title or a valid https arbeitnow.com URL.
+ * The feed's own posting id (`slug`) always lands in the row id when the feed
+ * carries a usable one (the parent's externalId contract); the row id falls
+ * back to the url otherwise.
  *
  * @param {any} j
  * @returns {object|null}
@@ -96,9 +112,10 @@ function normalize(j) {
   const isRemote = j.remote === true;
   const workplaceType = isRemote ? 'Remote' : 'Onsite';
 
-  // Stable id: prefer slug field, fall back to the url (stable posting URL).
-  const slugRaw = typeof j.slug === 'string' ? j.slug.trim() : '';
-  const id = `arbeitnow-${slugRaw || url}`;
+  // Stable id: prefer slug field (coerced — the feed's own posting id), fall
+  // back to the url (stable posting URL).
+  const externalId = coerceId(j.slug);
+  const id = `arbeitnow-${externalId || url}`;
 
   // `description` arrives as HTML in the same list payload (no per-job
   // request), so it is free. The en-scanner's content_filter

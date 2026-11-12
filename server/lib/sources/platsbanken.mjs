@@ -353,6 +353,10 @@ export async function fetchPlatsbanken(endpoint, opts = {}) {
         if (page === 1) {
           keywordFailed = true;
           errors.push(`"${keyword}": ${(err && err.message) || err}`);
+          // This keyword's share of the board was never read. When another
+          // keyword answered, the board is partial (#6820); when none did,
+          // the outage check below throws before this is used.
+          truncatedReason ??= 'fetch-error';
         } else {
           // A later page failing keeps the pages already collected: recall-first,
           // the same trade arbeitsagentur.mjs and jobbankca.mjs make. The board

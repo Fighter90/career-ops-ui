@@ -300,3 +300,170 @@ test('resolveTenantBase: a /go/<Category>/<id>/ saved-search page resolves to th
   assert.equal(resolveTenantBase({ careers_url: 'https://careers.example.com/go/' }), 'https://careers.example.com/go');
   assert.equal(resolveTenantBase({ careers_url: 'https://careers.example.com/Brand/go/jobs/' }), 'https://careers.example.com/Brand/go/jobs');
 });
+
+// ── Parent #6697: public-https host guard + opt-in caps + truncation warnings ──
+
+test('host guard: supported branded hosts pass; unsafe hosts are rejected before any request', async () => {
+  const { isAllowedHost } = await import('../server/lib/sources/successfactors.mjs');
+  const ok = ['https://jobs.sap.com', 'https://jobs.zf.com/search/', 'https://jobs.schaeffler.com', 'https://jobs.hensoldt.net', 'https://careers.te.com/search/', 'https://career5.successfactors.eu/careers', 'https://careers.nemetschek.com/Bluebeam/'];
+  const bad = ['http://jobs.zf.com', 'https://localhost', 'https://127.0.0.1', 'https://10.0.0.5', 'https://169.254.169.254/latest', 'https://2130706433', 'https://[::1]', 'https://intranet', 'https://jobs.corp.internal', 'https://user:pw@jobs.zf.com', 'https://jobs.zf.com:8443'];
+  const okFail = ok.filter((u) => !resolveTenantBase({ name: 'T', careers_url: u }));
+  const badFail = bad.filter((u) => resolveTenantBase({ name: 'T', careers_url: u }));
+  assert.deepEqual(okFail, [], 'every supported branded host resolves');
+  assert.deepEqual(badFail, [], 'no unsafe host resolves');
+  assert.ok(ok.every((u) => isAllowedHost(new URL(u))));
+  let requests = 0;
+  let threw = 0;
+  for (const u of bad) {
+    try {
+      await fetchSuccessfactors(`${u.replace(/\/+$/, '')}/tile-search-results/`, {
+        fetchImpl: async () => { requests += 1; return { ok: true, status: 200, text: async () => '' }; },
+        company: { name: 'T', careers_url: u },
+      });
+    } catch { threw += 1; }
+  }
+  assert.equal(requests, 0, 'unsafe hosts are refused before any request');
+  assert.equal(threw, bad.length, 'every unsafe host throws');
+});
+
+test('resolveLimits: ceilings, default ignores a lowering max_pages, defaults are not "raised"', async () => {
+  const { resolveLimits } = await import('../server/lib/sources/successfactors.mjs');
+  assert.deepEqual(resolveLimits({ max_pages: 99999, max_jobs: 99999 }),
+    { maxPages: 400, maxJobs: 10000, raised: true }, 'clamped to the ceilings');
+  assert.deepEqual(resolveLimits({}), { maxPages: 40, maxJobs: 1000, raised: false }, 'defaults');
+  assert.equal(resolveLimits({ max_pages: 5 }).maxPages, 40, 'RMK ignores a lowering max_pages');
+  assert.equal(resolveLimits({ max_pages: 60 }).maxPages, 60, 'a raise is honored');
+  assert.equal(resolveLimits({ max_jobs: 1500 }).maxJobs, 1500);
+  assert.equal(resolveLimits({ max_jobs: 99999 }).maxJobs, 10000);
+  assert.equal(resolveLimits({ max_pages: 5 }).raised, false);
+});
+
+const tilePage = (startrow) => Array.from({ length: 25 }, (_, i) =>
+  `<li class="job-tile job-id-${startrow + i}"><a data-url="/job/x/${startrow + i}/" class="jobTitle-link" href="#">Role ${startrow + i}</a></li>`).join('');
+
+/** A transport over a tenant's own tile endpoint; counts requests. */
+const rmkEndpoint = (tenant) => `https://${tenant}/tile-search-results/`;
+const rmkCtx = (c) => ({
+  fetchImpl: async (u) => {
+    c.n += 1;
+    return { ok: true, status: 200, text: async () => tilePage(Number(new URL(u).searchParams.get('startrow'))) };
+  },
+});
+
+test('RMK default cap warns when still receiving new postings', async () => {
+  const warns = [];
+  const origErr = console.error;
+  console.error = (...a) => warns.push(a.join(' '));
+  const calls = { n: 0 };
+  try {
+    const jobs = await fetchSuccessfactors(rmkEndpoint('jobs.rmkco.example'), { ...rmkCtx(calls), company: { name: 'RmkCo', careers_url: 'https://jobs.rmkco.example' } });
+    assert.equal(jobs.length, 1000);
+    assert.equal(calls.n, 40);
+    assert.equal(warns.length, 1);
+    assert.match(warns[0], /RmkCo truncated at max_pages=40, max_jobs=1000/);
+    assert.match(warns[0], /raise max_pages and\/or max_jobs/);
+    // The parent tags only the stderr warning for RMK (the fragment carries
+    // no total) — no canonical truncated tag on the returned array.
+    assert.equal(jobs.truncated, undefined);
+  } finally {
+    console.error = origErr;
+  }
+});
+
+test('RMK opt-in max_pages/max_jobs raises the cap (and still warns when the new cap is hit)', async () => {
+  const warns = [];
+  const origErr = console.error;
+  console.error = (...a) => warns.push(a.join(' '));
+  const calls = { n: 0 };
+  try {
+    const jobs = await fetchSuccessfactors(rmkEndpoint('jobs.rmkco.example'), {
+      ...rmkCtx(calls),
+      company: { name: 'RmkCo', careers_url: 'https://jobs.rmkco.example', max_pages: 60, max_jobs: 1500 },
+    });
+    assert.equal(jobs.length, 1500);
+    assert.equal(calls.n, 60);
+    assert.equal(warns.length, 1);
+    assert.match(warns[0], /truncated at max_pages=60, max_jobs=1500/);
+  } finally {
+    console.error = origErr;
+  }
+});
+
+test('RMK does not warn when the last page before the cap is short', async () => {
+  const warns = [];
+  const origErr = console.error;
+  console.error = (...a) => warns.push(a.join(' '));
+  try {
+    const shortLast = (u) => {
+      const r = Number(new URL(u).searchParams.get('startrow'));
+      return r < 975 ? tilePage(r) : tilePage(r).split('</li>').slice(0, 10).join('</li>') + '</li>';
+    };
+    const jobs = await fetchSuccessfactors(rmkEndpoint('jobs.shortlast.example'), {
+      fetchImpl: async (u) => ({ ok: true, status: 200, text: async () => shortLast(u) }),
+      company: { name: 'ShortLast', careers_url: 'https://jobs.shortlast.example' },
+    });
+    assert.equal(jobs.length, 985);
+    assert.equal(warns.length, 0);
+    assert.equal(jobs.truncated, undefined);
+  } finally {
+    console.error = origErr;
+  }
+});
+
+test('RMK board that ends naturally before the cap does not warn', async () => {
+  const warns = [];
+  const origErr = console.error;
+  console.error = (...a) => warns.push(a.join(' '));
+  try {
+    const jobs = await fetchSuccessfactors(rmkEndpoint('jobs.smallco.example'), {
+      fetchImpl: async (u) => ({ ok: true, status: 200, text: async () => (new URL(u).searchParams.get('startrow') === '0' ? tilePage(0) : '') }),
+      company: { name: 'SmallCo', careers_url: 'https://jobs.smallco.example' },
+    });
+    assert.equal(jobs.length, 25);
+    assert.equal(warns.length, 0);
+  } finally {
+    console.error = origErr;
+  }
+});
+
+test('RMK counts source rows, not parsed tiles, when judging a full last page', async () => {
+  const warns = [];
+  const origErr = console.error;
+  console.error = (...a) => warns.push(a.join(' '));
+  try {
+    // The last page before the cap carries 24 titled tiles + 1 title-less one:
+    // full by SOURCE rows (25), so the cap warning still fires.
+    const badTile = '<li class="job-tile job-id-999999"><a data-url="/job/x/999999/" href="#"></a></li>';
+    const jobs = await fetchSuccessfactors(rmkEndpoint('jobs.badtile.example'), {
+      fetchImpl: async (u) => {
+        const r = Number(new URL(u).searchParams.get('startrow'));
+        return { ok: true, status: 200, text: async () => (r === 975 ? tilePage(r).split('</li>').slice(0, 24).join('</li>') + '</li>' + badTile : tilePage(r)) };
+      },
+      company: { name: 'BadTile', careers_url: 'https://jobs.badtile.example' },
+    });
+    assert.equal(warns.length, 1);
+    assert.match(warns[0], /BadTile truncated/);
+    assert.ok(jobs.length >= 975);
+  } finally {
+    console.error = origErr;
+  }
+});
+
+test('RMK advances by source rows and walks past a page of malformed tiles', async () => {
+  const asked = [];
+  const bad = (id) => `<li class="job-tile job-id-${id}"><a data-url="/job/x/${id}/" href="#"></a></li>`;
+  const jobs = await fetchSuccessfactors(rmkEndpoint('jobs.malformed.example'), {
+    fetchImpl: async (u) => {
+      const r = Number(new URL(u).searchParams.get('startrow'));
+      asked.push(r);
+      if (r === 0) return { ok: true, status: 200, text: async () => bad(9001) + bad(9002) };
+      if (r === 2) return { ok: true, status: 200, text: async () => tilePage(100).split('</li>').slice(0, 5).join('</li>') + '</li>' };
+      return { ok: true, status: 200, text: async () => '' };
+    },
+    company: { name: 'Malformed', careers_url: 'https://jobs.malformed.example' },
+  });
+  // startrow 0 → 2 (two raw rows) → 7 (2 + 5): a title-less page neither ends
+  // the walk nor leaves the next offset overlapping.
+  assert.equal(asked.join(), '0,2,7');
+  assert.equal(jobs.length, 5);
+});

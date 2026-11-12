@@ -358,7 +358,7 @@ test('talentlink: resolveMaxPages bounds the walk; a cap stop warns and marks pa
   console.error = (...a) => capture.push(a.join(' '));
   try {
     let n = 0;
-    const { impl, calls } = makeFetch();
+    const { calls } = makeFetch();
     const jobs = await fetchTalentlink(BOARD, {
       fetchImpl(url, opts) {
         calls.push({ url, opts });

@@ -14,13 +14,15 @@
  * Used by the amazon adapter (server/lib/portals/adapters/amazon.mjs).
  */
 import { fetchJson } from '../http-json.mjs';
+import { markTruncated } from '../board-truncation.mjs';
 import { requireContainer, requireArray } from './_shape.mjs';
 
 export const ORIGIN = 'https://www.amazon.jobs';
 export const FEED_BASE = `${ORIGIN}/en/search.json`;
 const TRUSTED_HOST = 'www.amazon.jobs';
 const PAGE_SIZE = 100; // amazon.jobs caps result_limit at 100
-const MAX_PAGES = 20; // safety cap — at most 2000 postings per entry
+const MAX_PAGES = 20; // cap while the total is unknown — 2000 postings
+const HARD_MAX_PAGES = 100; // absolute ceiling for a hits-bounded walk — 10,000 postings
 
 export const meta = {
   value: 'amazon',
@@ -126,8 +128,20 @@ export function normalizeAmazonJob(raw, fallbackCompany = 'Amazon') {
 
 /**
  * Fetch + normalize the amazon.jobs search feed (paginated via offset).
+ * MAX_PAGES caps a walk only while the total is unknown. The API reports
+ * `hits` for the filtered query, and once page 0 answers, that total sizes
+ * the page budget (one page past it, up to HARD_MAX_PAGES). It never proves
+ * the walk complete: only an empty page, a short page or a page with no new
+ * ids ends the board, so a `hits` that understates the result set leaves a
+ * full last page, which is reported partial. A whole-region board such as
+ * CA+NY (3,171 postings, 2026-11-07) is then read in full instead of being
+ * sliced by keyword queries that miss titles. A health probe (opts.maxPages)
+ * reads its budget and is never a truncation; a later-page failure keeps the
+ * partials and is marked fetch-error.
+ *
  * @param {string} feedBase base search URL (host-pinned to www.amazon.jobs; may carry query params)
- * @param {{ fetchImpl?: Function, signal?: AbortSignal, company?: object }} [opts]
+ * @param {{ fetchImpl?: Function, signal?: AbortSignal, company?: object,
+ *           maxPages?: number }} [opts]
  */
 export async function fetchAmazon(feedBase = FEED_BASE, opts = {}) {
   const { fetchImpl = fetch, signal, company = {} } = opts;
@@ -142,7 +156,14 @@ export async function fetchAmazon(feedBase = FEED_BASE, opts = {}) {
 
   const out = [];
   const seen = new Set();
-  for (let page = 0; page < MAX_PAGES; page += 1) {
+  const probe = Number(opts.maxPages);
+  let maxPages = probe > 0 ? Math.min(MAX_PAGES, probe) : MAX_PAGES;
+  let total = null;
+  // Set only by a natural end of the board (empty page, a loop, a short page)
+  // or by a later-page failure — a cap stop leaves it false.
+  let ended = false;
+  let failed = false;
+  for (let page = 0; page < maxPages; page += 1) {
     const url = new URL(base.href);
     url.searchParams.set('result_limit', String(PAGE_SIZE));
     url.searchParams.set('offset', String(page * PAGE_SIZE));
@@ -157,10 +178,18 @@ export async function fetchAmazon(feedBase = FEED_BASE, opts = {}) {
     } catch (err) {
       if (page === 0) throw err;
       console.error(`  ⚠ amazon: page ${page + 1} failed (${err.message}) — keeping the ${out.length} jobs collected so far`);
+      ended = true;
+      failed = true;
       break;
     }
+    if (total === null && Number.isInteger(json.hits)) {
+      total = json.hits;
+      // One page past the reported hits, up to the ceiling: `hits` never proves
+      // the walk complete, so the budget overshoots by a page to observe the end.
+      if (!(probe > 0)) maxPages = Math.max(maxPages, Math.min(Math.ceil(total / PAGE_SIZE) + 1, HARD_MAX_PAGES));
+    }
     const postings = json.jobs;
-    if (postings.length === 0) break;
+    if (postings.length === 0) { ended = true; break; }
 
     let fresh = 0;
     for (const posting of postings) {
@@ -171,8 +200,14 @@ export async function fetchAmazon(feedBase = FEED_BASE, opts = {}) {
       fresh += 1;
       out.push(normalized);
     }
-    if (fresh === 0) break; // API ignored offset / looped
-    if (postings.length < PAGE_SIZE) break; // last page
+    if (fresh === 0) { ended = true; break; } // API ignored offset / looped
+    if (postings.length < PAGE_SIZE) { ended = true; break; } // last page
+  }
+  if (!(probe > 0) && !ended) {
+    console.error(`⚠️  amazon: ${fallbackCompany} stopped at ${maxPages} pages (${out.length}${total === null ? '' : ` of ${total}`} jobs) — the board is partial`);
+    markTruncated(out, 'page-cap', { fetched: out.length, ...(total === null ? {} : { total }) });
+  } else if (!(probe > 0) && failed) {
+    markTruncated(out, 'fetch-error', { fetched: out.length });
   }
   return out;
 }

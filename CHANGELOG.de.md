@@ -3,6 +3,20 @@
 
 > Dieses Changelog enthält die vollständige Versionsgeschichte. Einträge, die vor der deutschen Lokalisierung (v1.85.0) veröffentlicht wurden, stehen unten im englischen Original — Übersetzung ausstehend; maßgeblich bleibt [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.271.13] — 2026-11-12
+
+### Neu
+- **Parent-Sync-Welle gegen career-ops upstream `d8b292df`** (88 Upstream-Commits seit dem letzten Fork-Sync; Fork gepusht als `da28ef95`, Divergenzen verteidigt): **Ashby** — ein eigenes 64-MB-Body-Limit für die Posting-API mit Embed-Listing-Fallback (#6674); **SmartRecruiters** — Opt-in `max_pages`-Erhöhungen (bei 100 gekappt) mit Pacing, Retries, Truncation-Warnungen und dem Page-Cap-Tag + republish-stabiler `listingIdentity` (#6799/#6936); **SuccessFactors** — ein Public-HTTPS-Host-Guard, Opt-in `max_pages`/`max_jobs`-Limits (400/10000), Truncation-Warnungen (#6697); **Amazon** — der Durchlauf ist an die gemeldete Trefferzahl gebunden, 100-Seiten-Limit, eine Kappung wird als `partial` markiert (#6938); **Join** — republish-stabile `listingIdentity` aus der Integer-Job-ID (#6950); **OracleCloud** — das Seitenbudget wird automatisch aus einem gemeldeten `TotalJobsCount` bemessen; **Darwinbox** — Host-Pin erweitert, kein unlesbares Total mehr zitiert; **Jobstreet/SEEK** — der API-Origin-Umzug zu `au.seek.com` mit Detail-Links über die Legacy-Hosts; **Platsbanken/TheHub/A16z/Arbeitnow/Greenhouse** — ID-Koercion, First-Page-Failures werden als `partial` markiert, ein `/offices`-Anreicherungslimit.
+- **Scanner-Grenzen**: pro Eintrag `max_response_mb` (receiver-preserving), die Umstellung der Workplace-Policy-Dedup weg von strikten Booleans (#6784), Tests, die festnageln, dass ein zeitlich begrenzter Scan die bereits gefundenen Rollen behält (#6779).
+- **Ein neuer gemeinsamer Gehaltstext-Helper** (`_salary-text.mjs`) — das Gehalts-Parsing des Parents (nordische und chinesische Formate) zur Wiederverwendung durch die Provider.
+
+### Behoben
+- **CodeQL-Welle**: ein toter Conditional und eine ungenutzte Match-Variable in `jd-parse.mjs` an der Quelle bereinigt; URL-förmige Test-Needles → exakte Zell-/Token-Vergleiche; ungenutzte Imports entfernt; eine Release-Manager-Variable, die vor ihrer Deklaration verwendet wurde (sie hätte den nächsten Swarm-Release zum Absturz gebracht), behoben.
+
+### Hinweise
+- Bewusst NICHT geändert: **Workable** (die Parent-Änderung lebt in dessen `scan-ats-full`-Feed-Durchlauf — ein dokumentierter No-Port), **Google** (bereits auf Parität), Scan-Filterung und Dedup, Registry-Zähler (unverändert 140 = 135 EN + 5 RU · 135 Adapter).
+
+
 ## [1.271.12] — 2026-11-12
 
 ### Behoben

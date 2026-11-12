@@ -343,6 +343,41 @@ export function buildLocationFilter(locationFilter) {
 }
 
 /**
+ * Whether the company+role dedupe key includes location (upstream #6784,
+ * parent scan.mjs `resolveDedupIncludeLocation` @ f4ebc459).
+ *
+ * Collapsing every city of one role into a single entry is deliberate and
+ * stays the default: companies that open one req per city would otherwise
+ * leak a city variant per scan. But when a
+ * `location_filter.workplace_policy` is set the user's eligibility is
+ * location-bound — the policy, not the filter, names the places a person
+ * can take, so the filter cannot choose between "London, UK" and "Dublin,
+ * IE" and the dedupe must not silently keep whichever city the provider
+ * returned first. Behind a policy the key includes location and each
+ * allowed city survives.
+ *
+ * Strict booleans win over the policy inference: an explicit
+ * `scan_history.dedup_include_location: true` turns it on, an explicit
+ * `false` stays off even with a policy set, and a stray string or number is
+ * a typo whose safe reading is the default behavior, not a pipeline full of
+ * city variants the user never asked for.
+ *
+ * web-ui's scanners currently dedupe by canonical URL (url-key.mjs), so no
+ * in-repo consumer reads this switch yet — it is the shared config switch,
+ * mirrored with the parent's exact semantics, for any company+role key
+ * consumer (the same role the parent reads it for).
+ *
+ * @param {object} [config] - Parsed portals.yml.
+ * @returns {boolean} Whether the location joins the company+role dedupe key.
+ */
+export function resolveDedupIncludeLocation(config = {}) {
+  if (config.scan_history?.dedup_include_location === true) return true;
+  if (config.scan_history?.dedup_include_location === false) return false;
+  const policy = config.location_filter?.workplace_policy;
+  return !!policy && typeof policy === 'object' && !Array.isArray(policy);
+}
+
+/**
  * v1.75.0 — `content_filter` support.
  *
  * Like `location_filter` but matches against a posting's free-text

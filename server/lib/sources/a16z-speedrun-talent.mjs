@@ -113,6 +113,19 @@ function publishedToDate(value) {
   return new Date(parsed).toISOString().slice(0, 10);
 }
 
+// The parent's coerceId (providers/_ids.mjs): accept a string or a number,
+// trim it, treat empty as absent. ABSENT BEATS WRONG — an id that cannot be
+// coerced returns undefined rather than a placeholder.
+/**
+ * @param {unknown} raw
+ * @returns {string|undefined}
+ */
+function coerceId(raw) {
+  if (typeof raw !== 'string' && typeof raw !== 'number') return undefined;
+  const s = String(raw).trim();
+  return s === '' ? undefined : s;
+}
+
 /**
  * Normalize one raw speedrun-talent-network job into the rich web-ui job shape,
  * or null when a required field is missing. Field mapping:
@@ -124,6 +137,8 @@ function publishedToDate(value) {
  *   - location: `location`; "Remote" appended when `remote` is true.
  *   - isRemote / workplaceType: derived from the `remote` boolean.
  *   - date:     `published_at` ISO → 'YYYY-MM-DD' ('' when absent/unparseable).
+ *   - externalId: `id`, the feed's own posting id (omitted when absent). The
+ *               row id prefers it and falls back to the url.
  *
  * Exported for unit tests.
  * @param {any} j
@@ -159,8 +174,9 @@ export function normalizeSpeedrunJob(j, fallbackCompany = '') {
   const base = typeof j.location === 'string' ? j.location.trim() : '';
   const location = [base, isRemote ? 'Remote' : ''].filter(Boolean).join(', ');
 
+  const externalId = coerceId(j.id);
   return {
-    id: `a16z-speedrun-talent-${j.id != null ? String(j.id) : url}`,
+    id: `a16z-speedrun-talent-${externalId || url}`,
     title,
     company,
     url,

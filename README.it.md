@@ -7,19 +7,19 @@
 
 _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-8312%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-8411%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.271.12-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.12)
+[![release](https://img.shields.io/badge/release-v1.271.13-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.13)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Ultima release — v1.271.12** — **la pagina di ricerca accelera**: i payload di dati della tabella di scansione sono ora limitati lato server — il filo ha smesso di trasportare le descrizioni che la UI comunque scarta e il clustering dei repost ora viene eseguito una sola volta per ogni cambiamento della cronologia, così la pagina che attendeva ~6,5 s di tempo API per ogni apertura ora si carica in frazioni di secondo. Test: 8312.
+> **🆕 Ultima release — v1.271.13** — **l'onda parent-sync** (88 commit upstream): l'API degli annunci di Ashby ottiene il proprio tetto di corpo di 64 MB con un fallback embed, SmartRecruiters e SuccessFactors acquisiscono tetti di walk opt-in con avvisi di troncamento, Amazon e OracleCloud dimensionano i budget di pagina sui totali riportati, Join porta listing identities stabili al republish — la pagina di scansione legge i board grandi per intero invece di fermarsi a un tetto di pagina. Test: 8411.
 >
-> **Precedente — v1.271.11** — **l'ondata liveness**: il banner di chiusura norvegese non genera più falsi positivi sul chrome delle pagine degli annunci ancora attivi, e le correzioni di correttezza dello scanner (#6757, #6784, #6779) mantengono onesta la cronologia delle scansioni. Test: 8302.
+> **Precedente — v1.271.12** — **la pagina di ricerca accelera**: i payload di dati della tabella di scansione sono ora limitati lato server — il filo ha smesso di trasportare le descrizioni che la UI comunque scarta e il clustering dei repost ora viene eseguito una sola volta per ogni cambiamento della cronologia, così la pagina che attendeva ~6,5 s di tempo API per ogni apertura ora si carica in frazioni di secondo. Test: 8312.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

@@ -3,6 +3,20 @@
 > Nhật ký này nay chứa đầy đủ lịch sử các bản phát hành. Các mục phát hành trước khi có bản địa hóa tiếng Việt (v1.254.0) xuất hiện bên dưới bằng bản gốc tiếng Anh — bản dịch còn đang chờ; bản chính thức là [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 > _Các mục từ [1.271.3] đang chờ dịch — bản gốc tiếng Anh bên dưới._
 
+## [1.271.13] — 2026-11-12
+
+### Đã thêm
+- **Đợt parent-sync đối chiếu với career-ops upstream `d8b292df`** (88 upstream commit kể từ lần sync gần nhất của fork; fork được đẩy lên với mã `da28ef95`, các điểm khác biệt được bảo vệ): **Ashby** — trần thân 64 MB riêng cho body của posting API kèm fallback qua embed-listing (#6674); **SmartRecruiters** — mức `max_pages` opt-in (kẹp tại 100) với pacing, retries, cảnh báo cắt ngắn và thẻ chạm-trần trang + `listingIdentity` ổn định qua republish (#6799/#6936); **SuccessFactors** — bộ chặn host public-https, các trần opt-in `max_pages`/`max_jobs` (400/10000), cảnh báo cắt ngắn (#6697); **Amazon** — lượt duyệt bị giới hạn theo số hits báo cáo, trần 100 trang, phần bị cắt bởi trần được đánh dấu partial (#6938); **Join** — `listingIdentity` ổn định qua republish suy từ job id dạng số nguyên (#6950); **OracleCloud** — ngân sách trang tự định cỡ theo `TotalJobsCount` báo cáo; **Darwinbox** — ghim host được nới rộng, không trích tổng số khi chưa đọc; **Jobstreet/SEEK** — bước chuyển gốc API sang `au.seek.com` kèm link chi tiết trên host cũ; **Platsbanken/TheHub/A16z/Arbeitnow/Greenhouse** — ép kiểu id, đánh dấu partial khi trang đầu lỗi, trần cho việc làm giàu `/offices`.
+- **Các giới hạn scanner**: `max_response_mb` theo từng mục (giữ nguyên receiver), công tắc dedup workplace-policy chuyển khỏi booleans nghiêm ngặt (#6784), các test chốt rằng một scan có giới hạn thời gian vẫn giữ những vai trò đã tìm thấy (#6779).
+- **Một helper salary-text dùng chung mới** (`_salary-text.mjs`) — phần phân tích lương của parent (định dạng Nordic và Trung Quốc) để tái sử dụng cho provider.
+
+### Đã sửa
+- **Đợt CodeQL**: một conditional chết và một biến match không dùng trong `jd-parse.mjs` được dọn tại nguồn; các needle test dạng URL → khớp cell/token chính xác; bỏ các import không dùng; sửa một biến release-manager bị dùng trước khi khai báo (điều này sẽ làm đổ vỡ lần phát hành kế tiếp của swarm).
+
+### Ghi chú
+- Deliberately NOT changed: **Workable** (thay đổi của parent nằm trong feed walker `scan-ats-full` của nó — no-port đã được ghi trong tài liệu), **Google** (đã đạt đối chiếu), lọc quét và dedup, số đếm registry (140 = 135 EN + 5 RU · 135 adapters không đổi).
+
+
 ## [1.271.12] — 2026-11-12
 
 ### Đã sửa

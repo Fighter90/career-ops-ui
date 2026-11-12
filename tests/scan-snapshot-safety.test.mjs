@@ -124,9 +124,9 @@ test('EN: a stop mid-run still saves the roles found before it (CAR-259, parent 
   const r = await runEnScan({ signal: ctrl.signal, fetchImpl });
   assert.ok(r.fresh.some((j) => j.url === ALPHA7_URL), 'the role read before the stop is fresh');
   const history = readFileSync(resolve(dir, 'data', 'scan-history.tsv'), 'utf8');
-  assert.ok(history.includes(ALPHA7_URL), 'scan-history.tsv keeps the role found before the stop');
+  assert.ok(history.split('\n').some((l) => l.split('\t').includes(ALPHA7_URL)), 'scan-history.tsv keeps the role found before the stop');
   const pipeline = readFileSync(resolve(dir, 'data', 'pipeline.md'), 'utf8');
-  assert.ok(pipeline.includes(ALPHA7_URL), 'pipeline.md keeps the role found before the stop');
+  assert.ok(pipeline.split('\n').some((l) => l.split(/[\s|]/).includes(ALPHA7_URL)), 'pipeline.md keeps the role found before the stop');
   assert.equal(readSnap().en.filtered.length, 2, 'the previous snapshot still survives (R-12 unchanged)');
 });
 
@@ -298,4 +298,60 @@ test('saveLastScan: atomic — no temp file is left next to last-scan.json', asy
   const leftovers = readdirSync(resolve(dir, 'data')).filter((f) => f.endsWith('.tmp'));
   assert.deepEqual(leftovers, []);
   assert.ok(existsSync(lastScanPath()));
+});
+
+// ───────────── #6779 mirror — a stop at the time limit KEEPS the roles ─────────────
+// Upstream #6779 (parent scan-ats-full SIGTERM path): a scheduled full sweep
+// that hits its time limit must keep the roles it already found — the parent
+// appends them and records the stop — and rolesFound counts only the roles
+// the stop actually saved. web-ui's analog is the SSE-abort path in both
+// scanners: a stopped run appends the roles fetched BEFORE the stop to
+// pipeline.md + scan-history.tsv (the next run's seen-set), while the
+// snapshot stays put per R-12. Regression-locking: the appends were never
+// gated on the abort signal, and these tests pin that.
+
+test('EN: a scan stopped mid-run keeps the roles already found', async () => {
+  seed([row('Old', 1)]);
+  const ctrl = new AbortController();
+  // Alpha answers immediately; Beta stalls until the abort arrives.
+  const fetchImpl = async (url, opts = {}) => {
+    if (String(url).includes('/alpha/')) {
+      return json({ jobs: [{ id: 1, title: 'Staff Engineer', company_name: 'Alpha', absolute_url: 'https://example.com/Alpha/7', location: { name: 'Remote' } }] });
+    }
+    return new Promise((_res, rej) => { opts.signal?.addEventListener('abort', () => rej(new Error('The operation was aborted')), { once: true }); });
+  };
+  setTimeout(() => ctrl.abort(), 150);
+  const r = await runEnScan({ signal: ctrl.signal, fetchImpl, onLog: () => {} });
+  assert.deepEqual(r.fresh.map((j) => j.url), ['https://example.com/Alpha/7'], 'rolesFound counts only the roles the stop actually kept');
+  const pipeline = readFileSync(resolve(dir, 'data', 'pipeline.md'), 'utf8');
+  assert.ok(pipeline.includes('https://example.com/Alpha/7'), 'the kept role reached pipeline.md despite the stop');
+  const history = readFileSync(resolve(dir, 'data', 'scan-history.tsv'), 'utf8');
+  assert.ok(history.includes('https://example.com/Alpha/7'), 'the kept role reached scan-history.tsv despite the stop');
+  assert.equal(readSnap().en.filtered.length, 1, 'R-12 still holds: the aborted run does not replace the snapshot');
+});
+
+test('RU: a scan stopped mid-run keeps the roles already found', async () => {
+  seed([], [row('Ru', 1)]);
+  const ctrl = new AbortController();
+  // First query answers; later queries stall until the abort arrives.
+  const fetchImpl = async (url, opts = {}) => {
+    const u = decodeURIComponent(String(url));
+    if (u.includes('text=Go&') || u.endsWith('text=Go')) {
+      return json({ results: { vacancies: [{ vacancy: { id: 'v9', 'job-name': 'Go developer', vac_url: 'https://trudvsem.ru/vacancy/v9', company: { name: 'X' } } }] } });
+    }
+    return new Promise((_res, rej) => { opts.signal?.addEventListener('abort', () => rej(new Error('The operation was aborted')), { once: true }); });
+  };
+  setTimeout(() => ctrl.abort(), 150);
+  writeFileSync(resolve(dir, 'portals.yml'), [
+    'russian_portals:',
+    '  sources: [trudvsem]',
+    '  queries: ["Go", "Golang", "Golang разработчик"]',
+  ].join('\n'));
+  const r = await runRuScan({ signal: ctrl.signal, fetchImpl, onLog: () => {} });
+  assert.deepEqual(r.fresh.map((j) => j.url), ['https://trudvsem.ru/vacancy/v9'], 'rolesFound counts only the roles the stop actually kept');
+  const pipeline = readFileSync(resolve(dir, 'data', 'pipeline.md'), 'utf8');
+  assert.ok(pipeline.includes('https://trudvsem.ru/vacancy/v9'), 'the kept role reached pipeline.md despite the stop');
+  const history = readFileSync(resolve(dir, 'data', 'scan-history.tsv'), 'utf8');
+  assert.ok(history.includes('https://trudvsem.ru/vacancy/v9'), 'the kept role reached scan-history.tsv despite the stop');
+  assert.equal(readSnap().ru.filtered.length, 1, 'R-12 still holds: the aborted run does not replace the snapshot');
 });

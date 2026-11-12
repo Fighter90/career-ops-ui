@@ -89,10 +89,26 @@ function cleanText(value) {
   return typeof value === 'string' ? value.trim() : '';
 }
 
+// The parent's coerceId (providers/_ids.mjs): accept a string or a number,
+// trim it, treat empty as absent. ABSENT BEATS WRONG — an id that cannot be
+// coerced returns undefined rather than a placeholder.
+/**
+ * @param {unknown} raw
+ * @returns {string|undefined}
+ */
+function coerceId(raw) {
+  if (typeof raw !== 'string' && typeof raw !== 'number') return undefined;
+  const s = String(raw).trim();
+  return s === '' ? undefined : s;
+}
+
 /**
  * Map a raw The Hub v2 job object to the 12-field web-ui normalized shape.
  * Returns null for rows missing a valid title or id. The v2 response carries
  * no posting date, so `date` is always '' (exempt from the age filter).
+ * The feed's own posting id (`id`) always lands in the row id — every
+ * returned row has a usable id (rows without one are dropped here), so the
+ * parent's externalId contract is satisfied by construction.
  * @param {any} j
  * @returns {object|null}
  */
@@ -104,7 +120,7 @@ function normalize(j) {
 
   // v2 has no per-posting URL — build the canonical page from the id. Host is a
   // hardcoded constant and the id is encoded, so the URL is never off-host.
-  const id = j.id != null ? String(j.id).trim() : '';
+  const id = coerceId(j.id);
   if (!id) return null;
   // A lone surrogate in id would throw URIError out of encodeURIComponent and
   // abort the caller's pagination loop; id is also the dedup key. Drop this

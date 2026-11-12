@@ -5,6 +5,20 @@
 > **Note de traduction (v1.61.0)** — le français a été ajouté comme 9e langue de l'interface. Ce fichier traduit les entrées récentes ; pour l'historique antérieur à la v1.55.0, voir le [🇬🇧 CHANGELOG anglais](CHANGELOG.md), qui reste la source normative.
 > ⏳ **Note de couverture** — ce fichier inclut désormais l'historique complet ; les entrées antérieures à la v1.61.0 figurent ci-dessous en anglais original, traduction en attente.
 
+## [1.271.13] — 2026-11-12
+
+### Ajouté
+- **Vague de parent-sync contre career-ops upstream `d8b292df`** (88 commits upstream depuis le dernier sync du fork ; fork poussé en tant que `da28ef95`, divergences défendues) : **Ashby** — son propre plafond de corps de 64 Mo pour l'API des offres avec un repli sur le listage embed (#6674) ; **SmartRecruiters** — relèvements opt-in de `max_pages` (plafonnés à 100) avec pacing, relances, avertissements de troncature et l'étiquette de plafond de pages + une `listingIdentity` stable à la republication (#6799/#6936) ; **SuccessFactors** — une garde d'hôte https public, des plafonds opt-in `max_pages`/`max_jobs` (400/10000), des avertissements de troncature (#6697) ; **Amazon** — parcours borné par les hits rapportés, plafond de 100 pages, coupe par plafond marquée partielle (#6938) ; **Join** — une `listingIdentity` stable à la republication dérivée de l'id entier de l'offre (#6950) ; **OracleCloud** — budget de pages auto-dimensionné d'après un `TotalJobsCount` rapporté ; **Darwinbox** — épingle d'hôte élargie, plus aucun total cité sans être lu ; **Jobstreet/SEEK** — le déplacement de l'origine d'API vers `au.seek.com` avec liens de détail sur les hôtes legacy ; **Platsbanken/TheHub/A16z/Arbeitnow/Greenhouse** — coercition d'id, marquage partiel en cas d'échec de première page, un plafond pour l'enrichissement `/offices`.
+- **Bornes du scanner** : `max_response_mb` par entrée (récepteur préservé), le basculement de la dédup par politique de workplace depuis des booléens stricts (#6784), des tests épinglant qu'un scan limité dans le temps conserve les rôles déjà trouvés (#6779).
+- **Un nouveau helper partagé de texte salarial** (`_salary-text.mjs`) — l'analyse salariale du parent (formats nordiques et chinois) pour réutilisation par les providers.
+
+### Corrigé
+- **Vague CodeQL** : un conditionnel mort et une variable de correspondance inutilisée dans `jd-parse.mjs` nettoyés à la source ; aiguilles de test en forme d'URL → correspondances exactes de cellule/jeton ; imports inutilisés supprimés ; corrigée une variable du release-manager utilisée avant sa déclaration (elle aurait fait planter le prochain release du swarm).
+
+### Notes
+- Délibérément NON modifié : **Workable** (le changement du parent vit dans son parcours de feed `scan-ats-full` — un no-port documenté), **Google** (déjà à parité), le filtrage et la déduplication des scans, les compteurs du registre (140 = 135 EN + 5 RU · 135 adaptateurs, inchangés).
+
+
 ## [1.271.12] — 2026-11-12
 
 ### Corrigé

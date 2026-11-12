@@ -100,7 +100,7 @@ export function isTrustedOracleHost(hostname, branded) {
 }
 
 export const PAGE_SIZE = 200;
-export const MAX_PAGES = 25; // default cap (~5000 jobs) when the entry sets no max_pages
+export const MAX_PAGES = 25; // default cap (~5000 jobs) when the entry sets no max_pages and the tenant reports no total
 // Upper bound an entry may opt in to with `max_pages` (~20000 jobs, 100
 // requests of 200 rows at 250ms spacing). JPMorgan Chase alone has 7000+
 // postings, which the default cannot cover; the bound stays finite so a typo
@@ -351,7 +351,14 @@ export async function fetchOraclecloud(endpoint, opts = {}) {
   // board, and never let a probe read as a cap stop below.
   const probeBudget = Number(opts.maxPages);
   const probing = Number.isInteger(probeBudget) && probeBudget > 0;
-  const maxPages = probing ? Math.min(resolveMaxPages(company), probeBudget) : resolveMaxPages(company);
+  let entryMaxPages = resolveMaxPages(company);
+  // An entry's own max_pages is the user's choice and is kept as set. Without
+  // one, a tenant that reports TotalJobsCount already bounds the walk, so the
+  // default rises to cover that total, up to HARD_MAX_PAGES: a fixed 25 pages
+  // read 5000 of JPMorgan's 7118 postings. MAX_PAGES stays the cap only for a
+  // tenant that reports no total, where nothing else ends the walk.
+  const autoRaise = !(Number.isInteger(company?.max_pages) && company.max_pages > 0);
+  let maxPages = Math.min(entryMaxPages, probing ? probeBudget : Infinity);
   const companyName = (company && typeof company.name === 'string') ? company.name : '';
 
   /** @type {Map<string, object>} */
@@ -390,7 +397,16 @@ export async function fetchOraclecloud(endpoint, opts = {}) {
         fresh += 1;
       }
     }
-    if (total === null && pageTotal !== null) total = pageTotal;
+    if (total === null && pageTotal !== null) {
+      total = pageTotal;
+      // Without an explicit max_pages, a tenant that reports its total sizes
+      // the page budget (up to HARD_MAX_PAGES); an entry's own max_pages is
+      // kept as set. A probe budget (opts.maxPages) still wins.
+      if (autoRaise) {
+        entryMaxPages = Math.max(entryMaxPages, Math.min(Math.ceil(total / PAGE_SIZE), HARD_MAX_PAGES));
+        maxPages = Math.min(entryMaxPages, probing ? probeBudget : Infinity);
+      }
+    }
 
     // Dead-board guard: a page-0 response that reports a nonzero board (or no
     // count at all) but ships NO requisitionList is not an empty board — it is

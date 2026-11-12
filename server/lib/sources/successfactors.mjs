@@ -30,8 +30,15 @@ import { decodeEntities } from '../html-entities.mjs';
 // `provider: successfactors` in portals.yml, which bypasses host detection.
 export const SF_HOST_RE = /(?:^|\.)(?:successfactors\.(?:eu|com)|jobs2web\.com)$/i;
 
-const MAX_PAGES = 40; // safety cap on request count
-const MAX_JOBS = 1000; // cap total postings pulled per site
+const MAX_PAGES = 40; // default cap on request count (RMK tile pagination)
+const MAX_JOBS = 1000; // default cap on total postings pulled per site
+// Opt-in ceilings (parent #6697). An entry may raise the defaults with
+// `max_pages` / `max_jobs` up to these bounds; without either key the
+// defaults above apply unchanged. On RMK a `max_pages` below the default is
+// NOT honored downward — the tile walk has no other config knob, and a
+// lower cap would only shrink coverage silently.
+const RMK_MAX_PAGES_CEILING = 400;
+const MAX_JOBS_CEILING = 10000;
 
 export const meta = {
   value: 'successfactors',
@@ -67,6 +74,48 @@ export function assertSuccessfactorsUrl(url, expectedHost = null) {
 }
 
 /**
+ * Host guard (parent #6697), applied before any request: a SuccessFactors
+ * board is a public https site on a named domain (jobs.sap.com, jobs.zf.com,
+ * jobs.schaeffler.com, careers.te.com, *.successfactors.eu/.com, ...).
+ * Branded RMK domains are tenant-chosen and cannot be listed, so the
+ * allowlist is "public named host": no credentials, no
+ * loopback/private/link-local/metadata address, no bare IP, no non-default
+ * port, and https only. Exported for tests.
+ * @param {URL} u
+ */
+export function isAllowedHost(u) {
+  if (u.protocol !== 'https:') return false;
+  if (u.username || u.password || u.port) return false;
+  const h = u.hostname.toLowerCase().replace(/\.$/, '');
+  if (!h.includes('.') || h.startsWith('[')) return false; // single-label or IPv6 literal
+  if (/^\d+(?:\.\d+){0,3}$/.test(h) || /^0x[0-9a-f]+$/i.test(h)) return false; // IPv4 in any spelling
+  if (/(^|\.)(localhost|local|internal|localdomain|home\.arpa|lan)$/.test(h)) return false;
+  return true;
+}
+
+/** Positive integer config value, else null. */
+function posInt(v) {
+  return Number.isInteger(v) && v > 0 ? v : null;
+}
+
+/**
+ * Resolve the RMK caps for one entry (parent #6697): the default MAX_PAGES /
+ * MAX_JOBS, raised by a positive-integer `max_pages` / `max_jobs` up to the
+ * ceilings. `raised` is true when the entry asks for more than the defaults —
+ * the only case that adds request volume. A `max_pages` below the default is
+ * ignored (see RMK_MAX_PAGES_CEILING above). Exported for tests.
+ * @param {{max_pages?: unknown, max_jobs?: unknown}} entry
+ * @returns {{maxPages: number, maxJobs: number, raised: boolean}}
+ */
+export function resolveLimits(entry) {
+  const mp = posInt(entry?.max_pages);
+  const mj = posInt(entry?.max_jobs);
+  const maxPages = mp !== null ? Math.max(MAX_PAGES, Math.min(mp, RMK_MAX_PAGES_CEILING)) : MAX_PAGES;
+  const maxJobs = mj !== null ? Math.min(mj, MAX_JOBS_CEILING) : MAX_JOBS;
+  return { maxPages, maxJobs, raised: maxPages > MAX_PAGES || maxJobs > MAX_JOBS };
+}
+
+/**
  * Resolve the tenant BASE — origin plus any
  * brand/tenant path prefix. Some holding companies run several acquired
  * brands off one shared RMK instance, disambiguated by a path segment
@@ -77,6 +126,10 @@ export function assertSuccessfactorsUrl(url, expectedHost = null) {
  * /tile-search-results/ (an `api:` pointing straight at the endpoint this
  * module builds) — is stripped so it never doubles onto itself. Single-domain
  * tenants have an empty pathname, so base === origin unchanged.
+ *
+ * Returns null when the configured URL is missing, unparseable, or fails the
+ * public-https host guard (#6697) — a loopback, private, bare-IP or
+ * credentialed URL is refused HERE, before any request is made.
  *
  * @param {{ api?: string, careers_url?: string }} company
  * @returns {string|null} https base ("origin[/Brand]") or null
@@ -90,7 +143,7 @@ export function resolveTenantBase(company) {
   } catch {
     return null;
   }
-  if (u.protocol !== 'https:' || !u.hostname) return null;
+  if (!isAllowedHost(u) || !u.hostname) return null;
   // A saved-search category page, /go/<Category>/<numericId>[/<offset>]/, is not a
   // brand prefix: in front of /tile-search-results/ it answers 200 with zero
   // tiles (a healthy-looking empty board). Strip it; a brand segment in FRONT of
@@ -227,6 +280,15 @@ export function parseSuccessfactors(html, { jobBase, fallbackCompany = '' } = {}
 }
 
 /**
+ * Names the entry and the knobs that raise the cap that stopped the read, in
+ * the wording the parent uses for the same situation (#6697).
+ * @param {{name?: string}} company @param {string} what @param {number} maxPages @param {number} maxJobs
+ */
+function warnTruncated(company, what, maxPages, maxJobs) {
+  console.error(`⚠️  successfactors: ${company?.name || 'tenant'} truncated at max_pages=${maxPages}, max_jobs=${maxJobs} (${what}) — raise max_pages and/or max_jobs on this entry for more`);
+}
+
+/**
  * Fetch + normalize an RMK tenant's job list (paginated by `startrow`).
  *
  * A fetch failure must THROW, not be swallowed into []: an unreachable board is
@@ -240,11 +302,26 @@ export function parseSuccessfactors(html, { jobBase, fallbackCompany = '' } = {}
  * partials already collected (a transient page-N 5xx/404 must NOT discard the
  * scraped tiles nor get a live tenant quarantined as permanently dead).
  *
+ * Caps are the entry's opt-in `max_pages` / `max_jobs` (#6697) clamped to the
+ * ceilings; a cap that ends the walk while the board was still delivering new
+ * postings warns on stderr and the returned array is tagged with the
+ * canonical `truncated` shape. The walk advances by the SOURCE's rows — the
+ * raw `job-id-N` ids — not by the tiles that survived parsing: a title-less
+ * tile must neither end the walk nor leave the next offset overlapping.
+ *
  * @param {string} endpoint tenant tile-search endpoint (host-pinned, from buildEndpoint)
  * @param {{ fetchImpl?: Function, signal?: AbortSignal, company?: object }} [opts]
  */
 export async function fetchSuccessfactors(endpoint, opts = {}) {
   const { fetchImpl = fetch, signal, company = {} } = opts;
+  // #6697 — a configured URL that fails the public-https host guard is
+  // refused HERE, before any request: localhost, a private/loopback/link-local
+  // or bare-IP address, a credentialed or non-default-port URL is a miswire,
+  // not a board.
+  const configuredRaw = String(company.api || company.careers_url || '').trim();
+  if (configuredRaw && !resolveTenantBase(company)) {
+    throw new Error(`successfactors: cannot resolve a public https host for ${company.name || 'entry'}`);
+  }
   // Exact-host pin: the endpoint must live on the same host the entry's
   // `api:`/careers_url names (the adapter derives both from the entry, so a
   // mismatch means a miswire — refuse before any I/O). Without a tenant URL
@@ -254,12 +331,22 @@ export async function fetchSuccessfactors(endpoint, opts = {}) {
   const base = new URL(endpoint);
   const jobBase = base.origin;
   const fallbackCompany = (company && typeof company.name === 'string') ? company.name : '';
+  const { maxPages, maxJobs } = resolveLimits(company);
 
   const out = [];
   const seen = new Set();
+  // The raw `job-id-N` ids the SOURCE returned, page by page: fullness and
+  // freshness are judged on these, not on the parsed tiles (a title-less tile
+  // must not end the walk or shift the next offset onto itself).
+  const seenRaw = new Set();
   let startrow = 0;
   let succeededOnce = false;
-  for (let page = 0; page < MAX_PAGES; page += 1) {
+  // True when the loop ended on a cap while the last page was still
+  // delivering new postings — i.e. the board very likely has more. The RMK
+  // fragment carries no total, so the warning can only say "at least".
+  let capped = false;
+  let pageSize = 0;
+  for (let page = 0; page < maxPages; page += 1) {
     const pageUrl = new URL(base.href);
     pageUrl.searchParams.set('startrow', String(startrow));
     let html;
@@ -288,21 +375,36 @@ export async function fetchSuccessfactors(endpoint, opts = {}) {
     if (page === 0 && !html.includes('job-tile')) {
       throw new Error(`successfactors: fragment carries no job tiles — challenge page or template change? (${pageUrl.href})`);
     }
+    // Pagination follows the rows the source returned, not the ones
+    // parseSuccessfactors kept (parent #6697).
+    const rawIds = [...html.matchAll(/<li class="job-tile job-id-(\d+)/g)].map((m) => m[1]);
+    if (rawIds.length === 0) break;
+    const rawTiles = rawIds.length;
+    if (page === 0) pageSize = rawTiles;
     const tiles = parseSuccessfactors(html, { jobBase, fallbackCompany });
-    if (tiles.length === 0) break;
 
-    let fresh = 0;
+    const fresh = rawIds.filter((id) => !seenRaw.has(id)).length;
+    for (const id of rawIds) seenRaw.add(id);
     for (const tile of tiles) {
       if (seen.has(tile.id)) continue;
       seen.add(tile.id);
-      fresh += 1;
       out.push(tile);
     }
     // No new ids this page → server ignored the offset (or we've looped). Stop.
     if (fresh === 0) break;
-    if (out.length >= MAX_JOBS) break;
-    startrow += tiles.length;
+    if (out.length >= maxJobs || page === maxPages - 1) {
+      // A short final page means the board ended on its own, not at the cap.
+      capped = out.length >= maxJobs || rawTiles >= pageSize;
+      break;
+    }
+    startrow += rawTiles;
+  }
+  if (capped) {
+    // The parent adds only this stderr warning for RMK (#6697): the fragment
+    // carries no total, so the canonical partial-read tag stays off and the
+    // scan log carries the cap notice.
+    warnTruncated(company, `stopped at ${Math.min(out.length, maxJobs)} jobs, more were still being returned`, maxPages, maxJobs);
   }
   // The cap is checked between pages, so the last page can overshoot it.
-  return out.slice(0, MAX_JOBS);
+  return out.slice(0, maxJobs);
 }

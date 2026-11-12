@@ -434,7 +434,7 @@ async function main() {
         // own count; PROJECT-CONTEXT's repo-state line names the version too.
         const testCount = captureTestCount(gatesOutput);
         if (testCount !== null) {
-          const today2 = today;
+          const today2 = new Date().toISOString().slice(0, 10);
           const convPath = resolve(ROOT, 'docs/sdd/CONVENTIONS.md');
           try {
             writeFileSync(convPath, baselineBump(readFileSync(convPath, 'utf8'), `v${ver}`, testCount, today2));

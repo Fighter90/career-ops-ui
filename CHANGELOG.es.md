@@ -5,6 +5,20 @@
 > ⏳ **Nota de cobertura** — este archivo incluye ahora el historial completo; las entradas anteriores a la v1.12.0 aparecen en el original inglés a la espera de traducción.
 > _Las entradas a partir de [1.271.3] están pendientes de traducción — el original en inglés aparece abajo._
 
+## [1.271.13] — 2026-11-12
+
+### Añadido
+- **Ola de parent-sync contra career-ops upstream `d8b292df`** (88 commits upstream desde el último sync del fork; fork empujado como `da28ef95`, divergencias defendidas): **Ashby** — su propio techo de cuerpo de 64 MB para la API de vacantes con fallback de listado embed (#6674); **SmartRecruiters** — subidas opt-in de `max_pages` (limitadas a 100) con pacing, reintentos, avisos de truncamiento y la etiqueta de page-cap + `listingIdentity` estable ante republicaciones (#6799/#6936); **SuccessFactors** — un guard de host https público, techos opt-in de `max_pages`/`max_jobs` (400/10000), avisos de truncamiento (#6697); **Amazon** — recorrido acotado por los hits reportados, techo de 100 páginas, corte por techo marcado como parcial (#6938); **Join** — `listingIdentity` estable ante republicaciones a partir del id entero de la vacante (#6950); **OracleCloud** — presupuesto de páginas auto-dimensionado desde un `TotalJobsCount` reportado; **Darwinbox** — pin de host ampliado, ningún total citado sin leer; **Jobstreet/SEEK** — el traslado del origen de API a `au.seek.com` con enlaces de detalle en los hosts legacy; **Platsbanken/TheHub/A16z/Arbeitnow/Greenhouse** — coerción de id, marcado parcial ante fallo de primera página, un techo para el enriquecimiento de `/offices`.
+- **Acotas del escáner**: `max_response_mb` por entrada (preservando el receptor), el cambio de la deduplicación por política de workplace desde booleanos estrictos (#6784), pruebas que fijan que un escaneo limitado en el tiempo conserva los roles ya encontrados (#6779).
+- **Un nuevo helper compartido de texto salarial** (`_salary-text.mjs`) — el parseo salarial del padre (formatos nórdicos y chinos) para su reutilización por los proveedores.
+
+### Corregido
+- **Ola CodeQL**: un condicional muerto y una variable de coincidencia sin usar en `jd-parse.mjs` limpiados en la fuente; agujas de prueba con forma de URL → comparaciones exactas de celda/token; imports sin usar eliminados; corregida una variable del release-manager usada antes de su declaración (habría hecho caer el próximo release del swarm).
+
+### Notas
+- Deliberadamente NO se cambió: **Workable** (el cambio del padre vive en su recorrido de feed `scan-ats-full` — un no-port documentado), **Google** (ya en paridad), el filtrado y la deduplicación de escaneos, los conteos del registro (140 = 135 EN + 5 RU · 135 adapters sin cambios).
+
+
 ## [1.271.12] — 2026-11-12
 
 ### Corregido

@@ -3,6 +3,19 @@
 > **说明** — 本文件已完整翻译为出版级简体中文(中国大陆用语规范),包含全部历史版本条目。代码块、提交信息、文件路径、URL、环境变量、命令行片段以及 CSP / SSRF / TOCTOU / WCAG / ATS / JD / SSE / REST / API 等通用英文缩写按原文保留。
 > _自 [1.271.3] 起的条目待翻译——英文原文见下方。_
 
+## [1.271.13] — 2026-11-12
+
+### 新增
+- **针对 career-ops 上游 `d8b292df` 的 parent-sync 波次**（自 fork 上次同步以来上游共 88 个提交；fork 已以 `da28ef95` 推送，分歧行为已防御）：**Ashby** — 为职位 API 设置专属的 64 MB 响应体上限，附 embed 列表回退（#6674）；**SmartRecruiters** — 可选加入的 `max_pages` 调高（钳制在 100），带分页节奏、重试、截断警告与页容量标签，外加跨重发稳定的 `listingIdentity`（#6799/#6936）；**SuccessFactors** — public-https 主机防护、可选的 `max_pages`/`max_jobs` 上限（400/10000）、截断警告（#6697）；**Amazon** — 按报告的命中数界定遍历范围、100 页硬上限、达到上限的截断标记为 partial（#6938）；**Join** — 由整数职位 id 派生的跨重发稳定的 `listingIdentity`（#6950）；**OracleCloud** — 根据报告的 `TotalJobsCount` 自动确定页面预算；**Darwinbox** — 放宽主机限定，不再引用从未读取的总量；**Jobstreet/SEEK** — 跟随 `au.seek.com` 的 API 来源迁移，同时保留旧主机的详情链接；**Platsbanken/TheHub/A16z/Arbeitnow/Greenhouse** — id 强制转换、首页失败时的 partial 标记、`/offices` 信息补全的上限。
+- **扫描器边界**：逐条目的 `max_response_mb`（保留接收方）、以严格布尔值驱动的职场政策去重开关（#6784），以及确保限时扫描会保留已找到职位的测试（#6779）。
+- **新的共享薪资文本辅助函数**（`_salary-text.mjs`）——将父项目的薪资解析（含北欧与中文格式）移植出来供各 provider 复用。
+
+### 修复
+- **CodeQL 波次**：`jd-parse.mjs` 中的死条件与未使用的 match 变量已在源头清理；URL 形状的测试匹配串替换为精确的单元格/令牌匹配；移除未使用的 import；修复了在声明前被使用的 release-manager 变量（原本会让 swarm 的下一次发布崩溃）。
+
+### 备注
+- 刻意未改动：**Workable**（父项目的改动位于其自身的 `scan-ats-full` feed 遍历器——已记录为 no-port）、**Google**（已达到同调）、扫描过滤与去重、注册表计数（140 = 135 EN + 5 RU · 135 adapters 保持不变）。
+
 ## [1.271.12] — 2026-11-12
 
 ### 修复

@@ -101,6 +101,25 @@ test('fetchArbeitnow: id uses slug prefix', async () => {
   assert.ok(jobs[0].id.startsWith('arbeitnow-senior-backend-engineer-acme-12345'));
 });
 
+// The feed's own posting id (`slug`) always lands in the row id when the feed
+// carries a usable one (the parent's externalId contract, #6913): coerceId
+// accepts a string or a number, and a slug that cannot be coerced (object /
+// blank) never becomes a placeholder — absent beats wrong, and the url
+// fallback is used instead.
+test('fetchArbeitnow: slug coercion — numeric slug coerced, object/blank slug falls back to the url (#6913)', async () => {
+  const data = [
+    { slug: 424242, title: 'Numeric slug', url: 'https://www.arbeitnow.com/jobs/x/numeric-slug' },
+    { slug: { deep: 1 }, title: 'Object slug', url: 'https://www.arbeitnow.com/jobs/x/object-slug' },
+    { slug: '   ', title: 'Blank slug', url: 'https://www.arbeitnow.com/jobs/x/blank-slug' },
+  ];
+  const jobs = await fetchArbeitnow(FEED_URL, { fetchImpl: fakeFetch(data) });
+  assert.equal(jobs.length, 3);
+  assert.equal(jobs[0].id, 'arbeitnow-424242', 'numeric slug coerced to a string');
+  assert.equal(jobs[1].id, 'arbeitnow-https://www.arbeitnow.com/jobs/x/object-slug', 'object slug → url fallback');
+  assert.equal(jobs[2].id, 'arbeitnow-https://www.arbeitnow.com/jobs/x/blank-slug', 'blank slug → url fallback');
+  assert.ok(jobs.every((j) => !j.id.includes('object Object')), 'no placeholder ids');
+});
+
 test('fetchArbeitnow: remote flag drives isRemote + workplaceType', async () => {
   const jobs = await fetchArbeitnow(FEED_URL, { fetchImpl: fakeFetch() });
   // First job: remote: true

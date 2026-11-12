@@ -3,6 +3,19 @@
 
 > Questo changelog contiene ora la cronologia completa delle versioni. Le voci pubblicate prima della localizzazione italiana (v1.85.0) compaiono sotto nell'originale inglese — traduzione in attesa; il riferimento resta [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.271.13] — 2026-11-12
+
+### Aggiunto
+- **Onda parent-sync contro career-ops upstream `d8b292df`** (88 commit upstream dall'ultima sincronizzazione del fork; fork pushato come `da28ef95`, divergenze difese): **Ashby** — un tetto di corpo proprio di 64 MB per l'API degli annunci con fallback all'elenco embed (#6674); **SmartRecruiters** — aumenti `max_pages` opt-in (limitati a 100) con pacing, retry, avvisi di troncamento e il tag page-cap + `listingIdentity` stabile al republish (#6799/#6936); **SuccessFactors** — una guardia host public-https, tetti `max_pages`/`max_jobs` opt-in (400/10000), avvisi di troncamento (#6697); **Amazon** — walk delimitato dagli hit riportati, tetto di 100 pagine, taglio da cap marcato come parziale (#6938); **Join** — `listingIdentity` stabile al republish dall'id intero del job (#6950); **OracleCloud** — budget pagine dimensionato automaticamente dal `TotalJobsCount` riportato; **Darwinbox** — host pin allargato, niente total citato che non è stato letto; **Jobstreet/SEEK** — lo spostamento dell'origine API su `au.seek.com` con link di dettaglio sui legacy host; **Platsbanken/TheHub/A16z/Arbeitnow/Greenhouse** — coercizione degli id, marcatura parziale al fallimento della prima pagina, un tetto di arricchimento `/offices`.
+- **Tetti dello scanner**: `max_response_mb` per voce (che preserva il receiver), l'interruttore dedup della workplace-policy letto da booleani stretti (#6784), test che fissano che una scan fermata per limite di tempo conserva i ruoli già trovati (#6779).
+- **Un nuovo helper condiviso per il testo degli stipendi** (`_salary-text.mjs`) — il parsing stipendi del parent (formati nordici e cinesi) per il riuso da parte dei provider.
+
+### Corretto
+- **Onda CodeQL**: una condizione morta e una variabile di match inutilizzata in `jd-parse.mjs` ripulite alla fonte; needle di test a forma di URL → corrispondenze esatte cella/token; import inutilizzati rimossi; corretta una variabile del release-manager usata prima della dichiarazione (manderebbe in crash il prossimo rilascio dello swarm).
+
+### Note
+- Deliberatamente NON cambiato: **Workable** (la modifica del parent vive nel suo feed walker `scan-ats-full` — un no-port documentato), **Google** (già in parità), filtraggio e dedup delle scansioni, conteggi del registro (140 = 135 EN + 5 RU · 135 adapters invariati).
+
 ## [1.271.12] — 2026-11-12
 
 ### Corretto

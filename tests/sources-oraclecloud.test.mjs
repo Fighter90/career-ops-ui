@@ -323,7 +323,12 @@ test('fetchOraclecloud: honors max_pages from the entry, hard-capped at MAX_PAGE
 // CAR-255 parity (upstream #6690) — the opt-in ceiling is raised to
 // HARD_MAX_PAGES (100): JPMorgan Chase alone has 7000+ postings, which the old
 // 25-page opt-in cannot cover; the bound stays finite so a typo can't walk a
-// board forever. The default cap is unchanged.
+// board forever.
+// Auto-raise (upstream parity): an entry's own max_pages is the user's choice
+// and is kept as set. Without one, a tenant that reports TotalJobsCount
+// already bounds the walk, so the default rises to cover that total, up to
+// HARD_MAX_PAGES; MAX_PAGES stays the cap only for a tenant that reports no
+// total, where nothing else ends the walk.
 test('fetchOraclecloud: max_pages opts in up to the 100-page ceiling (CAR-255 parity, upstream #6690)', async () => {
   const fullPage = () => makePage(
     Array.from({ length: PAGE_SIZE }, (_, i) => makeReq({ Id: `${Math.random()}-${i}` })),
@@ -341,10 +346,61 @@ test('fetchOraclecloud: max_pages opts in up to the 100-page ceiling (CAR-255 pa
   await fetchOraclecloud(CAREERS, { fetchImpl: ceiling, company: { max_pages: 9999 }, sleep: noSleep });
   assert.equal(ceiling.calls.length, 100);
 
-  // Without max_pages the default cap is unchanged (25).
-  const defaulted = fakeFetch(() => fullPage());
-  await fetchOraclecloud(CAREERS, { fetchImpl: defaulted, sleep: noSleep });
-  assert.equal(defaulted.calls.length, 25);
+  // An explicit max_pages is NOT auto-raised: the user's cap is kept as set.
+  const explicit = fakeFetch(() => fullPage());
+  await fetchOraclecloud(CAREERS, { fetchImpl: explicit, company: { max_pages: 3 }, sleep: noSleep });
+  assert.equal(explicit.calls.length, 3, 'an explicit max_pages is kept as set');
+});
+
+// Auto-raise (upstream parity): no max_pages + a reported total follows the
+// total past 25 pages, silently — the whole board is read and nothing is cut.
+test('fetchOraclecloud: with no max_pages the walk follows the reported total (auto-raise)', async () => {
+  const noSleep = async () => {};
+  const fullPage = () => makePage(
+    Array.from({ length: PAGE_SIZE }, (_, i) => makeReq({ Id: `${Math.random()}-${i}` })),
+    100000,
+    true,
+  );
+  // A 7118-posting tenant (JPMC's real size): ceil(7118/200) = 36 pages.
+  const totalWalk = fakeFetch((url) => {
+    const offset = parseInt(new URL(url).searchParams.get('offset') || '0', 10);
+    const len = Math.max(0, Math.min(PAGE_SIZE, 7118 - offset));
+    return makePage(
+      Array.from({ length: len }, (_, i) => makeReq({ Id: `t${offset + i}`, Title: `R${i}` })),
+      7118,
+      true,
+    );
+  });
+  const jobs = await fetchOraclecloud(CAREERS, { fetchImpl: totalWalk, sleep: noSleep });
+  assert.equal(totalWalk.calls.length, 36, '36 pages for a 7118-posting board');
+  assert.equal(jobs.length, 7118);
+  assert.equal(jobs.truncated, undefined, 'the reported total bounded the walk — nothing is cut');
+
+  // A total beyond HARD_MAX_PAGES: read up to the ceiling and report the cut
+  // the same way a max_pages cut is reported.
+  const huge = fakeFetch(() => fullPage());
+  const jobsHuge = await fetchOraclecloud(CAREERS, { fetchImpl: huge, sleep: noSleep });
+  assert.equal(huge.calls.length, HARD_MAX_PAGES, 'the ceiling bounds the auto-raised walk');
+  assert.equal(jobsHuge.length, HARD_MAX_PAGES * PAGE_SIZE);
+  assert.deepEqual(jobsHuge.truncated, { reason: 'page-cap', fetched: HARD_MAX_PAGES * PAGE_SIZE, total: 100000 });
+});
+
+// No max_pages and no reported total: the 25-page default still bounds the walk
+// (nothing else would end it), and the cut is reported.
+test('fetchOraclecloud: keeps the 25-page default when the tenant reports no total', async () => {
+  const noSleep = async () => {};
+  const noTotal = fakeFetch((url) => {
+    const offset = parseInt(new URL(url).searchParams.get('offset') || '0', 10);
+    return {
+      items: [{
+        requisitionList: Array.from({ length: PAGE_SIZE }, (_, i) => makeReq({ Id: `n${offset + i}`, Title: `R${i}` })),
+      }],
+    };
+  });
+  const jobs = await fetchOraclecloud(CAREERS, { fetchImpl: noTotal, sleep: noSleep });
+  assert.equal(noTotal.calls.length, MAX_PAGES, 'the default 25-page cap bounds a total-less walk');
+  assert.equal(jobs.length, MAX_PAGES * PAGE_SIZE);
+  assert.deepEqual(jobs.truncated, { reason: 'page-cap', fetched: MAX_PAGES * PAGE_SIZE });
 });
 
 // CAR-255 parity (upstream oraclecloud) — a cap stop with the tenant still

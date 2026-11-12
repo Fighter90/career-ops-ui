@@ -289,6 +289,38 @@ test('platsbanken: fetchPlatsbanken — one keyword failing page 1 keeps the oth
     retries: 0,
   });
   assert.equal(jobs.length, 2, 'the surviving keyword still reports');
+  // The failed keyword's share of the board was never read, so the board is
+  // partial, not complete (#6820).
+  assert.deepEqual(jobs.truncated, { reason: 'fetch-error', fetched: 2 });
+});
+
+// The first cause seen still wins: a cap hit by the first keyword is not
+// overwritten by a later keyword's failure.
+test('platsbanken: fetchPlatsbanken — the first truncation cause seen wins over a later keyword failure', async () => {
+  const fetchImpl = makeFetch({
+    capped: [hitPage(0)],
+    bad: [ { error: Object.assign(new Error('network error'), { status: 500 }) } ],
+  });
+  const jobs = await fetchPlatsbanken(SEARCH_URL, {
+    fetchImpl,
+    company: { platsbanken: { keywords: ['capped', 'bad'] }, max_pages: 1 },
+    delayMs: 0,
+    retries: 0,
+  });
+  assert.deepEqual(jobs.truncated, { reason: 'page-cap', fetched: PAGE_SIZE });
+});
+
+test('platsbanken: fetchPlatsbanken — a probe whose keywords all answer is not marked truncated', async () => {
+  const fetchImpl = makeFetch({
+    a: [hitPage(0, 1)],
+    b: [hitPage(0, 1)],
+  });
+  const jobs = await fetchPlatsbanken(SEARCH_URL, {
+    fetchImpl,
+    company: { platsbanken: { keywords: ['a', 'b'] } },
+    delayMs: 0,
+  });
+  assert.equal(jobs.truncated, undefined);
 });
 
 test('platsbanken: fetchPlatsbanken — every keyword failing page 1 throws (never a quiet empty board)', async () => {

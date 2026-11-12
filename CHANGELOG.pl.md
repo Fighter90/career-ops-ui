@@ -4,6 +4,19 @@
 > ⏳ **Uwaga o zakresie** — plik zawiera obecnie pełną historię wydań; wpisy sprzed dodania polskiego znajdują się poniżej w angielskim oryginale (tłumaczenie w toku).
 > _Wpisy od [1.271.3] czekają na tłumaczenie — angielski oryginał poniżej._
 
+## [1.271.13] — 2026-11-12
+
+### Dodano
+- **Fala parent-sync względem career-ops upstream `d8b292df`** (88 commitów upstream od ostatniej synchronizacji forka; fork wypchnięty jako `da28ef95`, różnice obronione): **Ashby** — własny sufit treści 64 MB dla API ofert z fallbackiem na listowanie embed (#6674); **SmartRecruiters** — opcjonalne podniesienia `max_pages` (ograniczone do 100) z pacingiem, ponowieniami, ostrzeżeniami o przycięciu i znacznikiem limitu stron + stabilne przy ponownej publikacji `listingIdentity` (#6799/#6936); **SuccessFactors** — strażnik hosta public-https, opcjonalne sufity `max_pages`/`max_jobs` (400/10000), ostrzeżenia o przycięciu (#6697); **Amazon** — obchod ograniczony raportowaną liczbą trafień, sufit 100 stron, przycięcie limitem oznaczane jako częściowe (#6938); **Join** — stabilne przy ponownej publikacji `listingIdentity` z całkowitoliczbowego identyfikatora oferty (#6950); **OracleCloud** — budżet stron automatycznie skalowany z raportowanego `TotalJobsCount`; **Darwinbox** — poszerzony pin hosta, brak cytowania sumy, której nigdy nie przeczytano; **Jobstreet/SEEK** — przejście API na `au.seek.com` z linkami szczegółów na starych hostach; **Platsbanken/TheHub/A16z/Arbeitnow/Greenhouse** — koercja identyfikatorów, oznaczanie częściowości przy awarii pierwszej strony, sufit wzbogacenia `/offices`.
+- **Sufity skanera**: per-entry `max_response_mb` (zachowujący odbiornik), przełącznik dedup workplace-policy odczytywany ze ścisłych booli (#6784), testy przypinające, że skan zatrzymany limitem czasu zachowuje już znalezione role (#6779).
+- **Nowy współdzielony helper tekstu wynagrodzeń** (`_salary-text.mjs`) — parsowanie wynagrodzeń rodzica (formaty nordyckie i chińskie) do ponownego użycia przez providerów.
+
+### Naprawiono
+- **Fala CodeQL**: martwy warunek i nieużywana zmienna dopasowania w `jd-parse.mjs` wyczyszczone u źródła; igły testowe w kształcie URL → dokładne dopasowania komórki/tokena; usunięte nieużywane importy; naprawiona zmienna release-managera użyta przed deklaracją (złamałaby kolejne wydanie swarma).
+
+### Uwagi
+- Świadomie NIE zmieniono: **Workable** (zmiana rodzica żyje w jego walkerze feeda `scan-ats-full` — udokumentowany no-port), **Google** (paritet już osiągnięty), filtrowanie i dedup skanowania, liczniki rejestru (140 = 135 EN + 5 RU · 135 adapters bez zmian).
+
 ## [1.271.12] — 2026-11-12
 
 ### Naprawiono

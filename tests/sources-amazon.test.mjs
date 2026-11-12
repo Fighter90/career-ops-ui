@@ -188,6 +188,111 @@ test('fetchAmazon: a wrong-shape later page keeps partials instead of discarding
   assert.equal(jobs.length, 100);
 });
 
+// ---------------------------------------------------------------------------
+// Hits-bounded walk (upstream parity, parent #6938): MAX_PAGES caps a walk
+// only while the total is unknown; a reported `hits` sizes the page budget
+// (one page past it, up to HARD_MAX_PAGES) and a cap stop is reported partial.
+// ---------------------------------------------------------------------------
+
+/** Fake fetch serving `hits` postings in 100-row pages, recording each `hits`
+ *  value under its offset; `withHits: false` omits the field entirely. */
+const hitsFetch = (hits, counter, withHits = true) => async (url) => {
+  counter.n += 1;
+  const off = Number((String(url).match(/[?&]offset=(\d+)/) || [])[1] || 0);
+  const n = Math.max(0, Math.min(100, hits - off));
+  const jobs = Array.from({ length: n }, (_, i) => posting({ title: `R${off + i}`, job_path: `/en/jobs/${off + i}/r` }));
+  return { ok: true, status: 200, json: async () => ({ ...(withHits ? { hits } : {}), jobs }) };
+};
+
+/** Run `fn` with console.error captured; returns what it logged. */
+async function captureErrors(fn) {
+  const lines = [];
+  const real = console.error;
+  console.error = (...args) => lines.push(args.join(' '));
+  try {
+    return { result: await fn(), lines };
+  } finally {
+    console.error = real;
+  }
+}
+
+test('fetchAmazon: a reported hits past the 20-page default is read in full (CA+NY board, 3,171 postings)', async () => {
+  const HITS = 3171;
+  const counter = { n: 0 };
+  const { result: big, lines } = await captureErrors(() => fetchAmazon(FEED_BASE, { fetchImpl: hitsFetch(HITS, counter) }));
+  assert.equal(big.length, HITS);
+  assert.equal(counter.n, Math.ceil(HITS / 100), 'the walk follows the reported hits, one short page ends it');
+  assert.equal(big.truncated, undefined, 'the walk ended naturally — nothing is marked');
+  assert.deepEqual(lines, [], 'a full read is silent');
+});
+
+test('fetchAmazon: stops at the 100-page ceiling and marks the board truncated', async () => {
+  const counter = { n: 0 };
+  const { result: huge, lines } = await captureErrors(() => fetchAmazon(FEED_BASE, { fetchImpl: hitsFetch(25000, counter) }));
+  assert.equal(counter.n, 100, 'HARD_MAX_PAGES bounds the hits-raised budget');
+  assert.equal(huge.length, 10000);
+  assert.deepEqual(huge.truncated, { reason: 'page-cap', fetched: 10000, total: 25000 });
+  assert.equal(lines.length, 1);
+  assert.ok(lines[0].includes('10000 of 25000'), `warning names the counts: ${lines[0]}`);
+});
+
+test('fetchAmazon: keeps the 20-page default when the API reports no hits, and marks the cut', async () => {
+  const counter = { n: 0 };
+  const { result: noHits, lines } = await captureErrors(() => fetchAmazon(FEED_BASE, { fetchImpl: hitsFetch(5000, counter, false) }));
+  assert.equal(counter.n, 20, 'MAX_PAGES caps a walk with no reported total');
+  assert.equal(noHits.length, 2000);
+  assert.deepEqual(noHits.truncated, { reason: 'page-cap', fetched: 2000 });
+  assert.equal(lines.length, 1);
+});
+
+test('fetchAmazon: never treats an understated hits as the end — reads one page past it and marks the cut', async () => {
+  // 2,000 reported, 2,500 real: the budget is one page past hits, the walk ends
+  // on a full page, and that is partial.
+  const counter = { n: 0 };
+  const real = hitsFetch(2500, counter);
+  const fetchImpl = async (url) => {
+    const res = await real(url);
+    const body = await res.json();
+    return { ok: true, status: 200, json: async () => ({ ...body, hits: 2000 }) };
+  };
+  const { result: under, lines } = await captureErrors(() => fetchAmazon(FEED_BASE, { fetchImpl }));
+  assert.equal(counter.n, 21, 'the budget is ceil(2000/100) + 1');
+  assert.equal(under.length, 2100);
+  assert.deepEqual(under.truncated, { reason: 'page-cap', fetched: 2100, total: 2000 });
+  assert.equal(lines.length, 1);
+});
+
+test('fetchAmazon: an exact-multiple board ends on the observed empty page, untruncated', async () => {
+  const counter = { n: 0 };
+  const { result: exact, lines } = await captureErrors(() => fetchAmazon(FEED_BASE, { fetchImpl: hitsFetch(3000, counter) }));
+  assert.equal(counter.n, 31, '30 full pages plus the empty page after them');
+  assert.equal(exact.length, 3000);
+  assert.equal(exact.truncated, undefined);
+  assert.deepEqual(lines, []);
+});
+
+test('fetchAmazon: a health probe (opts.maxPages = 1) reads one page and is not a truncation', async () => {
+  const counter = { n: 0 };
+  const { result: probe, lines } = await captureErrors(() => fetchAmazon(FEED_BASE, { fetchImpl: hitsFetch(3171, counter), maxPages: 1 }));
+  assert.equal(counter.n, 1);
+  assert.equal(probe.length, 100);
+  assert.equal(probe.truncated, undefined, 'the probe budget is never a cap stop');
+  assert.deepEqual(lines, []);
+});
+
+test('fetchAmazon: a later-page failure is marked fetch-error, not page-cap', async () => {
+  const page1 = Array.from({ length: 100 }, (_, i) => posting({ title: `Keep ${i}`, job_path: `/en/jobs/keep-${i}` }));
+  let calls = 0;
+  const fetchImpl = async () => {
+    calls += 1;
+    if (calls === 1) return { ok: true, status: 200, json: async () => ({ hits: 5000, jobs: page1 }) };
+    return { ok: false, status: 503, json: async () => ({}) };
+  };
+  const { result: jobs } = await captureErrors(() => fetchAmazon(FEED_BASE, { fetchImpl }));
+  assert.equal(jobs.length, 100, 'a page-2 blip must not discard page 1');
+  assert.deepEqual(jobs.truncated, { reason: 'fetch-error', fetched: 100 }, 'a failed page is a fetch-error stop, never page-cap');
+});
+
 // Off-by-one east of UTC: Date.parse reads "July 3, 2026" in the runner's local
 // zone and toISOString() then shifted the calendar day back. Run with
 // TZ=Asia/Shanghai to see the old code fail this.

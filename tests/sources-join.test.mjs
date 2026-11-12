@@ -10,6 +10,7 @@ import assert from 'node:assert/strict';
 import {
   extractSlug,
   extractNextData,
+  joinListingIdentity,
   normalizeJoinJob,
   fetchJoin,
   meta,
@@ -155,6 +156,52 @@ test('normalizeJoinJob: drops items with no idParam (url + id both depend on it)
   assert.equal(normalizeJoinJob({ title: 'X', city: {} }, { companySlug: 'acme-corp' }), null);
   assert.equal(normalizeJoinJob({ title: 'X', idParam: '' }, { companySlug: 'acme-corp' }), null);
   assert.equal(normalizeJoinJob(null, { companySlug: 'acme-corp' }), null);
+});
+
+// ---------------------------------------------------------------------------
+// listingIdentity (parent #6950) — the payload's integer job id is the strong
+// ATS-native identity, next to the board slug; the site's own `<idParam>`
+// pages (`<number>-<title>`) change their number on every republish, so URL
+// dedup alone cannot join a republished posting to its earlier row.
+// ---------------------------------------------------------------------------
+
+test('normalizeJoinJob: a payload integer id becomes the join/<slug>/<id> listingIdentity', () => {
+  const row = normalizeJoinJob(
+    { title: 'Senior AI Engineer', id: 16751346, idParam: '13900211-senior-ai-engineer', city: { cityName: 'Remote' } },
+    { company: 'Acme', companySlug: 'acme-corp' },
+  );
+  assert.ok(row);
+  assert.deepEqual(row.listingIdentity, { ats_provider: 'join', board_slug: 'acme-corp', posting_id: '16751346' });
+  assert.equal(Object.keys(row.listingIdentity).length, 3, 'exactly the three identity keys');
+});
+
+test('normalizeJoinJob: a row whose id cannot be a posting key gets no listingIdentity', () => {
+  for (const id of [0, -1, 1.5, Number.MAX_SAFE_INTEGER + 1, '16751346', undefined, null]) {
+    const row = normalizeJoinJob(
+      { title: 'X', id, idParam: `${id || 0}-x`, city: {} },
+      { companySlug: 'acme-corp' },
+    );
+    assert.ok(row, `id ${id} does not drop the row`);
+    assert.equal('listingIdentity' in row, false, `id ${id} leaves listingIdentity off`);
+  }
+  // A slug that is empty, padded or carries a control character also yields none.
+  for (const slug of ['', ' acme', 'acme ', 'ac\u0007me']) {
+    const row = normalizeJoinJob({ title: 'X', id: 7, idParam: '7-x', city: {} }, { companySlug: slug });
+    assert.ok(row);
+    assert.equal('listingIdentity' in row, false, `slug ${JSON.stringify(slug)} leaves listingIdentity off`);
+  }
+});
+
+test('joinListingIdentity: accepts only a clean slug and a positive safe-integer id', () => {
+  assert.deepEqual(joinListingIdentity('acme-corp', 7), { ats_provider: 'join', board_slug: 'acme-corp', posting_id: '7' });
+  assert.equal(joinListingIdentity('acme-corp', '7'), undefined, 'a string id is never coerced');
+  assert.equal(joinListingIdentity('acme-corp', 7.5), undefined);
+  assert.equal(joinListingIdentity('acme-corp', Number.MAX_SAFE_INTEGER + 1), undefined);
+  assert.equal(joinListingIdentity('acme-corp', -1), undefined);
+  assert.equal(joinListingIdentity('', 7), undefined);
+  assert.equal(joinListingIdentity(' acme', 7), undefined);
+  assert.equal(joinListingIdentity('ac\u0007me', 7), undefined);
+  assert.equal(joinListingIdentity(null, 7), undefined);
 });
 
 // ---------------------------------------------------------------------------

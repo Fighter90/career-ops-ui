@@ -3,6 +3,19 @@
 > **Nota** — este arquivo está integralmente traduzido para o português brasileiro. Cada entrada de versão foi reescrita em PT-BR técnico de qualidade editorial, preservando blocos de código, mensagens de commit, caminhos de arquivo, URLs, variáveis de ambiente, comandos e rótulos de link em sua forma original.
 > _As entradas a partir de [1.271.3] aguardam tradução — o original em inglês abaixo._
 
+## [1.271.13] — 2026-11-12
+
+### Adicionado
+- **Onda de parent-sync contra o career-ops upstream `d8b292df`** (88 commits upstream desde o último sync do fork; fork enviado como `da28ef95`, divergências defendidas): **Ashby** — teto próprio de 64 MB para o corpo da API de vagas, com fallback de listagem via embed (#6674); **SmartRecruiters** — elevações opt-in de `max_pages` (limitadas a 100) com pacing, retries, avisos de truncamento e a tag de page-cap + `listingIdentity` estável entre republicações (#6799/#6936); **SuccessFactors** — guarda de host public-https, tetos opt-in de `max_pages`/`max_jobs` (400/10000), avisos de truncamento (#6697); **Amazon** — caminhada limitada pelos hits reportados, teto de 100 páginas, corte pelo cap marcado como partial (#6938); **Join** — `listingIdentity` estável entre republicações derivada do id inteiro da vaga (#6950); **OracleCloud** — orçamento de páginas dimensionado automaticamente a partir de um `TotalJobsCount` reportado; **Darwinbox** — pin de host ampliado, sem citar um total que nunca foi lido; **Jobstreet/SEEK** — a mudança de origem da API para `au.seek.com` mantendo links de detalhe nos hosts legados; **Platsbanken/TheHub/A16z/Arbeitnow/Greenhouse** — coerção de ids, marcação de partial em falha da primeira página, teto para o enriquecimento via `/offices`.
+- **Limites do scanner**: `max_response_mb` por entrada (preservando o receiver), a chave de dedup de política de workplace vinda de booleans estritos (#6784), testes que garantem que um scan interrompido pelo limite de tempo mantém as vagas já encontradas (#6779).
+- **Um novo helper compartilhado de salary-text** (`_salary-text.mjs`) — o parsing de salário do parent (formatos nórdicos e chineses incluídos) para reuso pelos providers.
+
+### Corrigido
+- **Onda CodeQL**: um condicional morto e uma variável de match não usada em `jd-parse.mjs` limpos na origem; agulhas de teste em formato de URL substituídas por correspondências exatas de célula/token; imports não usados removidos; e uma variável do release-manager usada antes da declaração (derrubaria o próximo release do swarm) corrigida.
+
+### Notas
+- Deliberadamente NÃO alterado: **Workable** (a mudança do parent vive no walker de feed `scan-ats-full` dele — um no-port documentado), **Google** (já em paridade), filtragem e dedup de scan, contagens do registro (140 = 135 EN + 5 RU · 135 adapters inalteradas).
+
 ## [1.271.12] — 2026-11-12
 
 ### Corrigido

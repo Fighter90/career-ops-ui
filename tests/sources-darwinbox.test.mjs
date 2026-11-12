@@ -116,9 +116,15 @@ test('darwinbox: the adapter matches a tenant careers URL on the pinned host sha
   assert.equal(darwinboxAdapter.matches({ name: 'Acme', api: CAREERS }), true, 'api: also detects');
   assert.equal(darwinboxAdapter.matches({ name: 'Acme', provider: 'darwinbox', careers_url: CAREERS }), true, 'explicit provider override');
   assert.equal(darwinboxAdapter.matches({ name: 'Acme', provider: 'darwinbox' }), true, 'provider alone matches (endpoint resolution is separate)');
+  assert.equal(
+    darwinboxAdapter.matches({ name: 'Acme', careers_url: 'https://acme.darwinbox.com/ms/candidatev2/main/careers/allJobs' }),
+    true,
+    'a darwinbox.com tenant is matched too',
+  );
   for (const [label, entry] of [
     ['a bare tenant host (no company id)', { careers_url: ORIGIN }],
     ['look-alike host', { careers_url: 'https://acme-darwinbox.in/ms/candidatev2/main/careers/allJobs' }],
+    ['a darwinbox.com apex URL (no company id)', { careers_url: 'https://www.darwinbox.com/careers' }],
     ['a branded careers page', { careers_url: 'https://careers.example.com/jobs' }],
     ['null', null],
     ['a non-object', 'darwinbox'],
@@ -149,6 +155,8 @@ test('darwinbox: resolveBoard claims tenant careers URLs carrying a company id',
     [`${ORIGIN}/ms/candidatev2/main/careers/jobDetails/a123`, 'a posting permalink'],
     ['https://ACME.darwinbox.in/ms/candidatev2/main/careers/allJobs?x=1#y', 'an upper-case host with a query'],
     ['https://acme.darwinbox.in:8443/ms/candidatev2/main/careers/allJobs', 'a tenant host carrying a port'],
+    ['https://acme.darwinbox.com/ms/candidatev2/main/careers/allJobs?x=1', 'a darwinbox.com tenant'],
+    ['https://ACME.darwinbox.com:8443/ms/candidatev2/main/careers/home', 'an upper-case darwinbox.com host carrying a port'],
     [`${ORIGIN}/ms/candidatev2/5ffc190a05f27/careers/allJobs`, 'a tenant-specific company id'],
   ];
   for (const [url, label] of cases) {
@@ -178,6 +186,13 @@ test('darwinbox: resolveBoard rejects look-alike, spoofed and unusable URLs', ()
     ['two tenant labels', 'https://a.b.darwinbox.in/ms/candidatev2/main/careers/allJobs'],
     ['label starting with a hyphen', 'https://-acme.darwinbox.in/ms/candidatev2/main/careers/allJobs'],
     ['the apex host', 'https://darwinbox.in/ms/candidatev2/main/careers/allJobs'],
+    ['non-HTTPS on darwinbox.com', 'http://acme.darwinbox.com/ms/candidatev2/main/careers/allJobs'],
+    ['look-alike darwinbox.com host (trailing suffix)', 'https://acme.darwinbox.com.evil.example/ms/candidatev2/main/careers/allJobs'],
+    ['suffix look-alike darwinbox.com host', 'https://evildarwinbox.com/ms/candidatev2/main/careers/allJobs'],
+    ['two tenant labels on darwinbox.com', 'https://a.b.darwinbox.com/ms/candidatev2/main/careers/allJobs'],
+    ['the darwinbox.com apex host', 'https://darwinbox.com/ms/candidatev2/main/careers/allJobs'],
+    ['the vendor site without a company id', 'https://www.darwinbox.com/careers'],
+    ['a darwinbox host on another TLD', 'https://acme.darwinbox.net/ms/candidatev2/main/careers/allJobs'],
     ['a bare tenant host (no company id to read)', ORIGIN],
     ['the employee login page', `${ORIGIN}/user/login`],
     ['an encoded slash in the company id', `${ORIGIN}/ms/candidatev2/ma%2Fin/careers/allJobs`],
@@ -197,11 +212,16 @@ test('darwinbox: resolveBoard rejects look-alike, spoofed and unusable URLs', ()
 test('darwinbox: DARWINBOX_HOST_RE is the single-label tenant shape', () => {
   assert.ok(DARWINBOX_HOST_RE.test('acme.darwinbox.in'));
   assert.ok(DARWINBOX_HOST_RE.test('a-b.darwinbox.in'));
+  assert.ok(DARWINBOX_HOST_RE.test('acme.darwinbox.com'), 'the .darwinbox.com TLD is claimed too');
   assert.ok(!DARWINBOX_HOST_RE.test('darwinbox.in'));
+  assert.ok(!DARWINBOX_HOST_RE.test('darwinbox.com'), 'the .com apex is not a tenant');
   assert.ok(!DARWINBOX_HOST_RE.test('a.b.darwinbox.in'));
+  assert.ok(!DARWINBOX_HOST_RE.test('a.b.darwinbox.com'));
   assert.ok(!DARWINBOX_HOST_RE.test('-acme.darwinbox.in'));
   assert.ok(!DARWINBOX_HOST_RE.test('acme-darwinbox.in'));
   assert.ok(!DARWINBOX_HOST_RE.test('acme.darwinbox.in.evil.example'));
+  assert.ok(!DARWINBOX_HOST_RE.test('evildarwinbox.com'), 'a suffix look-alike .com is not a tenant');
+  assert.ok(!DARWINBOX_HOST_RE.test('acme.darwinbox.net'), 'no other TLD');
 });
 
 // ── max_pages ────────────────────────────────────────────────────────────────
@@ -389,6 +409,22 @@ test('darwinbox: fetch walks pages until a short one, paced between pages, redir
   assert.equal(ctx.calls.map((c) => c.body.page).join(), '1,2,3');
   assert.ok(ctx.calls.every((c) => c.opts.redirect === 'error'));
   assert.deepEqual(ctx.sleeps, [200, 200], 'delays only between pages');
+  assert.equal(jobs.truncated, undefined, 'a board read to its end is not marked truncated');
+});
+
+// fetch() — a darwinbox.com tenant is read from its own host, not rewritten to darwinbox.in.
+test('darwinbox: a darwinbox.com tenant is read from its own host', async () => {
+  const COM_ORIGIN = 'https://acme.darwinbox.com';
+  const ctx = pagedFetch([envelope([row('a1')])]);
+  const jobs = await fetchDarwinbox('', {
+    fetchImpl: ctx.fetchImpl, sleep: ctx.sleep,
+    company: { name: 'Acme', careers_url: 'https://acme.darwinbox.com:9999/ms/candidatev2/main/careers/home' },
+    retries: 0,
+  });
+  assert.equal(ctx.calls.length, 1);
+  assert.equal(ctx.calls[0].url, `${COM_ORIGIN}/ms/candidateapi/job/alljobs?companyId=main`);
+  assert.equal(ctx.calls[0].opts.redirect, 'error');
+  assert.equal(jobs[0].url, `${COM_ORIGIN}/ms/candidatev2/main/careers/jobDetails/a1`);
 });
 
 test('darwinbox: an exact multiple of the page size ends on the empty page after it', async () => {
@@ -432,6 +468,7 @@ test('darwinbox: fetch stops at DEFAULT_MAX_PAGES and warns when the ceiling tru
     logged.some((l) => /truncated at max_pages=20 \(1000 of 5000 jobs\) — raise max_pages/.test(l)),
     `truncation warning: ${JSON.stringify(logged)}`,
   );
+  assert.deepEqual(jobs.truncated, { reason: 'page-cap', fetched: 1000, total: 5000 }, 'a page-cap stop marks the result truncated, with the counts');
 });
 
 test('darwinbox: an entry max_pages is honoured', async () => {
@@ -442,18 +479,47 @@ test('darwinbox: an entry max_pages is honoured', async () => {
   assert.equal(ctx.calls.length, 2);
 });
 
-test('darwinbox: no truncation warning when the cap lands exactly on the board end, or on a short page', async () => {
+// Only a short page proves the board ended: a full page at the cap is a page-cap
+// stop, whatever total the source reports (upstream parity).
+test('darwinbox: a full page at the cap stays a page-cap stop even when the reported total matches', async () => {
   const exactEnd = pagedFetch([fullPage('a', 100), fullPage('b', 100)]);
-  const logged1 = await captureErrors(() => fetchDarwinbox('', {
-    fetchImpl: exactEnd.fetchImpl, sleep: exactEnd.sleep, company: { name: 'Acme', careers_url: CAREERS, max_pages: 2 }, retries: 0,
-  }));
-  assert.deepEqual(logged1, [], 'fetched >= job_counts says the full last page was the end');
+  let jobs;
+  const logged1 = await captureErrors(async () => {
+    jobs = await fetchDarwinbox('', {
+      fetchImpl: exactEnd.fetchImpl, sleep: exactEnd.sleep, company: { name: 'Acme', careers_url: CAREERS, max_pages: 2 }, retries: 0,
+    });
+  });
+  assert.ok(
+    logged1.some((l) => /truncated at max_pages=2 \(100 jobs\) — raise max_pages/.test(l)),
+    'a full page at the cap stays a page-cap stop even when the reported total matches what was read',
+  );
+  assert.equal(jobs.truncated?.reason, 'page-cap', 'the stop is marked page-cap');
+  assert.equal('total' in jobs.truncated, false, 'a total no larger than what was read is not quoted');
 
   const shortAtCap = pagedFetch([fullPage('a', 60), envelope([row('b1')], 60)]);
   const logged2 = await captureErrors(() => fetchDarwinbox('', {
     fetchImpl: shortAtCap.fetchImpl, sleep: shortAtCap.sleep, company: { name: 'Acme', careers_url: CAREERS, max_pages: 2 }, retries: 0,
   }));
   assert.deepEqual(logged2, [], 'a short page at the cap is a complete walk');
+});
+
+test('darwinbox: an under-reported total does not hide a page-cap stop, and is left out of the marker', async () => {
+  // The source reports 72 postings but serves 102: an under-reported total must
+  // not hide the cap, and must not be quoted as the board's size.
+  const ctx = pagedFetch([fullPage('a', 72), fullPage('b', 72), envelope([row('c1'), row('c2')], 72)]);
+  let jobs;
+  const logged = await captureErrors(async () => {
+    jobs = await fetchDarwinbox('', {
+      fetchImpl: ctx.fetchImpl, sleep: ctx.sleep, company: { name: 'Acme', careers_url: CAREERS, max_pages: 2 }, retries: 0,
+    });
+  });
+  assert.equal(ctx.calls.length, 2);
+  assert.equal(jobs.length, 2 * PAGE_SIZE);
+  assert.deepEqual(jobs.truncated, { reason: 'page-cap', fetched: 2 * PAGE_SIZE }, "no 'total' below what was read");
+  assert.ok(
+    logged.some((l) => /truncated at max_pages=2 \(100 jobs\) — raise max_pages/.test(l)),
+    'the cap warning does not quote a total below what was read',
+  );
 });
 
 test('darwinbox: a later-page failure keeps the pages collected and warns without blaming max_pages', async () => {
@@ -467,6 +533,7 @@ test('darwinbox: a later-page failure keeps the pages collected and warns withou
   assert.equal(jobs.length, PAGE_SIZE);
   assert.ok(logged.some((l) => /stopped at page 2/.test(l)));
   assert.ok(!logged.some((l) => /raise max_pages/.test(l)));
+  assert.deepEqual(jobs.truncated, { reason: 'fetch-error', fetched: PAGE_SIZE, total: 120 }, 'a later-page failure marks the result truncated, with the counts');
 });
 
 test('darwinbox: a transient 503 is retried and the walk finishes', async () => {
@@ -488,6 +555,7 @@ test('darwinbox: a broken envelope on a later page keeps the pages collected and
   });
   assert.equal(jobs.length, PAGE_SIZE);
   assert.ok(logged.some((l) => /stopped at page 2.*unexpected response/.test(l)));
+  assert.equal(jobs.truncated?.reason, 'fetch-error', 'a broken envelope on a later page marks the result truncated');
 
   await assert.rejects(
     () => fetchDarwinbox('', { fetchImpl: pagedFetch([{ message: 'maintenance' }]).fetchImpl, sleep: async () => {}, company: { name: 'Acme', careers_url: CAREERS }, retries: 0 }),
@@ -501,11 +569,15 @@ test('darwinbox: a broken envelope on a later page keeps the pages collected and
 
 test('darwinbox: probe cooperation — opts.maxPages caps the walk at one request, no warning, failures propagate unwrapped', async () => {
   const ctx = pagedFetch([fullPage('a', 5000), fullPage('b', 5000)]);
-  const logged = await captureErrors(() => fetchDarwinbox('', {
-    fetchImpl: ctx.fetchImpl, sleep: ctx.sleep, company: { name: 'Acme', careers_url: CAREERS }, maxPages: 1,
-  }));
+  let jobs;
+  const logged = await captureErrors(async () => {
+    jobs = await fetchDarwinbox('', {
+      fetchImpl: ctx.fetchImpl, sleep: ctx.sleep, company: { name: 'Acme', careers_url: CAREERS }, maxPages: 1,
+    });
+  });
   assert.equal(ctx.calls.length, 1);
   assert.deepEqual(logged, [], 'the probe cap must not fire the raise-max_pages warning');
+  assert.equal(jobs.truncated, undefined, 'the probe cap does not mark the result truncated');
 
   const boom = new Error('budget');
   await assert.rejects(

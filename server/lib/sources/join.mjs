@@ -75,6 +75,28 @@ export function extractSlug(url) {
 }
 
 /**
+ * The posting's ATS-native identity: the company slug the board was fetched
+ * at and the job's numeric `id` from the payload, never parsed out of a URL.
+ * The slug is the company's own spelling (join.com answers the careers page
+ * only at it; any other spelling is a redirect, which fetch refuses). The id
+ * is join.com's integer job id, the identifier that stays the same for the
+ * posting's whole life, rendered in its one decimal form, as greenhouse.mjs
+ * does for its numeric ids. Returns undefined for anything else (a non-integer,
+ * unsafe or non-positive id, or a slug that is empty, padded or carries control
+ * characters), so that row falls back to URL dedup. Exported for unit tests.
+ * (Parent #6950; the smartrecruiters source carries the same field for its ids.)
+ *
+ * @param {string | null | undefined} slug
+ * @param {unknown} id
+ * @returns {{ats_provider: 'join', board_slug: string, posting_id: string} | undefined}
+ */
+export function joinListingIdentity(slug, id) {
+  if (typeof slug !== 'string' || slug === '' || slug !== slug.trim() || /[\u0000-\u001f\u007f]/u.test(slug)) return undefined;
+  if (typeof id !== 'number' || !Number.isSafeInteger(id) || id <= 0) return undefined;
+  return { ats_provider: 'join', board_slug: slug, posting_id: String(id) };
+}
+
+/**
  * Pull and parse the `__NEXT_DATA__` JSON blob out of a page's HTML. Returns
  * the parsed object, or null when the script tag is absent, the JSON is
  * malformed, or the input is not a string (never throws). Exported for tests.
@@ -120,6 +142,14 @@ export function normalizeJoinJob(j, { company = '', companySlug } = {}) {
   const idParam = j.idParam != null && j.idParam !== '' ? String(j.idParam) : '';
   if (!idParam) return null;
 
+  // Parent #6950 — the payload's integer `id` is the strong ATS-native
+  // identity, next to the board slug that pins the URLs. join.com itself
+  // links to `<idParam>` pages (`<number>-<title>`), whose number changes on
+  // every republish, so URL dedup alone cannot join a republished posting to
+  // its earlier row. A row whose id cannot be a posting key gets no identity
+  // and falls back to URL dedup.
+  const listingIdentity = joinListingIdentity(companySlug, j.id);
+
   const title = typeof j.title === 'string' ? j.title : '';
   const location = j.city?.cityName || '';
   const isRemote = /remote/i.test(location);
@@ -137,6 +167,7 @@ export function normalizeJoinJob(j, { company = '', companySlug } = {}) {
     date: '', // the list item carries no reliable publication date
     snippet: '',
     source: 'join',
+    ...(listingIdentity ? { listingIdentity } : {}),
   };
 }
 

@@ -137,6 +137,23 @@ test('fetchTheHub: URL-encodes the job id', async () => {
   assert.equal(jobs[0].url, 'https://thehub.io/jobs/a%2Fb%20c');
 });
 
+// The feed's own posting id always lands in the row id (the parent's
+// externalId contract, #6913): coerceId accepts a string or a number, and a
+// row whose id cannot be coerced (object / blank) is dropped rather than
+// emitting a '[object Object]' placeholder — absent beats wrong.
+test('fetchTheHub: id coercion — numeric id coerced, object/blank id dropped (#6913)', async () => {
+  const fetchImpl = fakeFetch([makePage([
+    makeJob({ id: 42113, title: 'Numeric id' }),
+    makeJob({ id: { deep: 1 }, title: 'Object id' }),
+    makeJob({ id: '   ', title: 'Blank id' }),
+    makeJob({ id: undefined, title: 'No id' }),
+  ])]);
+  const jobs = await fetchTheHub(FEED_BASE, { fetchImpl });
+  assert.equal(jobs.length, 1, 'only the numeric-id row survives');
+  assert.equal(jobs[0].id, 'thehub-42113', 'numeric id coerced to a string');
+  assert.ok(jobs.every((j) => !j.id.includes('object Object')), 'no placeholder ids');
+});
+
 // ---------------------------------------------------------------------------
 // pagination: stops at pages total even when maxPages is higher (v2 envelope)
 // ---------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 // @ts-check
 /**
  * Darwinbox source — the zero-auth `alljobs` JSON endpoint behind
- * `<tenant>.darwinbox.in` career sites:
+ * `<tenant>.darwinbox.in` (or `.darwinbox.com`) career sites:
  *
  *   POST {tenant_origin}/ms/candidateapi/job/alljobs
  *   body: { companyId, page (1-based), sort_option: 'new', limit: 50 }
@@ -14,7 +14,7 @@
  * wrong one answers with an empty `success`, so a bare tenant host is not
  * claimed — an entry carries `careers_url` (or `api:`) shaped
  * `https://<tenant>.darwinbox.in/ms/candidatev2/<companyId>/careers/...`
- * and any careers path (allJobs page, careers root, a posting permalink)
+ * (or the same path on `<tenant>.darwinbox.com`) and any careers path (allJobs page, careers root, a posting permalink)
  * reduces to that id. The walk pages until a short page, paced between
  * pages, bounded by the entry's `max_pages` (default 20 → 1,000 postings;
  * hard cap 200).
@@ -36,6 +36,7 @@
 import { fetchJsonWithRetry } from '../http-json.mjs';
 import { decodeEntities } from '../html-entities.mjs';
 import { htmlToText } from '../html-to-text.mjs';
+import { markTruncated } from '../board-truncation.mjs';
 import { safeEncodeURIComponent } from './_safe-url.mjs';
 import { requireObject } from './_shape.mjs';
 
@@ -45,9 +46,10 @@ export const meta = {
   region: 'en',
 };
 
-// Single-label tenant host — `acme.darwinbox.in`, never the apex, never a
-// second label (`a.b.darwinbox.in`), never a look-alike suffix/prefix.
-export const DARWINBOX_HOST_RE = /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.darwinbox\.in$/;
+// Single-label tenant host — `acme.darwinbox.in` (or `.darwinbox.com`), never
+// the apex, never a second label (`a.b.darwinbox.in`), never a look-alike
+// suffix/prefix.
+export const DARWINBOX_HOST_RE = /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.darwinbox\.(?:in|com)$/;
 // The careers path that carries the company id.
 export const CAREERS_PATH_RE = /^\/ms\/candidatev2\/([a-z0-9_-]+)\/careers(?:\/|$)/i;
 
@@ -262,7 +264,7 @@ export async function fetchDarwinbox(_endpoint, opts = {}) {
   const { fetchImpl = fetch, signal, company } = opts;
   const board = resolveBoard(company);
   if (!board) {
-    throw new Error(`darwinbox: cannot derive a board for ${company?.name || 'the entry'} — set careers_url to https://<tenant>.darwinbox.in/ms/candidatev2/<companyId>/careers/allJobs`);
+    throw new Error(`darwinbox: cannot derive a board for ${company?.name || 'the entry'} — set careers_url to https://<tenant>.darwinbox.in/ms/candidatev2/<companyId>/careers/allJobs (or the same path on <tenant>.darwinbox.com)`);
   }
   // A scan aborted before the first request must fail loud, not report an
   // empty board (paylocity convention).
@@ -283,7 +285,6 @@ export async function fetchDarwinbox(_endpoint, opts = {}) {
   /** @type {object[]} */
   const jobs = [];
   const seen = new Set();
-  let fetched = 0;
   let total;
   // Assume the budget runs out; a short page or a failed page says otherwise.
   let stopReason = 'cap';
@@ -320,21 +321,27 @@ export async function fetchDarwinbox(_endpoint, opts = {}) {
       jobs.push(normalized);
     }
 
+    if (Number.isFinite(json.job_counts)) total = json.job_counts;
     // Count the rows the source returned, not the ones kept: a full page with
     // one malformed row is still a full page, and the board goes on.
-    fetched += json.data.length;
-    if (Number.isFinite(json.job_counts)) total = json.job_counts;
     if (json.data.length < PAGE_SIZE) {
       stopReason = 'complete';
       break;
     }
   }
 
-  // A full last page is only a truncation if the source says there is more.
-  if (stopReason === 'cap' && total !== undefined && fetched >= total) stopReason = 'complete';
+  // Only a short page proves the board ended, so a full page at the cap stays a
+  // page-cap stop whatever total the source reports. A total no larger than what
+  // was read says nothing about what is left, so it is not quoted.
+  const reportedTotal = total !== undefined && total > jobs.length ? total : undefined;
   if (stopReason === 'cap' && !probing) {
-    const summary = `${jobs.length}${total !== undefined ? ` of ${total}` : ''} jobs`;
+    const summary = `${jobs.length}${reportedTotal !== undefined ? ` of ${reportedTotal}` : ''} jobs`;
     console.error(`⚠️  darwinbox: ${company?.name} truncated at max_pages=${maxPages} (${summary}) — raise max_pages on this entry for more`);
+  }
+  // A partly read board says so in the return value, so scan.mjs logs it
+  // `partial` instead of `reachable` (lib/board-truncation.mjs).
+  if (!probing && stopReason !== 'complete') {
+    markTruncated(jobs, stopReason === 'cap' ? 'page-cap' : 'fetch-error', { fetched: jobs.length, ...(reportedTotal !== undefined ? { total: reportedTotal } : {}) });
   }
 
   return jobs;

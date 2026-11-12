@@ -164,3 +164,150 @@ test('ashby: non-https jobUrls are dropped (javascript:/http:/relative), https k
   const jobs = await fetchAshby('https://api.ashbyhq.com/posting-api/job-board/foo', { fetchImpl: okJson(data) });
   assert.deepEqual(jobs.map((j) => j.url), ['https://jobs.ashbyhq.com/foo/ok']);
 });
+
+// ── Parent #6674: the posting API's own body ceiling + embed fallback ────────
+
+const { ASHBY_MAX_BYTES, buildEmbedUrl, parseEmbedAppData } = await import('../server/lib/sources/ashby.mjs');
+
+const embedHtml = (board) => '<!DOCTYPE html><script>window.__appData = ' + JSON.stringify(board) + ';</script>';
+
+test('ashby: the posting API reads under its own 64 MB ceiling', async () => {
+  assert.equal(ASHBY_MAX_BYTES, 64 * 1024 * 1024);
+  // End-to-end pin through the REAL capped read: a board whose declared
+  // content-length sits past ASHBY_MAX_BYTES is refused by the transport and
+  // served from the embed listing instead. Without the ceiling the uncapped
+  // read would have succeeded and returned the API rows.
+  const apiBoard = { ok: true, status: 200, json: async () => ({ jobs: [{ id: 'api', title: 'From API', jobUrl: 'https://jobs.ashbyhq.com/foo/api' }] }), headers: { get: (n) => (n === 'content-length' ? String(ASHBY_MAX_BYTES + 1) : null) } };
+  const embedResponse = () => ({ ok: true, status: 200, text: async () => embedHtml({ jobBoard: { jobPostings: [{ id: 'emb', title: 'From Embed' }] } }) });
+  const fetchImpl = async (url) => (String(url).startsWith('https://api.ashbyhq.com/') ? apiBoard : embedResponse());
+  const jobs = await fetchAshby('https://api.ashbyhq.com/posting-api/job-board/foo', { fetchImpl });
+  assert.equal(jobs.length, 1);
+  assert.equal(jobs[0].title, 'From Embed');
+});
+
+test('ashby: buildEmbedUrl pins the embed host and encodes the slug', () => {
+  assert.equal(buildEmbedUrl('openai'), 'https://jobs.ashbyhq.com/openai?embed=js');
+  assert.equal(buildEmbedUrl('a b'), 'https://jobs.ashbyhq.com/a%20b?embed=js');
+});
+
+test('ashby: parseEmbedAppData reads jobBoard, and tells the three outcomes apart', () => {
+  const board = { organization: { name: 'Big' }, jobBoard: { jobPostings: [{ id: 'p1' }, { id: 'p2' }] } };
+  assert.deepEqual(parseEmbedAppData(embedHtml(board)), { jobPostings: [{ id: 'p1' }, { id: 'p2' }] });
+  // a nonexistent slug renders jobBoard: null → null, NOT a throw
+  assert.equal(parseEmbedAppData(embedHtml({ organization: null, jobBoard: null })), null);
+  // no parseable __appData / broken JSON / no jobPostings array → throws
+  assert.throws(() => parseEmbedAppData('<html>nothing here</html>'), /no window\.__appData/);
+  assert.throws(() => parseEmbedAppData('<script>window.__appData = {"jobBoard": '), /did not parse as JSON/);
+  assert.throws(() => parseEmbedAppData(embedHtml({ jobBoard: {} })), /no jobPostings array/);
+});
+
+test('ashby: parseEmbedAppData survives a `};` inside a title (brace scan skips strings)', () => {
+  const board = { jobBoard: { jobPostings: [{ id: 'x', title: 'Strategy }; Lead' }] } };
+  assert.equal(parseEmbedAppData(embedHtml(board)).jobPostings[0].title, 'Strategy }; Lead');
+});
+
+test('ashby: an oversized board is read from the embed listing of the SAME board', async () => {
+  const tooLarge = () => Promise.reject(Object.assign(new Error('HTTP body exceeded maxBytes'), { code: 'response_too_large', maxBytes: ASHBY_MAX_BYTES }));
+  // A response object that serves text() for the embed read.
+  const embedResponse = (board) => ({ ok: true, status: 200, text: async () => embedHtml(board) });
+  const seen = [];
+  const fetchImpl = async (url) => {
+    seen.push(String(url));
+    if (String(url).startsWith('https://api.ashbyhq.com/')) return tooLarge();
+    return embedResponse({ jobBoard: { jobPostings: [
+      { id: 'p1', title: 'Strategy Lead', locationName: 'San Francisco', workplaceType: 'Remote' },
+      { id: 'p2', title: 'Engineer', locationName: 'Berlin' },
+    ] } });
+  };
+  const warns = [];
+  const origErr = console.error;
+  console.error = (...a) => warns.push(a.join(' '));
+  try {
+    const jobs = await fetchAshby('https://api.ashbyhq.com/posting-api/job-board/big?includeCompensation=true', { fetchImpl, company: { name: 'Big' } });
+    assert.equal(jobs.length, 2);
+    assert.equal(jobs[0].title, 'Strategy Lead');
+    assert.equal(jobs[0].location, 'San Francisco · Remote');
+    assert.equal(jobs[0].isRemote, true);
+    assert.equal(jobs[0].url, 'https://jobs.ashbyhq.com/big/p1');
+    // No description or date on the embed path — nothing is invented.
+    assert.equal(jobs[0].description, '');
+    assert.equal(jobs[0].date, '');
+    assert.match(String(seen[1]), /^https:\/\/jobs\.ashbyhq\.com\/big\?embed=js$/);
+    assert.match(warns[0], /posting API body over 64 MB/);
+  } finally {
+    console.error = origErr;
+  }
+});
+
+test('ashby: the embed fallback reads the board the posting API was asked for (api:-pinned)', async () => {
+  const tooLarge = () => Promise.reject(Object.assign(new Error('HTTP body exceeded maxBytes'), { code: 'response_too_large', maxBytes: ASHBY_MAX_BYTES }));
+  const embedResponse = (board) => ({ ok: true, status: 200, text: async () => embedHtml(board) });
+  const seen = [];
+  const fetchImpl = async (url) => {
+    seen.push(String(url));
+    if (String(url).startsWith('https://api.ashbyhq.com/')) return tooLarge();
+    return embedResponse({ jobBoard: { jobPostings: [{ id: 'p1', title: 'Strategy Lead' }] } });
+  };
+  await fetchAshby('https://api.ashbyhq.com/posting-api/job-board/big?includeCompensation=true', { fetchImpl });
+  // api: pins the board while careers_url is a corporate site (or a different
+  // Ashby board): the fallback takes its slug from the posting-api URL.
+  assert.match(String(seen[1]), /^https:\/\/jobs\.ashbyhq\.com\/big\?embed=js$/);
+});
+
+test('ashby: embed fallback drops mangled rows and refuses an off-embed-host URL', async () => {
+  const tooLarge = () => Promise.reject(Object.assign(new Error('HTTP body exceeded maxBytes'), { code: 'response_too_large', maxBytes: ASHBY_MAX_BYTES }));
+  const embedResponse = (board) => ({ ok: true, status: 200, text: async () => embedHtml(board) });
+  const fetchImpl = async (url) => {
+    if (String(url).startsWith('https://api.ashbyhq.com/')) return tooLarge();
+    return embedResponse({ jobBoard: { jobPostings: [
+      { id: 'ok', title: 'Good' },
+      null, // mangled row — dropped on its own, never the board
+      { title: 'No id' }, // no usable id — dropped
+      { id: 'no-title' }, // no title — dropped
+    ] } });
+  };
+  const jobs = await fetchAshby('https://api.ashbyhq.com/posting-api/job-board/big', { fetchImpl });
+  assert.deepEqual(jobs.map((j) => j.title), ['Good']);
+  assert.equal(jobs[0].id, 'ashby-ok');
+});
+
+test('ashby: a lone surrogate in an embed posting id drops that posting, never the board', async () => {
+  const tooLarge = () => Promise.reject(Object.assign(new Error('HTTP body exceeded maxBytes'), { code: 'response_too_large', maxBytes: ASHBY_MAX_BYTES }));
+  const embedResponse = (board) => ({ ok: true, status: 200, text: async () => embedHtml(board) });
+  const fetchImpl = async (url) => {
+    if (String(url).startsWith('https://api.ashbyhq.com/')) return tooLarge();
+    return embedResponse({ jobBoard: { jobPostings: [
+      { id: 'good', title: 'Good' },
+      { id: 'bad\uD800id', title: 'Surrogate' }, // would make encodeURIComponent throw
+    ] } });
+  };
+  const jobs = await fetchAshby('https://api.ashbyhq.com/posting-api/job-board/big', { fetchImpl });
+  assert.deepEqual(jobs.map((j) => j.title), ['Good']);
+});
+
+test('ashby: every other failure stays loud — HTTP errors keep their label, embed failures propagate', async () => {
+  // A 500 on the posting API is the board's failure: labelled and rethrown,
+  // NOT swallowed into an embed read.
+  await assert.rejects(
+    () => fetchAshby('https://api.ashbyhq.com/posting-api/job-board/foo', {
+      fetchImpl: async () => ({ ok: false, status: 500 }),
+    }),
+    /Ashby: HTTP 500/,
+  );
+  // An embed read that itself fails keeps the failure loud.
+  const tooLarge = () => Promise.reject(Object.assign(new Error('HTTP body exceeded maxBytes'), { code: 'response_too_large', maxBytes: ASHBY_MAX_BYTES }));
+  await assert.rejects(
+    () => fetchAshby('https://api.ashbyhq.com/posting-api/job-board/foo', {
+      fetchImpl: async (url) => (String(url).startsWith('https://api.ashbyhq.com/') ? tooLarge() : { ok: false, status: 503 }),
+    }),
+    /Ashby: HTTP 503/,
+  );
+  // jobBoard: null on the embed page (the slug does not exist) is loud too.
+  const embedResponse = () => ({ ok: true, status: 200, text: async () => embedHtml({ organization: null, jobBoard: null }) });
+  await assert.rejects(
+    () => fetchAshby('https://api.ashbyhq.com/posting-api/job-board/gone', {
+      fetchImpl: async (url) => (String(url).startsWith('https://api.ashbyhq.com/') ? tooLarge() : embedResponse()),
+    }),
+    /the slug does not exist/,
+  );
+});

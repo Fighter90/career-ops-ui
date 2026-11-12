@@ -8,7 +8,7 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { assertJobstreetUrl, parseJobstreetItem } from '../server/lib/sources/jobstreet.mjs';
+import { assertJobstreetUrl, parseJobstreetItem, fetchJobstreet } from '../server/lib/sources/jobstreet.mjs';
 
 const API = '/api/jobsearch/v5/search';
 
@@ -36,4 +36,42 @@ test('a look-alike host is still refused', () => {
     const url = host.startsWith('http') ? `${host}${API}` : `https://${host}${API}`;
     assert.throws(() => assertJobstreetUrl(url), host);
   }
+});
+
+// SEEK moved its AU API to au.seek.com; www.seek.com.au now answers 308 there
+// and requests refuse redirects (parent #6854). A fetch against the new host
+// must keep the /job/ detail links on the LEGACY host so scan-history and
+// tracker URLs keep deduplicating against listings recorded before the move.
+test('fetchJobstreet: au.seek.com api config — search on the new host, links stay on www.seek.com.au', async () => {
+  const calls = [];
+  const fetchImpl = async (url, init = {}) => {
+    calls.push({ url: String(url), init });
+    return { ok: true, json: async () => ({ data: [{ id: '95650205', title: 'Technical Business Analyst' }], totalCount: 1 }) };
+  };
+  const jobs = await fetchJobstreet(`https://au.seek.com${API}`, {
+    fetchImpl,
+    company: { name: 'SEEK AU', jobstreet: { siteKey: 'AU-Main', searchKeywords: 'business analyst' } },
+  });
+  assert.equal(calls.length, 1);
+  assert.equal(new URL(calls[0].url).hostname, 'au.seek.com', 'the search hits au.seek.com');
+  assert.equal(calls[0].init.redirect, 'error', 'the guarded transport never follows a 3xx');
+  assert.equal(jobs.length, 1);
+  assert.equal(jobs[0].url, 'https://www.seek.com.au/job/95650205', 'the detail link stays on the legacy host');
+});
+
+test('fetchJobstreet: a config still naming www.seek.com.au is sent to au.seek.com, links unchanged', async () => {
+  const calls = [];
+  const fetchImpl = async (url, init = {}) => {
+    calls.push({ url: String(url), init });
+    return { ok: true, json: async () => ({ data: [{ id: '95650205', title: 'Technical Business Analyst' }], totalCount: 1 }) };
+  };
+  const jobs = await fetchJobstreet(`https://www.seek.com.au${API}`, {
+    fetchImpl,
+    company: { name: 'SEEK AU', jobstreet: { siteKey: 'AU-Main', searchKeywords: 'business analyst' } },
+  });
+  assert.equal(calls.length, 1);
+  assert.equal(new URL(calls[0].url).hostname, 'au.seek.com', 'the old API host is aliased to the new one');
+  assert.equal(calls[0].init.redirect, 'error');
+  assert.equal(jobs.length, 1);
+  assert.equal(jobs[0].url, 'https://www.seek.com.au/job/95650205', 'detail links unchanged');
 });

@@ -19,7 +19,7 @@
  */
 import { test, before, after, describe } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, writeFileSync, utimesSync, readFileSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, utimesSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';

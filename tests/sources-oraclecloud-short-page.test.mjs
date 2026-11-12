@@ -17,7 +17,7 @@ import assert from 'node:assert/strict';
 import {
   fetchOraclecloud,
   PAGE_SIZE,
-  MAX_PAGES,
+  HARD_MAX_PAGES,
 } from '../server/lib/sources/oraclecloud.mjs';
 
 const CAREERS = 'https://egug.fa.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/jobs';
@@ -135,15 +135,18 @@ test('fetchOraclecloud: a no-total tenant keeps paging while pages stay full', a
 // The page cap is the only backstop once short pages stop ending the walk
 // ---------------------------------------------------------------------------
 
-test('fetchOraclecloud: the page cap bounds a tenant whose total is absurdly large', async () => {
+test('fetchOraclecloud: the ceiling bounds a tenant whose total is absurdly large', async () => {
   // Every page is short AND non-empty while the total claims 999999. Nothing
-  // in the stop conditions can end this — only MAX_PAGES may.
+  // in the stop conditions can end this. Without max_pages the reported total
+  // auto-raises the page budget to the HARD_MAX_PAGES ceiling (upstream
+  // parity); the cut is reported as a partial read.
   const capped = fakeFetch((url) => pageWithTotal(rows(offsetOf(url), 199), 999999, true));
   const jobs = await fetchOraclecloud(CAREERS, { fetchImpl: capped });
-  assert.equal(capped.calls.length, MAX_PAGES);
-  assert.equal(jobs.length, 199 * MAX_PAGES);
+  assert.equal(capped.calls.length, HARD_MAX_PAGES);
+  assert.equal(jobs.length, 199 * HARD_MAX_PAGES);
+  assert.deepEqual(jobs.truncated, { reason: 'page-cap', fetched: 199 * HARD_MAX_PAGES, total: 999999 });
 
-  // A smaller entry-level max_pages bounds it tighter still.
+  // A smaller entry-level max_pages bounds it tighter still — and is kept as set.
   const entryCapped = fakeFetch((url) => pageWithTotal(rows(offsetOf(url), 199), 999999, true));
   await fetchOraclecloud(CAREERS, { fetchImpl: entryCapped, company: { max_pages: 3 } });
   assert.equal(entryCapped.calls.length, 3);

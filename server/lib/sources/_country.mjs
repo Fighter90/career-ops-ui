@@ -6,6 +6,15 @@
 // it. Names come from Intl.DisplayNames (CLDR via Node's ICU), so a few differ
 // from everyday spelling (CZ → "Czechia", TR → "Türkiye") and can shift between
 // Node versions — tests should not pin those exact strings.
+//
+// Parent-sync note (CAR-259 wave): the parent's `providers/_country.mjs` also
+// carries the prose country matcher (`countries()`) and the workplace-policy
+// gate (`buildWorkplacePolicy()`), and its recent USPS state-code work ("City,
+// ST", "Remote Europe - DE", per-place matching) lives entirely inside those.
+// That half is a documented web-ui no-port (see location-filter.mjs): web-ui
+// has no workplace-policy machinery, and its location matching stays the
+// substring idiom. This file mirrors only the name lookup and the exact
+// country-keyword classifier — which that change does not touch.
 
 const regionNames = new Intl.DisplayNames(['en'], { type: 'region' });
 

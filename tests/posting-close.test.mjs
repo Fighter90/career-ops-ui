@@ -222,9 +222,9 @@ test('runEnScan writes the closes_at column on scan-history added rows', async (
     ALL_ADAPTERS.splice(ALL_ADAPTERS.indexOf(fake), 1);
   }
   const history = readFileSync(resolve(dir, 'data', 'scan-history.tsv'), 'utf8');
-  const rows = history.split('\n').filter((l) => /https:\/\/example\.com\/close\//.test(l));
+  const rows = history.split('\n').filter((l) => l.split('\t').some((c) => c.startsWith('https://example.com/close/')));
   assert.equal(rows.length, 3);
-  const withDay = rows.find((l) => /\/close\/1/.test(l));
+  const withDay = rows.find((l) => l.split('\t').some((c) => c.startsWith('https://example.com/close/1')));
   const withoutDay = rows.find((l) => /\/close\/2/.test(l));
   const endDateRow = rows.find((l) => /\/close\/3/.test(l));
   assert.equal(withDay.split('\t')[6], '2026-12-24', 'the 7th cell carries the close day');

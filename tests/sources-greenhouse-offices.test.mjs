@@ -16,6 +16,8 @@ import {
   contentToText,
   withContent,
   assertGreenhouseUrl,
+  OFFICES_MAX_BYTES,
+  OFFICES_TIMEOUT_MS,
 } from '../server/lib/sources/greenhouse.mjs';
 
 test('withContent: appends content=true, preserving any existing query', () => {
@@ -131,6 +133,44 @@ test('fetchGreenhouse: /offices failure is fail-soft (keeps work-model location)
   const out = await fetchGreenhouse('https://boards-api.greenhouse.io/v1/boards/acme/jobs', { fetchImpl });
   assert.equal(out.length, 1);
   assert.equal(out[0].location, 'Hybrid'); // unchanged, no throw
+});
+
+// /offices outgrows the shared 10 MB body cap (Stripe's: 29.2 MB — parent
+// #6937), so the call must carry its own larger ceiling and a time deadline,
+// or every run aborts it and each role stays a bare "Hybrid". Web-ui's
+// transport carries the deadline on the request (a combined abort signal),
+// where the parent's carries an explicit timeoutMs option.
+test('fetchGreenhouse: /offices gets its own body and time ceiling (parent #6937)', async () => {
+  const jobsBody = {
+    jobs: [{ id: 14, title: 'Strategy & Operations', absolute_url: 'https://x/14', location: { name: 'Hybrid' } }],
+  };
+  const officesBody = {
+    offices: [{ name: 'Amsterdam', departments: [{ jobs: [{ id: 14 }] }] }],
+  };
+  const calls = [];
+  const fetchImpl = async (url, init = {}) => {
+    calls.push({ url: String(url), init });
+    return url.endsWith('/offices') ? okRes(officesBody) : okRes(jobsBody);
+  };
+  const out = await fetchGreenhouse('https://boards-api.greenhouse.io/v1/boards/stripe/jobs', { fetchImpl });
+  assert.equal(calls.length, 2, '/jobs + /offices');
+
+  // The ceiling constants themselves (the parent test pins
+  // opts.maxBytes >= 32 MB && opts.timeoutMs >= 30 s on its transport).
+  assert.ok(OFFICES_MAX_BYTES >= 32 * 1024 * 1024, 'body ceiling leaves headroom on a 29 MB /offices');
+  assert.ok(OFFICES_TIMEOUT_MS >= 30_000, 'time ceiling ≥ 30 s');
+  assert.ok(OFFICES_MAX_BYTES > 10 * 1024 * 1024, 'above the shared 10 MB board cap');
+
+  // The deadline rides the /offices request as a live (not yet aborted)
+  // AbortSignal; the plain /jobs request carries none of ours.
+  const officesCall = calls.find((c) => c.url.endsWith('/offices'));
+  const jobsCall = calls.find((c) => !c.url.endsWith('/offices'));
+  assert.ok(officesCall.init.signal instanceof AbortSignal, '/offices request carries the 60 s deadline');
+  assert.equal(officesCall.init.signal.aborted, false);
+  assert.equal(jobsCall.init.signal, undefined, '/jobs request carries no source-injected deadline');
+
+  // Enrichment still worked (Amsterdam folded into the location).
+  assert.match(out[0].location, /Amsterdam/);
 });
 
 // ── v1.242.0 Phase-2 correctness ─────────────────────────────────────────────

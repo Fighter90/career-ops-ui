@@ -283,6 +283,54 @@ function processedSectionAfter(line, inProcessed) {
     && /^(processed|procesadas)\b/i.test(heading[2].trim());
 }
 
+// Upstream #6757 + #6801 — per-entry response cap. A board that is
+// legitimately bigger than the default budget sets `max_response_mb` on its
+// own portals.yml entry; the setting is the user's, so it wins over any
+// maxBytes the caller passes, and every other entry keeps the default.
+// web-ui mirrors the parent's lib/entry-response-cap.mjs wrapper next to the
+// sibling `applyEntryTimeout` (entry-timeout.mjs) rather than a ctx of
+// fetch helpers: the per-entry value travels as data on the fetch opts
+// (`maxBytes`). #6801 — the wrapper forwards the RECEIVER
+// (`fetchImpl.call(this, …)`), not an arrow that drops it, so a stateful
+// transport invoked as a method keeps its `this` (the parent's repro).
+// The enforcement half of the parent's pair lives in its _http.mjs body
+// reader; web-ui's transports (fetch-timeout.mjs / http-json.mjs) do not
+// read maxBytes yet — that transport change is deliberately out of this
+// scope, and the tests pin the wrapper contract instead.
+
+/**
+ * Validate one entry's `max_response_mb`. Null when absent, or when unusable
+ * (with a warning naming the entry — a typo must not stop the scan).
+ * @param {{ name?: unknown, max_response_mb?: unknown }|null|undefined} entry
+ * @returns {number|null} whole bytes, or null for "no override".
+ */
+export function resolveEntryResponseCapBytes(entry) {
+  const raw = entry?.max_response_mb;
+  if (raw === undefined || raw === null) return null;
+  const maxBytes = typeof raw === 'number' ? Math.floor(raw * 1024 * 1024) : NaN;
+  if (!Number.isFinite(maxBytes) || maxBytes < 1) {
+    console.error(`⚠️  ${entry?.name}: max_response_mb must be a positive number, got ${JSON.stringify(raw)} — ignored`);
+    return null;
+  }
+  return maxBytes;
+}
+
+/**
+ * Wrap a fetchImpl so every call of THIS entry carries its `maxBytes`
+ * (upstream #6757), preserving the receiver (#6801 — see above). Returns the
+ * original fetchImpl unchanged when the entry sets no usable key.
+ * @param {typeof fetch} fetchImpl the run's shared fetch transport
+ * @param {{ name?: unknown, max_response_mb?: unknown }|null|undefined} entry the portals.yml entry
+ * @returns {typeof fetch} the same transport with the entry's cap applied
+ */
+export function applyEntryResponseCap(fetchImpl, entry) {
+  const maxBytes = resolveEntryResponseCapBytes(entry);
+  if (maxBytes === null) return fetchImpl;
+  return function (url, opts = {}) {
+    return fetchImpl.call(this, url, { ...opts, maxBytes });
+  };
+}
+
 /**
  * Read the opt-in `scan_history.dedup_include_language` switch (CAR-223,
  * upstream #4789, parent resolveDedupIncludeLanguage).
@@ -708,7 +756,9 @@ export async function runEnScan(opts = {}) {
       // #6582 — the entry's own `timeout_ms` (when set) raises the request
       // budget for THIS entry's fetches only; every other entry keeps the
       // run default.
-      const coFetch = applyEntryTimeout(fetchImpl, c);
+      // Upstream #6757/#6801 — the entry's `max_response_mb` (when set)
+      // raises the response budget for THIS entry's fetches the same way.
+      const coFetch = applyEntryResponseCap(applyEntryTimeout(fetchImpl, c), c);
       const items = await withHostSlot(hostKeyFor(c), () => fetcher(c._api.url, {
         fetchImpl: coFetch, signal, company: c,
         // CAR-264 (parent #6673) — the parent scan ctx's title hook. A source

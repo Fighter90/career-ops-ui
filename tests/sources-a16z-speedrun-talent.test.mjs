@@ -121,6 +121,28 @@ test('normalizeSpeedrunJob: company falls back entry name → constant default',
   assert.equal(coDefault.id, 'a16z-speedrun-talent-https://speedrun-talent-network.com/jobs/c2');
 });
 
+// externalId (the feed's own posting id, parent #6913): the row id prefers it;
+// an id that cannot be coerced (object / blank) never becomes a placeholder —
+// absent beats wrong, and the url fallback is used instead.
+test('normalizeSpeedrunJob: id coercion — numeric id coerced, object/blank id falls back to the url (#6913)', () => {
+  const numId = normalizeSpeedrunJob({ title: 'T', url: 'https://speedrun-talent-network.com/jobs/ni', id: 42113 });
+  const blankId = normalizeSpeedrunJob({ title: 'T', url: 'https://speedrun-talent-network.com/jobs/bi', id: '   ' });
+  const objId = normalizeSpeedrunJob({ title: 'T', url: 'https://speedrun-talent-network.com/jobs/oi', id: {} });
+  assert.equal(numId.id, 'a16z-speedrun-talent-42113', 'numeric id coerced to a string');
+  assert.equal(blankId.id, 'a16z-speedrun-talent-https://speedrun-talent-network.com/jobs/bi', 'blank id → url fallback');
+  assert.equal(objId.id, 'a16z-speedrun-talent-https://speedrun-talent-network.com/jobs/oi', 'object id → url fallback (no "[object Object]")');
+});
+
+// fetch() carries the feed id through to every returned row id (#6913).
+test('fetchSpeedrunTalent: carries the feed id through as the row id', async () => {
+  const { fetchImpl } = mkFetch([
+    { jobs: [mkRec(0, 0), mkRec(1, 0)], total: 2, page: 0, page_size: 50, total_pages: 1 },
+  ]);
+  const jobs = await fetchSpeedrunTalent(FEED_URL, { fetchImpl, company: {} });
+  assert.equal(jobs[0].id, 'a16z-speedrun-talent-0-0');
+  assert.equal(jobs[1].id, 'a16z-speedrun-talent-0-1');
+});
+
 test('normalizeSpeedrunJob: date "" when published_at is absent or unparseable', () => {
   const noDate = normalizeSpeedrunJob({ title: 'T', url: 'https://speedrun-talent-network.com/jobs/nd', published_at: null });
   const badDate = normalizeSpeedrunJob({ title: 'T', url: 'https://speedrun-talent-network.com/jobs/bd', published_at: 'not-a-date' });

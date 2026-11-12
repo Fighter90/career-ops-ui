@@ -8,7 +8,7 @@
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildLocationFilter } from '../server/lib/location-filter.mjs';
+import { buildLocationFilter, resolveDedupIncludeLocation } from '../server/lib/location-filter.mjs';
 
 test('no location_filter → everything passes', () => {
   const f = buildLocationFilter(null);
@@ -252,4 +252,55 @@ test('worldwide: unknown locations and strict mode keep their existing behavior'
 test('worldwide: block substring inside the label rejects it (Remote (worldwide) vs block remote)', () => {
   const f = buildLocationFilter({ ...COUNTRY_ONLY_FILTER, block: ['remote'] });
   assert.equal(f('Remote (worldwide)'), false, 'web-ui matches block by substring, unchanged');
+});
+
+// ───────────── resolveDedupIncludeLocation (upstream #6784) ─────────────
+// Whether the company+role dedupe key includes location. The parent's
+// scan.mjs switch (f4ebc459): collapsing every city of one role into one
+// entry is deliberate and stays the default, but when a
+// `location_filter.workplace_policy` is set the user's eligibility is
+// location-bound — the filter cannot choose between two cities of the same
+// role, so the key must include location and each allowed city survives.
+// Strict booleans win: an explicit false stays off even with a policy set.
+
+test('dedup-include-location: absent switch and no policy → off', () => {
+  assert.equal(resolveDedupIncludeLocation({}), false);
+  assert.equal(resolveDedupIncludeLocation(), false);
+});
+
+test('dedup-include-location: strict boolean true turns it on, explicit false wins over a policy', () => {
+  assert.equal(resolveDedupIncludeLocation({ scan_history: { dedup_include_location: true } }), true);
+  assert.equal(resolveDedupIncludeLocation({
+    scan_history: { dedup_include_location: false },
+    location_filter: { workplace_policy: { onsite_locations: ['London'], remote_countries: ['GB'] } },
+  }), false, 'an explicit false is honored — a stray string/number is a typo, not a signal');
+});
+
+test('dedup-include-location: a typo value without a policy stays off', () => {
+  // A stray string or number is a typo; the safe reading of a typo is the
+  // default behavior, not a pipeline full of city variants nobody asked for.
+  assert.equal(resolveDedupIncludeLocation({ scan_history: { dedup_include_location: 'yes' } }), false);
+  assert.equal(resolveDedupIncludeLocation({ scan_history: { dedup_include_location: 1 } }), false);
+});
+
+test('dedup-include-location: a workplace_policy object turns it on', () => {
+  assert.equal(resolveDedupIncludeLocation({
+    location_filter: { workplace_policy: { onsite_locations: ['London'], remote_countries: ['GB'] } },
+  }), true);
+});
+
+test('dedup-include-location: a non-object policy does not turn it on', () => {
+  // An array is not a policy object — the parent throws on it when the
+  // filter is built; for the dedup switch it simply means "off".
+  assert.equal(resolveDedupIncludeLocation({ location_filter: { workplace_policy: [] } }), false);
+  assert.equal(resolveDedupIncludeLocation({ location_filter: { workplace_policy: 'remote' } }), false);
+  assert.equal(resolveDedupIncludeLocation({ location_filter: { workplace_policy: true } }), false);
+  assert.equal(resolveDedupIncludeLocation({ location_filter: {} }), false);
+});
+
+test('dedup-include-location: strict true beats even a policy turned on by another shape', () => {
+  assert.equal(resolveDedupIncludeLocation({
+    scan_history: { dedup_include_location: true },
+    location_filter: { workplace_policy: [] },
+  }), true, 'an explicit true is honored regardless of the policy');
 });

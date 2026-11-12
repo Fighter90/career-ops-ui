@@ -3,6 +3,20 @@
 > இந்த மாற்றப் பதிவு இப்போது முழு வெளியீட்டு வரலாற்றையும் கொண்டுள்ளது. தமிழ் மொழியாக்கம் (v1.245.0) சேர்க்கப்படுவதற்கு முன் வெளியிடப்பட்ட பதிவுகள் கீழே ஆங்கில அசல் வடிவில் உள்ளன — மொழிபெயர்ப்பு நிலுவையில் உள்ளது; அதிகாரப்பூர்வ ஆவணம் [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 > _[1.271.3] முதல் பதிவுகள் மொழிபெயர்ப்பு நிலுவையில் உள்ளன — ஆங்கில அசல் கீழே._
 
+## [1.271.13] — 2026-11-12
+
+### சேர்க்கப்பட்டது
+- **career-ops upstream `d8b292df` எதிரான parent-sync wave** (fork-இன் கடைசி sync-க்குப் பிறகு 88 upstream commits; fork `da28ef95` ஆக push செய்யப்பட்டது, divergences பாதுகாக்கப்பட்டன): **Ashby** — posting API-க்கான சொந்த 64 MB body ceiling, embed-listing fallback-உடன் (#6674); **SmartRecruiters** — opt-in `max_pages` உயர்வு (100-இல் clamp), pacing, retries, truncation warnings மற்றும் page-cap tag + republish-stable `listingIdentity`-உடன் (#6799/#6936); **SuccessFactors** — public-https host guard, opt-in `max_pages`/`max_jobs` ceilings (400/10000), truncation warnings (#6697); **Amazon** — reported hits-ஆல் வரம்புப்படுத்தப்பட்ட walk, 100-page ceiling, cap cut partial எனக் குறிக்கப்பட்டது (#6938); **Join** — integer job id-இலிருந்து republish-stable `listingIdentity` (#6950); **OracleCloud** — reported `TotalJobsCount`-இலிருந்து auto-size செய்யப்பட்ட page budget; **Darwinbox** — host pin விரிவாக்கப்பட்டது, படிக்கப்படாத எந்த total-உம் மேற்கோள் காட்டப்படவில்லை; **Jobstreet/SEEK** — legacy-host detail links-உடனான `au.seek.com` API-origin மாற்றம்; **Platsbanken/TheHub/A16z/Arbeitnow/Greenhouse** — id-coercion, first-page-failure partial marking, `/offices` enrichment ceiling.
+- **Scanner bounds**: ஒரு entry-க்கு `max_response_mb` (receiver-ஐப் பாதுகாக்கும்), workplace-policy dedup switch strict booleans-இலிருந்து (#6784), ஒரு time-limited scan ஏற்கனவே கண்டெடுத்த roles-ஐத் தக்கவைக்கிறது என்பதை உறுதிப்படுத்தும் tests (#6779).
+- **புதிய shared salary-text helper** (`_salary-text.mjs`) — provider மறுபயன்பாட்டுக்கான parent-இன் salary parsing (Nordic மற்றும் Chinese format-கள்).
+
+### சரி செய்யப்பட்டது
+- **CodeQL wave**: `jd-parse.mjs`-இல் உள்ள ஒரு செயலற்ற conditional மற்றும் பயன்படுத்தப்படாத match variable source-இலேயே சுத்தம் செய்யப்பட்டன; URL வடிவ test needle-கள் → சரியான cell/token match-கள்; பயன்படுத்தப்படாத import-கள் நீக்கப்பட்டன; declaration-க்கு முன்பே பயன்படுத்தப்படும் release-manager variable (swarm-இன் அடுத்த release-ஐ crash செய்திருக்கும்) சரி செய்யப்பட்டது.
+
+### குறிப்புகள்
+- வேண்டுமென்றே மாற்றவில்லை: **Workable** (parent-இன் மாற்றம் அதன் `scan-ats-full` feed walker-இல் உள்ளது — ஆவணப்படுத்தப்பட்ட no-port), **Google** (ஏற்கனவே parity-இல்), scan filtering மற்றும் dedup, registry எண்ணிக்கைகள் (140 = 135 EN + 5 RU · 135 adapters தீண்டப்படவில்லை).
+
+
 ## [1.271.12] — 2026-11-12
 
 ### சரி செய்யப்பட்டது

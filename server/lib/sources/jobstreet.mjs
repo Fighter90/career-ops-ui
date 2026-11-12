@@ -10,7 +10,8 @@
  *   ID-Main  → id.jobstreet.com (Indonesia)
  *   SG-Main  → sg.jobstreet.com (Singapore)
  *   MY-Main  → my.jobstreet.com (Malaysia)
- *   AU-Main  → www.seek.com.au  (Australia — set api: https://www.seek.com.au/api/jobsearch/v5/search)
+ *   AU-Main  → au.seek.com      (Australia — set api: https://au.seek.com/api/jobsearch/v5/search;
+ *                                www.seek.com.au now 308-redirects there, and redirects are refused)
  *   NZ-Main  → www.seek.co.nz   (New Zealand)
  *   HK-Main  → hk.jobsdb.com    (Hong Kong)
  *
@@ -89,6 +90,14 @@ const ALLOWED_JOBSTREET_HOSTS = new Set([
 // 2026-08-28). A global switch either way breaks one market, which is why this
 // is keyed on the host.
 const ID_LOCALE_HOSTS = new Set(['id.jobstreet.com', 'www.jobstreet.co.id', 'jobstreet.co.id']);
+
+// Configs that still name the old AU API host are sent to the new one: the
+// old host answers 308 and requests refuse redirects (#6854).
+const API_ORIGIN_ALIASES = new Map([['https://www.seek.com.au', 'https://au.seek.com']]);
+
+// Job-detail links stay on the legacy host so scan-history and tracker URLs
+// keep deduplicating against listings recorded before the move (#6854).
+const JOB_URL_ORIGIN = new Map([['https://au.seek.com', 'https://www.seek.com.au']]);
 
 /** @param {string} origin — scheme + hostname */
 function jobDetailPath(origin) {
@@ -234,7 +243,11 @@ export function parseJobstreetItem(item, baseUrl, fallbackCompany, options = {})
 // instead of querying an endpoint that no longer answers. `solrFields` was a
 // v4-only projection parameter and is gone: v5 returns the full item.
 function buildSearchUrl(apiUrl, params) {
-  const url = new URL(V5_SEARCH_PATH, deriveBaseUrl(apiUrl));
+  const configured = deriveBaseUrl(apiUrl);
+  // A config still naming the old AU host is sent to the new one (see
+  // API_ORIGIN_ALIASES above) — the old host answers 308 and the guarded
+  // transport refuses redirects, so without the alias the entry would be dead.
+  const url = new URL(V5_SEARCH_PATH, API_ORIGIN_ALIASES.get(configured) || configured);
   const { siteKey, keywords, location, pageSize, page } = params;
   if (siteKey) url.searchParams.set('siteKey', siteKey);
   if (keywords) url.searchParams.set('keywords', keywords);
@@ -258,7 +271,12 @@ function clampConfigInt(value, fallback, cap) {
 export async function fetchJobstreet(apiUrl = DEFAULT_API, opts = {}) {
   const { fetchImpl = fetch, signal, company = {} } = opts;
   assertJobstreetUrl(apiUrl);
-  const baseUrl = deriveBaseUrl(apiUrl);
+  const configuredOrigin = deriveBaseUrl(apiUrl);
+  const origin = API_ORIGIN_ALIASES.get(configuredOrigin) || configuredOrigin;
+  // Job-detail links stay on the legacy host (see JOB_URL_ORIGIN above) so
+  // scan-history and tracker URLs keep deduplicating against listings
+  // recorded before SEEK's move.
+  const linkOrigin = JOB_URL_ORIGIN.get(origin) || origin;
   const cfg = company.jobstreet || {};
 
   const siteKey = cfg.siteKey || DEFAULT_SITE_KEY;
@@ -287,7 +305,7 @@ export async function fetchJobstreet(apiUrl = DEFAULT_API, opts = {}) {
     }
 
     for (const item of data) {
-      const job = parseJobstreetItem(item, baseUrl, fallbackCompany, { appendWorkType });
+      const job = parseJobstreetItem(item, linkOrigin, fallbackCompany, { appendWorkType });
       if (job) allJobs.push(job);
     }
 

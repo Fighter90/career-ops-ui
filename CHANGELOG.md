@@ -1,3 +1,16 @@
+## [1.271.13] — 2026-11-12
+
+### Added
+- **Parent-sync wave against career-ops upstream `d8b292df`** (88 upstream commits since the fork's last sync; fork pushed as `da28ef95`, divergences defended): the scan page's data sources got the parent's correctness and bounds work — **Ashby** gives its posting API its own 64 MB body ceiling with an embed-listing fallback (#6674; OpenAI's board alone answered 13.7 MB), **SmartRecruiters** gains opt-in `max_pages` raises (clamped at 100) with pacing, transient-failure retries, truncation warnings and the canonical page-cap tag, plus republish-stable `listingIdentity` from string payload ids (#6799/#6936), **SuccessFactors** gains a public-https host guard, opt-in `max_pages`/`max_jobs` ceilings (400/10000) and truncation warnings on the RMK walk (#6697), **Amazon** bounds its walk by reported hits with a 100-page hard ceiling and marks a cap cut as partial (#6938), **Join** returns the republish-stable `listingIdentity` from its integer job id (#6950), **OracleCloud** auto-sizes its page budget from a reported `TotalJobsCount` instead of stopping at 25 pages, **Darwinbox** widens its host pin and stops quoting a total it never read, **Jobstreet/SEEK** follows the `au.seek.com` API-origin move while keeping legacy-host detail links, and **Platsbanken/TheHub/A16z/Arbeitnow/Greenhouse** pick up id-coercion, first-page-failure partial marking and an `/offices` enrichment ceiling.
+- **Scanner bounds from the CAR-259 orphan set**: per-entry `max_response_mb` with a receiver-preserving wrapper (#6757-class), the workplace-policy dedup switch honored from strict booleans (#6784), and tests pinning that a scan stopped at its time limit keeps the roles already found (#6779) — the parent's own `scan.mjs` hunks for these live in its `scan-ats-full` walker, which stays a documented no-port.
+- **A new shared salary-text helper** (`_salary-text.mjs`) ports the parent's salary parsing (Nordic and Chinese formats included) for provider reuse.
+
+### Fixed
+- **CodeQL wave**: a dead conditional and an unused match variable in `jd-parse.mjs` cleaned at source, URL-shaped test needles replaced with exact cell/token matches, unused imports removed, and a release-manager variable used before declaration (would have crashed the swarm's next release at the baseline bump) fixed.
+
+### Notes
+- Deliberately NOT changed: **Workable** (the parent's change lives in its `scan-ats-full` feed walker — a standing documented no-port; web-ui's per-account widget API has no counterpart to "every employer in the feed is a board"), **Google** (already at parity from the CAR-262 wave), scan filtering and dedup, and the registry counts — this wave updates existing sources, adds none (140 = 135 EN + 5 RU · 135 adapters unchanged).
+
 ## [1.271.12] — 2026-11-12
 
 ### Fixed

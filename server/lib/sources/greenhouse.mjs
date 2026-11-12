@@ -94,6 +94,17 @@ export const meta = {
 // evaluated against "Hybrid" and silently dropped. The city is recoverable
 // from /v1/boards/{slug}/offices (offices → departments → jobs), one extra
 // request paid only for boards that actually exhibit the pattern.
+// OFFICES_* get their own ceiling. /offices repeats the board's job list once
+// per office in the nested tree, so it outgrows the shared 10 MB defaults
+// long before /jobs does: Stripe's was 29.2 MB on 2026-11-09 for a 769-job
+// board, and every run aborted, leaving each Stripe role as a bare "Hybrid"
+// the location filter cannot place. 64 MB / 60 s leaves 2x headroom on the
+// largest board seen while still bounding a hostile endpoint (the parent
+// transport's timeoutMs ceiling; web-ui expresses the deadline as a combined
+// abort signal on the request).
+export const OFFICES_MAX_BYTES = 64 * 1024 * 1024;
+export const OFFICES_TIMEOUT_MS = 60_000;
+
 const WORK_MODEL = /^(?:hybrid|in[-\s]?office|on[-\s]?site|distributed|remote|flexible)$/i;
 
 /**
@@ -256,11 +267,16 @@ export async function fetchGreenhouse(apiUrl, opts = {}) {
       try {
         // Same guarded transport as the /jobs request above — the enrichment
         // request stays pinned to the boards-api host and never follows a 3xx.
-        // Capped like them, too: a refusal is fail-soft (enrichment off).
+        // But it carries its OWN ceiling, not the shared one: the nested tree
+        // outgrows MAX_BODY_BYTES long before /jobs does (see OFFICES_MAX_BYTES
+        // above), and the 60 s deadline rides the request as a combined abort
+        // signal (web-ui's transport takes its timeout from the caller).
+        // Capped like them, a refusal is fail-soft (enrichment off).
+        const timeout = AbortSignal.timeout(OFFICES_TIMEOUT_MS);
         const officesJson = await fetchJson(fetchImpl, officesUrl, {
-          signal,
+          signal: signal ? AbortSignal.any([signal, timeout]) : timeout,
           headers: { 'User-Agent': UA, Accept: 'application/json' },
-          maxBytes: MAX_BODY_BYTES,
+          maxBytes: OFFICES_MAX_BYTES,
         });
         officeMap = buildOfficeMap(officesJson);
       } catch {

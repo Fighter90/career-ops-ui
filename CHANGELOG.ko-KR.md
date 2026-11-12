@@ -4,6 +4,19 @@
 > ⏳ **참고** — 이 파일은 이제 전체 릴리스 이력을 담고 있습니다. v1.12.0 이전의 6개 항목은 영어 원문 그대로 수록되어 있습니다(번역 대기).
 > _[1.271.3]부터의 항목은 번역 대기 중입니다 — 영어 원문은 아래에 있습니다._
 
+## [1.271.13] — 2026-11-12
+
+### 추가
+- **career-ops 업스트림 `d8b292df` 기준 parent-sync 웨이브**(fork의 마지막 동기화 이후 업스트림 커밋 88개; fork는 `da28ef95`로 푸시, 다이버전스 방어 완료): **Ashby** — 공고 API에 자체 64 MB 본문 상한과 embed 목록 폴백(#6674); **SmartRecruiters** — 옵트인 `max_pages` 상향(100으로 클램프)과 페이싱, 재시도, 잘림 경고, page-cap 태그, 재게시에도 안정적인 `listingIdentity`(#6799/#6936); **SuccessFactors** — public-https 호스트 가드, 옵트인 `max_pages`/`max_jobs` 상한(400/10000), 잘림 경고(#6697); **Amazon** — 보고된 히트 수로 탐색 범위 제한, 100페이지 상한, 상한 컷은 partial로 표시(#6938); **Join** — 정수 job id에서 파생된 재게시에도 안정적인 `listingIdentity`(#6950); **OracleCloud** — 보고된 `TotalJobsCount`에서 페이지 예산 자동 산정; **Darwinbox** — 호스트 핀 확대, 읽지 않은 총계는 더는 인용하지 않음; **Jobstreet/SEEK** — `au.seek.com` API 원점 이전을 따르되 레거시 호스트 상세 링크는 유지; **Platsbanken/TheHub/A16z/Arbeitnow/Greenhouse** — id 강제 변환, 첫 페이지 실패 시 partial 표시, `/offices` 인리치먼트 상한.
+- **스캐너 상한**: 엔트리별 `max_response_mb`(receiver 보존), strict 불리언에서 오는 workplace-policy 중복 제거 스위치(#6784), 시간 제한으로 중단된 스캔이 이미 찾은 역할을 유지함을 고정하는 테스트(#6779).
+- **새로운 공유 salary-text 헬퍼**(`_salary-text.mjs`) — 프로바이더 재사용을 위한 parent의 급여 파싱(노르딕 및 중국어 형식 포함).
+
+### 수정
+- **CodeQL 웨이브**: `jd-parse.mjs`의 죽은 조건문과 사용되지 않는 match 변수를 원천에서 정리; URL 모양 테스트 니들을 정확한 셀/토큰 일치로 교체; 사용되지 않는 import 제거; 선언 전에 사용되던 release-manager 변수(스웜의 다음 릴리스를 크래시시킬 뻔한 문제) 수정.
+
+### 참고
+- 의도적으로 변경하지 않음: **Workable**(parent의 변경은 parent 자체의 `scan-ats-full` 피드 워커에 있음 — 문서화된 no-port), **Google**(이미 패리티), 스캔 필터링과 중복 제거, 레지스트리 카운트(140 = 135 EN + 5 RU · 135 adapters 불변).
+
 ## [1.271.12] — 2026-11-12
 
 ### 수정

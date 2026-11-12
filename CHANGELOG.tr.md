@@ -3,6 +3,19 @@
 > Bu changelog artık tüm sürüm geçmişini içerir. Türkçe yerelleştirmenin eklenmesinden (v1.85.0) önce yayınlanan girdiler aşağıda İngilizce özgün hâliyle yer alır — çeviri bekliyor; asıl kaynak [🇬🇧 CHANGELOG.md](CHANGELOG.md)'dir.
 > _[1.271.3]'ten itibaren girdiler çeviri bekliyor — İngilizce orijinal aşağıda._
 
+## [1.271.13] — 2026-11-12
+
+### Eklendi
+- **career-ops upstream `d8b292df`'e karşı parent-sync dalgası** (fork'un son senkronundan beri 88 upstream commit; fork `da28ef95` olarak push edildi, sapmalar savunuldu): **Ashby** — ilan API'si için kendi 64 MB gövde tavanı ve embed-liste yedeği (#6674); **SmartRecruiters** — pacing, yeniden denemeler, kesilme uyarıları ve sayfa-sınır etiketiyle isteğe bağlı `max_pages` yükseltmeleri (100'de sınırlandırılır) + yeniden yayına dayanıklı `listingIdentity` (#6799/#6936); **SuccessFactors** — public-https ana makine koruması, isteğe bağlı `max_pages`/`max_jobs` tavanları (400/10000), kesilme uyarıları (#6697); **Amazon** — bildirilen kayıt sayısına göre sınırlandırılan geçiş, 100 sayfa tavanı, sınır kesintisi kısmi olarak işaretlenir (#6938); **Join** — tam sayı iş kimliğinden yeniden yayına dayanıklı `listingIdentity` (#6950); **OracleCloud** — sayfa bütçesi bildirilen `TotalJobsCount`'tan otomatik boyutlandırılır; **Darwinbox** — ana makine sabitlemesi genişletildi, hiç okunmamış bir toplam artık aktarılmıyor; **Jobstreet/SEEK** — `au.seek.com` API-köken geçişi, ayrıntı bağlantıları eski ana makinelerde kalıyor; **Platsbanken/TheHub/A16z/Arbeitnow/Greenhouse** — kimlik zorlaması, ilk sayfa hatasında kısmi işaretleme, bir `/offices` zenginleştirme tavanı.
+- **Tarama sınırları**: giriş başına `max_response_mb` (alıcıyı koruyan), katı boolean'lardan okunan workplace-policy dedup anahtarı (#6784), zaman sınırıyla durdurulan bir taramanın önceden bulunan rolleri koruduğunu sabitleyen testler (#6779).
+- **Yeni paylaşılan maaş-metni yardımcısı** (`_salary-text.mjs`) — parent'in maaş ayrıştırması (Nordik ve Çin biçimleri) sağlayıcıların yeniden kullanımı için.
+
+### Düzeltildi
+- **CodeQL dalgası**: `jd-parse.mjs` içindeki ölü koşul ve kullanılmayan eşleşme değişkeni kaynağında temizlendi; URL biçimli test iğneleri → tam hücre/token eşleşmeleri; kullanılmayan importlar kaldırıldı; bildirimden önce kullanılan bir release-manager değişkeni (swarm'ın bir sonraki sürümünü çökertirdi) düzeltildi.
+
+### Notlar
+- Kasıtlı olarak DEĞİŞTİRİLMEDİ: **Workable** (parent'in değişikliği onun `scan-ats-full` feed walker'ında yaşıyor — belgelenmiş bir no-port), **Google** (zaten paritede), tarama filtreleme ve dedup, kayıt sayıları (140 = 135 EN + 5 RU · 135 adapters değişmedi).
+
 ## [1.271.12] — 2026-11-12
 
 ### Düzeltildi

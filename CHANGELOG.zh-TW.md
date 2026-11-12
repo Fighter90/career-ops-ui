@@ -3,6 +3,19 @@
 > **i18n 註記** — 本檔案已完整翻譯為繁體中文(臺灣慣用語)。規範英文正文仍以 [🇬🇧 CHANGELOG.md](CHANGELOG.md) 為準。
 > _自 [1.271.3] 起的條目待翻譯——英文原文見下方。_
 
+## [1.271.13] — 2026-11-12
+
+### 新增
+- **針對 career-ops 上游 `d8b292df` 的 parent-sync 波次**（自 fork 上次同步以來上游共 88 個提交；fork 已以 `da28ef95` 推送，分歧行為已防禦）：**Ashby** — 為職缺 API 設置專屬的 64 MB 回應主體上限，附 embed 列表回退（#6674）；**SmartRecruiters** — 可選加入的 `max_pages` 調高（鉗制在 100），帶分頁節奏、重試、截斷警告與頁容量標籤，外加跨重發穩定的 `listingIdentity`（#6799/#6936）；**SuccessFactors** — public-https 主機防護、可選的 `max_pages`/`max_jobs` 上限（400/10000）、截斷警告（#6697）；**Amazon** — 依報告的命中數界定走訪範圍、100 頁硬上限、達到上限的截斷標記為 partial（#6938）；**Join** — 由整數職缺 id 衍生的跨重發穩定的 `listingIdentity`（#6950）；**OracleCloud** — 依報告的 `TotalJobsCount` 自動決定頁面預算；**Darwinbox** — 放寬主機限定，不再引用從未讀取的總量；**Jobstreet/SEEK** — 跟隨 `au.seek.com` 的 API 來源遷移，同時保留舊主機的詳細連結；**Platsbanken/TheHub/A16z/Arbeitnow/Greenhouse** — id 強制轉換、首頁失敗時的 partial 標記、`/offices` 資訊補全的上限。
+- **掃描器邊界**：逐條目的 `max_response_mb`（保留接收方）、以嚴格布林值驅動的職場政策去重開關（#6784），以及確保限時掃描會保留已找到職缺的測試（#6779）。
+- **新的共用薪資文字輔助函式**（`_salary-text.mjs`）——將父專案的薪資解析（含北歐與中文格式）移植出來供各 provider 重複使用。
+
+### 修復
+- **CodeQL 波次**：`jd-parse.mjs` 中的死條件與未使用的 match 變數已在源頭清理；URL 形狀的測試匹配串替換為精確的儲存格/標記匹配；移除未使用的 import；修復了在宣告前被使用的 release-manager 變數（原本會讓 swarm 的下一次發布崩潰）。
+
+### 備註
+- 刻意未改動：**Workable**（父專案的改動位於其自身的 `scan-ats-full` feed 走訪器——已記錄為 no-port）、**Google**（已達到同調）、掃描過濾與去重、註冊表計數（140 = 135 EN + 5 RU · 135 adapters 保持不變）。
+
 ## [1.271.12] — 2026-11-12
 
 ### 修復

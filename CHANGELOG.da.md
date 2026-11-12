@@ -3,6 +3,19 @@
 
 > **Oversættelsesnote.** Filen er oversat til dansk: de seneste poster (fra v1.77.0 og bagud, inkl. v1.76.0 / v1.75.2 / v1.75.1 / v1.75.0) er fuldt oversat til teknisk dansk. Ældre poster bevares på engelsk; versionsoverskrifter og datoer er identiske med den engelske kildefil.
 
+## [1.271.13] — 2026-11-12
+
+### Tilføjet
+- **Parent-sync-bølge mod career-ops upstream `d8b292df`** (88 upstream-commits siden forkens sidste sync; fork skubbet som `da28ef95`, divergencer forsvaret): **Ashby** — et eget 64 MB-body-loft for posting-API'et med en embed-listing-fallback (#6674); **SmartRecruiters** — tilvalgte `max_pages`-forhøjelser (klemmes ved 100) med pacing, retries, trunkeringsadvarsler og page-cap-tagget + republish-stabil `listingIdentity` (#6799/#6936); **SuccessFactors** — en public-https-værtsvagt, tilvalgte `max_pages`/`max_jobs`-lofter (400/10000), trunkeringsadvarsler (#6697); **Amazon** — walk afgrænset af rapporterede hits, 100-siders loft, cap-klip markeret som partial (#6938); **Join** — republish-stabil `listingIdentity` fra det heltalige job-id (#6950); **OracleCloud** — sidebudget auto-størrelsesbestemt fra en rapporteret `TotalJobsCount`; **Darwinbox** — værtspin udvidet, citerer ikke længere et total, der aldrig blev læst; **Jobstreet/SEEK** — `au.seek.com` API-origin-flytningen med detail-links på legacy-værter; **Platsbanken/TheHub/A16z/Arbeitnow/Greenhouse** — id-coercion, partial-markering ved førstesidefejl, et `/offices`-enrichment-loft.
+- **Scanner-lofter**: per-entry `max_response_mb` (receiver-bevarende), workplace-policy dedup-switchen læst fra strenge booleans (#6784), tests der fastlåser, at en tidsbegrænset scan bevarer de allerede fundne roller (#6779).
+- **En ny delt salary-tekst-helper** (`_salary-text.mjs`) — forælderens salary-parsing (nordiske og kinesiske formater) til genbrug i providerne.
+
+### Rettet
+- **CodeQL-bølge**: en død betingelse og en ubrugt match-variabel i `jd-parse.mjs` ryddet ved kilden; URL-formede test-nåle → eksakte celle-/token-match; ubrugte imports fjernet; en release-manager-variabel brugt før deklaration (ville have nedbragt swarmens næste release) rettet.
+
+### Noter
+- Bevidst IKKE ændret: **Workable** (forælderens ændring ligger i dens `scan-ats-full` feed-walker — en dokumenteret no-port), **Google** (allerede i parity), scan-filtrering og dedup, registertal (140 = 135 EN + 5 RU · 135 adapters uændret).
+
 ## [1.271.12] — 2026-11-12
 
 ### Rettet
