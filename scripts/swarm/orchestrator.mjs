@@ -170,6 +170,31 @@ const extractVerdict = (all) => {
  * @param {string} lock absolute lock-file path
  * @returns {true} when this process holds the lock
  */
+// developCheckout — the develop-phase branch checkout contract: an empty stale
+// branch (left by an aborted run, zero commits ahead of origin/main) is
+// refreshed onto current main; a branch carrying salvaged work is checked out
+// as-is (the v1.5 no-wipe rule).
+export function developCheckout(branch, salvageCount) {
+  return salvageCount === 0
+    ? `git checkout -q -B ${branch} origin/main`
+    : `git checkout -q ${branch}`;
+}
+
+// changelogInsert — the release-manager's entry insertion. The locale mirrors
+// carry a title + `>` preamble ABOVE the release entries; a blind prepend put
+// every new `## [ver]` above that preamble and re-broke the ×18 layouts on
+// three separate releases. The entry belongs immediately before the FIRST
+// `## [` heading — below the preamble, above the newest release. A file whose
+// first heading IS a release entry (the EN root, no preamble) prepends as
+// before.
+export function changelogInsert(content, entry) {
+  const lines = content.split('\n');
+  const idx = lines.findIndex((l) => /^## \[/.test(l));
+  if (idx === -1) return entry + content;
+  lines.splice(idx, 0, ...entry.split('\n'));
+  return lines.join('\n');
+}
+
 export function acquireLock(lock) {
   const claims = () => {
     const fd = openSync(lock, 'wx'); // exclusive create — no exists/write race
@@ -231,7 +256,13 @@ async function main() {
           log(`-- round ${round + 1}/${MAX_ROUNDS}: develop`);
           // v1.5: reuse a task branch that already carries salvaged work — wiping it
           // with -B destroyed an executor's committed round (the run-5 class of loss).
-          await sh(`git checkout -q ${branch} 2>/dev/null || git checkout -q -B ${branch} origin/main`);
+          // But an EMPTY stale branch (aborted run, zero commits ahead) is a
+          // liability: it pins the executor to a possibly ancient base (the run-6
+          // class: CAR-266 started on a pre-1.271.6 tree). developCheckout resets
+          // the former and continues the latter.
+          const salvage = parseInt((await sh(`git rev-list --count origin/main..${branch} 2>/dev/null || echo 0`)).out.trim() || '0', 10);
+          await sh(developCheckout(branch, salvage));
+          if (salvage > 0) log(`  branch ${branch} carries ${salvage} salvaged commit(s) — continuing`);
           const dev = await worker('executor', {
             IDENTIFIER: issue.identifier, TITLE: issue.title, ROUND: String(round + 1),
             DESCRIPTION: `(fetch the full issue BODY of EXACTLY ${issue.identifier} — the issue named in this prompt's ISSUE header; never fetch or implement any other issue's body, even if a Linear search surfaces one; never read or judge the issue STATE — the orchestrator owns the lifecycle)`,
@@ -372,11 +403,11 @@ async function main() {
         const entry = (fixedLabel, notesLabel) =>
           `## [${ver}] — ${today}\n\n### ${fixedLabel}\n${fixed}\n\n### ${notesLabel}\n${notes}\n\n`;
         const changelog = readFileSync('CHANGELOG.md', 'utf8');
-        writeFileSync('CHANGELOG.md', entry('Fixed', 'Notes') + changelog);
+        writeFileSync('CHANGELOG.md', changelogInsert(changelog, entry('Fixed', 'Notes')));
         for (const [file, [f, nn]] of Object.entries(LOCALES)) {
           const p = resolve(ROOT, file);
           try {
-            writeFileSync(p, entry(f, nn) + readFileSync(p, 'utf8'));
+            writeFileSync(p, changelogInsert(readFileSync(p, 'utf8'), entry(f, nn)));
           } catch (err) {
             if (err && err.code === 'ENOENT') log(`  (locale mirror absent — skipped: ${file})`);
             else throw err; // a write failure (EROFS/EMFILE/…) must not masquerade as "absent"

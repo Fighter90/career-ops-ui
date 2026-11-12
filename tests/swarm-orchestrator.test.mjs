@@ -10,7 +10,7 @@ import { spawnSync } from 'node:child_process';
 import { mkdtempSync, writeFileSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { parsePickOutput, acquireLock } from '../scripts/swarm/orchestrator.mjs';
+import { parsePickOutput, acquireLock, developCheckout, changelogInsert } from '../scripts/swarm/orchestrator.mjs';
 
 test('parses a real pick line', () => {
   const issue = parsePickOutput('blah\nSWARM_PICK::uuid-1::CAR-252::#/health: FIX_TARGETS keys\ntrailer');
@@ -91,4 +91,58 @@ test('acquireLock: still refuses a lock held by a live process', () => {
   writeFileSync(lock, String(process.pid)); // this test process is alive
   assert.throws(() => acquireLock(lock), /holds the lock/);
   rmSync(dir, { recursive: true, force: true });
+});
+
+// developCheckout — the develop-phase branch checkout contract. Regression: the
+// v1.5 salvage semantics reused ANY existing task branch (`checkout -q branch
+// || checkout -B`), so a stale branch left by an aborted run — cut from a base
+// several releases old and carrying zero commits — silently became the
+// executor's working base (the run-6 class: CAR-266 started on a pre-1.271.6
+// tree). A branch with nothing to salvage must be refreshed onto current
+// origin/main; only real salvaged work is continued.
+test('developCheckout: an empty stale branch is reset onto origin/main', () => {
+  assert.equal(
+    developCheckout('swarm/car-266', 0),
+    'git checkout -q -B swarm/car-266 origin/main',
+    'zero salvaged commits → -B refresh (the stale-base fix)',
+  );
+});
+
+test('developCheckout: salvaged work is continued, never wiped', () => {
+  assert.equal(
+    developCheckout('swarm/car-259', 4),
+    'git checkout -q swarm/car-259',
+    'committed salvaged work → plain checkout (the v1.5 no-wipe rule)',
+  );
+});
+
+test('orchestrator source: the bare reuse-without-reset literal is gone', async () => {
+  const src = readFileSync(new URL('../scripts/swarm/orchestrator.mjs', import.meta.url), 'utf8');
+  assert.ok(
+    !src.includes('git checkout -q ${branch} 2>/dev/null'),
+    'the checkout-reuse-without-reset shell line must not return',
+  );
+  assert.ok(src.includes('developCheckout('), 'the develop phase must route through developCheckout()');
+});
+
+// changelogInsert — the release-manager's entry placement. Regression: three
+// releases in a row the release script prepended the new `## [ver]` ABOVE the
+// locale files' title + `>` preamble, breaking the ×18 preamble-first layouts
+// and forcing a manual re-restore each time.
+test('changelogInsert: the entry lands BELOW the locale preamble', () => {
+  const content = '# Changelog (Deutsch)\n\n> Notiz Vorbemerkung.\n\n## [1.271.8] — 2026-11-12\n\n### Behoben\n- alt\n';
+  const out = changelogInsert(content, '## [1.271.9] — 2026-11-12\n\n### Behoben\n- neu\n\n');
+  assert.ok(out.startsWith('# Changelog (Deutsch)'), 'the preamble must stay at the top');
+  assert.ok(out.indexOf('## [1.271.9]') < out.indexOf('## [1.271.8]'), 'the new entry precedes the old one');
+  assert.ok(out.indexOf('> Notiz Vorbemerkung.') < out.indexOf('## [1.271.9]'), 'the preamble precedes the new entry');
+});
+
+test('changelogInsert: a preamble-less file prepends as before', () => {
+  const content = '## [1.271.8] — 2026-11-12\n\n### Fixed\n- old\n';
+  const out = changelogInsert(content, '## [1.271.9] — 2026-11-12\n\n### Fixed\n- new\n\n');
+  assert.ok(out.startsWith('## [1.271.9]'), 'entry-first file prepends');
+});
+
+test('changelogInsert: a file with no release entry gets the entry prepended', () => {
+  assert.equal(changelogInsert('header text\n', 'ENTRY\n'), 'ENTRY\nheader text\n');
 });
