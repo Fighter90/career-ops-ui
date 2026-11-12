@@ -5,6 +5,14 @@
 > ⏳ **Nota de cobertura** — este archivo incluye ahora el historial completo; las entradas anteriores a la v1.12.0 aparecen en el original inglés a la espera de traducción.
 > _Las entradas a partir de [1.271.3] están pendientes de traducción — el original en inglés aparece abajo._
 
+## [1.271.14] — 2026-11-12
+
+### Corregido
+- **Republicación de v1.271.13** — el tag v1.271.13 se volvió a cortar a mitad del despliegue (la exención de cobertura para `_salary-text.mjs` aterrizó entre el tag y el despliegue), lo que compitió con el tag cacheado del checkout de producción: producción se quedó en v1.271.12 mientras el resto de comprobaciones estaban en verde. Esta versión lleva contenido idéntico más esa exención, cortada desde un tag que el checkout de producción nunca ha cacheado.
+
+### Notas
+- Deliberadamente NO se cambió: nada más allá de los no-ports documentados de v1.271.13 (el recorrido de feed de Workable, Google ya en paridad); el filtrado y la deduplicación de escaneos y los conteos del registro (140 = 135 EN + 5 RU · 135 adapters) permanecen tal como los envió v1.271.13.
+
 ## [1.271.13] — 2026-11-12
 
 ### Añadido

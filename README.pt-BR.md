@@ -12,12 +12,12 @@ _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#testes)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requisitos)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.271.13-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.13)
+[![release](https://img.shields.io/badge/release-v1.271.14-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.14)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versão — v1.271.13** — a **onda de parent-sync** (88 commits upstream): a API de vagas da Ashby ganha um teto próprio de corpo de 64 MB com fallback via embed, SmartRecruiters e SuccessFactors ganham tetos opt-in de caminhada com avisos de truncamento, Amazon e OracleCloud dimensionam seus orçamentos de página a partir de totais reportados, Join carrega identidades de listagem estáveis entre republicações — a página de busca lê boards grandes inteiros em vez de parar em um limite de páginas. Testes 8411.
+> **🆕 Última versão — v1.271.14** — a **onda de parent-sync** (88 commits upstream): a API de vagas da Ashby ganha um teto próprio de corpo de 64 MB com fallback via embed, SmartRecruiters e SuccessFactors ganham tetos opt-in de caminhada com avisos de truncamento, Amazon e OracleCloud dimensionam seus orçamentos de página a partir de totais reportados, Join carrega identidades de listagem estáveis entre republicações — a página de busca lê boards grandes inteiros em vez de parar em um limite de páginas. Testes 8411.
 >
 > **Anterior — v1.271.12** — a **aceleração da página de busca**: os payloads de dados da tabela de scan agora são limitados no servidor — o fio deixa de transportar as descrições que a UI corta, e o agrupamento de reposts agora roda uma vez por mudança do histórico, então a página que esperava ~6,5 s de tempo de API por montagem agora carrega em frações de segundo. Testes 8312.
 

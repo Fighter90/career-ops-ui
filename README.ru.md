@@ -12,12 +12,12 @@ _Неофициальный интерфейс — не аффилирован �
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.271.13-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.13)
+[![release](https://img.shields.io/badge/release-v1.271.14-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.14)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Последний релиз — v1.271.13** — **волна parent-sync** (88 апстрим-коммитов): у API вакансий Ashby появляется собственный лимит тела ответа 64 МБ с embed-фолбэком, SmartRecruiters и SuccessFactors получают opt-in потолки обхода с предупреждениями об усечении, Amazon и OracleCloud вычисляют страничные бюджеты из заявленных общих чисел, Join несёт стабильные при повторной публикации идентичности листингов — страница сканов читает большие борды целиком, а не останавливается на страничном потолке. Тесты: 8411.
+> **🆕 Последний релиз — v1.271.14** — **волна parent-sync** (88 апстрим-коммитов): у API вакансий Ashby появляется собственный лимит тела ответа 64 МБ с embed-фолбэком, SmartRecruiters и SuccessFactors получают opt-in потолки обхода с предупреждениями об усечении, Amazon и OracleCloud вычисляют страничные бюджеты из заявленных общих чисел, Join несёт стабильные при повторной публикации идентичности листингов — страница сканов читает большие борды целиком, а не останавливается на страничном потолке. Тесты: 8411.
 >
 > **Предыдущий релиз — v1.271.12** — **ускорение страницы поиска**: полезные нагрузки данных таблицы сканов ограничены на сервере — по сети больше не передаются описания, которые UI всё равно отрезает, а кластеризация репостов теперь выполняется один раз на изменение истории, поэтому страница, ждавшая ~6,5 с API-времени за одно монтирование, теперь загружается за доли секунды. Тесты: 8312.
 

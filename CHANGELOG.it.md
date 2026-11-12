@@ -3,6 +3,14 @@
 
 > Questo changelog contiene ora la cronologia completa delle versioni. Le voci pubblicate prima della localizzazione italiana (v1.85.0) compaiono sotto nell'originale inglese — traduzione in attesa; il riferimento resta [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.271.14] — 2026-11-12
+
+### Corretto
+- **Ripubblicazione della v1.271.13** — il tag v1.271.13 è stato ricreato a metà del deploy (l'esenzione di copertura per `_salary-text.mjs` è arrivata tra il tag e il deploy), andando in corsa con il tag in cache del checkout di produzione: la produzione è rimasta sulla v1.271.12 mentre tutti gli altri controlli erano verdi. Questa release porta contenuto identico più quella esenzione, ricavata da un tag che il checkout di produzione non ha mai messo in cache.
+
+### Note
+- Deliberatamente NON cambiato: niente oltre i no-port documentati di v1.271.13 (il feed walker di Workable, Google già in parità); filtraggio e dedup delle scansioni e i conteggi del registro (140 = 135 EN + 5 RU · 135 adapters) restano come li ha consegnati v1.271.13.
+
 ## [1.271.13] — 2026-11-12
 
 ### Aggiunto

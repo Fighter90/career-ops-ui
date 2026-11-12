@@ -3,6 +3,14 @@
 
 > **Oversættelsesnote.** Filen er oversat til dansk: de seneste poster (fra v1.77.0 og bagud, inkl. v1.76.0 / v1.75.2 / v1.75.1 / v1.75.0) er fuldt oversat til teknisk dansk. Ældre poster bevares på engelsk; versionsoverskrifter og datoer er identiske med den engelske kildefil.
 
+## [1.271.14] — 2026-11-12
+
+### Rettet
+- **Genudgivelse af v1.271.13** — v1.271.13-taget blev skåret for midt i en deploy (coverage-undtagelsen for `_salary-text.mjs` landede mellem taget og deployet), hvilket løb om kap med det tag, produktions-checkout'en havde i cache: produktionen blev på v1.271.12, mens alle andre tjek var grønne. Denne udgivelse bærer identisk indhold plus den undtagelse, skåret fra et tag, som produktions-checkout'en aldrig har cachet.
+
+### Noter
+- Bevidst IKKE ændret: intet ud over v1.271.13's dokumenterede no-ports (Workables feed-walker, Google allerede i parity); scan-filtrering og dedup samt registertal (140 = 135 EN + 5 RU · 135 adapters) forbliver, som v1.271.13 leverede dem.
+
 ## [1.271.13] — 2026-11-12
 
 ### Tilføjet

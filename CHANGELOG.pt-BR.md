@@ -3,6 +3,14 @@
 > **Nota** — este arquivo está integralmente traduzido para o português brasileiro. Cada entrada de versão foi reescrita em PT-BR técnico de qualidade editorial, preservando blocos de código, mensagens de commit, caminhos de arquivo, URLs, variáveis de ambiente, comandos e rótulos de link em sua forma original.
 > _As entradas a partir de [1.271.3] aguardam tradução — o original em inglês abaixo._
 
+## [1.271.14] — 2026-11-12
+
+### Corregido
+- **Republicação do v1.271.13** — a tag v1.271.13 foi refeita no meio do deploy (a isenção de cobertura para `_salary-text.mjs` chegou entre a tag e o deploy), o que disputou com a tag em cache do checkout de produção: a produção ficou na v1.271.12 enquanto todas as outras verificações estavam verdes. Esta versão carrega conteúdo idêntico mais essa isenção, cortada de uma tag que o checkout de produção nunca colocou em cache.
+
+### Notas
+- Deliberadamente NÃO alterado: nada além dos no-ports documentados da v1.271.13 (o walker de feed do Workable, Google já em paridade); a filtragem e o dedup de scan e as contagens do registro (140 = 135 EN + 5 RU · 135 adapters) permanecem como a v1.271.13 as enviou.
+
 ## [1.271.13] — 2026-11-12
 
 ### Adicionado

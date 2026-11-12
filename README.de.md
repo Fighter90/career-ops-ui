@@ -12,12 +12,12 @@ _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.271.13-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.13)
+[![release](https://img.shields.io/badge/release-v1.271.14-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.14)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Neueste Version — v1.271.13** — die **Parent-Sync-Welle** (88 Upstream-Commits): Die Posting-API von Ashby bekommt ihr eigenes 64-MB-Body-Limit mit Embed-Fallback, SmartRecruiters und SuccessFactors erhalten Opt-in-Limits für den Durchlauf mit Truncation-Warnungen, Amazon und OracleCloud bemessen ihre Seitenbudgets aus den gemeldeten Gesamtzahlen, Join trägt republish-stabile Listing-Identitäten — die Scan-Seite liest große Boards vollständig statt an einem Seitenlimit zu stoppen. Tests: 8411.
+> **🆕 Neueste Version — v1.271.14** — die **Parent-Sync-Welle** (88 Upstream-Commits): Die Posting-API von Ashby bekommt ihr eigenes 64-MB-Body-Limit mit Embed-Fallback, SmartRecruiters und SuccessFactors erhalten Opt-in-Limits für den Durchlauf mit Truncation-Warnungen, Amazon und OracleCloud bemessen ihre Seitenbudgets aus den gemeldeten Gesamtzahlen, Join trägt republish-stabile Listing-Identitäten — die Scan-Seite liest große Boards vollständig statt an einem Seitenlimit zu stoppen. Tests: 8411.
 >
 > **Vorherige Version — v1.271.12** — die **Suchseiten-Beschleunigung**: Die Daten-Payloads der Scan-Tabelle sind serverseitig begrenzt — die Übertragung enthält keine Beschreibungen mehr, die die UI wegschneidet, und das Repost-Clustering läuft jetzt einmal pro Verlaufsänderung, sodass die Seite, die pro Mount ~6,5 s API-Zeit wartete, jetzt in Sekundenbruchteilen lädt. Tests: 8312.
 

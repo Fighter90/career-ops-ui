@@ -15,12 +15,12 @@ _Неофіційний інтерфейс — не пов'язаний із car
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.271.13-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.13)
+[![release](https://img.shields.io/badge/release-v1.271.14-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.14)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Останній реліз — v1.271.13** — **хвиля parent-sync** (88 upstream-комітів): API вакансій Ashby отримує власну стелю тіла 64 MB із фолбеком embed, SmartRecruiters і SuccessFactors дістають opt-in стелі обходу з попередженнями про обрізання, Amazon і OracleCloud масштабують бюджети сторінок за заявленими сумами, Join несе стійкі до повторної публікації listing identities — сторінка сканування читає великі борди повністю замість зупинки на ліміті сторінок. Тести: 8411.
+> **🆕 Останній реліз — v1.271.14** — **хвиля parent-sync** (88 upstream-комітів): API вакансій Ashby отримує власну стелю тіла 64 MB із фолбеком embed, SmartRecruiters і SuccessFactors дістають opt-in стелі обходу з попередженнями про обрізання, Amazon і OracleCloud масштабують бюджети сторінок за заявленими сумами, Join несе стійкі до повторної публікації listing identities — сторінка сканування читає великі борди повністю замість зупинки на ліміті сторінок. Тести: 8411.
 >
 > **Попередній реліз — v1.271.12** — **прискорення сторінки пошуку**: дані таблиці сканувань тепер обмежені на боці сервера — канал перестав передавати описи, які інтерфейс і так відсікає, а кластеризацію репостів тепер запущено лише раз на зміну історії сканувань, тож сторінка, що чекала ~6,5 с часу API на кожне відкриття, тепер завантажується за частки секунди. Тести: 8312.
 

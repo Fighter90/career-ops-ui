@@ -3,6 +3,14 @@
 
 > Dieses Changelog enthält die vollständige Versionsgeschichte. Einträge, die vor der deutschen Lokalisierung (v1.85.0) veröffentlicht wurden, stehen unten im englischen Original — Übersetzung ausstehend; maßgeblich bleibt [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.271.14] — 2026-11-12
+
+### Behoben
+- **Erneute Veröffentlichung von v1.271.13** — das v1.271.13-Tag wurde mitten im Deploy neu geschnitten (die Coverage-Ausnahme für `_salary-text.mjs` landete zwischen dem Tag und dem Deploy), was ein Race mit dem gecachten Tag des Production-Checkouts auslöste: Production blieb auf v1.271.12, während alle anderen Checks grün waren. Dieses Release trägt denselben Inhalt plus jene Ausnahme, geschnitten von einem Tag, den der Production-Checkout nie gecacht hat.
+
+### Hinweise
+- Bewusst NICHT geändert: nichts über die dokumentierten No-Ports von v1.271.13 hinaus (der Workable-Feed-Durchlauf, Google bereits auf Parität); Scan-Filterung und Dedup sowie die Registry-Zähler (140 = 135 EN + 5 RU · 135 Adapter) bleiben so, wie v1.271.13 sie ausgeliefert hat.
+
 ## [1.271.13] — 2026-11-12
 
 ### Neu

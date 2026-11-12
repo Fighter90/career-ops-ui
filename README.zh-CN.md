@@ -12,12 +12,12 @@ _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.271.13-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.13)
+[![release](https://img.shields.io/badge/release-v1.271.14-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.14)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.271.13** — **parent-sync 波次**（上游 88 个提交）：Ashby 的职位 API 获得了带 embed 回退的专属 64 MB 响应体上限，SmartRecruiters 与 SuccessFactors 获得了带截断警告的可选遍历上限，Amazon 与 OracleCloud 依据报告的总量确定页面预算，Join 提供跨重发稳定的列表身份——扫描页面可以完整读取大型看板，而不是停在页数上限。测试 8411。
+> **🆕 最新版本 — v1.271.14** — **parent-sync 波次**（上游 88 个提交）：Ashby 的职位 API 获得了带 embed 回退的专属 64 MB 响应体上限，SmartRecruiters 与 SuccessFactors 获得了带截断警告的可选遍历上限，Amazon 与 OracleCloud 依据报告的总量确定页面预算，Join 提供跨重发稳定的列表身份——扫描页面可以完整读取大型看板，而不是停在页数上限。测试 8411。
 >
 > **上一版本 — v1.271.12** — **搜索页面提速**：扫描表格的数据载荷已在服务端设置上限——传输不再承载 UI 会切掉的描述文本，repost 聚类也改为每次历史变化只运行一次，原来每次挂载需等待约 6.5 秒 API 时间的页面现在加载只需零点几秒。测试 8312。
 

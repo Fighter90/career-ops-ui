@@ -3,6 +3,14 @@
 > Nhật ký này nay chứa đầy đủ lịch sử các bản phát hành. Các mục phát hành trước khi có bản địa hóa tiếng Việt (v1.254.0) xuất hiện bên dưới bằng bản gốc tiếng Anh — bản dịch còn đang chờ; bản chính thức là [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 > _Các mục từ [1.271.3] đang chờ dịch — bản gốc tiếng Anh bên dưới._
 
+## [1.271.14] — 2026-11-12
+
+### Đã sửa
+- **Tái phát hành v1.271.13** — tag v1.271.13 được cắt lại giữa chừng trong lúc deploy (miễn trừ coverage cho `_salary-text.mjs` được đưa vào giữa tag và deploy), gây đua với tag mà production checkout có trong cache: production ở lại v1.271.12 trong khi mọi kiểm tra khác đều xanh. Bản phát hành này mang nội dung y hệt cộng thêm đợt miễn trừ đó, cắt từ một tag mà production checkout chưa từng cache.
+
+### Ghi chú
+- Deliberately NOT changed: không có gì vượt quá các no-port đã được ghi trong tài liệu của v1.271.13 (feed walker của Workable, Google đã đạt đối chiếu); lọc quét và dedup, số đếm registry (140 = 135 EN + 5 RU · 135 adapters) giữ nguyên như v1.271.13 đã phát hành.
+
 ## [1.271.13] — 2026-11-12
 
 ### Đã thêm

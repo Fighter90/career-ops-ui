@@ -12,12 +12,12 @@ _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve 
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.271.13-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.13)
+[![release](https://img.shields.io/badge/release-v1.271.14-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.14)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Son sürüm — v1.271.13** — **parent-sync dalgası** (88 upstream commit): Ashby'nin ilan API'si embed yedeğiyle birlikte kendi 64 MB gövde tavanını kazanıyor, SmartRecruiters ve SuccessFactors kesilme uyarılarıyla isteğe bağlı geçiş tavanları elde ediyor, Amazon ve OracleCloud sayfa bütçelerini bildirilen toplamlara göre boyutlandırıyor, Join yeniden yayına dayanıklı listing kimlikleri taşıyor — tarama sayfası büyük panoları bir sayfa sınırında durmak yerine baştan sona okuyor. Test: 8411.
+> **🆕 Son sürüm — v1.271.14** — **parent-sync dalgası** (88 upstream commit): Ashby'nin ilan API'si embed yedeğiyle birlikte kendi 64 MB gövde tavanını kazanıyor, SmartRecruiters ve SuccessFactors kesilme uyarılarıyla isteğe bağlı geçiş tavanları elde ediyor, Amazon ve OracleCloud sayfa bütçelerini bildirilen toplamlara göre boyutlandırıyor, Join yeniden yayına dayanıklı listing kimlikleri taşıyor — tarama sayfası büyük panoları bir sayfa sınırında durmak yerine baştan sona okuyor. Test: 8411.
 >
 > **Önceki — v1.271.12** — **arama sayfası hız kazanıyor**: tarama tablosunun veri yükleri artık sunucu tarafında sınırlı — hat, arayüzün zaten kestiği açıklamaları taşımayı bıraktı ve repost kümelemesi artık her geçmiş değişiminde bir kez çalışıyor; böylece her açılışta ~6,5 sn API süresi bekleyen sayfa artık saniyenin kesirleri içinde yükleniyor. Test: 8312.
 

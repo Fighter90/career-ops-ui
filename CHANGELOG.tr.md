@@ -3,6 +3,14 @@
 > Bu changelog artık tüm sürüm geçmişini içerir. Türkçe yerelleştirmenin eklenmesinden (v1.85.0) önce yayınlanan girdiler aşağıda İngilizce özgün hâliyle yer alır — çeviri bekliyor; asıl kaynak [🇬🇧 CHANGELOG.md](CHANGELOG.md)'dir.
 > _[1.271.3]'ten itibaren girdiler çeviri bekliyor — İngilizce orijinal aşağıda._
 
+## [1.271.14] — 2026-11-12
+
+### Düzeltildi
+- **v1.271.13'ün yeniden yayımlanması** — v1.271.13 etiketi deploy'un ortasında yeniden kesildi (`_salary-text.mjs` için kapsam muafiyeti etiket ile deploy arasında geldi), bu da üretim checkout'ının önbelleğindeki etiketle yarıştı: üretim v1.271.12'de kaldı, diğer tüm kontroller yeşildi. Bu sürüm aynı içeriği artı o muafiyeti taşır ve üretim checkout'ının hiç önbelleğe almadığı bir etiketten kesildi.
+
+### Notlar
+- Kasıtlı olarak DEĞİŞTİRİLMEDİ: v1.271.13'ün belgelenmiş no-port'larının ötesinde bir şey yok (Workable'ın feed walker'ı, Google zaten paritede); tarama filtreleme ve dedup ile kayıt sayıları (140 = 135 EN + 5 RU · 135 adapters), v1.271.13'ün gönderdiği haliyle kalıyor.
+
 ## [1.271.13] — 2026-11-12
 
 ### Eklendi

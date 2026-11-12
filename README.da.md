@@ -12,12 +12,12 @@ _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santi
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.271.13-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.13)
+[![release](https://img.shields.io/badge/release-v1.271.14-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.14)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Seneste udgivelse — v1.271.13** — **parent-sync-bølgen** (88 upstream-commits): Ashbys posting-API får sit eget 64 MB body-loft med en embed-fallback, SmartRecruiters og SuccessFactors får tilvalgte walk-lofter med trunkeringsadvarsler, Amazon og OracleCloud skalerer deres sidebudgetter efter rapporterede totaler, Join bærer republish-stabile listing identities — scan-siden læser store boards helt i stedet for at stoppe ved et side-loft. Test: 8411.
+> **🆕 Seneste udgivelse — v1.271.14** — **parent-sync-bølgen** (88 upstream-commits): Ashbys posting-API får sit eget 64 MB body-loft med en embed-fallback, SmartRecruiters og SuccessFactors får tilvalgte walk-lofter med trunkeringsadvarsler, Amazon og OracleCloud skalerer deres sidebudgetter efter rapporterede totaler, Join bærer republish-stabile listing identities — scan-siden læser store boards helt i stedet for at stoppe ved et side-loft. Test: 8411.
 >
 > **Tidligere — v1.271.12** — **søgesidens hastighedsgevinst**: scannetabellens datapakker er nu afgrænsede på serversiden — overførslen bærer ikke længere beskrivelser, som brugergrænsefladen alligevel skærer væk, og repost-klyngedannelse kører nu én gang pr. historieændring, så siden der ventede ~6,5 s API-tid pr. indlæsning nu loader på brøkdele af et sekund. Test: 8312.
 

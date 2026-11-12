@@ -12,12 +12,12 @@ _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.271.13-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.13)
+[![release](https://img.shields.io/badge/release-v1.271.14-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.271.14)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versión — v1.271.13** — la **ola de parent-sync** (88 commits upstream): la API de vacantes de Ashby obtiene su propio techo de cuerpo de 64 MB con fallback embed, SmartRecruiters y SuccessFactors ganan techos de recorrido opt-in con avisos de truncamiento, Amazon y OracleCloud dimensionan sus presupuestos de páginas a partir de los totales reportados, Join lleva identidades de listado estables ante republicaciones — la página de escaneo lee los boards grandes por completo en lugar de detenerse en un tope de páginas. Pruebas: 8411.
+> **🆕 Última versión — v1.271.14** — la **ola de parent-sync** (88 commits upstream): la API de vacantes de Ashby obtiene su propio techo de cuerpo de 64 MB con fallback embed, SmartRecruiters y SuccessFactors ganan techos de recorrido opt-in con avisos de truncamiento, Amazon y OracleCloud dimensionan sus presupuestos de páginas a partir de los totales reportados, Join lleva identidades de listado estables ante republicaciones — la página de escaneo lee los boards grandes por completo en lugar de detenerse en un tope de páginas. Pruebas: 8411.
 >
 > **Anterior — v1.271.12** — la **aceleración de la página de búsqueda**: las cargas útiles de datos de la tabla de escaneo quedan acotadas en el servidor — la red ya no transporta descripciones que la UI recorta, y el agrupamiento de reposts ahora se ejecuta una vez por cambio del historial, de modo que la página que esperaba ~6,5 s de tiempo de API por montaje ahora carga en fracciones de segundo. Pruebas: 8312.
 

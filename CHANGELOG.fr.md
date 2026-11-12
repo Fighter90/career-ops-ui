@@ -5,6 +5,14 @@
 > **Note de traduction (v1.61.0)** — le français a été ajouté comme 9e langue de l'interface. Ce fichier traduit les entrées récentes ; pour l'historique antérieur à la v1.55.0, voir le [🇬🇧 CHANGELOG anglais](CHANGELOG.md), qui reste la source normative.
 > ⏳ **Note de couverture** — ce fichier inclut désormais l'historique complet ; les entrées antérieures à la v1.61.0 figurent ci-dessous en anglais original, traduction en attente.
 
+## [1.271.14] — 2026-11-12
+
+### Corrigé
+- **Republication de v1.271.13** — le tag v1.271.13 a été recoupé en plein déploiement (l'exemption de couverture pour `_salary-text.mjs` est arrivée entre le tag et le déploiement), ce qui a fait une course avec le tag en cache du checkout de production : la production est restée sur v1.271.12 alors que toutes les autres vérifications étaient au vert. Cette version embarque un contenu identique plus cette exemption, coupée depuis un tag que le checkout de production n'a jamais mis en cache.
+
+### Notes
+- Délibérément NON modifié : rien au-delà des no-ports documentés de v1.271.13 (le parcours de feed de Workable, Google déjà à parité) ; le filtrage et la déduplication des scans ainsi que les compteurs du registre (140 = 135 EN + 5 RU · 135 adaptateurs) restent tels que v1.271.13 les a livrés.
+
 ## [1.271.13] — 2026-11-12
 
 ### Ajouté

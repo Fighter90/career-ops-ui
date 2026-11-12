@@ -4,6 +4,14 @@
 > ⏳ **Uwaga o zakresie** — plik zawiera obecnie pełną historię wydań; wpisy sprzed dodania polskiego znajdują się poniżej w angielskim oryginale (tłumaczenie w toku).
 > _Wpisy od [1.271.3] czekają na tłumaczenie — angielski oryginał poniżej._
 
+## [1.271.14] — 2026-11-12
+
+### Naprawiono
+- **Ponowne wydanie v1.271.13** — tag v1.271.13 został ponownie wycięty w trakcie wdrożenia (wyjątek pokrycia dla `_salary-text.mjs` trafił między tag a wdrożenie), co stworzyło wyścig z tagiem trzymanym w cache checkoutu produkcyjnego: produkcja została na v1.271.12, podczas gdy wszystkie pozostałe testy były zielone. To wydanie zawiera identyczną treść plus tamten wyjątek, wycięte z tagu, którego produkcyjny checkout nigdy nie miał w cache.
+
+### Uwagi
+- Świadomie NIE zmieniono: nic ponad udokumentowane no-porty v1.271.13 (walker feeda Workable, Google — paritet już osiągnięty); filtrowanie i dedup skanowania oraz liczniki rejestru (140 = 135 EN + 5 RU · 135 adapters) pozostają takie, jakie dostarczyła v1.271.13.
+
 ## [1.271.13] — 2026-11-12
 
 ### Dodano

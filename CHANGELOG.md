@@ -1,3 +1,11 @@
+## [1.271.14] — 2026-11-12
+
+### Fixed
+- **Republish of v1.271.13** — the v1.271.13 tag was re-cut mid-deploy (the coverage exemption for `_salary-text.mjs` landed between the tag and the deploy), which raced the production checkout's cached tag: production stayed on v1.271.12 while every check elsewhere was green. This release carries identical content plus that exemption, cut from a tag the production checkout has never cached.
+
+### Notes
+- Deliberately NOT changed: nothing beyond v1.271.13's documented no-ports (the Workable feed-walker, Google already at parity); scan filtering, dedup, and the registry counts (140 = 135 EN + 5 RU · 135 adapters) stay as v1.271.13 shipped them.
+
 ## [1.271.13] — 2026-11-12
 
 ### Added
