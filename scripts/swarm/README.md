@@ -87,7 +87,26 @@ on this machine today.)
 
 ## Deliberate v1 simplifications
 
-- Changelog ×18 locales are **label-stubbed EN entries** (CI parity passes; translation
+- Changelog ×19 locales are **label-stubbed EN entries** (CI parity passes; translation
   remains a separate human step).
-- Counters (PROJECT-CONTEXT/HANDOFF/wiki) are not touched — they are not CI gates.
 - No worktree isolation (cycles are sequential); parallelism is a follow-up.
+
+## What the release step does (v1.5+)
+
+The release phase is deterministic code in `orchestrator.mjs`, executed by the release
+manager after ACCEPT:
+
+- `npm version patch`, then CHANGELOG ×19 (the entry lands **below** each locale's
+  preamble — the `changelogInsert` guard), QA prompt for the new version (the previous
+  one moves to `qa/archive/superseded-prompts/`).
+- **README ×19 banner rotation** (`rotateReadmeRelease`): the 🆕 lead takes the new
+  version, the old lead is demoted into the trail line, the release/tests badges and the
+  lead's trailing localized test count follow. The user directive «при каждом пуше
+  актуализировать Readme» is also enforced out-of-band by
+  `tests/readme-version-gate.test.mjs` (TRACEABILITY R-13): any push where a README
+  lead/badge lags `package.json` fails CI.
+- SDD baselines (`docs/sdd/CONVENTIONS.md`, `.claude/PROJECT-CONTEXT.md`) are bumped
+  from the gated tree's own test count (`captureTestCount` + `baselineBump`).
+- The salvage path refuses an "already merged" Done unless the commit subject carries a
+  PR-squash marker `(#N)` — the false-Done guard (CAR-269 was closed as Done twice by
+  infra commits that merely mentioned the identifier).
