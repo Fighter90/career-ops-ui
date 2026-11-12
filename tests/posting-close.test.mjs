@@ -294,3 +294,23 @@ test('closeDatesByUrl: a later row with an EMPTY closes_at does not erase the ea
   ].join('\n');
   assert.equal(closeDatesByUrl(text).get('https://jobs.example.com/d'), '2026-12-25');
 });
+
+// ── branch hardening round 2 (CAR-269: the ratchet flipped this file between
+// CI runs — lock the last input-shape branches so every Node clears the
+// floor with margin) ──
+
+test('closeDatesByUrl: null/undefined history text yields an empty index', () => {
+  assert.equal(closeDatesByUrl(null).size, 0);
+  assert.equal(closeDatesByUrl(undefined).size, 0);
+});
+
+test('closeDateForUrl: a non-string URL (number/undefined) is a miss without normalizing', () => {
+  const index = closeDatesByUrl('2026-11-09\ten\t52\tAcme\tEngineer\thttps://jobs.example.com/h\t2026-07-01');
+  assert.equal(closeDateForUrl(index, 42), '');
+  assert.equal(closeDateForUrl(index, undefined), '');
+});
+
+test('closeDatesByUrl: a tab-led row (empty first cell) takes the web-ui shape and contributes nothing', () => {
+  assert.equal(closeDatesByUrl('\t\t\t\t\t\t\t2026-06-06').size, 0,
+    'an empty leading cell is not a parent URL; the empty web-ui url cell contributes nothing');
+});

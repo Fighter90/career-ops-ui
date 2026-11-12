@@ -114,3 +114,73 @@ test('the FALLBACK is NOT cached — a file appearing later is picked up without
   // no _resetStatesCache() here — the fallback must not have been memoized
   assert.ok(states.canonicalLabels().includes('LateState'), 'file appearing later is read on the next call');
 });
+
+// ── branch hardening (CAR-269: the per-file branch baseline on states.mjs
+// measured below the ratchet floor on CI's Node 20 — V8 branch accounting
+// differs per version; these lock the remaining fallback paths so every Node
+// version clears the ratchet with margin) ──
+
+test('a read error other than ENOENT (states.yml is a directory) warns and falls back', () => {
+  rmSync(STATES_YML, { force: true });
+  mkdirSync(STATES_YML); // readFileSync on a directory → EISDIR, not ENOENT
+  states._resetStatesCache();
+  const warns = [];
+  const orig = console.warn;
+  console.warn = (...a) => warns.push(a.join(' '));
+  try {
+    assert.equal(states.canonicalLabels().length, 10, 'the built-in fallback serves the read');
+  } finally {
+    console.warn = orig;
+    rmSync(STATES_YML, { recursive: true, force: true });
+  }
+  assert.match(warns.join(' '), /failed to read/, 'a non-ENOENT read error is worth the drift warn');
+});
+
+test('states.yml with an EMPTY states array falls back (present but unusable)', () => {
+  const warns = [];
+  const orig = console.warn;
+  console.warn = (...a) => warns.push(a.join(' '));
+  try {
+    useFile('states: []\n');
+    assert.equal(states.canonicalLabels().length, 10, 'an empty states list is not a usable read');
+  } finally {
+    console.warn = orig;
+  }
+  assert.match(warns.join(' '), /no usable states/);
+});
+
+test('every entry unusable (null or label-less) skips the rows and falls back', () => {
+  const warns = [];
+  const orig = console.warn;
+  console.warn = (...a) => warns.push(a.join(' '));
+  try {
+    useFile('states:\n  - null\n  - 42\n  - description: no label here\n');
+    assert.equal(states.canonicalLabels().length, 10, 'a parse with zero usable rows is a fallback, not an empty board');
+  } finally {
+    console.warn = orig;
+  }
+  assert.match(warns.join(' '), /no usable states/);
+});
+
+test('a file entry without id derives the id from the label; non-string aliases are filtered; a missing dashboard_group falls back to the id', () => {
+  useFile('states:\n  - label: FromLabel\n    aliases: [ok, 42, "also-ok"]\n');
+  assert.ok(states.canonicalLabels().includes('FromLabel'));
+  assert.equal(states.canonicalizeStatus('fromlabel'), 'FromLabel',
+    'the id is derived from the label when the file omits it');
+  assert.equal(states.canonicalizeStatus('ok'), 'FromLabel');
+  assert.equal(states.canonicalizeStatus('also-ok'), 'FromLabel');
+  assert.equal(states.canonicalizeStatus('42'), null, 'a non-string alias is filtered out of the fold');
+});
+
+test('invalid YAML (unterminated flow sequence) fails to parse and falls back', () => {
+  const warns = [];
+  const orig = console.warn;
+  console.warn = (...a) => warns.push(a.join(' '));
+  try {
+    useFile('states: [unclosed\n');
+    assert.equal(states.canonicalLabels().length, 10, 'a parse error falls back instead of throwing');
+  } finally {
+    console.warn = orig;
+  }
+  assert.match(warns.join(' '), /failed to parse/);
+});
