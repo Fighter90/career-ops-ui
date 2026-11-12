@@ -49,6 +49,7 @@ import { breezyAdapter } from './adapters/breezy.mjs';
 import { comeetAdapter } from './adapters/comeet.mjs';
 import { personioAdapter } from './adapters/personio.mjs';
 import { recruiteeAdapter } from './adapters/recruitee.mjs';
+import { rexxAdapter } from './adapters/rexx.mjs';
 import { solidjobsAdapter } from './adapters/solidjobs.mjs';
 // v1.79.0 — WeWorkRemotely board-wide RSS feed.
 import { weworkremotelyAdapter } from './adapters/weworkremotely.mjs';
@@ -275,6 +276,7 @@ export const ALL_ADAPTERS = [
   comeetAdapter,
   personioAdapter,
   recruiteeAdapter,
+  rexxAdapter,
   solidjobsAdapter,
   // v1.79.0 — Board-wide remote RSS aggregator,
   // provider-selected (like RemoteOK / Remotive / Working Nomads).

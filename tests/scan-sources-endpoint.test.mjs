@@ -88,7 +88,7 @@ test('GET /api/scan/sources includes the EN ATS + aggregator sources', async () 
     'mycareersfuture', 'neogov', 'nodesk', 'nofluffjobs', 'occ', 'oraclecloud',
     'pageup', 'paylocity', 'peoplesoft', 'personio', 'phenom', 'pinpoint',
     'platsbanken', 'polymer', 'prevueaps', 'pythonorg', 'radancy', 'recruitee',
-    'redrover', 'remote-com', 'remoteok', 'remotive', 'remotli', 'rheinmetall',
+    'redrover', 'remote-com', 'remoteok', 'remotive', 'remotli', 'rexx', 'rheinmetall',
     'rippling', 'rss', 'schoolspring', 'senjob', 'sitemap', 'smartrecruiters',
     'softgarden', 'solidjobs', 'startup-jobs', 'successfactors', 'talentlink', 'taleo', 'teamtailor',
     'techinasia', 'telegram', 'telegram-channel', 'tencent', 'tes', 'thehub', 'themuse',

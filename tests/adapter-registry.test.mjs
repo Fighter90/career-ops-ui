@@ -99,7 +99,7 @@ test('registry: Workday defaults site=External when careers_url omits site', () 
 
 test('registry: ALL_ADAPTERS has the expected entries', async () => {
   const { ALL_ADAPTERS } = await import('../server/lib/portals/registry.mjs');
-  assert.equal(ALL_ADAPTERS.length, 135);
+  assert.equal(ALL_ADAPTERS.length, 136);
   const ids = ALL_ADAPTERS.map((a) => a.id).sort();
   assert.deepEqual(ids, [
     '4dayweek', 'a16z-speedrun-talent', 'adp-myjobs', 'adp-workforcenow', 'agenticjobs', 'aldi-nord',
@@ -118,7 +118,7 @@ test('registry: ALL_ADAPTERS has the expected entries', async () => {
     'mycareersfuture', 'neogov', 'nodesk', 'nofluffjobs', 'occ', 'oraclecloud',
     'pageup', 'paylocity', 'peoplesoft', 'personio', 'phenom', 'pinpoint',
     'platsbanken', 'polymer', 'prevueaps', 'pythonorg', 'radancy', 'recruitee',
-    'redrover', 'remote-com', 'remoteok', 'remotive', 'remotli', 'rheinmetall',
+    'redrover', 'remote-com', 'remoteok', 'remotive', 'remotli', 'rexx', 'rheinmetall',
     'rippling', 'rss', 'schoolspring', 'senjob', 'sitemap', 'smartrecruiters',
     'softgarden', 'solidjobs', 'startup-jobs', 'successfactors', 'talentlink', 'taleo', 'teamtailor',
     'techinasia', 'telegram', 'telegram-channel', 'tencent', 'tes', 'thehub', 'themuse',

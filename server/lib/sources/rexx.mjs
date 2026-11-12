@@ -219,7 +219,7 @@ function toIso(value) {
  * Resolve a scraped href against the page and keep it only when it is an
  * https posting page on the portal's own host. Returns { id, url } or null.
  * The id comes out of an existing URL's pathname (-j{digits}.html), so no URL
- * is ever BUILT from scraped data here — hence no safeEncodeURIComponent.
+ * is ever BUILT from scraped data here — hence no URL-encoding helper.
  * @param {string} rawHref @param {string} baseUrl @param {string} host
  */
 function postingLink(rawHref, baseUrl, host) {

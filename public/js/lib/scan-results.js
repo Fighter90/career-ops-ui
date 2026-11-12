@@ -111,6 +111,7 @@ window.ScanResults = (function () {
     { value: 'pythonorg', label: 'Python.org Jobs' },
     { value: 'radancy', label: 'Radancy' },
     { value: 'recruitee', label: 'Recruitee' },
+    { value: 'rexx', label: 'Rexx Systems' },
     { value: 'redrover', label: 'Red Rover' },
     { value: 'remote-com', label: 'Remote' },
     { value: 'remoteok', label: 'RemoteOK' },
