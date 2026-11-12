@@ -213,6 +213,7 @@ Some `server/lib` modules are **hand-mirrors of parent `career-ops` modules** an
 | `server/lib/board-truncation.mjs` | `lib/board-truncation.mjs` (CAR-256, #6636 — canonical `truncated` + legacy `<name>Truncated\|Incomplete` tags → `partialSources`) |
 | `server/lib/posting-close.mjs` | `lib/posting-close.mjs` (CAR-256, #6597 — `closesAtIso` / `closeDatesByUrl` / `closeDateForUrl`; storage = the scanners' 7th `closes_at` history cell; the pipeline route joins days onto the queue) |
 | `server/lib/fetch-error-kind.mjs` | `scan.mjs::classifyFetchError` (imported from `verify-portals.mjs` upstream; CAR-256, #6675 — `network`/`server` kinds are the transient retry set) |
+| `server/lib/jd-parse.mjs` | `lib/jd-parse.mjs` + the pure half of `lib/jd-page-fetch.mjs` (CAR-262, #6604 — `jdFromPageHtml` JSON-LD/embedded JD rescue + the #6798 title reader `pageTitle`; the network half stays `safeGet`, whose DNS-pinned transport IS the egress guard) |
 | `server/lib/sources/*.mjs` | `providers/*.mjs` (each job board) |
 | `server/lib/portals/adapters/*.mjs` | provider detection in `providers/*.mjs` |
 | `public/js/lib/{logbuf,bug-report,job-facets,score-tone,company-logo,tracker-stages}.js` | parent `web/src/lib/*` |

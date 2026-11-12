@@ -110,7 +110,9 @@ Block anchors:
 Weights: blocks A–F carry weight 1 each; G carries weight 0. The global score is their weighted mean rounded to one decimal (half up), computed by the SERVER.
 
 Output ONLY a JSON object — no markdown fence, no prose before or after, no trailing commentary. Every "score" value MUST be an INTEGER from 1 to 5 — never a decimal, never 0, never 6:
-{"company":"<company name or Unknown>","role":"<role title>","archetype":"<detected archetype>","legitimacy":"High Confidence|Proceed with Caution|Suspicious","blocks":{"A":{"score":<1-5 integer>,"summary":"<one English sentence>"},"B":{...},"C":{...},"D":{...},"E":{...},"F":{...},"G":{...}}}
+{"company":"<company name or Unknown>","role":"<role title>","archetype":"<detected archetype>","legitimacy":"High Confidence|Proceed with Caution|Suspicious","blocks":{"A":{"score":<1-5 integer>,"summary":"<one English sentence>"},"B":{...},"C":{...},"D":{...},"E":{...},"F":{...},"G":{...}},"positioning_band":"challenge|target|safety_net|out_of_scope|unknown","positioning_band_reason":"<one English sentence naming the evidence>","positioning_band_evidence":{"role_family":"supported|partial|unknown","seniority":"supported|partial|unknown","required_experience":"supported|partial|unknown","scope":"supported|partial|unknown"}}
+
+positioning_band (optional context, CAR-262): a positioning label that sits BESIDE the score and NEVER changes it — it answers whether the role is a stretch, the candidate's current target band, or a deliberate fallback, which a score alone cannot say. Values: "challenge" (aligned target family, about one level or scope band above the candidate's current natural level, with explicit stretch gaps), "target" (aligned and within the candidate's current band), "safety_net" (about one band below, still aligned with the candidate's goals and acceptable constraints), "out_of_scope" (not in a target career path; an easy role is NOT automatically a safety net), "unknown" (not enough JD or profile evidence to classify honestly — use unknown rather than guessing). Decide it only after the full JD has been evaluated, from these inputs in order: (1) target archetype and role-family alignment from the candidate's profile (role_family), (2) required experience and qualifications from the whole JD, with required versus preferred gaps (required_experience), (3) responsibilities, ownership, decision scope and team or client scope (scope); "seniority" in positioning_band_evidence records the resulting level band judged from (2) and (3). NEVER classify from the title alone, and never infer missing experience or scope evidence. It is report context only: it never triggers an application, a tracker status, or a score change.
 
 `;
 
@@ -309,11 +311,29 @@ export function normalizeScoring(raw) {
     || (/suspicious|phish|scam|fake|fraud/.test(legitimacyRaw) ? 'Suspicious'
       : /caution|medium|uncertain|warn/.test(legitimacyRaw) ? 'Proceed with Caution'
       : 'High Confidence');
+  // CAR-262 (#6789) — the optional positioning band beside the score. The enum
+  // is closed and anything unreadable falls to 'unknown' (never a guess); the
+  // band never changes the score — it rides beside it in the report surface.
+  const BAND_VALUES = ['challenge', 'target', 'safety_net', 'out_of_scope', 'unknown'];
+  const bandRaw = String(raw.positioning_band ?? '').toLowerCase().trim();
+  const positioningBand = BAND_VALUES.includes(bandRaw) ? bandRaw : 'unknown';
+  const positioningBandReason = String(raw.positioning_band_reason ?? '').replace(/\s+/g, ' ').trim().slice(0, 240);
+  const EV_VALUES = ['supported', 'partial', 'unknown'];
+  const evRaw = raw.positioning_band_evidence && typeof raw.positioning_band_evidence === 'object' && !Array.isArray(raw.positioning_band_evidence)
+    ? raw.positioning_band_evidence
+    : {};
+  const positioningBandEvidence = Object.fromEntries(['role_family', 'seniority', 'required_experience', 'scope'].map((k) => {
+    const v = String(evRaw[k] ?? '').toLowerCase().trim();
+    return [k, EV_VALUES.includes(v) ? v : 'unknown'];
+  }));
   return {
     company: clean(raw.company) || 'Unknown',
     role: clean(raw.role) || 'Unknown',
     archetype: clean(raw.archetype) || 'Unknown',
     legitimacy,
+    positioningBand,
+    positioningBandReason,
+    positioningBandEvidence,
     score: computeFinalScore(blocks),
     blocks,
   };
@@ -341,11 +361,17 @@ export function missingBlocks(body) {
  */
 export function assembleReport({ scoring, body, today, url, pdf, salary, location, jdArchive }) {
   const s = scoring;
+  // CAR-262 (#6789) — the optional positioning band beside the score. Objects
+  // normalized by normalizeScoring() always carry it (unknown included);
+  // hand-made scoring objects without the field keep the exact prior bytes.
+  const hasBand = typeof s.positioningBand === 'string' && s.positioningBand;
+  const bandReason = hasBand && s.positioningBandReason ? s.positioningBandReason : '';
   const header = [
     `# Evaluation: ${s.company} — ${s.role}`,
     '',
     `**Date:** ${today}`,
     `**Score:** ${s.score}/5`,
+    ...(hasBand ? [`**Positioning band:** ${s.positioningBand}${bandReason ? ` — ${bandReason}` : ''}`] : []),
     `**URL:** ${url || '—'}`,
     `**PDF:** ${pdf || '❌'}`,
     `**Legitimacy:** ${s.legitimacy}`,
@@ -356,6 +382,10 @@ export function assembleReport({ scoring, body, today, url, pdf, salary, locatio
     `COMPANY: ${s.company}`,
     `ROLE: ${s.role}`,
     `SCORE: ${s.score}`,
+    ...(hasBand ? [
+      `POSITIONING_BAND: ${s.positioningBand}`,
+      ...(bandReason ? [`POSITIONING_BAND_REASON: ${bandReason}`] : []),
+    ] : []),
     `ARCHETYPE: ${s.archetype}`,
     `LEGITIMACY: ${s.legitimacy}`,
     '---END_SUMMARY---',
@@ -368,6 +398,11 @@ export function assembleReport({ scoring, body, today, url, pdf, salary, locatio
     'status: Evaluated',
     ...(salary ? [`salary: "${String(salary).replace(/"/g, "'")}"`] : []),
     ...(location ? [`location: "${String(location).replace(/"/g, "'")}"`] : []),
+    ...(hasBand ? [
+      `positioning_band: ${s.positioningBand}`,
+      ...(bandReason ? [`positioning_band_reason: "${bandReason.replace(/"/g, "'")}"`] : []),
+      `positioning_band_evidence: {${Object.entries(s.positioningBandEvidence ?? {}).map(([k, v]) => `${k}: ${v}`).join(', ')}}`,
+    ] : []),
     `legitimacy: ${s.legitimacy}`,
     `archetype: ${s.archetype}`,
     `blocks: {${EVAL_BLOCK_LETTERS.map((L) => `${L}: ${s.blocks[L].score}`).join(', ')}}`,

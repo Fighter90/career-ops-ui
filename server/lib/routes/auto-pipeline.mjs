@@ -53,6 +53,11 @@ import { logActivity } from '../activity-log.mjs';
 import { safeGet } from '../safe-fetch.mjs';
 import { withFileLock, atomicWrite } from '../file-lock.mjs';
 import { llmRateLimit, writeRateLimit } from '../rate-limit.mjs';
+// CAR-262 — the page's own bytes: a Cloudflare interstitial is refused by its
+// title (#6798), and a script-rendered JD (JSON-LD JobPosting) is rescued from
+// the already-downloaded HTML when the visible text is chrome (#6604).
+import { cloudflareInterstitial } from '../liveness-core.mjs';
+import { jdFromPageHtml, pageTitle } from '../jd-parse.mjs';
 
 const FETCH_TIMEOUT_MS = 30_000;
 const FETCH_MAX_BODY_BYTES = 64 * 1024;
@@ -175,6 +180,11 @@ async function fetchJobDescription(url, signal) {
       userAgent: 'Mozilla/5.0 (career-ops-ui auto-pipeline) AppleWebKit/537.36',
     });
     if (r.status < 200 || r.status >= 300) {
+      // CAR-262 (#6798) — a Cloudflare interstitial served on an HTTP error is
+      // refused by the page's own title (the same check liveness gives the
+      // bot_challenge wall), not handed on as an opaque HTTP status.
+      const kind = cloudflareInterstitial(pageTitle(r.text));
+      if (kind) return { ok: false, error: `HTTP ${r.status} Cloudflare ${kind} — challenge page, not the posting (bot_challenge)` };
       return { ok: false, error: `HTTP ${r.status}` };
     }
     if (embed) {
@@ -185,6 +195,13 @@ async function fetchJobDescription(url, signal) {
       }
       return { ok: true, text: post };
     }
+    // CAR-262 (#6798) — a static GET cannot pass a challenge: there is no
+    // browser to solve it and reload the real posting. A page served under a
+    // Cloudflare interstitial title is the wall itself, and its ~800-char
+    // site-branded body would otherwise clear the 200-char JD floor and reach
+    // the model (#6713 shape). The interstitial is refused instead.
+    const challenge = cloudflareInterstitial(pageTitle(r.text));
+    if (challenge) return { ok: false, error: `Cloudflare ${challenge} — challenge page, not the posting (bot_challenge)` };
     const text = r.text
       .replace(/<script[\s\S]*?<\/script>/gi, '')
       .replace(/<style[\s\S]*?<\/style>/gi, '')
@@ -194,7 +211,20 @@ async function fetchJobDescription(url, signal) {
       .replace(/\n\s*\n+/g, '\n\n')
       .trim()
       .slice(0, FETCH_MAX_BODY_BYTES);
-    return { ok: true, text };
+    // CAR-262 (#6604) — a template-driven career site keeps the whole JD in a
+    // schema.org JobPosting inside <script>; the tag strip above drops script
+    // content, so a live posting could die at the 200-char floor. When the
+    // visible extraction falls below the floor, read the page's OWN JSON-LD /
+    // embedded payloads (offline parse of the HTML already downloaded through
+    // safeGet — no second fetch). A posting the page itself calls closed
+    // (JSON-LD validThrough past) is refused with the closure evidence.
+    let jd = text;
+    if (jd.length < MIN_JD_CHARS) {
+      const page = jdFromPageHtml(r.text, Date.now(), url);
+      if (page?.closed) return { ok: false, error: `posting closed: ${page.evidence}`, rejected: true };
+      if (page?.text) jd = page.text;
+    }
+    return { ok: true, text: jd.slice(0, FETCH_MAX_BODY_BYTES) };
   } catch (e) {
     return { ok: false, error: e.message || String(e) };
   }
