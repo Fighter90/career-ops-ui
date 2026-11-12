@@ -9,6 +9,7 @@
     "server/lib/docx.mjs",
     "server/lib/dotenv.mjs",
     "server/lib/gemini.mjs",
+    "server/lib/jd-parse.mjs",
     "server/lib/llm-pricing.mjs",
     "server/lib/llm-usage.mjs",
     "server/lib/parent-relay.mjs",
