@@ -202,17 +202,12 @@ export function resolveMaxPages(entry) {
 
 // NaN-safe: `Date.parse(s) || undefined` would also drop a valid epoch 0.
 /** @param {string | undefined} value */
+// NaN-safe Date.parse → epoch ms (undefined when unparseable; epoch 0 kept).
+/** @param {string | undefined} value */
 export function toEpochMs(value) {
   if (!value) return undefined;
   const parsed = Date.parse(value);
   return Number.isNaN(parsed) ? undefined : parsed;
-}
-
-// NaN-safe Date.parse → ISO string ('' when unparseable) for the row shape.
-/** @param {string | undefined} value */
-function toIso(value) {
-  const ms = toEpochMs(value);
-  return ms === undefined ? '' : new Date(ms).toISOString();
 }
 
 /**

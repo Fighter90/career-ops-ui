@@ -676,7 +676,7 @@ jobs:
           as_owner() { local d=$1; shift; sudo -u "$(stat -c %U "$d")" -H -- "$@"; }
           installed_in() {
             for d in "$@"; do
-              [ -d "$d/node_modules/playwright" ] || [ -d "$d/node_modules/playwright-core" ] && { echo "$d"; return 0; }
+              if { [ -d "$d/node_modules/playwright" ] || [ -d "$d/node_modules/playwright-core" ]; }; then echo "$d"; return 0; fi
             done
             return 1
           }
@@ -685,6 +685,16 @@ jobs:
           version=$(node -p "require('$TARGET/node_modules/playwright-core/package.json').version" 2>/dev/null || echo unknown)
           echo "playwright-core: $version"
           as_owner "$TARGET" bash -c 'cd "$1" && npx playwright install chromium' _ "$TARGET"
+          # The parent checkout's runtime deps can drift from its lockfile between
+          # deploys (the deploy only reinstalls when the lockfile SUM changes, so
+          # a tree that lost a package silently fails `career-ops doctor`).
+          # npm ls exits nonzero on an invalid tree — reinstall only then.
+          if ! as_owner "$APP_DIR" bash -c 'cd "$1" && npm ls --omit=dev --depth=0 >/dev/null 2>&1' _ "$APP_DIR"; then
+            echo "parent node_modules invalid (doctor: Dependencies missing) — npm ci"
+            as_owner "$APP_DIR" bash -c 'cd "$1" && npm ci --omit=dev --no-audit --no-fund' _ "$APP_DIR"
+            as_owner "$APP_DIR" bash -c 'cd "$1" && npm ls --omit=dev --depth=0 >/dev/null 2>&1' _ "$APP_DIR" || { echo "::error::parent npm ci did not produce a valid tree"; exit 1; }
+            echo "parent tree valid ✓"
+          fi
           owner_home=$(getent passwd "$(stat -c %U "$APP_DIR")" | cut -d: -f6)
           echo "cache at $owner_home/.cache/ms-playwright:"
           ls -1 "$owner_home/.cache/ms-playwright" 2>/dev/null || echo "::error::cache directory not found — the install did not land where the service resolves HOME"

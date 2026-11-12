@@ -233,7 +233,6 @@ test('rotateReadmeRelease: badges follow (release, tag, tests count)', () => {
 });
 
 test('rotateReadmeRelease: the localized trailing count moves in every script', () => {
-  const mk = (lead) => `> intro\n${lead}\n${lead.replace(/^[^v]*/, '')}`;
   const cases = [
     ['> **🆕 Latest — v1.271.14** — x. Tests 8411.', 'Tests 8450.'],
     ['> **🆕 Latest — v1.271.14** — x. Tests: 8411.', 'Tests: 8450.'],
