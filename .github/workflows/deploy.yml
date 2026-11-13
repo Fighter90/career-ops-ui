@@ -708,9 +708,13 @@ jobs:
           # a tree that lost a package silently fails `career-ops doctor`).
           # npm ls exits nonzero on an invalid tree — reinstall only then.
           if ! as_owner "$APP_DIR" bash -c 'cd "$1" && npm ls --omit=dev --depth=0 >/dev/null 2>&1' _ "$APP_DIR"; then
-            echo "parent node_modules invalid (doctor: Dependencies missing) — npm ci"
-            as_owner "$APP_DIR" bash -c 'cd "$1" && npm ci --omit=dev --no-audit --no-fund' _ "$APP_DIR"
-            as_owner "$APP_DIR" bash -c 'cd "$1" && npm ls --omit=dev --depth=0 >/dev/null 2>&1' _ "$APP_DIR" || { echo "::error::parent npm ci did not produce a valid tree"; exit 1; }
+            echo "parent node_modules invalid (doctor: Dependencies missing) — npm install"
+            # npm ci refuses a checkout whose package-lock is out of sync with
+            # package.json; this is a maintenance mode, so npm install (which
+            # reconciles the lock) is the right tool. --no-package-lock would
+            # leave the tree floating — keep the lock authoritative.
+            as_owner "$APP_DIR" bash -c 'cd "$1" && npm install --omit=dev --no-audit --no-fund' _ "$APP_DIR"
+            as_owner "$APP_DIR" bash -c 'cd "$1" && npm ls --omit=dev --depth=0 >/dev/null 2>&1' _ "$APP_DIR" || { echo "::error::parent npm install did not produce a valid tree"; exit 1; }
             echo "parent tree valid ✓"
           fi
           echo "cache at $CACHE:"
