@@ -595,11 +595,13 @@ jobs:
           # target; the web-ui tree is installed too when it carries playwright.
           for d in "$APP_DIR" "$UI_DIR"; do
             [ -d "$d/node_modules/playwright" ] || [ -d "$d/node_modules/playwright-core" ] || continue
-            as_owner "$d" bash -c 'cd "$1" && npx playwright install chromium' _ "$d" \
+            # Same pinned cache as mode=browsers: the service reads
+            # $APP_DIR/../.cache/ms-playwright, never the session profile's path.
+            CACHE="$(dirname "$APP_DIR")/.cache/ms-playwright"
+            as_owner "$d" env "PLAYWRIGHT_BROWSERS_PATH=$CACHE" bash -c 'cd "$1" && npx playwright install chromium' _ "$d" \
               || { echo "::error::playwright browser install failed for $d — PDF generation would be broken on prod"; exit 1; }
           done
-          owner_home=$(getent passwd "$(stat -c %U "$APP_DIR")" | cut -d: -f6)
-          echo "playwright cache: $(find "$owner_home/.cache/ms-playwright" -maxdepth 1 -name 'chromium*' 2>/dev/null | tr '\n' ' ')"
+          echo "playwright cache: $(find "$(dirname "$APP_DIR")/.cache/ms-playwright" -maxdepth 1 -name 'chromium*' 2>/dev/null | tr '\n' ' ')"
           # CAR-85 — release-time SPA bundle: concat every body <script src="/js/…">
           # from public/index.html into public/js/bundle.js (89 cold-load script
           # requests → 4: the two <head> scripts + vendored Leaflet stay individual
@@ -684,7 +686,23 @@ jobs:
           echo "installing browsers for the playwright in: $TARGET"
           version=$(node -p "require('$TARGET/node_modules/playwright-core/package.json').version" 2>/dev/null || echo unknown)
           echo "playwright-core: $version"
-          as_owner "$TARGET" bash -c 'cd "$1" && npx playwright install chromium' _ "$TARGET"
+          # Pin the cache to where the SERVICE resolves it. The web-ui service's
+          # HOME is the parent checkout dir (/opt/career-ops), so playwright
+          # reads $APP_DIR/../.cache/ms-playwright — that is the exact path the
+          # 2026-11-12 failure named. An interactive ssh session may carry a
+          # profile-level PLAYWRIGHT_BROWSERS_PATH (/usr/local/share/ms-playwright
+          # broke the first attempt with EACCES), so the env var is FORCED for
+          # the install; a system-owned destination falls back to sudo and the
+          # result is chowned back to the service owner.
+          CACHE="$(dirname "$APP_DIR")/.cache/ms-playwright"
+          echo "target cache: $CACHE"
+          if as_owner "$TARGET" env "PLAYWRIGHT_BROWSERS_PATH=$CACHE" bash -c 'cd "$1" && npx playwright install chromium' _ "$TARGET"; then
+            echo "installed as the service owner"
+          else
+            echo "::warning::owner install failed — retrying with sudo"
+            sudo env "PLAYWRIGHT_BROWSERS_PATH=$CACHE" bash -c "cd '$TARGET' && npx playwright install chromium"
+            sudo chown -R "$(stat -c %U "$APP_DIR"):$(stat -c %G "$APP_DIR")" "$CACHE"
+          fi
           # The parent checkout's runtime deps can drift from its lockfile between
           # deploys (the deploy only reinstalls when the lockfile SUM changes, so
           # a tree that lost a package silently fails `career-ops doctor`).
@@ -695,12 +713,11 @@ jobs:
             as_owner "$APP_DIR" bash -c 'cd "$1" && npm ls --omit=dev --depth=0 >/dev/null 2>&1' _ "$APP_DIR" || { echo "::error::parent npm ci did not produce a valid tree"; exit 1; }
             echo "parent tree valid ✓"
           fi
-          owner_home=$(getent passwd "$(stat -c %U "$APP_DIR")" | cut -d: -f6)
-          echo "cache at $owner_home/.cache/ms-playwright:"
-          ls -1 "$owner_home/.cache/ms-playwright" 2>/dev/null || echo "::error::cache directory not found — the install did not land where the service resolves HOME"
+          echo "cache at $CACHE:"
+          ls -1 "$CACHE" 2>/dev/null || echo "::error::cache directory not found — the install did not land where the service resolves HOME"
           # The exact executable the failure named must now exist (headless shell
           # build directory for this playwright-core version).
-          if ls -d "$owner_home"/.cache/ms-playwright/chromium*headless* >/dev/null 2>&1; then
+          if ls -d "$CACHE"/chromium*headless* >/dev/null 2>&1; then
             echo "headless shell present ✓"
           else
             echo "::error::no chromium*headless* build in the cache — PDF generation stays broken"
